@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Preventivas · Sephora 2026</title>
+<style>
+  :root{
+    --teal:#026E8C; --teal-lt:#5FA8BE; --yellow:#F7D51C; --gold-txt:#8A6D00;
+    --muted:#C7CDD1; --navy:#0E2841; --text-muted:#5B7280;
+    --bg:#F7F9FA; --surface:#FFFFFF; --border:#E3E8EA;
+    --ok:#1E7A46; --ok-bg:#E7F5EC; --warn:#8A6D00; --warn-bg:#FFF3C4; --bad:#B3261E; --bad-bg:#FCE8E6;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --bg:#0E1A22; --surface:#132530; --border:#22374290; --navy:#EAF1F4; --text-muted:#9FB3BC; --ok-bg:#123322; --warn-bg:#3A2E06; --bad-bg:#3A1512; }
+  }
+  :root[data-theme="dark"]{ --bg:#0E1A22; --surface:#132530; --border:#22374290; --navy:#EAF1F4; --text-muted:#9FB3BC; --ok-bg:#123322; --warn-bg:#3A2E06; --bad-bg:#3A1512; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--navy); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased;}
+  header{background:var(--teal); color:#fff; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; position:sticky; top:0; z-index:10;}
+  header .brand{display:flex; align-items:center; gap:10px;}
+  header .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);}
+  header h1{font-size:15px; margin:0; font-weight:600; letter-spacing:.2px;}
+  header .sub{font-size:11px; opacity:.85; margin-top:1px;}
+  nav{display:flex; gap:6px;}
+  nav button{background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; padding:7px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; font-weight:500;}
+  nav button.active{background:#fff; color:var(--teal); border-color:#fff;}
+  main{max-width:880px; margin:0 auto; padding:16px 14px 80px;}
+  .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
+  .toolbar{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+  input[type=text], input[type=date], select, textarea{font-family:inherit; font-size:13.5px; padding:9px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--navy); width:100%;}
+  input:focus, select:focus, textarea:focus{outline:2px solid var(--teal-lt); outline-offset:-1px;}
+  .toolbar input{flex:1; min-width:160px;}
+  .btn{border:none; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;}
+  .btn-primary{background:var(--teal); color:#fff;} .btn-primary:hover{background:#025972;} .btn-primary:disabled{opacity:.5; cursor:not-allowed;}
+  .btn-ghost{background:transparent; color:var(--teal); border:1px solid var(--teal);}
+  .btn-danger{background:transparent; color:var(--bad); border:1px solid var(--bad);}
+  .btn-sm{padding:6px 10px; font-size:12px;}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:10px;}
+  .filtro-chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+  .chip{border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:6px 12px; border-radius:20px; font-size:11.5px; font-weight:600; cursor:pointer;}
+  .chip.active{background:var(--teal); color:#fff; border-color:var(--teal);}
+  th.th-ordenar{cursor:pointer; user-select:none; white-space:nowrap;}
+  .loja-row{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px; cursor:pointer; transition:border-color .15s; user-select:text;}
+  .loja-row:hover{border-color:var(--teal-lt);}
+  .loja-row .name{font-weight:600; font-size:14px;}
+  .loja-row .meta{font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+  .loja-quick-fields{display:flex; flex-direction:column; gap:8px; padding-top:10px; border-top:1px solid var(--border);}
+  .loja-quick-fields label{margin:0 0 2px;}
+  .loja-quick-fields input, .loja-quick-fields textarea{font-size:12.5px; padding:7px 8px; font-family:inherit;}
+  .agendamento-linha1{display:flex; gap:8px; flex-wrap:wrap;}
+  .agendamento-linha1 .field{flex:0 0 auto;}
+  .agendamento-linha1 input[type="date"]{width:132px;}
+  .agendamento-linha1 input[type="time"]{width:98px;}
+  .agendamento-linha2{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;}
+  @media(max-width:520px){ .agendamento-linha2{grid-template-columns:1fr;} .agendamento-linha1 input[type="date"], .agendamento-linha1 input[type="time"]{width:auto; flex:1 1 120px;} }
+  .badge{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; letter-spacing:.3px; text-transform:uppercase; white-space:nowrap;}
+  .badge.nao_iniciado{background:var(--muted); color:#3a3a3a;}
+  .badge.pendente_confirmacao{background:#E3E0F5; color:#5B3FA0;}
+  .badge.aguardando{background:#FBE3D0; color:#B0560F;}
+  .badge.liberado{background:#D8ECD9; color:#2E7D32;}
+  .badge.em_andamento{background:var(--warn-bg); color:var(--warn);}
+  .badge-bloco{display:inline-block; border-radius:8px; padding:4px 10px; text-align:right; line-height:1.3;}
+  .badge-bloco .linha1{font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.3px;}
+  .badge-bloco .linha2{font-size:11px; font-weight:600;}
+  .badge.concluido{background:var(--ok-bg); color:var(--ok);}
+  .empty{text-align:center; color:var(--text-muted); padding:40px 10px; font-size:13.5px;}
+  .checklist-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
+  .checklist-header h2{margin:0 0 4px; font-size:18px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
+  .field-row-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;}
+  @media(max-width:520px){.field-row{grid-template-columns:1fr;} .field-row-3{grid-template-columns:1fr;}}
+  label{font-size:11.5px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:3px; text-transform:uppercase; letter-spacing:.3px;}
+  .field{margin-bottom:8px;}
+  section.block{margin-bottom:22px;}
+  section.block > h3{font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal); border-bottom:2px solid var(--border); padding-bottom:6px; margin:0 0 12px;}
+  section.block > .sub-h4{font-size:11px; color:var(--text-muted); margin:-4px 0 12px; font-weight:600;}
+  .item-card{border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:10px; position:relative; background:var(--bg);}
+  .item-card .item-title{font-weight:600; font-size:13px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;}
+  .toggle-group{display:flex; gap:6px; flex-wrap:wrap;}
+  .toggle-btn{flex:1; min-width:70px; border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:8px; border-radius:7px; font-size:12.5px; cursor:pointer; font-weight:600;}
+  .toggle-btn.on-good{background:var(--ok-bg); border-color:var(--ok); color:var(--ok);}
+  .toggle-btn.on-bad{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .toggle-btn.on-neutral{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .hint{font-size:11px; color:var(--text-muted); margin-top:3px; font-style:italic;}
+  .warn-inline{font-size:11.5px; color:var(--bad); margin-top:4px; font-weight:600;}
+  .warn-destaque{font-size:15px; color:var(--bad); background:var(--bad-bg); border:1.5px solid var(--bad); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-weight:700; display:flex; align-items:center; gap:8px; line-height:1.3;}
+  .remove-x{background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:16px; line-height:1; padding:2px 6px;}
+  .add-row{width:100%; padding:10px; border:1.5px dashed var(--border); background:transparent; color:var(--teal); border-radius:8px; font-weight:600; font-size:12.5px; cursor:pointer;}
+  .add-row:disabled{opacity:.5; cursor:not-allowed; border-style:solid;}
+  .save-bar{position:sticky; bottom:0; background:var(--surface); border-top:1px solid var(--border); padding:10px 0; display:flex; gap:8px; justify-content:space-between; align-items:center; margin-top:10px; flex-wrap:wrap;}
+  .save-status{font-size:11.5px; color:var(--text-muted);}
+  .ports-grid{display:grid; grid-template-columns:repeat(8, 1fr); gap:6px; margin-top:6px;}
+  @media(max-width:480px){.ports-grid{grid-template-columns:repeat(4,1fr);}}
+  .port-chk{border:1px solid var(--border); background:var(--surface); border-radius:6px; padding:6px 2px; font-size:11px; text-align:center; cursor:pointer; font-weight:600;}
+  .port-chk.on{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
+  .banner-erro{background:var(--bad-bg); color:var(--bad); border-radius:8px; padding:10px 12px; font-size:12.5px; margin-bottom:14px;}
+  .banner-erro ul{margin:6px 0 0; padding-left:18px;}
+  .banner-lock{background:var(--ok-bg); color:var(--ok); border-radius:8px; padding:10px 12px; font-size:12.5px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+  .stats-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:18px;}
+  .stat-card{cursor:pointer; transition:border-color .15s; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
+  .stat-card:hover{border-color:var(--teal-lt);}
+  .stat-card.active{border-color:var(--teal); border-width:2px; background:var(--ok-bg);}
+  .stat-card .num{font-size:24px; font-weight:700; color:var(--teal);}
+  .stat-card .lbl{font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; margin-top:2px;}
+  .progress-track{background:var(--border); border-radius:8px; height:14px; overflow:hidden; margin:10px 0 6px;}
+  .progress-fill{background:var(--teal); height:100%; border-radius:8px; transition:width .3s;}
+  .mini-bar-track{background:var(--border); border-radius:6px; height:5px; margin-top:8px; overflow:hidden;}
+  .mini-bar-fill{height:100%; border-radius:6px; transition:width .3s;}
+  .alert-item{display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border-radius:8px; background:var(--bad-bg); margin-bottom:6px; font-size:12.5px;}
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--border);}
+  th{color:var(--text-muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.3px;}
+  details.loja-group{border:1px solid var(--border); border-radius:8px; margin-bottom:8px; overflow:hidden;}
+  details.loja-group summary{padding:10px 12px; cursor:pointer; font-weight:700; font-size:13px; background:var(--bg); list-style:none;}
+  details.loja-group summary::-webkit-details-marker{display:none;}
+  details.loja-group summary:before{content:"▸ "; color:var(--teal);}
+  details.loja-group[open] summary:before{content:"▾ ";}
+  details.loja-group .conteudo{padding:8px 12px 12px;}
+  #btn-topo{position:fixed; right:16px; bottom:16px; z-index:20; border:none; border-radius:50%; width:44px; height:44px; background:var(--teal); color:#fff; font-size:16px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.25); display:none;}
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;}
+  .modal-box{background:var(--surface); border-radius:12px; padding:18px; max-width:420px; width:100%;}
+  .modal-box p{font-size:13.5px; margin:0 0 14px;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+  .cal-dow{font-size:10px; text-align:center; color:var(--text-muted); font-weight:700; text-transform:uppercase; padding-bottom:4px;}
+  .cal-day{min-height:64px; border:1px solid var(--border); border-radius:6px; padding:4px; font-size:10.5px; background:var(--bg);}
+  .cal-day.outro-mes{opacity:.35;}
+  .cal-day .num{font-weight:700; font-size:11px; margin-bottom:2px;}
+  .cal-day .loja-chip{display:block; background:var(--teal); color:#fff; border-radius:4px; padding:1px 4px; margin-bottom:2px; font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;}
+  .cal-nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .cal-nav b{font-size:13.5px;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span class="dot"></span><div><h1>Checklist de Preventivas</h1><div class="sub">Sephora 2026 · AlliedIT</div></div></div>
+  <nav><button id="nav-lojas" class="active">Lojas</button><button id="nav-painel">Painel</button></nav>
+</header>
+
+<main>
+
+  <div id="view-tecnico-id" class="hidden">
+    <div class="card" style="max-width:420px; margin:40px auto; padding:28px 22px;">
+      <h3 style="margin:0 0 4px; text-align:center;">Área do técnico</h3>
+      <div class="hint" style="text-align:center; margin-bottom:16px;">Digite o código da loja para abrir o checklist.</div>
+      <div class="field">
+        <label>Código da loja</label>
+        <input type="text" id="tec-id-codigo" list="tec-lista-codigos" placeholder="Ex: 2305" inputmode="numeric">
+      </div>
+      <datalist id="tec-lista-codigos"></datalist>
+      <div class="field">
+        <label>Nome da loja</label>
+        <input type="text" id="tec-id-nome" placeholder="Preenchido automaticamente" readonly>
+      </div>
+      <div class="hint" id="tec-id-erro" style="display:none; color:var(--bad);">Código não encontrado.</div>
+      <button class="btn btn-primary" id="tec-btn-abrir" disabled style="width:100%; margin-top:6px;">Abrir checklist desta loja</button>
+    </div>
+  </div>
+
+  <div id="view-lojas" class="view active">
+    <div class="toolbar">
+      <input type="text" id="search-loja" placeholder="Buscar loja...">
+      <button class="btn btn-ghost btn-sm" id="btn-abrir-importar">Importar checklist offline</button>
+      <button class="btn btn-ghost btn-sm" id="btn-abrir-config">⚙ Configurações</button>
+    </div>
+    <div id="selecao-toolbar" class="hidden" style="display:flex; align-items:center; gap:10px; margin-bottom:12px; background:var(--bad-bg); border-radius:8px; padding:10px 12px;">
+      <span id="selecao-contagem" style="font-size:12.5px; color:var(--bad); font-weight:600;">0 loja(s) selecionada(s)</span>
+      <button class="btn btn-danger btn-sm" id="btn-excluir-selecionadas" disabled>Excluir selecionadas</button>
+      <button class="btn btn-ghost btn-sm" id="btn-cancelar-selecao">Cancelar</button>
+    </div>
+    <div id="zerar-status" style="margin-bottom:10px;"></div>
+    <div class="filtro-chips" id="filtro-chips-home"></div>
+
+    <div id="config-overlay" class="hidden" onclick="if(event.target===this) document.getElementById('btn-fechar-config').click();" style="position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:40;">
+      <div id="painel-config" style="position:fixed; top:0; right:0; height:100%; width:280px; max-width:85vw; background:var(--surface); box-shadow:-4px 0 16px rgba(0,0,0,.2); padding:18px; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="margin:0; font-size:14px; color:var(--teal); text-transform:uppercase; letter-spacing:.4px;">Configurações</h3>
+          <button class="btn btn-ghost btn-sm" id="btn-fechar-config">✕</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="btn-modo-selecao" style="width:100%; margin-bottom:10px;">Selecionar e excluir lojas</button>
+        <button class="btn btn-ghost btn-sm" id="btn-duplicar-loja-central" style="width:100%;">Duplicar Loja</button>
+      </div>
+    </div>
+    <div id="importar-offline-box" class="card hidden">
+      <h3 style="margin-top:0;">Importar checklist offline</h3>
+      <div class="hint" style="margin-bottom:8px;">Selecione um ou vários arquivos .json baixados pelos técnicos. Você pode selecionar mais arquivos depois — eles se somam à fila.</div>
+      <div class="field"><label>Arquivos (.json)</label><input type="file" id="importar-arquivo" accept="application/json" multiple></div>
+      <div id="importar-fila" style="margin:10px 0;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary btn-sm" id="btn-importar-confirmar">Importar</button>
+        <button class="btn btn-ghost btn-sm" id="btn-importar-cancelar">Cancelar</button>
+      </div>
+      <div id="importar-status" style="margin-top:8px;"></div>
+    </div>
+    <div id="lojas-list"></div>
+  </div>
+
+  <div id="view-checklist" class="view">
+    <button class="btn btn-ghost btn-sm" id="btn-voltar-lojas" style="margin-bottom:12px;">&larr; Voltar para lojas</button>
+    <div id="banner-lock" class="banner-lock hidden">
+      <span>🔒 Checklist concluído — dados protegidos contra alteração acidental.</span>
+      <button class="btn btn-ghost btn-sm" id="btn-solicitar-edicao">Reabrir formulário</button>
+    </div>
+    <div id="banner-validacao" class="banner-erro hidden"></div>
+
+    <div class="checklist-header">
+      <div><h2 id="cl-nome-loja">Loja</h2><span id="cl-badge" class="badge nao_iniciado">Não Iniciado</span><div class="hint" id="cl-tempo-atendimento"></div></div>
+      <div style="min-width:160px;"><label>Chamado</label><input type="text" id="cl-chamado" placeholder="Ex: R123456"></div>
+      <div style="min-width:180px;"><label>Técnico responsável</label><input type="text" id="cl-tecnico" placeholder="Nome do técnico"></div>
+      <div style="min-width:180px;"><label>Responsável da loja</label><input type="text" id="cl-responsavel" placeholder="Nome do responsável"></div>
+    </div>
+
+    <div style="margin-bottom:18px;" id="bloco-limpar-formulario">
+      <button type="button" class="btn btn-danger btn-sm" id="btn-limpar-formulario">Limpar Formulário</button>
+      <span id="limpar-form-confirm" class="hidden" style="font-size:12px; color:var(--bad); margin-left:4px;">
+        Isso apaga todos os dados do checklist técnico. Técnico, chamado, protocolo e agendamento são mantidos.
+        <button type="button" class="btn btn-danger btn-sm" id="btn-limpar-confirmar" style="margin-left:6px;">Sim, limpar</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-limpar-cancelar">Cancelar</button>
+      </span>
+    </div>
+
+    <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
+
+    <section class="block">
+      <h3>Equipamentos RACK</h3>
+      <div class="item-card">
+        <div class="item-title"><span>Rack</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-rack">Limpar</button></div>
+        <div class="field-row">
+          <div class="field"><label>Organizado ou desorganizado?</label><div class="toggle-group" id="rack-organizado-toggle"></div></div>
+          <div class="field"><label>Limpo ou sujo?</label><div class="toggle-group" id="rack-limpo-toggle"></div></div>
+        </div>
+        <div class="field"><label>Observação</label><textarea id="rack-obs" rows="2" placeholder="Opcional"></textarea></div>
+      </div>
+
+      <div class="item-card">
+        <div class="item-title"><span>Nobreak de Rack</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-nobreak-rack">Limpar</button></div>
+        <div class="field-row">
+          <div class="field"><label>Marca</label><select id="rack-nobreak-marca"><option value="">Selecionar</option><option>NHS</option><option>EATON</option></select></div>
+          <div class="field"><label>Nº Série</label><input type="text" id="rack-nobreak-serie"></div>
+        </div>
+        <div class="field">
+          <div class="toggle-group" id="rack-nobreak-serie-inacessivel-toggle"></div>
+          <div class="hint">Marque se não for possível visualizar o Nº Série sem movimentar o rack.</div>
+        </div>
+        <div class="field" id="rack-nobreak-nhs-wrap" style="display:none;">
+          <label>Qual a autonomia fora da tomada?</label>
+          <div class="toggle-group" id="rack-nobreak-nhs-toggle"></div>
+        </div>
+        <div class="hint" id="rack-nobreak-eaton-hint" style="display:none;">EATON dispensa o teste de autonomia.</div>
+        <div class="field"><label>Observação</label><textarea id="rack-nobreak-obs" rows="2" placeholder="Opcional"></textarea></div>
+      </div>
+
+      <div id="dvrs-list"></div>
+      <button class="add-row" id="btn-add-dvr">+ Adicionar DVR</button>
+
+      <div class="item-card" style="margin-top:16px;">
+        <div class="item-title"><span>Escada móvel</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-escada">Limpar</button></div>
+        <div class="field-row">
+          <div class="field"><label>A loja possui escada móvel no setor?</label><div class="toggle-group" id="rack-escada-possui-toggle"></div></div>
+          <div class="field" id="rack-escada-altura-wrap" style="display:none;"><label>É possível alcançar o teto?</label><div class="toggle-group" id="rack-escada-altura-toggle"></div></div>
+        </div>
+        <div class="field"><label>Observação</label><textarea id="rack-escada-obs" rows="2" placeholder="Opcional"></textarea></div>
+      </div>
+    </section>
+
+    <section class="block" id="setor-gerencia"></section>
+    <section class="block" id="setor-estoque"></section>
+    <section class="block" id="setor-notebooks"></section>
+
+    <section class="block">
+      <h3>Stage de Vendas</h3>
+      <div class="sub-h4">Até 5 PDVs por loja</div>
+      <div id="pdvs-list"></div>
+      <button class="add-row" id="btn-add-pdv">+ Adicionar PDV</button>
+
+      <div id="mobiles-list" style="margin-top:16px;"></div>
+      <button class="add-row" id="btn-add-mobile">+ Adicionar Mobile</button>
+
+      <div class="item-card" style="margin-top:16px;">
+        <div class="item-title"><span>Sinal do WIFI &mdash; Stage de Vendas</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-wifi-stage">Limpar</button></div>
+        <div id="wifi-stage-select-wrap"></div>
+        <div class="field" style="margin-top:8px;"><label>Observação</label><textarea id="wifi-stage-obs" rows="2" placeholder="Opcional"></textarea></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>Foto do RAT preenchida</h3>
+      <div class="item-card">
+        <div id="rat-foto-preview" style="margin-bottom:8px;"></div>
+        <input type="file" id="rat-foto-input" accept="image/*">
+        <div class="hint">Anexe a foto do RAT preenchido antes de finalizar o checklist.</div>
+      </div>
+    </section>
+
+    </fieldset>
+
+    <div class="save-bar">
+      <span class="save-status" id="save-status">&nbsp;</span>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost btn-sm" id="btn-reabrir" style="display:none;">Reabrir formulário</button>
+        <button class="btn btn-primary btn-sm" id="btn-finalizar">Finalizar checklist</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-painel" class="view">
+    <div class="card" id="painel-progresso"></div>
+    <div class="stats-grid" id="painel-stats"></div>
+    <div class="hint" id="painel-filtro-ativo" style="margin:-10px 0 14px; display:none;"></div>
+
+    <div class="card">
+      <div class="cal-nav">
+        <button class="btn btn-ghost btn-sm" id="cal-prev">&larr;</button>
+        <b id="cal-titulo"></b>
+        <button class="btn btn-ghost btn-sm" id="cal-next">&rarr;</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Alertas por loja</h3>
+      <div id="painel-alertas"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Equipamentos para substituição por loja</h3>
+      <div id="painel-substituicoes"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas</h3>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <input type="text" id="painel-busca-loja" placeholder="Buscar loja..." style="flex:1;">
+        <button class="btn btn-ghost btn-sm" id="btn-abrir-filtros-painel" style="flex-shrink:0;">Filtros</button>
+        <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros-painel" style="flex-shrink:0;">Limpar filtro</button>
+      </div>
+      <div id="painel-filtros-tl-ativo" style="display:none; margin-bottom:10px; gap:6px; flex-wrap:wrap;"></div>
+      <div style="overflow-x:auto;"><table><thead id="painel-tabela-head"></thead><tbody id="painel-tabela"></tbody></table></div>
+    </div>
+  </div>
+
+</main>
+
+<button id="btn-topo" title="Voltar ao topo">&uarr;</button>
+<div id="modal-container"></div>
+
+<script>
+(function(){
+  const ESTADOS = ["Bom","Regular","Ruim - substituir"];
+  const WIFI_OPCOES = [
+    {v:"1", label:"▮▯▯▯  1 barra — Ruim"}, {v:"2", label:"▮▮▯▯  2 barras — Médio"},
+    {v:"3", label:"▮▮▮▯  3 barras — Médio"}, {v:"4", label:"▮▮▮▮  4 barras — Bom"}
+  ];
+  function wifiSelectHtml(dataAttrs, value){
+    return '<select '+dataAttrs+'><option value="">Selecionar</option>' + WIFI_OPCOES.map(function(o){ return '<option value="'+o.v+'"'+(value===o.v?' selected':'')+'>'+o.label+'</option>'; }).join("") + '</select>';
+  }
+  const STATUS_LABEL = {nao_iniciado:"Não Iniciado", pendente_confirmacao:"Pendente: Aguardando Confirmação Técnica", aguardando:"Aguardando", liberado:"Atendimento Agendado", em_andamento:"Em Andamento", concluido:"Concluído"};
+  const LEDS_OPCOES = ["Proteção (vermelho)","Atenção (laranja)","Normal (azul)"];
+
+  let db = null, assetsApi = null;
+
+  // ================== CONFIGURAÇÃO DO SUPABASE ==================
+  // Preencha com os dados do SEU projeto Supabase (Project Settings > API).
+  // Esses valores não são segredo: eles já ficam visíveis no HTML público,
+  // a segurança de verdade é controlada pelas Row Level Security (RLS) do projeto.
+  const SUPABASE_URL = "https://uxfjowfihfytxeirnexd.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_oJJxFqDz9fsmQ0BH7v2uYg_Mxvd3FBn";
+  const SUPABASE_BUCKET = "anexos";                             // nome do bucket de Storage criado
+  // =================================================================
+
+  // Adaptador: expõe a mesma API (collection/doc/get/set/update/delete/onSnapshot)
+  // que o restante do código já usa, só que por baixo dos panos fala com o Supabase.
+  // Isso preserva 100% da lógica de negócio já escrita — nada abaixo deste bloco precisa mudar.
+  function criarAdaptadorDb(sb){
+    function linhaParaDoc(row){ return Object.assign({id: row.id}, row.data||{}); }
+    function colecao(nome){
+      return {
+        get: async function(){
+          const { data, error } = await sb.from(nome).select("id,data");
+          if(error) throw error;
+          return { docs: (data||[]).map(function(row){ return { id: row.id, data: function(){ return row.data||{}; } }; }) };
+        },
+        orderBy: function(campo, direcao){
+          return {
+            onSnapshot: function(aoAtualizar, aoErrar){
+              let cancelado = false;
+              async function buscarTudo(){
+                if(cancelado) return;
+                try{
+                  const { data, error } = await sb.from(nome).select("id,data");
+                  if(error) throw error;
+                  const linhas = (data||[]).slice();
+                  linhas.sort(function(a,b){
+                    const va = (a.data && a.data[campo]) || "";
+                    const vb = (b.data && b.data[campo]) || "";
+                    const cmp = String(va).localeCompare(String(vb), "pt-BR");
+                    return direcao === "desc" ? -cmp : cmp;
+                  });
+                  const docs = linhas.map(function(row){ return { id: row.id, data: function(){ return row.data||{}; } }; });
+                  aoAtualizar({ docs: docs });
+                }catch(e){ if(aoErrar) aoErrar(e); }
+              }
+              buscarTudo();
+              const canal = sb.channel("realtime:"+nome)
+                .on("postgres_changes", { event: "*", schema: "public", table: nome }, buscarTudo)
+                .subscribe();
+              return function(){ cancelado = true; sb.removeChannel(canal); };
+            }
+          };
+        }
+      };
+    }
+    function documento(caminho){
+      const partes = caminho.split("/"); const tabela = partes[0], id = partes[1];
+      return {
+        get: async function(){
+          const { data, error } = await sb.from(tabela).select("data").eq("id", id).maybeSingle();
+          if(error) throw error;
+          return { exists: !!data, data: function(){ return data ? data.data : undefined; } };
+        },
+        set: async function(obj){
+          const { error } = await sb.from(tabela).upsert({ id: id, data: obj });
+          if(error) throw error;
+        },
+        update: async function(patch){
+          const { data: existente, error: e1 } = await sb.from(tabela).select("data").eq("id", id).maybeSingle();
+          if(e1) throw e1;
+          const mesclado = Object.assign({}, existente ? existente.data : {}, patch);
+          const { error } = await sb.from(tabela).upsert({ id: id, data: mesclado });
+          if(error) throw error;
+        },
+        delete: async function(){
+          const { error } = await sb.from(tabela).delete().eq("id", id);
+          if(error) throw error;
+        }
+      };
+    }
+    return { collection: colecao, doc: documento };
+  }
+
+  // Adaptador de anexos (fotos): usa o Supabase Storage no lugar do "assets" do Claude.
+  function criarAdaptadorAssets(sb, bucket){
+    return {
+      upload: async function(file){
+        const nomeSeguro = (file.name||"arquivo").replace(/[^a-zA-Z0-9._-]/g,"_");
+        const caminho = Date.now()+"_"+Math.random().toString(36).slice(2)+"_"+nomeSeguro;
+        const { error } = await sb.storage.from(bucket).upload(caminho, file, { upsert: true, contentType: file.type||undefined });
+        if(error) throw error;
+        const { data } = sb.storage.from(bucket).getPublicUrl(caminho);
+        return { id: caminho, url: data.publicUrl };
+      },
+      delete: async function(id){
+        try{ await sb.storage.from(bucket).remove([id]); }catch(e){}
+      }
+    };
+  }
+  let lojasCache = [];
+  let currentLojaId = null, currentLoja = null;
+  let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
+  let modoTecnico = false, modoTecnicoId = false, lojaParamId = null, autoAbriuLoja = false;
+  let filtroHome = null;
+  let modoSelecao = false;
+  let lojasSelecionadas = new Set();
+  let bloqueadoPorConclusao = false;
+  let calRef = new Date();
+
+  function uid(){ return Math.random().toString(36).slice(2,10); }
+  function now(){ return Date.now(); }
+  function fmtDate(ts){ if(!ts) return "—"; const d=new Date(ts); return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+  function calcularDuracao(inicio, fim){
+    if(!inicio || !fim) return "";
+    const di = new Date(inicio), df = new Date(fim);
+    if(isNaN(di) || isNaN(df)) return "";
+    let min = Math.round((df-di)/60000);
+    if(min < 0) return "";
+    const h = Math.floor(min/60), m = min%60;
+    return (h>0 ? h+"h " : "") + m + "min";
+  }
+  function fmtDateBR(iso){ if(!iso) return ""; const p=iso.split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : iso; }
+  function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function hasAnyValue(value, ignoreKeys){
+    ignoreKeys = ignoreKeys || ["id"];
+    if(value === null || value === undefined) return false;
+    if(typeof value === "string") return value.trim().length > 0;
+    if(typeof value === "boolean") return true;
+    if(Array.isArray(value)) return value.some(function(v){ return hasAnyValue(v, ignoreKeys); });
+    if(typeof value === "object") return Object.keys(value).some(function(k){ if(ignoreKeys.indexOf(k)!==-1) return false; return hasAnyValue(value[k], ignoreKeys); });
+    return false;
+  }
+  function lojaTemDados(l){
+    if(l.responsavelLoja && l.responsavelLoja.trim()) return true;
+    if(l.ratFoto && l.ratFoto.id) return true;
+    if(hasAnyValue(l.rack||{}, ["id","serieInacessivel"])) return true;
+    if(hasAnyValue(l.gerencia||{})) return true;
+    if(hasAnyValue(l.estoque||{})) return true;
+    if(hasAnyValue(l.notebooks||{})) return true;
+    if(hasAnyValue(l.wifiStage||{})) return true;
+    if((l.pdvs||[]).some(function(p){ return hasAnyValue(p, ["id","nome"]); })) return true;
+    if((l.mobiles||[]).some(function(m){ return hasAnyValue(m, ["id","nome"]); })) return true;
+    if((l.dvrs||[]).some(function(d){ return hasAnyValue(d, ["id","nome"]); })) return true;
+    return false;
+  }
+  // Status do agendamento técnico — função central única, avaliada a partir de 5 campos:
+  // Data (confirmada), Hora Prevista, Chamado, Protocolo, Nome do Técnico, Dados do Técnico.
+  // Retorna a chave de status (para filtros/cores) e, separadamente, o detalhe textual das pendências
+  // (calculado sempre ao vivo a partir dos campos — nada disso é persistido além da chave de status).
+  function statusAgendamentoDetalhado(l){
+    const D=!!l.agendamento, HP=!!l.agendamentoPrevisto, C=!!(l.chamado&&l.chamado.trim()),
+          P=!!(l.protocolo&&l.protocolo.trim()), T=!!(l.tecnico&&l.tecnico.trim()), DT=!!(l.dadosTecnico&&l.dadosTecnico.trim());
+    if(!D && !HP && !C && !P && !T && !DT) return {status:"nao_iniciado", detalhe:""};
+    if(D && HP && C && P && T && DT) return {status:"liberado", detalhe:""};
+    if(D && !HP && !C && !P && !T && !DT) return {status:"pendente_confirmacao", detalhe:"Aguardando confirmação técnica"};
+    const faltando = [];
+    if(T){
+      if(!D) faltando.push("Data");
+      if(!C) faltando.push("Chamado");
+      if(!P) faltando.push("Protocolo");
+      if(!DT) faltando.push("Dados do Técnico");
+      if(faltando.length===0) faltando.push("Hora Prevista");
+    }else{
+      if(!D) faltando.push("Data");
+      if(!HP) faltando.push("Hora Prevista");
+      if(!C) faltando.push("Chamado");
+      if(!P) faltando.push("Protocolo");
+      faltando.push("Nome do Técnico");
+      if(!DT) faltando.push("Dados do Técnico");
+    }
+    return {status:"aguardando", detalhe: faltando.join(", ")};
+  }
+  function statusDetalheAgendamento(l){ return statusAgendamentoDetalhado(l).detalhe; }
+  function statusAutomatico(l){
+    if(lojaTemDados(l)) return "em_andamento";
+    return statusAgendamentoDetalhado(l).status;
+  }
+
+  // ---------------- blank data builders ----------------
+  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
+  function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, obs:"" }; }
+  function blankDesktop(){ return {hostname:"", serie:"", modelo:"", estado:"", obs:""}; }
+  function blankPerif(){ return {tipo:"", estado:""}; }
+  function blankSetorEquip(){
+    return {
+      desktop: blankDesktop(),
+      tecladoMouseMonitor:{teclado: blankPerif(), mouse: blankPerif(), monitor:{estado:""}, obs:""},
+      miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
+      multifuncional:{tipo:"", serie:"", obs:"", relatorioUso:null},
+      telefoneVoip:{possui:null, numero:"", ip:"", obs:""},
+      gposBackup:{possui:null, serie:"", obs:""},
+      pdaZebra:{serie1:"", serie2:"", obs:""},
+      wifi:{barras:"", obs:""}
+    };
+  }
+  function blankNotebook(){ return blankDesktop(); }
+  function blankNotebooks(){ return { gerencia: blankNotebook(), estoque: blankNotebook(), educacao: blankNotebook(), adm: Object.assign({possui:null}, blankNotebook()) }; }
+  function blankPdv(n){
+    return { id:uid(), nome:"PDV "+String(n).padStart(2,"0"), serie:"", marca:"", obs:"",
+      telaCliente:{touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null},
+      leitorCodBarras:{serie:""}, pinpad:{serieRede:"", modelo:"", serie:""}, mercadoPago:{modelo:"", serie:""},
+      mouse: blankPerif(), teclado: blankPerif() };
+  }
+  function blankMobile(n){ return { id:uid(), nome:"Mobile "+String(n).padStart(2,"0"), serie:"", ip:"", estado:"", obs:"" }; }
+
+  // ---------------- migração de dados antigos ----------------
+  function migrarDesktop(d){
+    d = Object.assign(blankDesktop(), d||{});
+    return d;
+  }
+  function migrarSetor(s){
+    s = Object.assign(blankSetorEquip(), s||{});
+    s.desktop = migrarDesktop(s.desktop);
+    if(!s.tecladoMouseMonitor || !s.tecladoMouseMonitor.teclado || s.tecladoMouseMonitor.teclado.tipo===undefined){
+      const antigo = s.tecladoMouseMonitor || {};
+      s.tecladoMouseMonitor = {
+        teclado:{tipo:(antigo.teclado&&antigo.teclado.tipo)||"", estado:(antigo.teclado&&antigo.teclado.estado)||""},
+        mouse:{tipo:(antigo.mouse&&antigo.mouse.tipo)||"", estado:(antigo.mouse&&antigo.mouse.estado)||""},
+        monitor:{estado:(antigo.monitor&&antigo.monitor.estado)||""},
+        obs: antigo.obs || ""
+      };
+    }
+    if(s.telefoneVoip && s.telefoneVoip.possui===undefined) s.telefoneVoip.possui = (s.telefoneVoip.numero || s.telefoneVoip.ip) ? true : null;
+    if(s.miniNobreak){
+      if(s.miniNobreak.autonomiaAcima5===undefined) s.miniNobreak.autonomiaAcima5 = (s.miniNobreak.autonomiaOk===true) ? true : (s.miniNobreak.autonomiaOk===false ? false : null);
+      if(!Array.isArray(s.miniNobreak.leds)) s.miniNobreak.leds = [];
+    }
+    if(s.multifuncional && s.multifuncional.relatorioUso===undefined) s.multifuncional.relatorioUso = null;
+    // nunca deixar um anexo em base64 vazar para o documento salvo (causa erro de tamanho no armazenamento)
+    if(s.multifuncional) delete s.multifuncional.relatorioUsoBase64;
+    return s;
+  }
+  // remove recursivamente qualquer campo terminado em "Base64" (anexos devem virar {id} via upload antes de chegar aqui)
+  // e valida que o resultado é JSON puro (sem undefined/funções/objetos do navegador), lançando erro claro se não for.
+  function sanitizeParaJson(obj){
+    function limpar(v){
+      if(Array.isArray(v)) return v.map(limpar);
+      if(v && typeof v==="object"){
+        const out = {};
+        Object.keys(v).forEach(function(k){ if(/Base64$/i.test(k)) return; out[k] = limpar(v[k]); });
+        return out;
+      }
+      return v;
+    }
+    try{ return JSON.parse(JSON.stringify(limpar(obj))); }
+    catch(e){ throw new Error("Dados não serializáveis para JSON: " + e.message); }
+  }
+  function migrarPdv(p, i){
+    p = Object.assign(blankPdv(i+1), p);
+    if(!p.mouse || p.mouse.tipo===undefined) p.mouse = blankPerif();
+    if(!p.teclado || p.teclado.tipo===undefined) p.teclado = blankPerif();
+    return p;
+  }
+  function migrarDvr(d, i){
+    d = Object.assign(blankDvr(i+1), d);
+    if(d.portasDanificadas && !Array.isArray(d.portasDanificadas.portas)) d.portasDanificadas.portas = [];
+    if(d.camerasSemFuncionar && !Array.isArray(d.camerasSemFuncionar.quais)) d.camerasSemFuncionar.quais = [];
+    if(!d.monitorCftv) d.monitorCftv = {possui:null};
+    if(d.tipo === "Ambos") d.tipo = "";
+    return d;
+  }
+  function migrarRack(r){
+    r = Object.assign(blankRack(), r||{});
+    if(r.nobreak.serieInacessivel===undefined) r.nobreak.serieInacessivel = null;
+    if(r.nobreak.autonomiaNhs===undefined){
+      r.nobreak.autonomiaNhs = r.nobreak.autonomiaOk===true ? "acima" : (r.nobreak.autonomiaOk===false ? "abaixo" : "");
+    }
+    return r;
+  }
+  function migrarNotebooks(n){
+    n = n || {};
+    return { gerencia: Object.assign(blankNotebook(), n.gerencia||{}), estoque: Object.assign(blankNotebook(), n.estoque||{}),
+      educacao: Object.assign(blankNotebook(), n.educacao||{}), adm: Object.assign({possui:null}, blankNotebook(), n.adm||{}) };
+  }
+  // Normaliza um documento bruto (como vem do banco) antes de calcular o status — evita que resíduos de
+  // estruturas antigas do JSON sejam contados como "dado preenchido" quando não são.
+  function normalizarParaStatus(dados){
+    return {
+      responsavelLoja: dados.responsavelLoja||"", ratFoto: dados.ratFoto||null,
+      rack: migrarRack(dados.rack), gerencia: migrarSetor(dados.gerencia), estoque: migrarSetor(dados.estoque),
+      notebooks: migrarNotebooks(dados.notebooks), wifiStage: dados.wifiStage||{barras:"", obs:""},
+      pdvs: (dados.pdvs||[]).map(migrarPdv), mobiles: dados.mobiles||[], dvrs: (dados.dvrs||[]).map(migrarDvr),
+      agendamento: dados.agendamento||"", agendamentoPrevisto: dados.agendamentoPrevisto||"",
+      chamado: dados.chamado||"", protocolo: dados.protocolo||"", tecnico: dados.tecnico||"", dadosTecnico: dados.dadosTecnico||""
+    };
+  }
+
+  // ---------------- validação de IP dos mobiles ----------------
+  function octetoEsperado(nome){
+    const m = /(\d+)\D*$/.exec(nome||"");
+    if(!m) return null;
+    return (parseInt(m[1],10) + 5) % 256;
+  }
+  function erroMobileIp(m){
+    const ip = (m.ip||"").trim();
+    if(!ip) return "endereço IP não informado";
+    const octs = ip.split(".");
+    if(octs.length !== 4 || octs.some(function(o){ return o===""; })) return "IP incompleto — informe o endereço completo, ex: 10.102.196.56";
+    if(!octs.every(function(o){ return /^\d{1,3}$/.test(o) && parseInt(o,10)<=255; })) return "IP inválido — cada parte deve ser um número entre 0 e 255";
+    if(octs[0] !== "10") return "IP inválido — o primeiro octeto deve ser 10";
+    if(octs[1] !== "102") return "IP inválido — o segundo octeto deve ser 102";
+    if(octs[2].length !== 3) return "IP inválido — o terceiro octeto deve ter exatamente 3 dígitos (ex: 019, 196)";
+    const esperado = octetoEsperado(m.nome);
+    if(esperado!==null && parseInt(octs[3],10) !== esperado) return "IP fora do padrão — para "+m.nome+", o endereço deve terminar em ."+esperado;
+    return null;
+  }
+  // mantém compatibilidade com o uso no painel: retorna o octeto esperado só quando o IP é válido mas termina errado
+  function validarMobileIp(m){
+    const ip = (m.ip||"").trim();
+    const octs = ip.split(".");
+    if(octs.length !== 4 || !octs.every(function(o){ return /^\d{1,3}$/.test(o) && parseInt(o,10)<=255; })) return null;
+    const esperado = octetoEsperado(m.nome);
+    if(esperado!==null && parseInt(octs[3],10) !== esperado) return esperado;
+    return null;
+  }
+  // Não reagrupa os dígitos (isso embaralhava o IP digitado). Mantém exatamente os pontos que o técnico digitou,
+  // só limita cada octeto a 3 dígitos e o total a 4 octetos, e insere o ponto automaticamente apenas quando um
+  // octeto completa 3 dígitos (nunca obriga isso — o técnico pode digitar "." manualmente para octetos de 1 ou 2 dígitos).
+  function formatarIp(raw){
+    let v = (raw||"").replace(/[^\d.]/g,"");
+    v = v.replace(/\.{2,}/g,".");
+    if(v.charAt(0)===".") v = v.slice(1);
+    let segs = v.split(".").slice(0,4).map(function(s){ return s.slice(0,3); });
+    let out = segs.join(".");
+    const ultimo = segs[segs.length-1];
+    if(ultimo && ultimo.length===3 && segs.length<4 && !v.endsWith(".")){ out += "."; }
+    return out;
+  }
+
+  // ---------------- validação obrigatória ----------------
+  function validarObrigatorios(l){
+    const faltando = [];
+    function add(texto, sel){ faltando.push({texto:texto, sel:sel}); }
+    const r = l.rack;
+    if(r.organizado===null) add("Rack: organizado ou desorganizado", "#rack-organizado-toggle");
+    if(r.limpo===null) add("Rack: limpo ou sujo", "#rack-limpo-toggle");
+    if(!r.nobreak.marca) add("Nobreak de Rack: marca", "#rack-nobreak-marca");
+    else{
+      if(!r.nobreak.serieInacessivel && !r.nobreak.serie) add("Nobreak de Rack: Nº Série", "#rack-nobreak-serie");
+      if(r.nobreak.marca==="NHS" && !r.nobreak.autonomiaNhs) add("Nobreak de Rack: autonomia fora da tomada", "#rack-nobreak-nhs-toggle");
+    }
+    if(r.escada.possui===null) add("Escada móvel: possui ou não", "#rack-escada-possui-toggle");
+    else if(r.escada.possui===true && r.escada.alturaSuficiente===null) add("Escada móvel: alcança o teto?", "#rack-escada-altura-toggle");
+    (l.dvrs||[]).forEach(function(d, i){
+      const base = '#dvrs-list [data-idx="'+i+'"]';
+      if(!d.serie) add(d.nome+": Nº Série", base+'[data-dvr="serie"]');
+      if(!d.tipo) add(d.nome+": Analógico ou IP", base+'[data-dvr-select="tipo"]');
+      if(d.camerasSemFuncionar.tem===null) add(d.nome+": câmeras sem funcionar?", base+'[data-dvr-toggle="camerasSemFuncionar"]');
+      if(d.portasDanificadas.tem===null) add(d.nome+": portas danificadas?", base+'[data-dvr-toggle="portasDanificadas"]');
+      if(d.monitorCftv.possui===null) add(d.nome+": possui monitor de CFTV?", base+'[data-dvr-toggle="monitorCftv"]');
+    });
+    const eaton = r.nobreak.marca === "EATON";
+    ["gerencia","estoque"].forEach(function(sk){
+      const s = l[sk]; const label = sk==="gerencia"?"Gerência":"Estoque"; const b = "#setor-"+sk+" ";
+      if(!s.desktop.hostname) add(label+": Desktop Hostname", b+'[data-path="desktop.hostname"]');
+      if(!s.desktop.serie) add(label+": Desktop Nº Série", b+'[data-path="desktop.serie"]');
+      if(!s.desktop.modelo) add(label+": Desktop Modelo", b+'[data-path="desktop.modelo"]');
+      if(!s.desktop.estado) add(label+": Desktop estado de conservação", b+'[data-path="desktop.estado"]');
+      if(!s.tecladoMouseMonitor.teclado.tipo) add(label+": Teclado com/sem fio", b+'[data-path="tecladoMouseMonitor.teclado.tipo"]');
+      if(!s.tecladoMouseMonitor.teclado.estado) add(label+": Teclado estado", b+'[data-path="tecladoMouseMonitor.teclado.estado"]');
+      if(!s.tecladoMouseMonitor.mouse.tipo) add(label+": Mouse com/sem fio", b+'[data-path="tecladoMouseMonitor.mouse.tipo"]');
+      if(!s.tecladoMouseMonitor.mouse.estado) add(label+": Mouse estado", b+'[data-path="tecladoMouseMonitor.mouse.estado"]');
+      if(!s.tecladoMouseMonitor.monitor.estado) add(label+": Monitor estado", b+'[data-path="tecladoMouseMonitor.monitor.estado"]');
+      if(!eaton){
+        if(s.miniNobreak.possui===null) add(label+": Mini Nobreak possui?", b+'[data-path="miniNobreak.possui"]');
+        else if(s.miniNobreak.possui===true){
+          if(s.miniNobreak.autonomiaAcima5===null) add(label+": Mini Nobreak autonomia acima de 5 minutos?", b+'[data-path="miniNobreak.autonomiaAcima5"]');
+          else if(s.miniNobreak.autonomiaAcima5===false && s.miniNobreak.leds.length===0) add(label+": Mini Nobreak LEDs de atenção", b+'[data-setor-led]');
+        }
+      }
+      if(!s.multifuncional.tipo) add(label+": Multifuncional colorida ou P&B", b+'[data-path="multifuncional.tipo"]');
+      else if(assetsApi && !s.multifuncional.relatorioUso) add(label+": Relatório de Uso da Multifuncional (anexo)", b+'[data-relatorio-input]');
+      if(s.telefoneVoip.possui===null) add(label+": Possui telefone VOIP?", b+'[data-path="telefoneVoip.possui"]');
+      else if(s.telefoneVoip.possui===true && (!s.telefoneVoip.numero || !s.telefoneVoip.ip)) add(label+": Telefone VOIP número/IP", b+'[data-path="telefoneVoip.numero"]');
+      if(sk==="gerencia" && s.gposBackup.possui===null) add(label+": GPOS Backup existe?", b+'[data-path="gposBackup.possui"]');
+      if(!s.wifi.barras) add(label+": sinal do WIFI", b+'[data-path="wifi.barras"]');
+    });
+    ["gerencia","estoque","educacao"].forEach(function(k){
+      const label = {gerencia:"Notebook Gerência", estoque:"Notebook Estoque", educacao:"Notebook Educação"}[k];
+      const n = l.notebooks[k]; const b = '#setor-notebooks ';
+      if(!n.hostname) add(label+": Hostname", b+'[data-nb="'+k+'.hostname"]');
+      if(!n.serie) add(label+": Nº Série", b+'[data-nb="'+k+'.serie"]');
+      if(!n.modelo) add(label+": Modelo", b+'[data-nb="'+k+'.modelo"]');
+      if(!n.estado) add(label+": estado de conservação", b+'[data-nb="'+k+'.estado"]');
+    });
+    if(l.notebooks.adm.possui===null) add("Notebook ADM: possui este equipamento?", '#setor-notebooks [data-nb-possui="adm"]');
+    else if(l.notebooks.adm.possui===true){
+      const n = l.notebooks.adm; const b = '#setor-notebooks ';
+      if(!n.hostname) add("Notebook ADM: Hostname", b+'[data-nb="adm.hostname"]');
+      if(!n.serie) add("Notebook ADM: Nº Série", b+'[data-nb="adm.serie"]');
+      if(!n.modelo) add("Notebook ADM: Modelo", b+'[data-nb="adm.modelo"]');
+      if(!n.estado) add("Notebook ADM: estado de conservação", b+'[data-nb="adm.estado"]');
+    }
+    (l.pdvs||[]).forEach(function(p, i){
+      const b = '#pdvs-list [data-idx="'+i+'"]';
+      if(!p.marca) add(p.nome+": marca", b+'[data-pdv="marca"]');
+      if(p.marca==="Elgin" && p.telaCliente.touchDesativado!==true) add(p.nome+": remover USB do touch da tela do cliente", '#pdvs-list [data-pdv-removido="'+i+'"]');
+      if(p.impressoraTermica.limpezaFeita===null) add(p.nome+": limpeza da impressora térmica", b+'[data-pdv-toggle="impLimpeza"]');
+      if(!p.mouse.tipo) add(p.nome+": mouse com/sem fio", b+'[data-pdv-select="mouse"]');
+      if(!p.mouse.estado) add(p.nome+": mouse estado", b+'[data-pdv="mouseEstado"]');
+      if(!p.teclado.tipo) add(p.nome+": teclado com/sem fio", b+'[data-pdv-select="teclado"]');
+      if(!p.teclado.estado) add(p.nome+": teclado estado", b+'[data-pdv="tecladoEstado"]');
+    });
+    (l.mobiles||[]).forEach(function(m, i){
+      const b = '#mobiles-list [data-idx="'+i+'"]';
+      if(!m.estado) add(m.nome+": estado de conservação", b+'[data-mobile="estado"]');
+    });
+    if(!l.wifiStage.barras) add("Stage de Vendas: sinal do WIFI", '#wifi-stage-select');
+    if(assetsApi && (!l.ratFoto || !l.ratFoto.id)) add("Foto do RAT preenchida", '#rat-foto-input');
+    return faltando;
+  }
+
+  // navega até uma pendência: expande a vista, rola até o campo e coloca foco
+  function irParaPendencia(sel){
+    if(!sel) return;
+    const el = document.querySelector(sel);
+    if(!el) return;
+    el.scrollIntoView({behavior:"smooth", block:"center"});
+    if(typeof el.focus === "function") setTimeout(function(){ el.focus({preventScroll:true}); }, 350);
+    el.style.transition = "box-shadow .2s";
+    el.style.boxShadow = "0 0 0 3px var(--teal-lt)";
+    setTimeout(function(){ el.style.boxShadow = ""; }, 1800);
+  }
+
+  let filaPendencias = [];
+  function renderBannerPendencias(){
+    const banner = document.getElementById("banner-validacao");
+    if(filaPendencias.length===0){
+      banner.classList.remove("hidden");
+      banner.innerHTML = "✅ Todos os campos obrigatórios foram preenchidos. O checklist está pronto para ser finalizado.";
+      banner.style.background = "var(--ok-bg)"; banner.style.color = "var(--ok)";
+      return;
+    }
+    banner.style.background = ""; banner.style.color = "";
+    banner.classList.remove("hidden");
+    banner.innerHTML = "<b>Existem "+filaPendencias.length+" pendência(s):</b><ul>" +
+      filaPendencias.map(function(f, i){ return '<li><a href="#" data-pendencia="'+i+'" style="color:var(--bad); text-decoration:underline;">'+escapeHtml(f.texto)+'</a></li>'; }).join("") + "</ul>";
+    banner.querySelectorAll("[data-pendencia]").forEach(function(a){
+      a.addEventListener("click", function(e){
+        e.preventDefault();
+        irParaPendencia(filaPendencias[+a.dataset.pendencia].sel);
+      });
+    });
+  }
+  // após cada salvamento, verifica se alguma pendência da lista foi resolvida e atualiza a lista sem ser agressivo (só ao salvar, não a cada tecla)
+  function reavaliarPendencias(){
+    if(filaPendencias.length===0) return;
+    const atual = validarObrigatorios(currentLoja);
+    const textosAtuais = atual.map(function(f){ return f.texto; });
+    const aindaPendente = filaPendencias.filter(function(f){ return textosAtuais.indexOf(f.texto)!==-1; });
+    if(aindaPendente.length < filaPendencias.length){
+      filaPendencias = atual;
+      renderBannerPendencias();
+    }
+  }
+
+  // ---------------- modal genérico ----------------
+  function mostrarConfirmacao(mensagem, textoConfirmar, textoCancelar, aoConfirmar){
+    const c = document.getElementById("modal-container");
+    c.innerHTML = '<div class="modal-overlay" id="modal-overlay"><div class="modal-box"><p>'+mensagem+'</p>' +
+      '<div style="display:flex; gap:8px; justify-content:flex-end;">' +
+      '<button class="btn btn-ghost btn-sm" id="modal-cancelar">'+textoCancelar+'</button>' +
+      '<button class="btn btn-primary btn-sm" id="modal-confirmar">'+textoConfirmar+'</button></div></div></div>';
+    document.getElementById("modal-cancelar").addEventListener("click", function(){ c.innerHTML=""; });
+    document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay") c.innerHTML=""; });
+    document.getElementById("modal-confirmar").addEventListener("click", function(){ c.innerHTML=""; aoConfirmar(); });
+  }
+
+  // ---------------- init ----------------
+  function parseAcesso(){
+    const search = new URLSearchParams(window.location.search);
+    let loja = search.get("loja"); let tecnico = search.get("tecnico") === "1";
+    let hash = (window.location.hash || "").replace(/^#\/?/, "");
+    if(hash){
+      if(hash.indexOf("=") !== -1){
+        const hp = new URLSearchParams(hash);
+        if(!loja) loja = hp.get("loja");
+        if(hp.get("tecnico") === "1") tecnico = true;
+      }else if(hash.toLowerCase() !== "tecnico"){ if(!loja) loja = hash; tecnico = true; }
+      else{ tecnico = true; }
+    }
+    return {loja:loja, tecnico:tecnico};
+  }
+
+  async function init(){
+    const acesso = parseAcesso();
+    lojaParamId = acesso.loja;
+    modoTecnico = acesso.tecnico || !!lojaParamId;
+    modoTecnicoId = modoTecnico && !lojaParamId;
+    if(modoTecnico){
+      document.querySelector("header nav").style.display = "none";
+      document.querySelector("header .sub").textContent = "Área do técnico";
+      document.getElementById("btn-abrir-importar").style.display = "none";
+      document.getElementById("btn-abrir-config").style.display = "none";
+      if(lojaParamId) document.getElementById("btn-voltar-lojas").style.display = "none";
+    }
+    if(modoTecnicoId){
+      document.getElementById("view-lojas").classList.remove("active");
+      document.getElementById("view-tecnico-id").classList.remove("hidden");
+      document.getElementById("btn-voltar-lojas").textContent = "← Trocar de loja";
+    }
+    try{
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      db = criarAdaptadorDb(sb);
+      assetsApi = criarAdaptadorAssets(sb, SUPABASE_BUCKET);
+    }catch(e){ db = null; assetsApi = null; }
+    if(!db){ document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível conectar ao armazenamento compartilhado. Recarregue a página.</div>'; return; }
+    wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario();
+    subscribeLojas();
+    if(!modoTecnico) seedLojasSeNecessario();
+  }
+
+  function wireTopo(){
+    const btn = document.getElementById("btn-topo");
+    window.addEventListener("scroll", function(){ btn.style.display = window.scrollY > 300 ? "block" : "none"; });
+    btn.addEventListener("click", function(){ window.scrollTo({top:0, behavior:"smooth"}); });
+  }
+
+  function subscribeLojas(){
+    if(unsubLojas) unsubLojas();
+    unsubLojas = db.collection("lojas").orderBy("nome","asc").onSnapshot(function(snap){
+      lojasCache = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      renderFiltroChipsHome(); renderLojasList();
+      if(modoTecnicoId) renderTecIdDatalist();
+      if(!modoTecnico) renderPainel();
+      if(currentLojaId){
+        const badge = document.getElementById("cl-badge");
+        const fresh = lojasCache.find(function(l){ return l.id === currentLojaId; });
+        if(fresh && badge){ badge.className = "badge " + fresh.status; badge.textContent = STATUS_LABEL[fresh.status]; }
+      }
+      if(lojaParamId && !autoAbriuLoja){
+        const alvo = lojasCache.find(function(l){ return l.id === lojaParamId; });
+        if(alvo){ autoAbriuLoja = true; tentarAbrirLoja(alvo.id, alvo); }
+      }
+    }, function(err){ document.getElementById("lojas-list").innerHTML = '<div class="empty">Erro ao carregar lojas: '+(err.message||err.code)+'</div>'; });
+  }
+
+  function showView(name){
+    ["lojas","checklist","painel"].forEach(function(v){ document.getElementById("view-"+v).classList.toggle("active", v===name); });
+    document.getElementById("nav-lojas").classList.toggle("active", name==="lojas");
+    document.getElementById("nav-painel").classList.toggle("active", name==="painel");
+    window.scrollTo({top:0});
+  }
+  function voltarDaChecklist(){
+    currentLojaId=null; currentLoja=null;
+    if(modoTecnicoId){
+      document.getElementById("view-checklist").classList.remove("active");
+      document.getElementById("view-tecnico-id").classList.remove("hidden");
+      document.getElementById("tec-id-codigo").value = "";
+      document.getElementById("tec-id-nome").value = "";
+      document.getElementById("tec-btn-abrir").disabled = true;
+      window.scrollTo({top:0});
+    }else{ showView("lojas"); }
+  }
+  function wireNav(){
+    document.getElementById("nav-lojas").addEventListener("click", function(){ showView("lojas"); });
+    document.getElementById("nav-painel").addEventListener("click", function(){ showView("painel"); renderPainel(); renderCalendario(); });
+    document.getElementById("btn-voltar-lojas").addEventListener("click", voltarDaChecklist);
+    document.getElementById("painel-busca-loja").addEventListener("input", renderPainel);
+    document.getElementById("btn-abrir-filtros-painel").addEventListener("click", abrirFiltrosPainel);
+    document.getElementById("btn-limpar-filtros-painel").addEventListener("click", function(){
+      painelFiltroTecnicos = []; painelFiltroLojas = []; renderPainel();
+    });
+  }
+
+  const FILTRO_STATUS_ORDEM = ["nao_iniciado","pendente_confirmacao","aguardando","liberado","em_andamento","concluido","atrasada"];
+  function renderFiltroChipsHome(){
+    const wrap = document.getElementById("filtro-chips-home");
+    const hoje = todayStr();
+    function count(key){
+      if(key==="atrasada") return lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
+      return lojasCache.filter(function(l){ return l.status===key; }).length;
+    }
+    wrap.innerHTML = FILTRO_STATUS_ORDEM.map(function(key){
+      const label = key==="atrasada" ? "Atrasadas" : STATUS_LABEL[key];
+      return '<button type="button" class="chip'+(filtroHome===key?' active':'')+'" data-chip="'+key+'">'+label+' ('+count(key)+')</button>';
+    }).join("");
+    wrap.querySelectorAll(".chip").forEach(function(chip){
+      chip.addEventListener("click", function(){ filtroHome = (filtroHome===chip.dataset.chip)?null:chip.dataset.chip; renderFiltroChipsHome(); renderLojasList(); });
+    });
+  }
+  function matchesFiltroHome(l, hoje){
+    if(!filtroHome) return true;
+    if(filtroHome==="atrasada") return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+    return l.status === filtroHome;
+  }
+
+  // ---------------- lojas list view ----------------
+  // badge de status na lista de lojas: pill simples, ou bloco de duas linhas para "Aguardando"/"Pendente"
+  function renderBadgeHtml(l){
+    if(l.status === "aguardando"){
+      return '<span class="badge-bloco badge aguardando"><div class="linha1">Aguardando:</div><div class="linha2">'+escapeHtml(statusDetalheAgendamento(l))+'</div></span>';
+    }
+    if(l.status === "pendente_confirmacao"){
+      return '<span class="badge-bloco badge pendente_confirmacao"><div class="linha1">Pendente:</div><div class="linha2">Aguardando confirmação técnica</div></span>';
+    }
+    return '<span class="badge '+l.status+'">'+STATUS_LABEL[l.status]+'</span>';
+  }
+  function renderLojasList(){
+    const list = document.getElementById("lojas-list");
+    // Evita reconstruir a lista (e perder o foco/cursor) enquanto o usuário está
+    // editando um dos campos rápidos (Chamado, Protocolo, Técnico, Data, Hora).
+    // Quando o campo perde o foco, a renderização pendente é aplicada (ver wireLojasView).
+    const activeEl = document.activeElement;
+    if(list && activeEl && list.contains(activeEl) && activeEl.classList &&
+       (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input"))){
+      pendingLojasRender = true;
+      return;
+    }
+    pendingLojasRender = false;
+    const q = (document.getElementById("search-loja").value||"").toLowerCase().trim();
+    const hoje = todayStr();
+    const filtered = lojasCache.filter(function(l){ return (!q || (l.nome||"").toLowerCase().includes(q)) && matchesFiltroHome(l, hoje); });
+    if(filtered.length===0){ list.innerHTML = '<div class="empty">Nenhuma loja encontrada.</div>'; return; }
+    list.innerHTML = filtered.map(function(l){
+      const atrasada = l.agendamento && l.agendamento < hoje && l.status !== "concluido";
+      const bloq = l.status === "concluido";
+      return '<div class="loja-row" data-id="'+l.id+'">' +
+        '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            (modoSelecao ? '<input type="checkbox" class="loja-checkbox" data-id="'+l.id+'" style="width:18px; height:18px;"'+(lojasSelecionadas.has(l.id)?' checked':'')+'>' : '') +
+            '<div><div class="name">'+escapeHtml(l.nome)+'</div><div class="meta">Atualizado '+fmtDate(l.atualizadoEm)+'</div></div>' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+            (atrasada ? '<span class="badge" style="background:var(--bad-bg); color:var(--bad);">Atrasada</span>' : '') +
+            renderBadgeHtml(l) +
+          '</div></div>' +
+        (modoTecnico || modoSelecao ? '' :
+        '<div class="loja-quick-fields">' +
+          '<div class="agendamento-linha2">' +
+            '<div class="field"><label>Chamado</label><input type="text" class="quick-input" data-id="'+l.id+'" data-field="chamado" value="'+escapeHtml(l.chamado)+'" placeholder="Ex: R123456"'+(bloq?' disabled':'')+'></div>' +
+            '<div class="field"><label>Protocolo</label><input type="text" class="quick-input" data-id="'+l.id+'" data-field="protocolo" value="'+escapeHtml(l.protocolo)+'" placeholder="Ex: 000123"'+(bloq?' disabled':'')+'></div>' +
+            '<div class="field"><label>Nome do técnico</label><input type="text" class="quick-input" data-id="'+l.id+'" data-field="tecnico" value="'+escapeHtml(l.tecnico)+'" placeholder="Nome"'+(bloq?' disabled':'')+'></div>' +
+          '</div>' +
+          '<div class="agendamento-linha1">' +
+            '<div class="field"><label>Data</label><input type="date" class="agendamento-input" data-id="'+l.id+'" value="'+(l.agendamento||"")+'"'+(bloq?' disabled':'')+'>' +
+              (l.agendamento && !bloq ? '<button type="button" class="btn btn-ghost btn-sm agendamento-clear" data-id="'+l.id+'" style="padding:3px 8px; font-size:10.5px; margin-top:4px;">Limpar</button>' : '') + '</div>' +
+            '<div class="field"><label>Hora Prevista</label><input type="time" class="previsto-input" data-id="'+l.id+'" value="'+(l.agendamentoPrevisto||"")+'"'+(bloq?' disabled':'')+'>' +
+              (l.agendamentoPrevisto && !bloq ? '<button type="button" class="btn btn-ghost btn-sm previsto-clear" data-id="'+l.id+'" style="padding:3px 8px; font-size:10.5px; margin-top:4px;">Limpar</button>' : '') + '</div>' +
+          '</div>' +
+          '<div class="field"><label>Dados do técnico</label><textarea class="quick-input auto-grow" data-id="'+l.id+'" data-field="dadosTecnico" placeholder="Telefone, matrícula, observações, etc." maxlength="170" rows="1" style="resize:none; overflow-y:hidden;"'+(bloq?' disabled':'')+'>'+escapeHtml(l.dadosTecnico)+'</textarea></div>' +
+        '</div>') +
+      '</div>';
+    }).join("");
+
+    // permite selecionar/copiar texto sem abrir o formulário
+    list.querySelectorAll(".loja-row").forEach(function(row){
+      let mx=0, my=0;
+      row.addEventListener("mousedown", function(e){ mx=e.clientX; my=e.clientY; });
+      row.addEventListener("click", function(e){
+        const sel = window.getSelection ? window.getSelection().toString() : "";
+        if(sel && sel.trim().length>0) return;
+        if(Math.abs(e.clientX-mx)>6 || Math.abs(e.clientY-my)>6) return;
+        if(modoSelecao){
+          if(lojasSelecionadas.has(row.dataset.id)) lojasSelecionadas.delete(row.dataset.id); else lojasSelecionadas.add(row.dataset.id);
+          atualizarContagemSelecao();
+          renderLojasList();
+          return;
+        }
+        const l = lojasCache.find(function(x){ return x.id === row.dataset.id; });
+        if(l) tentarAbrirLoja(l.id, l);
+      });
+    });
+    list.querySelectorAll(".loja-checkbox").forEach(function(cb){
+      cb.addEventListener("click", function(e){ e.stopPropagation(); });
+      cb.addEventListener("change", function(){
+        if(cb.checked) lojasSelecionadas.add(cb.dataset.id); else lojasSelecionadas.delete(cb.dataset.id);
+        atualizarContagemSelecao();
+      });
+    });
+    if(modoTecnico) return;
+    list.querySelectorAll(".agendamento-input").forEach(function(input){
+      input.addEventListener("click", function(e){ e.stopPropagation(); });
+      input.addEventListener("change", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        const payload = { agendamento: input.value, atualizadoEm: now() };
+        if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: input.value})));
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
+      });
+    });
+    list.querySelectorAll(".agendamento-clear").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
+        const payload = { agendamento: "", atualizadoEm: now() };
+        if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: ""})));
+        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){});
+      });
+    });
+    list.querySelectorAll(".previsto-input").forEach(function(input){
+      input.addEventListener("click", function(e){ e.stopPropagation(); });
+      input.addEventListener("change", function(e){
+        e.stopPropagation();
+        // Data prevista é só uma referência informativa: salva independente e nunca mexe no status nem no checklist técnico.
+        db.doc("lojas/"+input.dataset.id).update({ agendamentoPrevisto: input.value, atualizadoEm: now() }).catch(function(){});
+      });
+    });
+    list.querySelectorAll(".previsto-clear").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        db.doc("lojas/"+btn.dataset.id).update({ agendamentoPrevisto: "", atualizadoEm: now() }).catch(function(){});
+      });
+    });
+    list.querySelectorAll(".quick-input").forEach(function(input){
+      input.addEventListener("click", function(e){ e.stopPropagation(); });
+      input.addEventListener("mousedown", function(e){ e.stopPropagation(); });
+      input.addEventListener("change", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        const merged = Object.assign({}, l); merged[input.dataset.field] = input.value;
+        const payload = {atualizadoEm: now()}; payload[input.dataset.field] = input.value;
+        if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(merged));
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
+      });
+    });
+    list.querySelectorAll(".auto-grow").forEach(function(el){
+      function ajustarAltura(){ el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
+      ajustarAltura();
+      el.addEventListener("input", ajustarAltura);
+    });
+  }
+
+  function tentarAbrirLoja(id, data){
+    if(data.status === "concluido"){
+      mostrarConfirmacao("⚠️ Esta loja está com o checklist concluído. Deseja realmente reabrir/alterar os dados?", "Sim", "Não", function(){ openLoja(id, data, true); });
+    }else{ openLoja(id, data, false); }
+  }
+
+  // ---------------- identificação (área do técnico) ----------------
+  function renderTecIdDatalist(){
+    const dl = document.getElementById("tec-lista-codigos");
+    if(!dl) return;
+    dl.innerHTML = lojasCache.map(function(l){ return '<option value="'+l.id+'">'+escapeHtml(l.nome)+'</option>'; }).join("");
+  }
+  function wireTecnicoId(){
+    const codigoInput = document.getElementById("tec-id-codigo");
+    const nomeInput = document.getElementById("tec-id-nome");
+    const erroEl = document.getElementById("tec-id-erro");
+    const btn = document.getElementById("tec-btn-abrir");
+    codigoInput.addEventListener("input", function(){
+      const codigo = codigoInput.value.trim();
+      const l = lojasCache.find(function(x){ return x.id === codigo; });
+      if(l){ nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false; }
+      else{ nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none"; }
+    });
+    btn.addEventListener("click", function(){
+      const codigo = codigoInput.value.trim();
+      const l = lojasCache.find(function(x){ return x.id === codigo; });
+      if(!l) return;
+      document.getElementById("view-tecnico-id").classList.add("hidden");
+      tentarAbrirLoja(l.id, l);
+    });
+  }
+  wireTecnicoId();
+
+  // ---------------- import offline ----------------
+  let filaImportacao = []; // [{nomeArquivo, texto, dados, status:'pendente'|'importado'|'erro', mensagem}]
+
+  function renderFilaImportacao(){
+    const wrap = document.getElementById("importar-fila");
+    if(filaImportacao.length===0){ wrap.innerHTML = ""; return; }
+    wrap.innerHTML = "<b>Arquivos selecionados para importação</b>" +
+      filaImportacao.map(function(item, i){
+        const icone = item.status==="importado" ? "✅" : (item.status==="erro" ? "❌" : "⏳");
+        const cor = item.status==="importado" ? "var(--ok)" : (item.status==="erro" ? "var(--bad)" : "var(--text-muted)");
+        const rotulo = item.status==="importado" ? "Importado com sucesso" : (item.status==="erro" ? ("Erro: "+item.mensagem) : "Pronto para importar");
+        return '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); font-size:12.5px;">' +
+          '<span style="color:'+cor+';">'+icone+' '+escapeHtml(item.nomeArquivo)+' — '+escapeHtml(rotulo)+'</span>' +
+          (item.status==="erro" ? '<button type="button" class="btn btn-danger btn-sm" data-excluir-fila="'+i+'" style="flex-shrink:0;">Excluir arquivo</button>' : '') +
+        '</div>';
+      }).join("");
+    wrap.querySelectorAll("[data-excluir-fila]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        filaImportacao.splice(+btn.dataset.excluirFila, 1);
+        renderFilaImportacao();
+      });
+    });
+  }
+
+  // ---------------- seleção e exclusão de lojas ----------------
+  function atualizarContagemSelecao(){
+    document.getElementById("selecao-contagem").textContent = lojasSelecionadas.size + " loja(s) selecionada(s)";
+    document.getElementById("btn-excluir-selecionadas").disabled = lojasSelecionadas.size === 0;
+  }
+  async function excluirLojasSelecionadas(){
+    const status = document.getElementById("zerar-status");
+    const ids = Array.from(lojasSelecionadas);
+    status.innerHTML = "Excluindo " + ids.length + " loja(s)...";
+    let ok = 0, erro = 0;
+    for(const id of ids){
+      try{
+        const l = lojasCache.find(function(x){ return x.id === id; }) || {};
+        const anexos = [];
+        if(l.ratFoto && l.ratFoto.id) anexos.push(l.ratFoto.id);
+        if(l.gerencia && l.gerencia.multifuncional && l.gerencia.multifuncional.relatorioUso) anexos.push(l.gerencia.multifuncional.relatorioUso.id);
+        if(l.estoque && l.estoque.multifuncional && l.estoque.multifuncional.relatorioUso) anexos.push(l.estoque.multifuncional.relatorioUso.id);
+        await db.doc("lojas/"+id).delete();
+        if(assetsApi){ for(const aid of anexos){ try{ await assetsApi.delete(aid); }catch(e2){} } }
+        ok++;
+      }catch(e){ erro++; }
+    }
+    lojasSelecionadas.clear();
+    status.innerHTML = "✅ "+ok+" loja(s) excluída(s)." + (erro? " ❌ "+erro+" com erro.":"");
+    sairModoSelecao();
+  }
+  function sairModoSelecao(){
+    modoSelecao = false;
+    lojasSelecionadas.clear();
+    document.getElementById("selecao-toolbar").classList.add("hidden");
+    document.getElementById("btn-modo-selecao").textContent = "Selecionar e excluir lojas";
+    renderLojasList();
+  }
+
+  // ---------------- filtros do painel (técnico / loja) ----------------
+  function abrirFiltrosPainel(){
+    const c = document.getElementById("modal-container");
+    const tecnicos = Array.from(new Set(lojasCache.map(function(l){ return (l.tecnico||"").trim(); }).filter(Boolean))).sort(function(a,b){ return a.localeCompare(b,"pt-BR"); });
+    const lojasOrdenadas = lojasCache.slice().sort(function(a,b){ return (a.nome||"").localeCompare(b.nome||"","pt-BR"); });
+    // Marcado = entra no filtro. Nenhum marcado = sem filtro (mostra tudo).
+    let selTecnicos = painelFiltroTecnicos.slice();
+    let selLojas = painelFiltroLojas.slice();
+    function listaTecnicoHtml(){
+      if(tecnicos.length===0) return '<div class="hint">Nenhum técnico preenchido ainda.</div>';
+      return '<div style="max-height:160px; overflow-y:auto;">' + tecnicos.map(function(t){
+        const on = selTecnicos.indexOf(t)!==-1;
+        return '<label style="display:flex; align-items:center; gap:6px; padding:3px 0; font-size:12.5px;">' +
+          '<input type="checkbox" data-pf-tecnico="'+escapeHtml(t)+'"'+(on?' checked':'')+'> '+escapeHtml(t)+'</label>';
+      }).join("") + '</div>';
+    }
+    function listaLojaHtml(filtroTexto){
+      const termo = (filtroTexto||"").toLowerCase().trim();
+      const visiveis = lojasOrdenadas.filter(function(l){ return !termo || (l.nome||"").toLowerCase().includes(termo); });
+      if(visiveis.length===0) return '<div class="hint">Nenhuma loja encontrada.</div>';
+      return '<div style="max-height:220px; overflow-y:auto;">' + visiveis.map(function(l){
+        const on = selLojas.indexOf(l.id)!==-1;
+        return '<label style="display:flex; align-items:center; gap:6px; padding:3px 0; font-size:12.5px;">' +
+          '<input type="checkbox" data-pf-loja="'+l.id+'"'+(on?' checked':'')+'> '+escapeHtml(l.nome)+'</label>';
+      }).join("") + '</div>';
+    }
+    function wireTecnicoLista(){
+      document.getElementById("pf-tecnicos-wrap").querySelectorAll("[data-pf-tecnico]").forEach(function(cb){
+        cb.addEventListener("change", function(){
+          const t = cb.dataset.pfTecnico;
+          const pos = selTecnicos.indexOf(t);
+          if(cb.checked && pos===-1) selTecnicos.push(t);
+          else if(!cb.checked && pos!==-1) selTecnicos.splice(pos,1);
+        });
+      });
+    }
+    function wireLojaLista(){
+      document.getElementById("pf-lojas-wrap").querySelectorAll("[data-pf-loja]").forEach(function(cb){
+        cb.addEventListener("change", function(){
+          const id = cb.dataset.pfLoja;
+          const pos = selLojas.indexOf(id);
+          if(cb.checked && pos===-1) selLojas.push(id);
+          else if(!cb.checked && pos!==-1) selLojas.splice(pos,1);
+        });
+      });
+    }
+    function render(){
+      c.innerHTML = '<div class="modal-overlay" id="modal-overlay"><div class="modal-box" style="max-width:460px;">' +
+        '<p><b>Filtrar lojas</b><br><span style="font-size:12px; color:var(--text-muted);">Marque só quem deve aparecer na lista.</span></p>' +
+        '<div class="field"><label>Técnico</label><div id="pf-tecnicos-wrap">'+listaTecnicoHtml()+'</div></div>' +
+        '<div class="field"><label>Loja</label>' +
+          '<input type="text" id="pf-loja-busca" placeholder="Buscar loja..." style="margin-bottom:8px;">' +
+          '<div id="pf-lojas-wrap">'+listaLojaHtml("")+'</div></div>' +
+        '<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">' +
+        '<button class="btn btn-ghost btn-sm" id="pf-limpar">Limpar filtros</button>' +
+        '<button class="btn btn-primary btn-sm" id="pf-aplicar">Aplicar</button></div></div></div>';
+      document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay") c.innerHTML=""; });
+      wireTecnicoLista();
+      wireLojaLista();
+      document.getElementById("pf-loja-busca").addEventListener("input", function(e){
+        document.getElementById("pf-lojas-wrap").innerHTML = listaLojaHtml(e.target.value);
+        wireLojaLista();
+      });
+      document.getElementById("pf-limpar").addEventListener("click", function(){
+        selTecnicos = []; selLojas = [];
+        const buscaAtual = document.getElementById("pf-loja-busca").value;
+        document.getElementById("pf-tecnicos-wrap").innerHTML = listaTecnicoHtml();
+        document.getElementById("pf-lojas-wrap").innerHTML = listaLojaHtml(buscaAtual);
+        wireTecnicoLista();
+        wireLojaLista();
+      });
+      document.getElementById("pf-aplicar").addEventListener("click", function(){
+        painelFiltroTecnicos = selTecnicos.slice();
+        painelFiltroLojas = selLojas.slice();
+        c.innerHTML = ""; renderPainel();
+      });
+    }
+    render();
+  }
+  function renderPainelFiltrosTLAtivo(){
+    const wrap = document.getElementById("painel-filtros-tl-ativo");
+    if(!wrap) return;
+    const chips = [];
+    painelFiltroTecnicos.forEach(function(t){
+      chips.push({label:"Técnico: "+t, limpar:function(){ const p=painelFiltroTecnicos.indexOf(t); if(p!==-1) painelFiltroTecnicos.splice(p,1); renderPainel(); }});
+    });
+    painelFiltroLojas.forEach(function(id){
+      const l = lojasCache.find(function(x){ return x.id===id; });
+      chips.push({label:"Loja: "+(l?l.nome:id), limpar:function(){ const p=painelFiltroLojas.indexOf(id); if(p!==-1) painelFiltroLojas.splice(p,1); renderPainel(); }});
+    });
+    if(chips.length===0){ wrap.style.display="none"; wrap.innerHTML=""; return; }
+    wrap.style.display="flex";
+    wrap.innerHTML = chips.map(function(ch,i){ return '<span class="chip active" data-tl-chip="'+i+'">'+escapeHtml(ch.label)+' ✕</span>'; }).join("");
+    wrap.querySelectorAll("[data-tl-chip]").forEach(function(el,i){ el.addEventListener("click", function(){ chips[i].limpar(); }); });
+  }
+  function abrirModalDuplicar(){
+    const c = document.getElementById("modal-container");
+    const opcoesLojas = lojasCache.map(function(l){ return '<option value="'+l.id+'">'+escapeHtml(l.nome)+'</option>'; }).join("");
+    c.innerHTML = '<div class="modal-overlay" id="modal-overlay"><div class="modal-box">' +
+      '<p><b>Duplicar loja</b><br>A cópia terá todos os dados já preenchidos na loja de origem escolhida.</p>' +
+      '<div class="field"><label>Loja de origem</label><select id="dup-origem">'+opcoesLojas+'</select></div>' +
+      '<div class="field"><label>Código da nova loja</label><input type="text" id="dup-codigo" placeholder="Ex: 9001"></div>' +
+      '<div class="field"><label>Nome da nova loja</label><input type="text" id="dup-nome" placeholder="Ex: NOVA UNIDADE"></div>' +
+      '<div class="hint" id="dup-erro" style="color:var(--bad); margin-bottom:8px;"></div>' +
+      '<div style="display:flex; gap:8px; justify-content:flex-end;">' +
+      '<button class="btn btn-ghost btn-sm" id="dup-cancelar">Cancelar</button>' +
+      '<button class="btn btn-primary btn-sm" id="dup-confirmar">Duplicar</button></div></div></div>';
+    document.getElementById("dup-cancelar").addEventListener("click", function(){ c.innerHTML=""; });
+    document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay") c.innerHTML=""; });
+    document.getElementById("dup-confirmar").addEventListener("click", async function(){
+      const origemId = document.getElementById("dup-origem").value;
+      const loja = lojasCache.find(function(x){ return x.id === origemId; });
+      const codigo = document.getElementById("dup-codigo").value.trim();
+      const nome = document.getElementById("dup-nome").value.trim();
+      const erro = document.getElementById("dup-erro");
+      if(!loja){ erro.textContent = "Selecione a loja de origem."; return; }
+      if(!codigo || !nome){ erro.textContent = "Informe código e nome."; return; }
+      try{
+        const existente = await db.doc("lojas/"+codigo).get();
+        if(existente.exists){ erro.textContent = "Já existe uma loja com esse código."; return; }
+        const copia = JSON.parse(JSON.stringify(loja));
+        delete copia.id;
+        copia.nome = codigo + " - " + nome;
+        copia.criadoEm = now(); copia.atualizadoEm = now();
+        await db.doc("lojas/"+codigo).set(sanitizeParaJson(copia));
+        c.innerHTML = "";
+      }catch(e){ erro.textContent = "Não foi possível duplicar: " + (e.message||String(e)); }
+    });
+  }
+
+  function wireLojasView(){
+    document.getElementById("search-loja").addEventListener("input", renderLojasList);
+    // Ao sair de um campo rápido (Chamado/Protocolo/Técnico/Data/Hora), aplica a
+    // renderização que ficou pendente (dados novos de outros usuários, contadores, etc.)
+    // sem interromper a digitação do usuário atual.
+    document.getElementById("lojas-list").addEventListener("focusout", function(){
+      setTimeout(function(){
+        if(!pendingLojasRender) return;
+        const activeEl = document.activeElement;
+        const list = document.getElementById("lojas-list");
+        const aindaEditando = activeEl && list.contains(activeEl) && activeEl.classList &&
+          (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input"));
+        if(!aindaEditando) renderLojasList();
+      }, 0);
+    });
+    document.getElementById("btn-abrir-config").addEventListener("click", function(){
+      document.getElementById("config-overlay").classList.remove("hidden");
+    });
+    document.getElementById("btn-fechar-config").addEventListener("click", function(){
+      document.getElementById("config-overlay").classList.add("hidden");
+    });
+    document.getElementById("btn-duplicar-loja-central").addEventListener("click", function(){
+      document.getElementById("config-overlay").classList.add("hidden");
+      abrirModalDuplicar();
+    });
+    document.getElementById("btn-modo-selecao").addEventListener("click", function(){
+      modoSelecao = !modoSelecao;
+      lojasSelecionadas.clear();
+      document.getElementById("selecao-toolbar").classList.toggle("hidden", !modoSelecao);
+      document.getElementById("btn-modo-selecao").textContent = modoSelecao ? "Sair da seleção" : "Selecionar e excluir lojas";
+      atualizarContagemSelecao();
+      document.getElementById("config-overlay").classList.add("hidden");
+      renderLojasList();
+    });
+    document.getElementById("btn-cancelar-selecao").addEventListener("click", sairModoSelecao);
+    document.getElementById("btn-excluir-selecionadas").addEventListener("click", function(){
+      const n = lojasSelecionadas.size;
+      if(n===0) return;
+      mostrarConfirmacao(
+        "⚠️ Isso vai excluir <b>"+n+" loja(s)</b> permanentemente, junto com todo o checklist e anexos preenchidos nelas. Essa ação não pode ser desfeita. Deseja continuar?",
+        "Sim, excluir", "Cancelar",
+        excluirLojasSelecionadas
+      );
+    });
+    document.getElementById("btn-abrir-importar").addEventListener("click", function(){
+      document.getElementById("importar-offline-box").classList.toggle("hidden");
+    });
+    document.getElementById("btn-importar-cancelar").addEventListener("click", function(){
+      document.getElementById("importar-offline-box").classList.add("hidden");
+      document.getElementById("importar-arquivo").value = "";
+      document.getElementById("importar-status").innerHTML = "";
+      filaImportacao = [];
+      renderFilaImportacao();
+    });
+    document.getElementById("importar-arquivo").addEventListener("change", async function(e){
+      const novos = Array.from(e.target.files || []);
+      const status = document.getElementById("importar-status");
+      status.innerHTML = "";
+      for(const file of novos){
+        // evita duplicar o mesmo arquivo (mesmo nome) já presente na fila
+        if(filaImportacao.some(function(it){ return it.nomeArquivo === file.name; })) continue;
+        const item = {nomeArquivo:file.name, texto:null, dados:null, status:"erro", mensagem:"não foi possível ler o arquivo"};
+        try{
+          const texto = await file.text();
+          const dados = JSON.parse(texto);
+          if(!dados.codigo) throw new Error("campo 'codigo' ausente — estrutura de dados inválida");
+          item.texto = texto; item.dados = dados; item.status = "pendente"; item.mensagem = "";
+        }catch(err){ item.mensagem = err.message || String(err); }
+        filaImportacao.push(item);
+      }
+      e.target.value = ""; // permite selecionar o mesmo arquivo de novo se precisar reenviar
+      renderFilaImportacao();
+    });
+    document.getElementById("btn-importar-confirmar").addEventListener("click", async function(){
+      const status = document.getElementById("importar-status");
+      const pendentes = filaImportacao.filter(function(it){ return it.status === "pendente"; });
+      if(filaImportacao.length===0){ status.innerHTML = '<span style="color:var(--bad);">Selecione ao menos um arquivo.</span>'; return; }
+      if(pendentes.length===0){ status.innerHTML = '<span style="color:var(--text-muted);">Nenhum arquivo pendente — os já importados não são reenviados, e os com erro precisam ser corrigidos ou excluídos.</span>'; return; }
+      const btn = document.getElementById("btn-importar-confirmar");
+      btn.disabled = true;
+      status.innerHTML = "Importando " + pendentes.length + " arquivo(s)...";
+      for(const item of pendentes){
+        try{
+          await importarDados(item.dados);
+          // garante que a lista local já reflita o dado recém-importado, sem depender do tempo de propagação do listener em tempo real
+          try{
+            const fresh = await db.doc("lojas/"+item.dados.codigo).get();
+            if(fresh.exists){
+              const freshData = Object.assign({id: item.dados.codigo}, fresh.data());
+              const idx = lojasCache.findIndex(function(l){ return l.id === freshData.id; });
+              if(idx>=0) lojasCache[idx] = freshData; else lojasCache.push(freshData);
+            }
+          }catch(e2){ /* a atualização chegará pelo listener em tempo real de qualquer forma */ }
+          item.status = "importado";
+          item.mensagem = "";
+        }catch(e){
+          item.status = "erro";
+          item.mensagem = e.message || String(e);
+        }
+      }
+      renderLojasList();
+      renderFilaImportacao();
+      const totalOk = filaImportacao.filter(function(it){ return it.status==="importado"; }).length;
+      const totalErro = filaImportacao.filter(function(it){ return it.status==="erro"; }).length;
+      status.innerHTML = "<b>Importação concluída</b><br>✅ "+totalOk+" arquivo(s) importado(s) com sucesso<br>" + (totalErro>0 ? "❌ "+totalErro+" arquivo(s) com erro — corrija ou exclua-os acima." : "");
+      btn.disabled = false;
+    });
+  }
+
+  async function uploadBase64(base64, nomeBase){
+    if(!base64 || !assetsApi) return null;
+    const blob = dataURLtoBlob(base64);
+    const file = new File([blob], nomeBase+"."+(blob.type.split("/")[1]||"jpg"), {type: blob.type});
+    const result = await assetsApi.upload(file);
+    return {id: result.id, url: result.url};
+  }
+
+  async function importarDados(dados){
+    const docRef = db.doc("lojas/"+dados.codigo);
+    const existing = await docRef.get();
+    const existingData = existing.exists ? existing.data() : null;
+
+    let ratFoto = existingData && existingData.ratFoto ? existingData.ratFoto : null;
+    if(dados.ratFotoBase64){ try{ const r = await uploadBase64(dados.ratFotoBase64, "rat_"+dados.codigo); if(r) ratFoto = r; }catch(e){} }
+
+    const gerencia = migrarSetor(dados.gerencia);
+    const estoque = migrarSetor(dados.estoque);
+    if(dados.gerencia && dados.gerencia.multifuncional && dados.gerencia.multifuncional.relatorioUsoBase64){
+      try{ const r = await uploadBase64(dados.gerencia.multifuncional.relatorioUsoBase64, "relatorio_ger_"+dados.codigo); if(r) gerencia.multifuncional.relatorioUso = r; }catch(e){}
+    }else if(existingData && existingData.gerencia && existingData.gerencia.multifuncional && existingData.gerencia.multifuncional.relatorioUso){
+      gerencia.multifuncional.relatorioUso = existingData.gerencia.multifuncional.relatorioUso;
+    }
+    if(dados.estoque && dados.estoque.multifuncional && dados.estoque.multifuncional.relatorioUsoBase64){
+      try{ const r = await uploadBase64(dados.estoque.multifuncional.relatorioUsoBase64, "relatorio_est_"+dados.codigo); if(r) estoque.multifuncional.relatorioUso = r; }catch(e){}
+    }else if(existingData && existingData.estoque && existingData.estoque.multifuncional && existingData.estoque.multifuncional.relatorioUso){
+      estoque.multifuncional.relatorioUso = existingData.estoque.multifuncional.relatorioUso;
+    }
+
+    const payload = {
+      nome: (existingData && existingData.nome) || (dados.codigo + " - " + (dados.nome||"")),
+      chamado: (existingData && existingData.chamado) ? existingData.chamado : (dados.chamado||""),
+      tecnico: (existingData && existingData.tecnico) ? existingData.tecnico : (dados.tecnico||""),
+      responsavelLoja: (existingData && existingData.responsavelLoja) ? existingData.responsavelLoja : (dados.responsavelLoja||""),
+      protocolo: (existingData && existingData.protocolo) ? existingData.protocolo : (dados.protocolo||""),
+      rack: migrarRack(dados.rack),
+      gerencia: gerencia, estoque: estoque,
+      notebooks: migrarNotebooks(dados.notebooks),
+      pdvs: (dados.pdvs||[]).map(migrarPdv),
+      mobiles: dados.mobiles || [],
+      dvrs: (dados.dvrs||[]).map(migrarDvr),
+      wifiStage: dados.wifiStage || {barras:"", obs:""},
+      ratFoto: ratFoto,
+      horarioInicio: dados.horarioInicio || (existingData && existingData.horarioInicio) || "",
+      horarioFim: dados.horarioFim || (existingData && existingData.horarioFim) || "",
+      atualizadoEm: now()
+    };
+    const merged = Object.assign({}, existingData||{}, payload);
+    payload.status = statusAutomatico(merged);
+
+    const payloadLimpo = sanitizeParaJson(payload);
+    const tamanhoBytes = JSON.stringify(payloadLimpo).length;
+    if(tamanhoBytes > 200000){
+      throw new Error("O checklist ficou grande demais para salvar (" + Math.round(tamanhoBytes/1024) + " KB). Verifique se algum anexo não foi convertido corretamente.");
+    }
+    try{
+      if(existing.exists){ await docRef.update(payloadLimpo); }
+      else{ payloadLimpo.agendamento = ""; payloadLimpo.criadoEm = now(); await docRef.set(payloadLimpo); }
+    }catch(e){
+      const msg = (e.message||"").toLowerCase();
+      if(msg.indexOf("limit")!==-1 || msg.indexOf("size")!==-1) throw new Error("O arquivo contém um anexo acima do limite permitido pelo armazenamento.");
+      if(msg.indexOf("json")!==-1 || msg.indexOf("plain")!==-1) throw new Error("O arquivo tem uma estrutura de dados inválida (não é JSON puro).");
+      throw new Error("Falha ao salvar no sistema: " + (e.message||String(e)));
+    }
+  }
+
+  function dataURLtoBlob(dataUrl){
+    const parts = dataUrl.split(","); const mimeMatch = parts[0].match(/:(.*?);/); const mime = mimeMatch?mimeMatch[1]:"image/jpeg";
+    const bstr = atob(parts[1]); let n = bstr.length; const u8arr = new Uint8Array(n);
+    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+    return new Blob([u8arr], {type:mime});
+  }
+
+  const SEED_LOJAS = [
+    ["1932","RIO SUL"],["1960","JK IGUATEMI"],["2303","MORUMBI"],["2305","ELDORADO"],
+    ["2306","JUNDIAI"],["2307","BATEL"],["2308","NITEROI"],["2309","PAULISTA"],
+    ["2310","ALPHAVILLE"],["2311","RIBEIRAO PRETO"],["2312","CIDADE JARDIM"],["2313","BARRA SHOPPING"],
+    ["2314","IGUATEMI BRASILIA"],["2315","IGUATEMI CAMPINAS"],["2317","HIGIENOPOLIS"],["2318","ANALIA FRANCO"],
+    ["2320","PORTO ALEGRE"],["2346","BARIGUI"],["2451","RIOMAR RECIFE"],["2454","FLAMBOYANT GOIANIA"],
+    ["2455","PARK BRASILIA"],["2496","SALVADOR"],["2746","OUTLET CATARINA"],["2765","RIO DESIGN BARRA (RD BARRA)"],
+    ["2766","CJ SHOPS"],["2868","SHOPPING LEBLON"],["2875","SHOPPING BOULEVARD BH"],["2906","BALNEARIO CAMBORIU"],
+    ["2909","PRAIAMAR SHOPPING"],["2918","RIOMAR FORTALEZA"],["2924","PARK SHOPPING MACEIO"],["2944","CENTER NORTE"],
+    ["2953","FLORIANOPOLIS"],["2971","IBIRAPUERA"],["2976","SÃO JOSÉ RIO PRETO"],["2992","BELÉM"],
+    ["2993","LONDRINA"],["2994","UBERLANDIA"],["3010","SÃO CAETANO"],["3040","FARIA LIMA"],
+    ["3044","SOROCABA"],["3067","MOOCA"],["3071","CAMPO GRANDE"],["3075","S.J. CAMPOS"],
+    ["3096","VITÓRIA"],["3130","BOURBON"],["3135","BH SHOPPING"],["3142","PARQUE DOM PEDRO"],
+    ["3114","BARRA SUL"]
+  ];
+
+  async function seedLojasSeNecessario(){
+    try{
+      const snap = await db.collection("lojas").get();
+      const existingById = new Map(snap.docs.map(function(d){ return [d.id, d.data()]; }));
+      for(const s of SEED_LOJAS){
+        try{
+          const codigo = s[0], nomeEsperado = s[0] + " - " + s[1];
+          if(!existingById.has(codigo)){
+            await db.doc("lojas/"+codigo).set({
+              nome: nomeEsperado, tecnico:"", chamado:"", agendamento:"", agendamentoPrevisto:"", protocolo:"", dadosTecnico:"", status:"nao_iniciado",
+              rack: blankRack(), gerencia: blankSetorEquip(), estoque: blankSetorEquip(), notebooks: blankNotebooks(), pdvs: [], mobiles:[], dvrs:[],
+              criadoEm: now(), atualizadoEm: now()
+            });
+          }else if(existingById.get(codigo).nome !== nomeEsperado){ await db.doc("lojas/"+codigo).update({ nome: nomeEsperado }); }
+        }catch(e){ /* isola por loja para não travar a correção de status abaixo */ }
+      }
+      for(const [codigo, dados] of existingById){
+        try{
+          if(dados.status !== "concluido"){
+            const correto = statusAutomatico(normalizarParaStatus(dados));
+            if(dados.status !== correto) await db.doc("lojas/"+codigo).update({ status: correto });
+          }
+        }catch(e){ /* isola o erro por loja: uma falha aqui não pode impedir a correção das demais */ }
+      }
+    }catch(e){}
+  }
+
+  // ---------------- checklist view ----------------
+  function openLoja(id, data, desbloqueado){
+    currentLojaId = id;
+    bloqueadoPorConclusao = (data.status === "concluido") && !desbloqueado;
+    currentLoja = JSON.parse(JSON.stringify({
+      nome: data.nome||"", tecnico:data.tecnico||"", chamado:data.chamado||"", protocolo:data.protocolo||"",
+      responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", status:data.status||"nao_iniciado",
+      horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
+      wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
+      rack: migrarRack(data.rack),
+      gerencia: migrarSetor(data.gerencia),
+      estoque: migrarSetor(data.estoque),
+      notebooks: migrarNotebooks(data.notebooks),
+      pdvs: (data.pdvs||[]).map(migrarPdv),
+      mobiles: (data.mobiles||[]).map(function(m,i){ return Object.assign(blankMobile(i+1), m); }),
+      dvrs: (data.dvrs||[]).map(migrarDvr)
+    }));
+    currentLoja.ratFoto = (data.ratFoto && data.ratFoto.id) ? {id: data.ratFoto.id} : null;
+    if(data.estoque && data.estoque.pdaZebra && data.estoque.pdaZebra.serie && !currentLoja.estoque.pdaZebra.serie1){
+      currentLoja.estoque.pdaZebra.serie1 = data.estoque.pdaZebra.serie;
+    }
+    if(currentLoja.pdvs.length === 0) currentLoja.pdvs.push(blankPdv(1));
+    if(currentLoja.mobiles.length === 0) currentLoja.mobiles.push(blankMobile(1));
+    if(currentLoja.dvrs.length === 0) currentLoja.dvrs.push(blankDvr(1));
+
+    document.getElementById("cl-nome-loja").textContent = currentLoja.nome;
+    document.getElementById("cl-tecnico").value = currentLoja.tecnico;
+    document.getElementById("cl-chamado").value = currentLoja.chamado;
+    document.getElementById("cl-responsavel").value = currentLoja.responsavelLoja;
+    document.getElementById("banner-validacao").classList.add("hidden");
+    filaPendencias = [];
+    const duracao = calcularDuracao(currentLoja.horarioInicio, currentLoja.horarioFim);
+    document.getElementById("cl-tempo-atendimento").textContent = duracao ? ("Tempo de atendimento: " + duracao) : "";
+    updateFinalizeUi();
+    fillRackForm();
+    renderSetor("setor-gerencia", "Gerência", currentLoja.gerencia, "gerencia", true);
+    renderSetor("setor-estoque", "Estoque", currentLoja.estoque, "estoque", false);
+    renderNotebooks();
+    renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto();
+    document.getElementById("save-status").textContent = "";
+    aplicarBloqueio();
+    showView("checklist");
+  }
+
+  function aplicarBloqueio(){
+    document.getElementById("banner-lock").classList.toggle("hidden", !bloqueadoPorConclusao);
+    document.getElementById("form-fieldset").disabled = bloqueadoPorConclusao;
+    document.getElementById("bloco-limpar-formulario").classList.toggle("hidden", bloqueadoPorConclusao);
+    document.getElementById("btn-reabrir").disabled = bloqueadoPorConclusao;
+    document.getElementById("cl-tecnico").disabled = bloqueadoPorConclusao;
+    document.getElementById("cl-chamado").disabled = bloqueadoPorConclusao;
+    document.getElementById("cl-responsavel").disabled = bloqueadoPorConclusao;
+  }
+  function solicitarReabertura(){
+    mostrarConfirmacao("⚠️ Esta loja está com o checklist concluído. Deseja realmente reabrir/alterar os dados?", "Sim", "Não", function(){
+      bloqueadoPorConclusao = false;
+      currentLoja.status = statusAutomatico(currentLoja);
+      aplicarBloqueio(); updateFinalizeUi(); persistNow();
+    });
+  }
+  document.getElementById("btn-solicitar-edicao").addEventListener("click", solicitarReabertura);
+
+  function setToggleGroup(containerId, value, labelGood, labelBad, onClick){
+    const el = document.getElementById(containerId);
+    el.innerHTML = '<button type="button" class="toggle-btn'+(value===true?' on-good':'')+'" data-val="true">'+labelGood+'</button>' +
+      '<button type="button" class="toggle-btn'+(value===false?' on-bad':'')+'" data-val="false">'+labelBad+'</button>';
+    el.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; onClick(b.dataset.val==="true"); };
+  }
+  // versão neutra: usada para seleções que não representam positivo/negativo (existência, tecnologia, etc.)
+  function setToggleGroupNeutral(containerId, value, labelA, labelB, onClick){
+    const el = document.getElementById(containerId);
+    el.innerHTML = '<button type="button" class="toggle-btn'+(value===true?' on-neutral':'')+'" data-val="true">'+labelA+'</button>' +
+      '<button type="button" class="toggle-btn'+(value===false?' on-neutral':'')+'" data-val="false">'+labelB+'</button>';
+    el.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; onClick(b.dataset.val==="true"); };
+  }
+
+  function renderWifiStage(){
+    const wrap = document.getElementById("wifi-stage-select-wrap");
+    wrap.innerHTML = wifiSelectHtml('id="wifi-stage-select"', currentLoja.wifiStage.barras);
+    document.getElementById("wifi-stage-obs").value = currentLoja.wifiStage.obs||"";
+    document.getElementById("wifi-stage-select").addEventListener("change", function(e){ currentLoja.wifiStage.barras = e.target.value; scheduleSave(); });
+  }
+
+  function fillRackForm(){
+    const r = currentLoja.rack;
+    setToggleGroup("rack-organizado-toggle", r.organizado, "Organizado","Desorganizado", function(v){ r.organizado=v; fillRackForm(); scheduleSave(); });
+    setToggleGroup("rack-limpo-toggle", r.limpo, "Limpo","Sujo", function(v){ r.limpo=v; fillRackForm(); scheduleSave(); });
+    document.getElementById("rack-obs").value = r.obs||"";
+    document.getElementById("rack-nobreak-marca").value = r.nobreak.marca||"";
+    document.getElementById("rack-nobreak-serie").value = r.nobreak.serie||"";
+    document.getElementById("rack-nobreak-obs").value = r.nobreak.obs||"";
+    (function(){
+      const v = r.nobreak.serieInacessivel;
+      const visivel = v===true ? false : (v===false ? true : null);
+      setToggleGroup("rack-nobreak-serie-inacessivel-toggle", visivel, "Consigo ver o Nº Série", "Não é possível ver o Nº Série", function(vv){ r.nobreak.serieInacessivel = !vv; fillRackForm(); scheduleSave(); });
+    })();
+    document.getElementById("rack-nobreak-serie").disabled = !!r.nobreak.serieInacessivel;
+    updateRackNobreakVisibility();
+    const nhsEl = document.getElementById("rack-nobreak-nhs-toggle");
+    nhsEl.innerHTML = ["acima","abaixo","desliga"].map(function(v){
+      const labels = {acima:"Acima de 5 minutos", abaixo:"Abaixo de 5 minutos", desliga:"Desliga imediatamente"};
+      const cls = r.nobreak.autonomiaNhs===v ? (v==="acima"?" on-good":" on-bad") : "";
+      return '<button type="button" class="toggle-btn'+cls+'" data-val="'+v+'">'+labels[v]+'</button>';
+    }).join("");
+    nhsEl.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; r.nobreak.autonomiaNhs=b.dataset.val; fillRackForm(); scheduleSave(); };
+    document.getElementById("rack-escada-obs").value = r.escada.obs||"";
+    updateEscadaVisibility();
+    setToggleGroup("rack-escada-possui-toggle", r.escada.possui, "Possui","Não possui", function(v){ r.escada.possui=v; if(!v) r.escada.alturaSuficiente=null; fillRackForm(); scheduleSave(); });
+    setToggleGroup("rack-escada-altura-toggle", r.escada.alturaSuficiente, "Sim","Não", function(v){ r.escada.alturaSuficiente=v; fillRackForm(); scheduleSave(); });
+  }
+  function updateEscadaVisibility(){ document.getElementById("rack-escada-altura-wrap").style.display = currentLoja.rack.escada.possui===true ? "block":"none"; }
+  function updateRackNobreakVisibility(){
+    const marca = currentLoja.rack.nobreak.marca;
+    document.getElementById("rack-nobreak-nhs-wrap").style.display = marca==="NHS" ? "block":"none";
+    document.getElementById("rack-nobreak-eaton-hint").style.display = marca==="EATON" ? "block":"none";
+  }
+
+  function wireChecklistStatic(){
+    document.getElementById("btn-limpar-formulario").addEventListener("click", function(){
+      document.getElementById("btn-limpar-formulario").classList.add("hidden");
+      document.getElementById("limpar-form-confirm").classList.remove("hidden");
+    });
+    document.getElementById("btn-limpar-cancelar").addEventListener("click", function(){
+      document.getElementById("btn-limpar-formulario").classList.remove("hidden");
+      document.getElementById("limpar-form-confirm").classList.add("hidden");
+    });
+    document.getElementById("btn-limpar-confirmar").addEventListener("click", async function(){
+      if(!currentLoja) return;
+      const fotoAnterior = currentLoja.ratFoto;
+      currentLoja.rack = blankRack(); currentLoja.gerencia = blankSetorEquip(); currentLoja.estoque = blankSetorEquip();
+      currentLoja.notebooks = blankNotebooks();
+      currentLoja.wifiStage = {barras:"", obs:""};
+      currentLoja.pdvs = [blankPdv(1)]; currentLoja.mobiles = [blankMobile(1)]; currentLoja.dvrs = [blankDvr(1)];
+      currentLoja.ratFoto = null;
+      // Recalcula pela função central: se chamado/protocolo/técnico continuarem preenchidos, o status reflete isso
+      // corretamente (ex: Liberado para Atendimento); se estiver tudo vazio, cai em Não Iniciado.
+      currentLoja.status = statusAutomatico(currentLoja);
+      fillRackForm();
+      renderSetor("setor-gerencia", "Gerência", currentLoja.gerencia, "gerencia", true);
+      renderSetor("setor-estoque", "Estoque", currentLoja.estoque, "estoque", false);
+      renderNotebooks();
+      renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); updateFinalizeUi();
+      document.getElementById("btn-limpar-formulario").classList.remove("hidden");
+      document.getElementById("limpar-form-confirm").classList.add("hidden");
+      persistNow();
+      if(!modoTecnico) renderPainel();
+      if(assetsApi && fotoAnterior && fotoAnterior.id){ try{ await assetsApi.delete(fotoAnterior.id); }catch(e){} }
+    });
+    document.getElementById("cl-tecnico").addEventListener("input", function(e){ currentLoja.tecnico = e.target.value; scheduleSave(); });
+    document.getElementById("cl-chamado").addEventListener("input", function(e){ currentLoja.chamado = e.target.value; scheduleSave(); });
+    document.getElementById("cl-responsavel").addEventListener("input", function(e){ currentLoja.responsavelLoja = e.target.value; scheduleSave(); });
+    document.getElementById("wifi-stage-obs").addEventListener("input", function(e){ currentLoja.wifiStage.obs = e.target.value; scheduleSave(); });
+    document.getElementById("btn-clear-wifi-stage").addEventListener("click", function(){ currentLoja.wifiStage = {barras:"", obs:""}; renderWifiStage(); scheduleSave(); });
+
+    document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
+      currentLoja.rack.nobreak.marca = e.target.value;
+      if(e.target.value!=="NHS") currentLoja.rack.nobreak.autonomiaNhs = "";
+      updateRackNobreakVisibility(); scheduleSave();
+      // a exibição/obrigatoriedade do Mini Nobreak depende da marca (EATON x NHS) — re-renderiza os dois setores imediatamente
+      renderSetor("setor-gerencia", "Gerência", currentLoja.gerencia, "gerencia", true);
+      renderSetor("setor-estoque", "Estoque", currentLoja.estoque, "estoque", false);
+    });
+    document.getElementById("rack-nobreak-serie").addEventListener("input", function(e){ currentLoja.rack.nobreak.serie = e.target.value; scheduleSave(); });
+    document.getElementById("rack-obs").addEventListener("input", function(e){ currentLoja.rack.obs = e.target.value; scheduleSave(); });
+    document.getElementById("rack-nobreak-obs").addEventListener("input", function(e){ currentLoja.rack.nobreak.obs = e.target.value; scheduleSave(); });
+    document.getElementById("rack-escada-obs").addEventListener("input", function(e){ currentLoja.rack.escada.obs = e.target.value; scheduleSave(); });
+    document.getElementById("btn-clear-rack").addEventListener("click", function(){ currentLoja.rack.organizado=null; currentLoja.rack.limpo=null; currentLoja.rack.obs=""; fillRackForm(); scheduleSave(); });
+    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", obs:""}; fillRackForm(); scheduleSave(); });
+    document.getElementById("btn-clear-escada").addEventListener("click", function(){ currentLoja.rack.escada = {possui:null, alturaSuficiente:null, obs:""}; fillRackForm(); scheduleSave(); });
+
+    document.getElementById("btn-add-dvr").addEventListener("click", function(){ if(currentLoja.dvrs.length>=3) return; currentLoja.dvrs.push(blankDvr(currentLoja.dvrs.length+1)); renderDvrs(); scheduleSave(); });
+    document.getElementById("btn-add-pdv").addEventListener("click", function(){ if(currentLoja.pdvs.length>=5) return; currentLoja.pdvs.push(blankPdv(currentLoja.pdvs.length+1)); renderPdvs(); scheduleSave(); });
+    document.getElementById("btn-add-mobile").addEventListener("click", function(){ if(currentLoja.mobiles.length>=6) return; currentLoja.mobiles.push(blankMobile(currentLoja.mobiles.length+1)); renderMobiles(); scheduleSave(); });
+
+    document.getElementById("btn-finalizar").addEventListener("click", async function(){
+      const banner = document.getElementById("banner-validacao");
+      const btnFin = this;
+      try{
+        const faltando = validarObrigatorios(currentLoja);
+        if(faltando.length){
+          filaPendencias = faltando;
+          renderBannerPendencias();
+          banner.scrollIntoView({behavior:"smooth", block:"start"});
+          return;
+        }
+        filaPendencias = [];
+        banner.classList.add("hidden");
+        currentLoja.status = "concluido"; updateFinalizeUi();
+        btnFin.disabled = true;
+        const salvo = await persistNow();
+        btnFin.disabled = false;
+        if(!salvo){
+          currentLoja.status = statusAutomatico(currentLoja); updateFinalizeUi();
+          banner.classList.remove("hidden");
+          banner.style.background = ""; banner.style.color = "";
+          banner.innerHTML = "<b>❌ Não foi possível salvar a conclusão do checklist.</b><br>Verifique sua conexão e tente novamente. Os dados preenchidos continuam neste formulário.";
+          banner.scrollIntoView({behavior:"smooth", block:"start"});
+          return;
+        }
+        voltarDaChecklist();
+      }catch(e){
+        btnFin.disabled = false;
+        banner.classList.remove("hidden");
+        banner.style.background = ""; banner.style.color = "";
+        banner.innerHTML = "<b>❌ Não foi possível finalizar o checklist.</b><br>Verifique as informações preenchidas e tente novamente. Se o problema continuar, informe a coordenação.";
+        console.error("Falha ao validar/finalizar o checklist:", e);
+      }
+    });
+    document.getElementById("btn-reabrir").addEventListener("click", solicitarReabertura);
+  }
+
+  function updateFinalizeUi(){
+    const badge = document.getElementById("cl-badge");
+    badge.className = "badge " + currentLoja.status; badge.textContent = STATUS_LABEL[currentLoja.status];
+    document.getElementById("btn-finalizar").style.display = currentLoja.status==="concluido" ? "none":"inline-flex";
+    document.getElementById("btn-reabrir").style.display = currentLoja.status==="concluido" ? "inline-flex":"none";
+  }
+
+  function setDeep(obj, path, value){ const parts=path.split("."); let cur=obj; for(let i=0;i<parts.length-1;i++) cur=cur[parts[i]]; cur[parts[parts.length-1]]=value; }
+
+  function perifHtml(setorKey, path, label, val){
+    return '<div class="field"><label>'+label+'</label>' +
+      '<div class="toggle-group" data-setor-select="'+setorKey+'" data-path="'+path+'.tipo" style="margin-bottom:6px;">' +
+        '<button type="button" class="toggle-btn'+(val.tipo==="com_fio"?' on-good':'')+'" data-val="com_fio">Com fio</button>' +
+        '<button type="button" class="toggle-btn'+(val.tipo==="sem_fio"?' on-good':'')+'" data-val="sem_fio">Sem fio</button></div>' +
+      '<select data-setor="'+setorKey+'" data-path="'+path+'.estado"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(val.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>';
+  }
+  function perifHtmlPdv(idx, campo, label, val){
+    return '<div class="field"><label>'+label+'</label>' +
+      '<div class="toggle-group" data-pdv-select="'+campo+'" data-idx="'+idx+'" style="margin-bottom:6px;">' +
+        '<button type="button" class="toggle-btn'+(val.tipo==="com_fio"?' on-good':'')+'" data-val="com_fio">Com fio</button>' +
+        '<button type="button" class="toggle-btn'+(val.tipo==="sem_fio"?' on-good':'')+'" data-val="sem_fio">Sem fio</button></div>' +
+      '<select data-pdv="'+campo+'Estado" data-idx="'+idx+'"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(val.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>';
+  }
+
+  function renderSetor(containerId, titulo, s, setorKey, temGpos){
+    const c = document.getElementById(containerId);
+    const eaton = currentLoja.rack.nobreak.marca === "EATON";
+    function clearBtn(keys){ return '<button type="button" class="btn btn-ghost btn-sm" data-setor-clearcard="'+setorKey+'" data-clear-keys="'+keys+'">Limpar</button>'; }
+    c.innerHTML =
+      '<h3>'+titulo+'</h3>' +
+      '<div class="item-card"><div class="item-title"><span>Desktop</span>'+clearBtn("desktop")+'</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Hostname</label><input type="text" data-setor="'+setorKey+'" data-path="desktop.hostname" value="'+escapeHtml(s.desktop.hostname)+'"></div>' +
+        '<div class="field"><label>Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="desktop.serie" value="'+escapeHtml(s.desktop.serie)+'"></div>' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Modelo</label><input type="text" data-setor="'+setorKey+'" data-path="desktop.modelo" value="'+escapeHtml(s.desktop.modelo)+'"></div>' +
+        '<div class="field"><label>Estado de conservação</label><select data-setor="'+setorKey+'" data-path="desktop.estado"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(s.desktop.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>' +
+      '</div><div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="desktop.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.desktop.obs)+'</textarea></div></div>' +
+
+      '<div class="item-card"><div class="item-title"><span>Teclado / Mouse / Monitor</span>'+clearBtn("tecladoMouseMonitor")+'</div>' +
+      '<div class="field-row">' + perifHtml(setorKey,"tecladoMouseMonitor.teclado","Teclado",s.tecladoMouseMonitor.teclado) + perifHtml(setorKey,"tecladoMouseMonitor.mouse","Mouse",s.tecladoMouseMonitor.mouse) + '</div>' +
+      '<div class="field"><label>Monitor</label><select data-setor="'+setorKey+'" data-path="tecladoMouseMonitor.monitor.estado"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(s.tecladoMouseMonitor.monitor.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>' +
+      '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="tecladoMouseMonitor.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.tecladoMouseMonitor.obs)+'</textarea></div></div>' +
+
+      (eaton ?
+        '<div class="item-card"><div class="item-title"><span>Mini Nobreak</span></div><div class="hint">Não aplicável — a loja possui Nobreak de Rack EATON.</div></div>'
+      :
+        '<div class="item-card"><div class="item-title"><span>Mini Nobreak</span>'+clearBtn("miniNobreak")+'</div>' +
+        '<div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="miniNobreak.possui" style="margin-bottom:8px;">' +
+          '<button type="button" class="toggle-btn'+(s.miniNobreak.possui===true?' on-good':'')+'" data-val="true">Possui</button>' +
+          '<button type="button" class="toggle-btn'+(s.miniNobreak.possui===false?' on-bad':'')+'" data-val="false">Não possui</button></div>' +
+        (s.miniNobreak.possui===true ?
+          '<div class="field-row">' +
+            '<div class="field"><label>Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="miniNobreak.serie" value="'+escapeHtml(s.miniNobreak.serie)+'"></div>' +
+            '<div class="field"><label>Data de fabricação</label><input type="text" data-setor="'+setorKey+'" data-path="miniNobreak.dataFabricacao" value="'+escapeHtml(s.miniNobreak.dataFabricacao)+'" placeholder="MM/AAAA"></div></div>' +
+          '<div class="field"><label>Autonomia acima de 5 minutos?</label><div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="miniNobreak.autonomiaAcima5">' +
+            '<button type="button" class="toggle-btn'+(s.miniNobreak.autonomiaAcima5===true?' on-good':'')+'" data-val="true">Sim</button>' +
+            '<button type="button" class="toggle-btn'+(s.miniNobreak.autonomiaAcima5===false?' on-bad':'')+'" data-val="false">Não</button></div>' +
+          '<div class="hint">Teste com o nobreak fora da tomada, cronometrando o tempo de autonomia.</div></div>' +
+          (s.miniNobreak.autonomiaAcima5===false ?
+            '<div class="field"><label>Possui LEDs de atenção? (selecione um ou mais)</label>' +
+            LEDS_OPCOES.map(function(led){
+              const on = s.miniNobreak.leds.indexOf(led)!==-1;
+              return '<button type="button" class="toggle-btn'+(on?' on-bad':'')+'" data-setor-led="'+setorKey+'" data-led="'+escapeHtml(led)+'" style="margin:2px 4px 2px 0;">'+led+'</button>';
+            }).join("") + '</div>' : '')
+          : '') +
+        '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="miniNobreak.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.miniNobreak.obs)+'</textarea></div></div>') +
+
+      '<div class="item-card"><div class="item-title"><span>Impressora Multifuncional</span>'+clearBtn("multifuncional")+'</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label>Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="multifuncional.serie" value="'+escapeHtml(s.multifuncional.serie)+'"></div>' +
+          '<div class="field"><label>Colorida ou P&amp;B?</label><div class="toggle-group" data-setor-select="'+setorKey+'" data-path="multifuncional.tipo">' +
+            '<button type="button" class="toggle-btn'+(s.multifuncional.tipo==="Colorida"?' on-good':'')+'" data-val="Colorida">Colorida</button>' +
+            '<button type="button" class="toggle-btn'+(s.multifuncional.tipo==="P&B"?' on-good':'')+'" data-val="P&B">P&amp;B</button></div></div></div>' +
+        '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="multifuncional.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.multifuncional.obs)+'</textarea></div>' +
+        '<div class="field"><label>Relatório de Uso</label><div class="hint" style="margin:0 0 6px;">Faça a impressão do Relatório de Uso e anexe o arquivo/foto correspondente.</div>' +
+          (s.multifuncional.relatorioUso && s.multifuncional.relatorioUso.id ?
+            '<img src="'+escapeHtml(s.multifuncional.relatorioUso.url||"")+'" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:6px;">' +
+            '<button type="button" class="btn btn-danger btn-sm" data-remove-relatorio="'+setorKey+'">Remover anexo</button>'
+            : '<input type="file" accept="image/*" data-relatorio-input="'+setorKey+'">') +
+        '</div></div>' +
+
+      '<div class="item-card"><div class="item-title"><span>Telefone VoIP</span>'+clearBtn("telefoneVoip")+'</div>' +
+        '<div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="telefoneVoip.possui" style="margin-bottom:8px;">' +
+          '<button type="button" class="toggle-btn'+(s.telefoneVoip.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(s.telefoneVoip.possui===false?' on-bad':'')+'" data-val="false">Não</button></div>' +
+        (s.telefoneVoip.possui===true ?
+          '<div class="field-row">' +
+            '<div class="field"><label>Número</label><input type="text" data-setor="'+setorKey+'" data-path="telefoneVoip.numero" value="'+escapeHtml(s.telefoneVoip.numero)+'"></div>' +
+            '<div class="field"><label>IP do telefone</label><input type="text" data-setor="'+setorKey+'" data-path="telefoneVoip.ip" value="'+escapeHtml(s.telefoneVoip.ip)+'"></div></div>' +
+          '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="telefoneVoip.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.telefoneVoip.obs)+'</textarea></div>' : '') +
+      '</div>' +
+
+      (temGpos ?
+        '<div class="item-card"><div class="item-title"><span>GPOS Backup</span>'+clearBtn("gposBackup")+'</div>' +
+        '<div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="gposBackup.possui" style="margin-bottom:8px;">' +
+          '<button type="button" class="toggle-btn'+(s.gposBackup.possui===true?' on-good':'')+'" data-val="true">Existe</button>' +
+          '<button type="button" class="toggle-btn'+(s.gposBackup.possui===false?' on-bad':'')+'" data-val="false">Não existe</button></div>' +
+        (s.gposBackup.possui===true ? '<div class="field"><label>Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="gposBackup.serie" value="'+escapeHtml(s.gposBackup.serie)+'"></div>' : '') +
+        '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="gposBackup.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.gposBackup.obs)+'</textarea></div></div>'
+        :
+        '<div class="item-card"><div class="item-title"><span>PDA Zebra</span>'+clearBtn("pdaZebra")+'</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label>PDA 1 &mdash; Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="pdaZebra.serie1" value="'+escapeHtml(s.pdaZebra.serie1)+'"></div>' +
+          '<div class="field"><label>PDA 2 &mdash; Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="pdaZebra.serie2" value="'+escapeHtml(s.pdaZebra.serie2)+'"></div></div>' +
+        '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="pdaZebra.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.pdaZebra.obs)+'</textarea></div></div>') +
+
+      '<div class="item-card"><div class="item-title"><span>Sinal do WIFI</span>'+clearBtn("wifi")+'</div>' +
+        wifiSelectHtml('data-setor="'+setorKey+'" data-path="wifi.barras"', s.wifi.barras) +
+        '<div class="field" style="margin-top:8px;"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="wifi.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.wifi.obs)+'</textarea></div></div>';
+
+    c.querySelectorAll("[data-setor]").forEach(function(el){
+      el.addEventListener("input", function(){ setDeep(currentLoja[setorKey], el.dataset.path, el.value); scheduleSave(); });
+      if(el.tagName==="SELECT") el.addEventListener("change", function(){ setDeep(currentLoja[setorKey], el.dataset.path, el.value); scheduleSave(); });
+    });
+    c.querySelectorAll("[data-setor-toggle]").forEach(function(group){
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        setDeep(currentLoja[group.dataset.setorToggle], group.dataset.path, b.dataset.val==="true");
+        renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave();
+      });
+    });
+    c.querySelectorAll("[data-setor-select]").forEach(function(group){
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        setDeep(currentLoja[group.dataset.setorSelect], group.dataset.path, b.dataset.val);
+        renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave();
+      });
+    });
+    c.querySelectorAll("[data-setor-led]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const arr = currentLoja[setorKey].miniNobreak.leds; const led = btn.dataset.led;
+        const pos = arr.indexOf(led); if(pos===-1) arr.push(led); else arr.splice(pos,1);
+        renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave();
+      });
+    });
+    c.querySelectorAll("[data-setor-clearcard]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const blank = blankSetorEquip();
+        btn.dataset.clearKeys.split(",").forEach(function(k){ currentLoja[setorKey][k] = blank[k]; });
+        renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave();
+      });
+    });
+    const relInput = c.querySelector("[data-relatorio-input]");
+    if(relInput) relInput.addEventListener("change", async function(e){
+      const file = e.target.files && e.target.files[0];
+      if(!file || !assetsApi) return;
+      try{ const result = await assetsApi.upload(file); currentLoja[setorKey].multifuncional.relatorioUso = {id: result.id}; renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave(); }catch(err){}
+    });
+    const relRemove = c.querySelector("[data-remove-relatorio]");
+    if(relRemove) relRemove.addEventListener("click", async function(){
+      const id = currentLoja[setorKey].multifuncional.relatorioUso.id;
+      currentLoja[setorKey].multifuncional.relatorioUso = null;
+      renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave();
+      if(assetsApi){ try{ await assetsApi.delete(id); }catch(e){} }
+    });
+  }
+
+  // ---- Notebooks ----
+  function renderNotebooks(){
+    const c = document.getElementById("setor-notebooks");
+    const n = currentLoja.notebooks;
+    function card(key, titulo, obrigatorioSempre){
+      const item = n[key];
+      return '<div class="item-card"><div class="item-title"><span>'+titulo+'</span>' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-nb-clear="'+key+'">Limpar</button></div>' +
+        (key==="adm" ?
+          '<div class="toggle-group" data-nb-possui="adm" style="margin-bottom:8px;">' +
+            '<button type="button" class="toggle-btn'+(item.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
+            '<button type="button" class="toggle-btn'+(item.possui===false?' on-bad':'')+'" data-val="false">Não</button></div>' : '') +
+        ((key!=="adm" || item.possui===true) ?
+          '<div class="field-row">' +
+            '<div class="field"><label>Hostname</label><input type="text" data-nb="'+key+'.hostname" value="'+escapeHtml(item.hostname)+'"></div>' +
+            '<div class="field"><label>Nº Série</label><input type="text" data-nb="'+key+'.serie" value="'+escapeHtml(item.serie)+'"></div></div>' +
+          '<div class="field-row">' +
+            '<div class="field"><label>Modelo</label><input type="text" data-nb="'+key+'.modelo" value="'+escapeHtml(item.modelo)+'"></div>' +
+            '<div class="field"><label>Estado de conservação</label><select data-nb="'+key+'.estado"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(item.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div></div>' +
+          '<div class="field"><label>Observação</label><textarea data-nb="'+key+'.obs" rows="2" placeholder="Opcional">'+escapeHtml(item.obs)+'</textarea></div>'
+          : '') +
+      '</div>';
+    }
+    c.innerHTML = '<h3>Notebooks</h3>' + card("gerencia","Notebook Gerência") + card("estoque","Notebook Estoque") + card("educacao","Notebook Educação") + card("adm","Notebook ADM");
+    c.querySelectorAll("[data-nb]").forEach(function(el){
+      const h = function(){ setDeep(n, el.dataset.nb, el.value); scheduleSave(); };
+      el.addEventListener("input", h); if(el.tagName==="SELECT") el.addEventListener("change", h);
+    });
+    c.querySelectorAll("[data-nb-possui]").forEach(function(group){
+      group.addEventListener("click", function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; n.adm.possui = b.dataset.val==="true"; renderNotebooks(); scheduleSave(); });
+    });
+    c.querySelectorAll("[data-nb-clear]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const key = btn.dataset.nbClear;
+        n[key] = key==="adm" ? Object.assign({possui:null}, blankNotebook()) : blankNotebook();
+        renderNotebooks(); scheduleSave();
+      });
+    });
+  }
+
+  // ---- DVR ----
+  function renderDvrs(){
+    const wrap = document.getElementById("dvrs-list");
+    document.getElementById("btn-add-dvr").disabled = currentLoja.dvrs.length >= 3;
+    if(currentLoja.dvrs.length===0){ wrap.innerHTML = '<div class="hint">Nenhum DVR adicionado ainda.</div>'; return; }
+    const PORTAS = Array.from({length:16}, function(_,i){ return String(i+1).padStart(2,"0"); });
+    const CAMS = Array.from({length:16}, function(_,i){ return String(i+1).padStart(2,"0"); });
+    wrap.innerHTML = currentLoja.dvrs.map(function(d, idx){
+      return '<div class="item-card" data-idx="'+idx+'">' +
+        '<div class="item-title"><span style="font-weight:600;">'+escapeHtml(d.nome)+'</span>' +
+          '<span><button type="button" class="btn btn-ghost btn-sm" data-clear-dvr="'+idx+'">Limpar</button> ' + (idx>0 ? '<button type="button" class="remove-x" data-remove-dvr="'+idx+'">&times;</button>' : '') + '</span></div>' +
+        (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Até 3 DVRs por loja</div>' : '') +
+        '<div class="field-row">' +
+          '<div class="field"><label>Nº Série</label><input type="text" data-dvr="serie" data-idx="'+idx+'" value="'+escapeHtml(d.serie)+'"></div>' +
+          '<div class="field"><label>Analógico ou IP?</label><div class="toggle-group" data-dvr-select="tipo" data-idx="'+idx+'">' +
+            '<button type="button" class="toggle-btn'+(d.tipo==="Analógico"?' on-good':'')+'" data-val="Analógico">Analógico</button>' +
+            '<button type="button" class="toggle-btn'+(d.tipo==="IP"?' on-good':'')+'" data-val="IP">IP</button></div></div>' +
+        '</div>' +
+        '<div class="field"><label>Possui câmeras com defeito/falha?</label><div class="toggle-group" data-dvr-toggle="camerasSemFuncionar" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(d.camerasSemFuncionar.tem===true?' on-bad':'')+'" data-val="true">FALHA/DEFEITO</button>' +
+          '<button type="button" class="toggle-btn'+(d.camerasSemFuncionar.tem===false?' on-good':'')+'" data-val="false">FUNCIONANDO</button></div>' +
+          (d.camerasSemFuncionar.tem===true ? '<div class="ports-grid">' + CAMS.map(function(c){ const on=d.camerasSemFuncionar.quais.indexOf(c)!==-1; return '<button type="button" class="port-chk'+(on?' on':'')+'" data-dvr-cam="'+idx+'" data-cam="'+c+'">CAM '+c+'</button>'; }).join("") + '</div>' : '') + '</div>' +
+        '<div class="field"><label>Existem portas danificadas?</label><div class="toggle-group" data-dvr-toggle="portasDanificadas" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(d.portasDanificadas.tem===true?' on-bad':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(d.portasDanificadas.tem===false?' on-good':'')+'" data-val="false">Não</button></div>' +
+          (d.portasDanificadas.tem===true ? '<div class="ports-grid">' + PORTAS.map(function(p){ const on=d.portasDanificadas.portas.indexOf(p)!==-1; return '<button type="button" class="port-chk'+(on?' on':'')+'" data-dvr-porta="'+idx+'" data-porta="'+p+'">'+p+'</button>'; }).join("") + '</div>' : '') + '</div>' +
+        '<div class="field"><label>Possui monitor de CFTV?</label><div class="toggle-group" data-dvr-toggle="monitorCftv" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(d.monitorCftv.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(d.monitorCftv.possui===false?' on-bad':'')+'" data-val="false">Não</button></div></div>' +
+        '<div class="field"><label>Observação</label><textarea data-dvr="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(d.obs)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+    wrap.querySelectorAll("[data-dvr]").forEach(function(el){
+      el.addEventListener("input", function(){
+        const idx=+el.dataset.idx, key=el.dataset.dvr, d=currentLoja.dvrs[idx];
+        if(key==="nome") d.nome=el.value; else if(key==="serie") d.serie=el.value;
+        else if(key==="obs") d.obs=el.value;
+        scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-dvr-select]").forEach(function(group){
+      group.addEventListener("click", function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; currentLoja.dvrs[+group.dataset.idx].tipo = b.dataset.val; renderDvrs(); scheduleSave(); });
+    });
+    wrap.querySelectorAll("[data-dvr-toggle]").forEach(function(group){
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        const idx=+group.dataset.idx, val=b.dataset.val==="true", key=group.dataset.dvrToggle, d=currentLoja.dvrs[idx];
+        if(key==="camerasSemFuncionar"){ d.camerasSemFuncionar.tem=val; if(!val) d.camerasSemFuncionar.quais=[]; }
+        if(key==="portasDanificadas"){ d.portasDanificadas.tem=val; if(!val) d.portasDanificadas.portas=[]; }
+        if(key==="monitorCftv"){ d.monitorCftv.possui=val; }
+        renderDvrs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-dvr-cam]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const idx=+btn.dataset.dvrCam, cam=btn.dataset.cam, arr=currentLoja.dvrs[idx].camerasSemFuncionar.quais;
+        const pos=arr.indexOf(cam); if(pos===-1) arr.push(cam); else arr.splice(pos,1);
+        renderDvrs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-dvr-porta]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const idx=+btn.dataset.dvrPorta, porta=btn.dataset.porta, arr=currentLoja.dvrs[idx].portasDanificadas.portas;
+        const pos=arr.indexOf(porta); if(pos===-1) arr.push(porta); else arr.splice(pos,1);
+        renderDvrs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-remove-dvr]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.dvrs.splice(+el.dataset.removeDvr,1); renderDvrs(); scheduleSave(); }); });
+    wrap.querySelectorAll("[data-clear-dvr]").forEach(function(el){
+      el.addEventListener("click", function(){ const idx=+el.dataset.clearDvr; const nomeAtual=currentLoja.dvrs[idx].nome; currentLoja.dvrs[idx]=blankDvr(idx+1); currentLoja.dvrs[idx].nome=nomeAtual; renderDvrs(); scheduleSave(); });
+    });
+  }
+
+  // ---- PDVs ----
+  function renderPdvs(){
+    const wrap = document.getElementById("pdvs-list");
+    document.getElementById("btn-add-pdv").disabled = currentLoja.pdvs.length >= 5;
+    if(currentLoja.pdvs.length===0){ wrap.innerHTML = '<div class="hint">Nenhum PDV adicionado ainda.</div>'; return; }
+    wrap.innerHTML = currentLoja.pdvs.map(function(p, idx){
+      const ehElgin = p.marca === "Elgin";
+      return '<div class="item-card" data-idx="'+idx+'">' +
+        '<div class="item-title"><span style="font-weight:600;">'+escapeHtml(p.nome)+'</span>' +
+          '<span><button type="button" class="btn btn-ghost btn-sm" data-clear-pdv="'+idx+'">Limpar</button> ' + (idx>0 ? '<button type="button" class="remove-x" data-remove-pdv="'+idx+'">&times;</button>' : '') + '</span></div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label>Nº Série do PDV</label><input type="text" data-pdv="serie" data-idx="'+idx+'" value="'+escapeHtml(p.serie)+'"></div>' +
+          '<div class="field"><label>Marca</label><select data-pdv="marca" data-idx="'+idx+'"><option value="">Selecionar</option><option'+(p.marca==="Toshiba"?' selected':'')+'>Toshiba</option><option'+(p.marca==="Elgin"?' selected':'')+'>Elgin</option></select></div>' +
+        '</div>' +
+        (!ehElgin ? '' :
+        '<div class="field"><label>Tela do cliente</label>' +
+          '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
+          (p.telaCliente.touchDesativado===true ?
+            '<button type="button" class="toggle-btn on-good" style="width:100%;" disabled>Removido</button>'
+            : '<button type="button" class="toggle-btn on-bad" style="width:100%;" data-pdv-removido="'+idx+'">Remover Cabo USB</button>') +
+        '</div>') +
+        '<div class="field-row">' +
+          '<div class="field"><label>Impressora térmica &mdash; Nº Série</label><input type="text" data-pdv="impSerie" data-idx="'+idx+'" value="'+escapeHtml(p.impressoraTermica.serie)+'"></div>' +
+          '<div class="field"><label>Limpeza básica com pincel</label><div class="toggle-group" data-pdv-toggle="impLimpeza" data-idx="'+idx+'">' +
+            '<button type="button" class="toggle-btn'+(p.impressoraTermica.limpezaFeita===true?' on-good':'')+'" data-val="true">Feita</button>' +
+            '<button type="button" class="toggle-btn'+(p.impressoraTermica.limpezaFeita===false?' on-bad':'')+'" data-val="false">Pendente</button></div></div></div>' +
+        '<div class="field"><label>Leitor de código de barras &mdash; Nº Série</label><input type="text" data-pdv="leitorSerie" data-idx="'+idx+'" value="'+escapeHtml(p.leitorCodBarras.serie)+'"></div>' +
+        '<div class="field-row-3">' +
+          '<div class="field"><label>Pinpad GERTEC &mdash; NS rede</label><input type="text" data-pdv="pinSerieRede" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serieRede)+'"></div>' +
+          '<div class="field"><label>Modelo</label><input type="text" data-pdv="pinModelo" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.modelo)+'"></div>' +
+          '<div class="field"><label>NS do pinpad</label><input type="text" data-pdv="pinSerie" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serie)+'"></div></div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label>Mercado Pago &mdash; modelo</label><input type="text" data-pdv="mpModelo" data-idx="'+idx+'" value="'+escapeHtml(p.mercadoPago.modelo)+'"></div>' +
+          '<div class="field"><label>Mercado Pago &mdash; NS</label><input type="text" data-pdv="mpSerie" data-idx="'+idx+'" value="'+escapeHtml(p.mercadoPago.serie)+'"></div></div>' +
+        '<div class="field-row">' + perifHtmlPdv(idx,"mouse","Mouse",p.mouse) + perifHtmlPdv(idx,"teclado","Teclado",p.teclado) + '</div>' +
+        '<div class="field"><label>Observação</label><textarea data-pdv="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(p.obs)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+    wrap.querySelectorAll("[data-pdv]").forEach(function(el){
+      el.addEventListener("input", function(){
+        const idx=+el.dataset.idx, key=el.dataset.pdv, p=currentLoja.pdvs[idx];
+        if(key==="nome") p.nome=el.value; else if(key==="serie") p.serie=el.value; else if(key==="obs") p.obs=el.value;
+        else if(key==="impSerie") p.impressoraTermica.serie=el.value;
+        else if(key==="leitorSerie") p.leitorCodBarras.serie=el.value;
+        else if(key==="pinSerieRede") p.pinpad.serieRede=el.value; else if(key==="pinModelo") p.pinpad.modelo=el.value; else if(key==="pinSerie") p.pinpad.serie=el.value;
+        else if(key==="mpModelo") p.mercadoPago.modelo=el.value; else if(key==="mpSerie") p.mercadoPago.serie=el.value;
+        scheduleSave();
+      });
+      if(el.tagName==="SELECT") el.addEventListener("change", function(){
+        const idx=+el.dataset.idx, key=el.dataset.pdv, p=currentLoja.pdvs[idx];
+        if(key==="marca"){ p.marca = el.value; renderPdvs(); }
+        else if(key==="mouseEstado") p.mouse.estado = el.value;
+        else if(key==="tecladoEstado") p.teclado.estado = el.value;
+        scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-pdv-toggle]").forEach(function(group){
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        const idx=+group.dataset.idx, val=b.dataset.val==="true", key=group.dataset.pdvToggle, p=currentLoja.pdvs[idx];
+        if(key==="impLimpeza") p.impressoraTermica.limpezaFeita=val;
+        renderPdvs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-pdv-removido]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        currentLoja.pdvs[+btn.dataset.pdvRemovido].telaCliente.touchDesativado = true;
+        renderPdvs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-pdv-select]").forEach(function(group){
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        const idx=+group.dataset.idx, campo=group.dataset.pdvSelect, p=currentLoja.pdvs[idx];
+        p[campo].tipo = b.dataset.val;
+        renderPdvs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-remove-pdv]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.pdvs.splice(+el.dataset.removePdv,1); renderPdvs(); scheduleSave(); }); });
+    wrap.querySelectorAll("[data-clear-pdv]").forEach(function(el){
+      el.addEventListener("click", function(){ const idx=+el.dataset.clearPdv; const nomeAtual=currentLoja.pdvs[idx].nome; currentLoja.pdvs[idx]=blankPdv(idx+1); currentLoja.pdvs[idx].nome=nomeAtual; renderPdvs(); scheduleSave(); });
+    });
+  }
+
+  // ---- Mobiles ----
+  function renderMobiles(){
+    const wrap = document.getElementById("mobiles-list");
+    document.getElementById("btn-add-mobile").disabled = currentLoja.mobiles.length >= 6;
+    if(currentLoja.mobiles.length===0){ wrap.innerHTML = '<div class="hint">Nenhum mobile adicionado ainda.</div>'; return; }
+    wrap.innerHTML = currentLoja.mobiles.map(function(m, idx){
+      return '<div class="item-card" data-idx="'+idx+'">' +
+        '<div class="item-title"><span style="font-weight:600;">'+escapeHtml(m.nome)+'</span>' +
+          (idx>0 ? '<button type="button" class="remove-x" data-remove-mobile="'+idx+'">&times;</button>' : '') + '</div>' +
+        (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Mobiles — até 6 por loja</div>' : '') +
+        '<div class="field-row">' +
+          '<div class="field"><label>Nº Série</label><input type="text" data-mobile="serie" data-idx="'+idx+'" value="'+escapeHtml(m.serie)+'"></div>' +
+          '<div class="field"><label>IP</label><input type="text" data-mobile="ip" data-idx="'+idx+'" value="'+escapeHtml(m.ip)+'" placeholder="10.102.196.56"></div></div>' +
+        '<div class="field"><label>Estado de conservação</label><select data-mobile="estado" data-idx="'+idx+'"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(m.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>' +
+        '<div class="field"><label>Observação</label><textarea data-mobile="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(m.obs)+'</textarea></div>' +
+      '</div>';
+    }).join("");
+    wrap.querySelectorAll('[data-mobile]').forEach(function(el){
+      const h=function(){ currentLoja.mobiles[+el.dataset.idx][el.dataset.mobile]=el.value; scheduleSave(); };
+      el.addEventListener("input", h); if(el.tagName==="SELECT") el.addEventListener("change", h);
+    });
+    wrap.querySelectorAll("[data-remove-mobile]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.mobiles.splice(+el.dataset.removeMobile,1); renderMobiles(); scheduleSave(); }); });
+  }
+
+  // ---- RAT foto ----
+  function wireRatFoto(){
+    document.getElementById("rat-foto-input").addEventListener("change", async function(e){
+      const file = e.target.files && e.target.files[0];
+      if(!file || !assetsApi) return;
+      const input = e.target; input.disabled = true;
+      try{ const result = await assetsApi.upload(file); currentLoja.ratFoto = {id: result.id}; renderRatFoto(); scheduleSave(); }catch(err){}
+      input.disabled = false;
+    });
+  }
+  function renderRatFoto(){
+    const preview = document.getElementById("rat-foto-preview");
+    const input = document.getElementById("rat-foto-input");
+    if(!assetsApi){ preview.innerHTML = '<div class="hint">Envio de foto indisponível nesta visualização.</div>'; input.style.display="none"; return; }
+    input.style.display = "block";
+    if(currentLoja.ratFoto && currentLoja.ratFoto.id){
+      preview.innerHTML = '<img src="'+escapeHtml(currentLoja.ratFoto.url||"")+'" alt="Foto do RAT" style="max-width:100%; max-height:260px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:8px;">' +
+        '<button type="button" class="btn btn-danger btn-sm" id="rat-foto-remover">Remover foto</button>';
+      input.value = "";
+      document.getElementById("rat-foto-remover").addEventListener("click", async function(){
+        const id = currentLoja.ratFoto.id; currentLoja.ratFoto = null; renderRatFoto(); scheduleSave();
+        try{ await assetsApi.delete(id); }catch(e){}
+      });
+    }else{ preview.innerHTML = ""; }
+  }
+
+  // ---- save ----
+  function scheduleSave(){
+    if(!currentLojaId) return;
+    if(currentLoja.status !== "concluido") currentLoja.status = statusAutomatico(currentLoja);
+    updateFinalizeUi();
+    document.getElementById("save-status").textContent = "Salvando...";
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(persistNow, 900);
+  }
+  async function persistNow(){
+    if(!currentLojaId || !currentLoja) return false;
+    clearTimeout(saveTimer);
+    const status = document.getElementById("save-status");
+    try{
+      const payload = sanitizeParaJson({
+        tecnico: currentLoja.tecnico, chamado: currentLoja.chamado, protocolo: currentLoja.protocolo,
+        responsavelLoja: currentLoja.responsavelLoja, status: currentLoja.status,
+        rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
+        pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
+        wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
+        horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
+        atualizadoEm: now()
+      });
+      await db.doc("lojas/"+currentLojaId).update(payload);
+      status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+      reavaliarPendencias();
+      return true;
+    }catch(e){ status.textContent = "Erro ao salvar — tentando novamente..."; saveTimer = setTimeout(persistNow, 2000); return false; }
+  }
+
+  // ---------------- calendário (cronograma) ----------------
+  function wireCalendario(){
+    document.getElementById("cal-prev").addEventListener("click", function(){ calRef.setMonth(calRef.getMonth()-1); renderCalendario(); });
+    document.getElementById("cal-next").addEventListener("click", function(){ calRef.setMonth(calRef.getMonth()+1); renderCalendario(); });
+  }
+  function renderCalendario(){
+    const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    const DOW = ["D","S","T","Q","Q","S","S"];
+    const ano = calRef.getFullYear(), mes = calRef.getMonth();
+    document.getElementById("cal-titulo").textContent = MESES[mes] + " " + ano;
+    const porData = {};
+    lojasCache.forEach(function(l){ if(l.agendamento){ if(!porData[l.agendamento]) porData[l.agendamento]=[]; porData[l.agendamento].push(l); } });
+    const primeiroDia = new Date(ano, mes, 1);
+    const inicioGrid = new Date(ano, mes, 1 - primeiroDia.getDay());
+    const grid = document.getElementById("cal-grid");
+    let html = DOW.map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join("");
+    for(let i=0;i<42;i++){
+      const d = new Date(inicioGrid); d.setDate(inicioGrid.getDate()+i);
+      const iso = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      const outroMes = d.getMonth() !== mes;
+      const lojasDia = porData[iso] || [];
+      html += '<div class="cal-day'+(outroMes?' outro-mes':'')+'"><div class="num">'+d.getDate()+'</div>' +
+        lojasDia.slice(0,3).map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="'+escapeHtml(l.nome)+'">'+escapeHtml(l.nome)+'</span>'; }).join("") +
+        (lojasDia.length>3 ? '<div class="hint">+'+(lojasDia.length-3)+'</div>' : '') + '</div>';
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll("[data-loja-id]").forEach(function(chip){
+      chip.addEventListener("click", function(){
+        const l = lojasCache.find(function(x){ return x.id === chip.dataset.lojaId; });
+        if(l) tentarAbrirLoja(l.id, l);
+      });
+    });
+  }
+
+  // ---------------- painel ----------------
+  const DEADLINE = "2026-10-26";
+  let painelFiltro = null;
+  let painelFiltroTecnicos = [], painelFiltroLojas = [];
+  let painelSortField = "nome", painelSortDir = "asc";
+  const PAINEL_TABELA_CAMPOS = [
+    {key:"nome", label:"Loja"},
+    {key:"status", label:"Status"},
+    {key:"tecnico", label:"Técnico"},
+    {key:"chamado", label:"Chamado"},
+    {key:"atualizadoEm", label:"Atualizado"}
+  ];
+  function painelValorOrdenacao(l, campo){
+    switch(campo){
+      case "status": return FILTRO_STATUS_ORDEM.indexOf(l.status);
+      case "atualizadoEm": return l.atualizadoEm||0;
+      case "tecnico": return (l.tecnico||"").toLowerCase();
+      case "chamado": return (l.chamado||"").toLowerCase();
+      default: return (l.nome||"").toLowerCase();
+    }
+  }
+  function painelOrdenarLojas(lista){
+    const copia = lista.slice();
+    copia.sort(function(a,b){
+      const va = painelValorOrdenacao(a, painelSortField), vb = painelValorOrdenacao(b, painelSortField);
+      let cmp;
+      if(typeof va === "number" && typeof vb === "number") cmp = va - vb;
+      else cmp = String(va).localeCompare(String(vb), "pt-BR");
+      return painelSortDir === "asc" ? cmp : -cmp;
+    });
+    return copia;
+  }
+  function renderPainelTabelaHead(){
+    const thead = document.getElementById("painel-tabela-head");
+    if(!thead) return;
+    thead.innerHTML = '<tr>' + PAINEL_TABELA_CAMPOS.map(function(c){
+      const ativo = painelSortField===c.key;
+      const seta = ativo ? (painelSortDir==="asc" ? " ▲" : " ▼") : "";
+      return '<th class="th-ordenar" data-th-ordenar="'+c.key+'">'+c.label+seta+'</th>';
+    }).join("") + '</tr>';
+    thead.querySelectorAll("[data-th-ordenar]").forEach(function(th){
+      th.addEventListener("click", function(){
+        const campo = th.dataset.thOrdenar;
+        if(painelSortField===campo){ painelSortDir = painelSortDir==="asc" ? "desc" : "asc"; }
+        else{ painelSortField = campo; painelSortDir = "asc"; }
+        renderPainel();
+      });
+    });
+  }
+  function diasEntre(a,b){ const da=new Date(a+"T00:00:00"), db_=new Date(b+"T00:00:00"); return Math.round((db_-da)/86400000); }
+  function matchesFiltro(l, hoje){
+    switch(painelFiltro){
+      case "concluido": return l.status==="concluido";
+      case "em_andamento": return l.status==="em_andamento";
+      case "nao_iniciado": return l.status==="nao_iniciado";
+      case "atrasada": return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+      case "liberado": return l.status==="liberado";
+      default: return true;
+    }
+  }
+  const FILTRO_LABEL = {concluido:"Concluído", em_andamento:"Em Andamento", nao_iniciado:"Não Iniciado", atrasada:"Atrasadas", liberado:"Liberado para Atendimento"};
+
+  function renderPainel(){
+    const total = lojasCache.length;
+    const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
+    const andamento = lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length;
+    const agendadas = lojasCache.filter(function(l){ return l.status==="liberado"; }).length;
+    const naoIniciadas = lojasCache.filter(function(l){ return l.status==="nao_iniciado"; }).length;
+    const hoje = todayStr();
+    const atrasadas = lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
+
+    const substituicoesPorLoja = {};
+    lojasCache.forEach(function(l){
+      const itens = [];
+      const nhsRack = !!(l.rack && l.rack.nobreak && l.rack.nobreak.marca === "NHS");
+      ["gerencia","estoque"].forEach(function(setorKey){
+        const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
+        if(s.desktop && s.desktop.estado==="Ruim - substituir") itens.push({setor:label, equip:"Desktop", serie:s.desktop.serie||"—", obs:s.desktop.obs||""});
+        if(s.tecladoMouseMonitor){
+          if(s.tecladoMouseMonitor.teclado.estado==="Ruim - substituir") itens.push({setor:label, equip:"Teclado", serie:"—", obs:s.tecladoMouseMonitor.obs||""});
+          if(s.tecladoMouseMonitor.mouse.estado==="Ruim - substituir") itens.push({setor:label, equip:"Mouse", serie:"—", obs:s.tecladoMouseMonitor.obs||""});
+          if(s.tecladoMouseMonitor.monitor.estado==="Ruim - substituir") itens.push({setor:label, equip:"Monitor", serie:"—", obs:s.tecladoMouseMonitor.obs||""});
+        }
+        if(s.miniNobreak && s.miniNobreak.possui===true && s.miniNobreak.autonomiaAcima5===false) itens.push({setor:label, equip:"Mini Nobreak", serie:s.miniNobreak.serie||"—", obs:"LEDs: "+(s.miniNobreak.leds||[]).join(", ")});
+        if(nhsRack && s.miniNobreak && s.miniNobreak.possui===false) itens.push({setor:label, equip:"Mini Nobreak", serie:"—", obs:"Loja NHS sem Mini Nobreak — necessária instalação"});
+      });
+      if(l.notebooks){
+        [["gerencia","Notebook Gerência"],["estoque","Notebook Estoque"],["educacao","Notebook Educação"],["adm","Notebook ADM"]].forEach(function(pair){
+          const nb = l.notebooks[pair[0]];
+          if(pair[0]==="adm" && (!nb || nb.possui!==true)) return;
+          if(nb && nb.estado==="Ruim - substituir") itens.push({setor:"Notebooks", equip:pair[1], serie:nb.serie||"—", obs:nb.obs||""});
+        });
+      }
+      (l.mobiles||[]).forEach(function(m){ if(m.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:m.nome, serie:m.serie||"—", obs:m.obs||""}); });
+      (l.pdvs||[]).forEach(function(p){
+        if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:p.obs||""});
+        if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:p.obs||""});
+      });
+      (l.dvrs||[]).forEach(function(d){ if(d.serie && l.rack && l.rack.nobreak && l.rack.nobreak.autonomiaNhs==="desliga") itens.push({setor:"Rack", equip:"Nobreak de Rack (troca de equipamento)", serie:l.rack.nobreak.serie||"—", obs:l.rack.nobreak.obs||""}); });
+      if(itens.length) substituicoesPorLoja[l.nome] = itens;
+    });
+    const totalSubstituicoes = Object.values(substituicoesPorLoja).reduce(function(a,b){ return a+b.length; }, 0);
+
+    const diasRestantes = diasEntre(hoje, DEADLINE);
+    const pctConcluido = total>0 ? Math.round(concluidas/total*100) : 0;
+    const pendentes = total - concluidas;
+    let ritmoTxt;
+    if(pendentes===0) ritmoTxt = "Todas as lojas concluídas.";
+    else if(diasRestantes>0) ritmoTxt = "Ritmo necessário: " + (pendentes/diasRestantes).toFixed(1) + " lojas/dia para concluir até o prazo.";
+    else if(diasRestantes===0) ritmoTxt = "O prazo é hoje e restam " + pendentes + " loja(s) pendente(s).";
+    else ritmoTxt = "Prazo vencido há " + Math.abs(diasRestantes) + " dia(s) — " + pendentes + " loja(s) ainda pendente(s).";
+    let satisfacao;
+    if(pendentes===0) satisfacao = {emoji:"🎉", texto:"Tudo concluído!"};
+    else if(diasRestantes<0) satisfacao = {emoji:"😟", texto:"Prazo vencido — atenção redobrada."};
+    else if(pctConcluido>=80) satisfacao = {emoji:"😄", texto:"Excelente ritmo, quase lá."};
+    else if(pctConcluido>=50) satisfacao = {emoji:"🙂", texto:"Bom progresso."};
+    else if(pctConcluido>=20) satisfacao = {emoji:"😐", texto:"Ritmo moderado, fique de olho no prazo."};
+    else satisfacao = {emoji:"😕", texto:"Ritmo baixo — requer atenção."};
+
+    document.getElementById("painel-progresso").innerHTML =
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:2px;">' +
+        '<div><h3 style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Resumo Executivo</h3>' +
+        '<div style="font-size:26px; font-weight:700; line-height:1.2;">'+satisfacao.emoji+' '+pctConcluido+'% concluído</div></div>' +
+        '<div style="text-align:right; font-size:12px; color:var(--text-muted);">Previsão de término<br><b style="font-size:15px; color:var(--navy);">'+fmtDateBR(DEADLINE)+'</b></div></div>' +
+      '<div class="progress-track"><div class="progress-fill" style="width:'+pctConcluido+'%;"></div></div>' +
+      '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:10px 0; font-size:12.5px;">' +
+        '<span>✅ <b>'+concluidas+'</b> concluídas</span>' +
+        '<span>🕓 <b>'+andamento+'</b> em andamento</span>' +
+        '<span>📅 <b>'+agendadas+'</b> agendadas</span>' +
+        '<span>⬜ <b>'+naoIniciadas+'</b> não iniciadas</span>' +
+        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';">⚠️ <b>'+atrasadas+'</b> atrasadas</span>' +
+      '</div><div class="hint">'+satisfacao.texto+' '+ritmoTxt+' '+(diasRestantes>=0 ? '('+diasRestantes+' dia(s) até o prazo)' : '(prazo vencido há '+Math.abs(diasRestantes)+' dia(s))')+'</div>';
+
+    const barColor = {concluido:"var(--ok)", em_andamento:"var(--warn)", nao_iniciado:"var(--muted)", liberado:"#2E7D32", atrasada:"var(--bad)"};
+    const cardsDef = [
+      {label:"Lojas cadastradas", value:total, filter:null, bar:null},
+      {label:"Não Iniciado", value:naoIniciadas, filter:"nao_iniciado", bar: total?(naoIniciadas/total*100):0},
+      {label:"Liberado", value:agendadas, filter:"liberado", bar: total?(agendadas/total*100):0},
+      {label:"Em Andamento", value:andamento, filter:"em_andamento", bar: total?(andamento/total*100):0},
+      {label:"Concluído", value:concluidas, filter:"concluido", bar: total?(concluidas/total*100):0},
+      {label:"Equip. p/ substituir", value:totalSubstituicoes, filter:"substituicao", bar:null},
+      {label:"Atrasadas", value:atrasadas, filter:"atrasada", bar: total?(atrasadas/total*100):0}
+    ];
+    document.getElementById("painel-stats").innerHTML = cardsDef.map(function(s){
+      const isActive = s.filter && s.filter===painelFiltro;
+      return '<div class="stat-card'+(isActive?' active':'')+'" data-filter="'+(s.filter||"")+'"><div class="num">'+s.value+'</div><div class="lbl">'+s.label+'</div>' +
+        (s.bar!==null ? '<div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+s.bar+'%; background:'+barColor[s.filter]+';"></div></div>' : '') + '</div>';
+    }).join("");
+    document.querySelectorAll("#painel-stats .stat-card").forEach(function(card){
+      card.addEventListener("click", function(){
+        const f = card.dataset.filter;
+        if(f==="substituicao"){ document.getElementById("painel-substituicoes").closest(".card").scrollIntoView({behavior:"smooth", block:"start"}); return; }
+        if(!f){ painelFiltro=null; } else { painelFiltro = (painelFiltro===f)?null:f; }
+        renderPainel();
+      });
+    });
+    const filtroEl = document.getElementById("painel-filtro-ativo");
+    if(painelFiltro){
+      filtroEl.style.display="block";
+      filtroEl.innerHTML = 'Filtrando por: <b>'+FILTRO_LABEL[painelFiltro]+'</b> — <a href="#" id="painel-limpar-filtro" style="color:var(--teal);">limpar filtro</a>';
+      document.getElementById("painel-limpar-filtro").addEventListener("click", function(e){ e.preventDefault(); painelFiltro=null; renderPainel(); });
+    }else{ filtroEl.style.display="none"; filtroEl.innerHTML=""; }
+
+    const painelBusca = (document.getElementById("painel-busca-loja").value||"").toLowerCase().trim();
+    renderPainelFiltrosTLAtivo();
+    const filtradas = painelOrdenarLojas(lojasCache.filter(function(l){
+      return matchesFiltro(l, hoje)
+        && (!painelBusca ||
+          (l.nome||"").toLowerCase().includes(painelBusca) ||
+          (l.tecnico||"").toLowerCase().includes(painelBusca) ||
+          (l.chamado||"").toLowerCase().includes(painelBusca))
+        && (painelFiltroTecnicos.length===0 || painelFiltroTecnicos.indexOf((l.tecnico||"").trim())!==-1)
+        && (painelFiltroLojas.length===0 || painelFiltroLojas.indexOf(l.id)!==-1);
+    }));
+
+    const alertsByLoja = {};
+    function pushAlert(loja, msg){ if(!alertsByLoja[loja]) alertsByLoja[loja]=[]; alertsByLoja[loja].push(msg); }
+    function checkEstado(loja, label, estado){ if(estado==="Ruim - substituir") pushAlert(loja, label+" em estado ruim — substituir"); }
+    lojasCache.forEach(function(l){
+      const rack = l.rack||{};
+      if(rack.organizado===false) pushAlert(l.nome, "Rack desorganizado");
+      if(rack.limpo===false) pushAlert(l.nome, "Rack sujo");
+      if(rack.nobreak && rack.nobreak.marca==="NHS" && rack.nobreak.autonomiaNhs==="abaixo") pushAlert(l.nome, "Nobreak de rack (NHS): autonomia abaixo de 5 minutos — Alerta");
+      if(rack.nobreak && rack.nobreak.marca==="NHS" && rack.nobreak.autonomiaNhs==="desliga") pushAlert(l.nome, "Nobreak de rack (NHS): desliga imediatamente — Troca de equipamento");
+      if(rack.escada && rack.escada.possui===true && rack.escada.alturaSuficiente===false) pushAlert(l.nome, "Escada móvel não alcança o teto");
+      (l.dvrs||[]).forEach(function(d){
+        if(d.camerasSemFuncionar && d.camerasSemFuncionar.tem===true) pushAlert(l.nome, d.nome+": câmeras sem funcionar"+((d.camerasSemFuncionar.quais&&d.camerasSemFuncionar.quais.length)?" (CAM "+d.camerasSemFuncionar.quais.join(", CAM ")+")":""));
+        if(d.portasDanificadas && d.portasDanificadas.tem===true) pushAlert(l.nome, d.nome+": portas danificadas ("+(d.portasDanificadas.portas||[]).join(", ")+")");
+      });
+      ["gerencia","estoque"].forEach(function(setorKey){
+        const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
+        checkEstado(l.nome, label+": Desktop", s.desktop && s.desktop.estado);
+        if(s.tecladoMouseMonitor){
+          checkEstado(l.nome, label+": Teclado", s.tecladoMouseMonitor.teclado.estado);
+          checkEstado(l.nome, label+": Mouse", s.tecladoMouseMonitor.mouse.estado);
+          checkEstado(l.nome, label+": Monitor", s.tecladoMouseMonitor.monitor.estado);
+        }
+        if(s.wifi && s.wifi.barras==="1") pushAlert(l.nome, label+": sinal de WIFI fraco (1 barra)");
+        if(rack.nobreak && rack.nobreak.marca==="NHS" && s.miniNobreak && s.miniNobreak.possui===false) pushAlert(l.nome, label+": Mini Nobreak ausente (loja NHS) — Troca de equipamento");
+      });
+      if(l.wifiStage && l.wifiStage.barras==="1") pushAlert(l.nome, "Stage de Vendas: sinal de WIFI fraco (1 barra)");
+      (l.pdvs||[]).forEach(function(p){
+        if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) pushAlert(l.nome, p.nome+": USB do touch da tela do cliente ainda conectado");
+        if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) pushAlert(l.nome, p.nome+": limpeza da impressora térmica pendente");
+      });
+    });
+    const lojasComAlerta = Object.keys(alertsByLoja);
+    document.getElementById("painel-alertas").innerHTML = lojasComAlerta.length===0 ? '<div class="empty" style="padding:12px;">Nenhum alerta no momento.</div>' :
+      lojasComAlerta.map(function(nome){
+        return '<details class="loja-group"><summary>'+escapeHtml(nome)+' ('+alertsByLoja[nome].length+')</summary><div class="conteudo">' +
+          alertsByLoja[nome].map(function(m){ return '<div class="alert-item"><span>&#9888;</span><span>'+escapeHtml(m)+'</span></div>'; }).join("") + '</div></details>';
+      }).join("");
+
+    const lojasComSubst = Object.keys(substituicoesPorLoja);
+    document.getElementById("painel-substituicoes").innerHTML = lojasComSubst.length===0 ? '<div class="empty" style="padding:12px;">Nenhum equipamento marcado para substituição</div>' :
+      lojasComSubst.map(function(nome){
+        const itens = substituicoesPorLoja[nome];
+        return '<details class="loja-group"><summary>'+escapeHtml(nome)+' ('+itens.length+')</summary><div class="conteudo"><table><thead><tr><th>Setor</th><th>Equipamento</th><th>Nº Série</th><th>Obs.</th></tr></thead><tbody>' +
+          itens.map(function(x){ return '<tr><td>'+escapeHtml(x.setor)+'</td><td>'+escapeHtml(x.equip)+'</td><td>'+escapeHtml(x.serie)+'</td><td>'+escapeHtml(x.obs||"—")+'</td></tr>'; }).join("") +
+          '</tbody></table></div></details>';
+      }).join("");
+
+    renderPainelTabelaHead();
+    document.getElementById("painel-tabela").innerHTML = filtradas.length===0 ? '<tr><td colspan="5" class="empty">Nenhuma loja encontrada'+(painelFiltro||painelBusca||painelFiltroTecnicos.length||painelFiltroLojas.length?" para este filtro":"")+'</td></tr>' :
+      filtradas.map(function(l){ return '<tr><td>'+escapeHtml(l.nome)+'</td><td><span class="badge '+l.status+'">'+STATUS_LABEL[l.status]+'</span></td><td>'+escapeHtml(l.tecnico||"—")+'</td><td>'+escapeHtml(l.chamado||"—")+'</td><td>'+fmtDate(l.atualizadoEm)+'</td></tr>'; }).join("");
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
