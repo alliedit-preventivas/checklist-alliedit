@@ -1659,6 +1659,7 @@
       dvrs: (data.dvrs||[]).map(migrarDvr)
     }));
     currentLoja.ratFoto = (data.ratFoto && data.ratFoto.id) ? {id: data.ratFoto.id} : null;
+    if(desbloqueado && currentLoja.status === "concluido"){ currentLoja.status = statusAutomatico(currentLoja); }
     if(data.estoque && data.estoque.pdaZebra && data.estoque.pdaZebra.serie && !currentLoja.estoque.pdaZebra.serie1){
       currentLoja.estoque.pdaZebra.serie1 = data.estoque.pdaZebra.serie;
     }
