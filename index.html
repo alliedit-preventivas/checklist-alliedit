@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -115,9 +116,6 @@
   section.block > h3{font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal); border-bottom:2px solid var(--border); padding-bottom:6px; margin:0 0 12px;}
   section.block > .sub-h4{font-size:11px; color:var(--text-muted); margin:-4px 0 12px; font-weight:600;}
   .item-card{border:none; border-radius:0; padding:0; margin-bottom:16px; position:relative; background:transparent;}
-  .rat-sign-box{border:1px dashed var(--border); border-radius:8px; background:var(--surface); width:100%; max-width:300px; height:120px; overflow:hidden; position:relative;}
-  .rat-sign-box canvas{width:100%; height:100%; display:block; touch-action:none; cursor:crosshair;}
-  .rat-sign-box img{width:100%; height:100%; object-fit:contain; display:block; cursor:pointer;}
   .item-card .item-title{font-weight:600; font-size:13px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;}
   .toggle-group{display:flex; gap:6px; flex-wrap:wrap;}
   .toggle-btn{flex:1; min-width:70px; border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:8px; border-radius:7px; font-size:12.5px; cursor:pointer; font-weight:600; user-select:none; -webkit-user-select:none;}
@@ -369,13 +367,6 @@
       </div>
     </section>
 
-    <section class="block">
-      <h3>RAT Online</h3>
-      <div class="hint" style="margin-bottom:10px;">Preencha a RAT digitalmente e colete as assinaturas do técnico e do responsável da loja.</div>
-      <button type="button" class="btn btn-primary btn-sm" id="btn-abrir-rat-online">Abrir RAT Online</button>
-      <div class="hint" id="rat-online-status" style="margin-top:8px;"></div>
-    </section>
-
     <div id="banner-validacao" class="banner-erro hidden"></div>
 
     </fieldset>
@@ -389,52 +380,6 @@
     </div>
   </div>
 
-  <div id="view-rat-online" class="view" style="max-width:620px; margin:0 auto;">
-    <button class="btn btn-ghost btn-sm" id="btn-voltar-rat-online" style="margin-bottom:12px;">&larr; Voltar para o checklist</button>
-    <section class="block">
-      <h3>RAT Online — Relatório de Atendimento Técnico</h3>
-      <div class="hint" style="margin-bottom:10px;">Os dados abaixo são preenchidos automaticamente a partir do checklist.</div>
-      <div class="field-row">
-        <div class="field"><label>Número de chamado</label><input type="text" id="rat-view-chamado" disabled></div>
-        <div class="field"><label>Cliente</label><input type="text" id="rat-view-cliente" disabled></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Loja</label><input type="text" id="rat-view-loja" disabled></div>
-        <div class="field"><label>Responsável Loja</label><input type="text" id="rat-view-responsavel" disabled></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Data e hora do início</label><input type="text" id="rat-view-inicio" disabled></div>
-        <div class="field"><label>Data e hora de término</label><input type="text" id="rat-view-fim" disabled></div>
-      </div>
-      <div class="field"><label>Descrição (Solicitação ou Problema Relatado)</label><textarea id="rat-causa" rows="3" placeholder="Descreva a solicitação ou o problema relatado"></textarea></div>
-      <div class="field"><label>Atividade realizada pelo técnico (Solução)</label><textarea id="rat-atividade" rows="3" placeholder="Descreva a atividade/solução aplicada"></textarea></div>
-      <div class="field"><label>Técnico Responsável</label><input type="text" id="rat-view-tecnico" disabled></div>
-
-      <div class="field-row" style="align-items:flex-start;">
-        <div class="field">
-          <label>Assinatura do técnico</label>
-          <div class="rat-sign-box">
-            <canvas id="rat-sign-tecnico" width="300" height="120"></canvas>
-            <img id="rat-sign-tecnico-img" class="hidden" alt="Assinatura do técnico" title="Toque para assinar novamente">
-          </div>
-          <div style="display:flex; gap:8px; margin-top:6px;">
-            <button type="button" class="btn btn-ghost btn-sm" id="rat-sign-tecnico-limpar">Limpar assinatura</button>
-          </div>
-        </div>
-        <div class="field">
-          <label>Assinatura do responsável da loja</label>
-          <div class="rat-sign-box">
-            <canvas id="rat-sign-loja" width="300" height="120"></canvas>
-            <img id="rat-sign-loja-img" class="hidden" alt="Assinatura do responsável" title="Toque para assinar novamente">
-          </div>
-          <div style="display:flex; gap:8px; margin-top:6px;">
-            <button type="button" class="btn btn-ghost btn-sm" id="rat-sign-loja-limpar">Limpar assinatura</button>
-          </div>
-        </div>
-      </div>
-      <div class="hint">Peça para o responsável da loja assinar no campo acima. As informações são salvas automaticamente.</div>
-    </section>
-  </div>
 
   <div id="view-painel" class="view">
     <div class="card" id="painel-progresso"></div>
@@ -589,7 +534,7 @@
     };
   }
 
-  let db = null, assetsApi = null;
+  let db = null, assetsApi = null, downloadsApi = null;
   let lojasCache = [];
   let currentLojaId = null, currentLoja = null;
   let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
@@ -695,7 +640,6 @@
 
   // ---------------- blank data builders ----------------
   function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
-  function blankRat(){ return { causa:"", atividade:"", assinaturaTecnico:null, assinaturaResponsavel:null }; }
   function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, hd:{quantidade:"", erro:null}, obs:"" }; }
   function blankDesktop(){ return {hostname:"", serie:"", modelo:"", estado:"", obs:""}; }
   function blankPerif(){ return {tipo:"", estado:""}; }
@@ -929,19 +873,13 @@
     });
     if(!l.wifiStage.barras) add("Stage de Vendas: sinal do WIFI", '#wifi-stage-select');
     if(!l.rat) l.rat = {};
-    // RAT (anexo manual e RAT Online) não são mais obrigatórios para finalizar o checklist.
+    if(!l.ratFoto || !l.ratFoto.id) add("Anexe a foto do RAT preenchido", "#rat-foto-input");
     return faltando;
   }
 
   // navega até uma pendência: expande a vista, rola até o campo e coloca foco
   function irParaPendencia(sel){
     if(!sel) return;
-    if(sel.indexOf("#rat-") === 0 && sel.indexOf("#rat-view-") !== 0){
-      showView("rat-online");
-      renderRatOnline();
-      if(ratSignPads.tecnico) ratSignPads.tecnico.refit();
-      if(ratSignPads.loja) ratSignPads.loja.refit();
-    }
     const el = document.querySelector(sel);
     if(!el) return;
     el.scrollIntoView({behavior:"smooth", block:"center"});
@@ -1044,8 +982,9 @@
       db = makeSupabaseDb(sb);
       assetsApi = makeSupabaseAssets(sb, SUPABASE_BUCKET);
     }catch(e){ db = null; assetsApi = null; }
+    downloadsApi = null; // nao aplicavel fora do claude.ai
     if(!db){ document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível conectar ao armazenamento compartilhado. Recarregue a página.</div>'; return; }
-    wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireRatOnline(); wireTopo(); wireCalendario();
+    wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario();
     subscribeLojas();
     if(!modoTecnico) seedLojasSeNecessario();
   }
@@ -1076,7 +1015,7 @@
   }
 
   function showView(name){
-    ["lojas","checklist","painel","rat-online"].forEach(function(v){ document.getElementById("view-"+v).classList.toggle("active", v===name); });
+    ["lojas","checklist","painel"].forEach(function(v){ document.getElementById("view-"+v).classList.toggle("active", v===name); });
     document.getElementById("nav-lojas").classList.toggle("active", name==="lojas");
     document.getElementById("nav-painel").classList.toggle("active", name==="painel");
     window.scrollTo({top:0});
@@ -1379,8 +1318,6 @@
         const l = lojasCache.find(function(x){ return x.id === id; }) || {};
         const anexos = [];
         if(l.ratFoto && l.ratFoto.id) anexos.push(l.ratFoto.id);
-        if(l.rat && l.rat.assinaturaTecnico && l.rat.assinaturaTecnico.id) anexos.push(l.rat.assinaturaTecnico.id);
-        if(l.rat && l.rat.assinaturaResponsavel && l.rat.assinaturaResponsavel.id) anexos.push(l.rat.assinaturaResponsavel.id);
         if(l.gerencia && l.gerencia.multifuncional && l.gerencia.multifuncional.relatorioUso) anexos.push(l.gerencia.multifuncional.relatorioUso.id);
         if(l.estoque && l.estoque.multifuncional && l.estoque.multifuncional.relatorioUso) anexos.push(l.estoque.multifuncional.relatorioUso.id);
         await db.doc("lojas/"+id).delete();
@@ -1812,7 +1749,6 @@
       dvrs: (data.dvrs||[]).map(migrarDvr)
     }));
     currentLoja.ratFoto = (data.ratFoto && data.ratFoto.id) ? {id: data.ratFoto.id} : null;
-    currentLoja.rat = Object.assign(blankRat(), data.rat||{});
     if(desbloqueado && currentLoja.status === "concluido"){ currentLoja.status = statusAutomatico(currentLoja); }
     if(data.estoque && data.estoque.pdaZebra && data.estoque.pdaZebra.serie && !currentLoja.estoque.pdaZebra.serie1){
       currentLoja.estoque.pdaZebra.serie1 = data.estoque.pdaZebra.serie;
@@ -1835,7 +1771,7 @@
     renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
     renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
     renderNotebooks();
-    renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderRatOnline();
+    renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto();
     document.getElementById("save-status").textContent = "";
     aplicarBloqueio();
     showView("checklist");
@@ -1928,15 +1864,11 @@
     document.getElementById("btn-limpar-confirmar").addEventListener("click", async function(){
       if(!currentLoja) return;
       const fotoAnterior = currentLoja.ratFoto;
-      const assinaturasAnteriores = [currentLoja.rat && currentLoja.rat.assinaturaTecnico, currentLoja.rat && currentLoja.rat.assinaturaResponsavel].filter(Boolean);
       currentLoja.rack = blankRack(); currentLoja.gerencia = blankSetorEquip(); currentLoja.estoque = blankSetorEquip();
       currentLoja.notebooks = blankNotebooks();
       currentLoja.wifiStage = {barras:"", obs:""};
       currentLoja.pdvs = [blankPdv(1)]; currentLoja.mobiles = [blankMobile(1)]; currentLoja.dvrs = [blankDvr(1)];
       currentLoja.ratFoto = null;
-      currentLoja.rat = blankRat();
-      if(ratSignPads.tecnico) ratSignPads.tecnico.clear();
-      if(ratSignPads.loja) ratSignPads.loja.clear();
       // Recalcula pela função central: se chamado/protocolo/técnico continuarem preenchidos, o status reflete isso
       // corretamente (ex: Liberado para Atendimento); se estiver tudo vazio, cai em Não Iniciado.
       currentLoja.status = statusAutomatico(currentLoja);
@@ -1944,13 +1876,12 @@
       renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
       renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
       renderNotebooks();
-      renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderRatOnline(); updateFinalizeUi();
+      renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); updateFinalizeUi();
       document.getElementById("btn-limpar-formulario").classList.remove("hidden");
       document.getElementById("limpar-form-confirm").classList.add("hidden");
       persistNow();
       if(!modoTecnico) renderPainel();
       if(assetsApi && fotoAnterior && fotoAnterior.id){ try{ await assetsApi.delete(fotoAnterior.id); }catch(e){} }
-      if(assetsApi){ for(const a of assinaturasAnteriores){ try{ await assetsApi.delete(a.id); }catch(e){} } }
     });
     document.getElementById("cl-tecnico").addEventListener("input", function(e){ currentLoja.tecnico = e.target.value; scheduleSave(); });
     document.getElementById("cl-chamado").addEventListener("input", function(e){ currentLoja.chamado = e.target.value; scheduleSave(); });
@@ -2101,7 +2032,7 @@
           (s.multifuncional.relatorioUso && s.multifuncional.relatorioUso.id ?
             '<img src="'+s.multifuncional.relatorioUso.id+'" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:6px;">' +
             '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-            '<a class="btn btn-ghost btn-sm" href="'+s.multifuncional.relatorioUso.id+'" download target="_blank" rel="noopener">Salvar anexo</a>' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-download-relatorio="'+setorKey+'">Salvar anexo</button>' +
             '<button type="button" class="btn btn-danger btn-sm" data-remove-relatorio="'+setorKey+'">Remover anexo</button>' +
             '</div>'
             : '<input type="file" accept="image/*" data-relatorio-input="'+setorKey+'">') +
@@ -2173,6 +2104,10 @@
       const file = e.target.files && e.target.files[0];
       if(!file || !assetsApi) return;
       try{ const result = await assetsApi.upload(file); currentLoja[setorKey].multifuncional.relatorioUso = {id: result.id}; renderSetor(containerId, titulo, currentLoja[setorKey], setorKey, temGpos); scheduleSave(); }catch(err){}
+    });
+    const relDownload = c.querySelector("[data-download-relatorio]");
+    if(relDownload) relDownload.addEventListener("click", function(){
+      salvarAnexo(currentLoja[setorKey].multifuncional.relatorioUso.id, "relatorio_uso_multifuncional_"+setorKey);
     });
     const relRemove = c.querySelector("[data-remove-relatorio]");
     if(relRemove) relRemove.addEventListener("click", async function(){
@@ -2421,59 +2356,7 @@
     wrap.querySelectorAll("[data-remove-mobile]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.mobiles.splice(+el.dataset.removeMobile,1); renderMobiles(); scheduleSave(); }); });
   }
 
-  // ---- RAT Online ----
-  let ratSignPads = {};
-  function setupSignaturePad(canvasId, onStrokeEnd){
-    const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext("2d");
-    if(!ctx){
-      return { clear:function(){}, isEmpty:function(){ return true; }, toBlob:function(){ return Promise.resolve(null); }, refit:function(){} };
-    }
-    function fitCanvas(){
-      const rect = canvas.getBoundingClientRect();
-      const ratio = window.devicePixelRatio || 1;
-      canvas.width = Math.max(1, rect.width * ratio);
-      canvas.height = Math.max(1, rect.height * ratio);
-      ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#0E2841";
-      ctx.scale(ratio, ratio);
-    }
-    fitCanvas();
-    let drawing = false, hasContent = false, lastX = 0, lastY = 0;
-    function posFromXY(clientX, clientY){ const rect = canvas.getBoundingClientRect(); return { x: clientX - rect.left, y: clientY - rect.top }; }
-    function startAt(x, y){ drawing = true; hasContent = true; lastX = x; lastY = y; }
-    function moveTo(x, y){ if(!drawing) return; ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke(); lastX = x; lastY = y; }
-    function endStroke(){ if(drawing){ drawing = false; if(onStrokeEnd) onStrokeEnd(); } }
-    // Mouse (desktop)
-    canvas.addEventListener("mousedown", function(e){ const p = posFromXY(e.clientX, e.clientY); startAt(p.x, p.y); });
-    canvas.addEventListener("mousemove", function(e){ if(!drawing) return; const p = posFromXY(e.clientX, e.clientY); moveTo(p.x, p.y); });
-    window.addEventListener("mouseup", endStroke);
-    // Touch (celular/tablet) — usado em vez de Pointer Events por compatibilidade mais ampla em navegadores Android
-    canvas.addEventListener("touchstart", function(e){ e.preventDefault(); const t = e.touches[0]; if(!t) return; const p = posFromXY(t.clientX, t.clientY); startAt(p.x, p.y); }, {passive:false});
-    canvas.addEventListener("touchmove", function(e){ if(!drawing) return; e.preventDefault(); const t = e.touches[0]; if(!t) return; const p = posFromXY(t.clientX, t.clientY); moveTo(p.x, p.y); }, {passive:false});
-    canvas.addEventListener("touchend", function(e){ e.preventDefault(); endStroke(); }, {passive:false});
-    canvas.addEventListener("touchcancel", function(e){ endStroke(); });
-    return {
-      clear: function(){ ctx.clearRect(0, 0, canvas.width, canvas.height); hasContent = false; },
-      isEmpty: function(){ return !hasContent; },
-      toBlob: function(){ return new Promise(function(resolve){ canvas.toBlob(resolve, "image/png"); }); },
-      refit: function(){ fitCanvas(); hasContent = false; }
-    };
-  }
-  function mostrarAssinaturaSalva(key){
-    const canvas = document.getElementById("rat-sign-"+key);
-    const img = document.getElementById("rat-sign-"+key+"-img");
-    const salva = currentLoja.rat[key==="tecnico" ? "assinaturaTecnico" : "assinaturaResponsavel"];
-    if(salva && salva.id){
-      img.onerror = function(){
-        // link salvo não carregou (ex: formato inválido) — libera a área para assinar de novo em vez de travar numa imagem quebrada
-        img.classList.add("hidden"); canvas.classList.remove("hidden");
-      };
-      img.src = salva.id; img.classList.remove("hidden"); canvas.classList.add("hidden");
-    }else{
-      img.classList.add("hidden"); canvas.classList.remove("hidden");
-    }
-  }
-  // ---- RAT foto (anexo manual, mantido como estava) ----
+  // ---- RAT foto (anexo manual) ----
   function wireRatFoto(){
     document.getElementById("rat-foto-input").addEventListener("change", async function(e){
       const file = e.target.files && e.target.files[0];
@@ -2483,6 +2366,19 @@
       input.disabled = false;
     });
   }
+  // O link de download direto (<a href="/_blob/..." download>) não funciona dentro do artifact —
+  // o visualizador não libera downloads assim. Por isso os anexos são salvos com a capacidade
+  // "downloads" (window.claude), que pede a confirmação do usuário e entrega o arquivo de verdade.
+  async function salvarAnexo(id, nomeBase){
+    try{
+      const a = document.createElement("a");
+      a.href = id; a.download = nomeBase; a.target = "_blank"; a.rel = "noopener";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }catch(e){
+      console.error("Falha ao salvar anexo:", e);
+      alert("Não foi possível salvar o arquivo. Tente novamente.");
+    }
+  }
   function renderRatFoto(){
     const preview = document.getElementById("rat-foto-preview");
     const input = document.getElementById("rat-foto-input");
@@ -2491,81 +2387,18 @@
     if(currentLoja.ratFoto && currentLoja.ratFoto.id){
       preview.innerHTML = '<img src="'+currentLoja.ratFoto.id+'" alt="Foto do RAT" style="max-width:100%; max-height:260px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:8px;">' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-        '<a class="btn btn-ghost btn-sm" href="'+currentLoja.ratFoto.id+'" download target="_blank" rel="noopener">Salvar anexo</a>' +
+        '<button type="button" class="btn btn-ghost btn-sm" id="rat-foto-salvar">Salvar anexo</button>' +
         '<button type="button" class="btn btn-danger btn-sm" id="rat-foto-remover">Remover foto</button>' +
         '</div>';
       input.value = "";
+      document.getElementById("rat-foto-salvar").addEventListener("click", function(){
+        salvarAnexo(currentLoja.ratFoto.id, "foto_rat_"+(currentLojaId||"loja"));
+      });
       document.getElementById("rat-foto-remover").addEventListener("click", async function(){
         const id = currentLoja.ratFoto.id; currentLoja.ratFoto = null; renderRatFoto(); scheduleSave();
         try{ await assetsApi.delete(id); }catch(e){}
       });
     }else{ preview.innerHTML = ""; }
-  }
-  function wireRatOnline(){
-    ["tecnico","loja"].forEach(function(key){
-      let salvarTimeout = null;
-      const pad = setupSignaturePad("rat-sign-"+key, function(){
-        clearTimeout(salvarTimeout);
-        salvarTimeout = setTimeout(async function(){
-          if(!assetsApi || pad.isEmpty()) return;
-          const blob = await pad.toBlob();
-          if(!blob) return;
-          const file = new File([blob], "assinatura_"+key+".png", {type:"image/png"});
-          try{
-            const antiga = currentLoja.rat[key==="tecnico" ? "assinaturaTecnico" : "assinaturaResponsavel"];
-            const result = await assetsApi.upload(file);
-            currentLoja.rat[key==="tecnico" ? "assinaturaTecnico" : "assinaturaResponsavel"] = {id: result.id};
-            scheduleSave();
-            if(antiga && antiga.id){ try{ await assetsApi.delete(antiga.id); }catch(e){} }
-          }catch(e){}
-        }, 900);
-      });
-      ratSignPads[key] = pad;
-      function limparAssinatura(){
-        pad.clear();
-        const campo = key==="tecnico" ? "assinaturaTecnico" : "assinaturaResponsavel";
-        const antiga = currentLoja.rat[campo];
-        currentLoja.rat[campo] = null;
-        mostrarAssinaturaSalva(key);
-        scheduleSave();
-        if(assetsApi && antiga && antiga.id){ (async function(){ try{ await assetsApi.delete(antiga.id); }catch(e){} })(); }
-      }
-      document.getElementById("rat-sign-"+key+"-limpar").addEventListener("click", limparAssinatura);
-      // Tocar/clicar direto na assinatura já salva libera a área para assinar de novo, sem precisar do botão "Limpar".
-      document.getElementById("rat-sign-"+key+"-img").addEventListener("click", limparAssinatura);
-    });
-    ["rat-causa","rat-atividade"].forEach(function(id){
-      document.getElementById(id).addEventListener("input", function(e){
-        const map = {"rat-causa":"causa","rat-atividade":"atividade"};
-        currentLoja.rat[map[id]] = e.target.value; scheduleSave();
-      });
-    });
-    document.getElementById("btn-abrir-rat-online").addEventListener("click", function(){
-      showView("rat-online");
-      renderRatOnline();
-      if(ratSignPads.tecnico) ratSignPads.tecnico.refit();
-      if(ratSignPads.loja) ratSignPads.loja.refit();
-    });
-    document.getElementById("btn-voltar-rat-online").addEventListener("click", function(){ showView("checklist"); });
-  }
-  function renderRatOnline(){
-    document.getElementById("rat-view-chamado").value = currentLoja.chamado || "";
-    document.getElementById("rat-view-cliente").value = "SEPHORA";
-    document.getElementById("rat-view-loja").value = currentLoja.nome || "";
-    document.getElementById("rat-view-responsavel").value = currentLoja.responsavelLoja || "";
-    document.getElementById("rat-view-tecnico").value = currentLoja.tecnico || "";
-    const dataBase = currentLoja.agendamento ? fmtDateBR(currentLoja.agendamento) : fmtDateBR(todayStr());
-    document.getElementById("rat-view-inicio").value = currentLoja.horarioInicio ? (dataBase + " " + currentLoja.horarioInicio) : "";
-    document.getElementById("rat-view-fim").value = currentLoja.horarioFim ? (dataBase + " " + currentLoja.horarioFim) : "";
-    document.getElementById("rat-causa").value = currentLoja.rat.causa || "";
-    document.getElementById("rat-atividade").value = currentLoja.rat.atividade || "";
-    mostrarAssinaturaSalva("tecnico");
-    mostrarAssinaturaSalva("loja");
-    const camposDesabilitar = ["rat-causa","rat-atividade"];
-    camposDesabilitar.forEach(function(id){ document.getElementById(id).disabled = bloqueadoPorConclusao; });
-    const okCampos = currentLoja.rat.causa && currentLoja.rat.atividade;
-    const okAssinaturas = currentLoja.rat.assinaturaTecnico && currentLoja.rat.assinaturaResponsavel;
-    document.getElementById("rat-online-status").textContent = (okCampos && okAssinaturas) ? "✅ RAT preenchida e assinada." : "Ainda faltam informações ou assinaturas na RAT Online.";
   }
 
   // ---- save ----
@@ -2587,7 +2420,7 @@
         responsavelLoja: currentLoja.responsavelLoja, status: currentLoja.status,
         rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
         pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
-        wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null, rat: currentLoja.rat || blankRat(),
+        wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
         horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
         atualizadoEm: now()
       });
@@ -2864,3 +2697,5 @@
 </script>
 </body>
 </html>
+
+</body></html>
