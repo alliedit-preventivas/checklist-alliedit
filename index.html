@@ -969,7 +969,7 @@
   function wireNav(){
     document.getElementById("nav-lojas").addEventListener("click", function(){ showView("lojas"); });
     document.getElementById("nav-painel").addEventListener("click", function(){ showView("painel"); renderPainel(); renderCalendario(); });
-    document.getElementById("btn-voltar-lojas").addEventListener("click", voltarDaChecklist);
+    document.getElementById("btn-voltar-lojas").addEventListener("click", function(){ voltarDaChecklist(false); });
     document.getElementById("painel-busca-loja").addEventListener("input", renderPainel);
     document.getElementById("btn-abrir-filtros-painel").addEventListener("click", abrirFiltrosPainel);
     document.getElementById("btn-limpar-filtros-painel").addEventListener("click", function(){
@@ -1194,7 +1194,6 @@
       const codigo = codigoInput.value.trim();
       const l = lojasCache.find(function(x){ return x.id === codigo; });
       if(!l) return;
-      document.getElementById("view-tecnico-id").classList.add("hidden");
       tentarAbrirLoja(l.id, l);
     });
   }
@@ -1662,6 +1661,7 @@
 
   // ---------------- checklist view ----------------
   function openLoja(id, data, desbloqueado){
+    if(modoTecnicoId) document.getElementById("view-tecnico-id").classList.add("hidden");
     currentLojaId = id;
     bloqueadoPorConclusao = (data.status === "concluido") && !desbloqueado;
     currentLoja = JSON.parse(JSON.stringify({
