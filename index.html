@@ -599,7 +599,7 @@
       desktop: blankDesktop(),
       tecladoMouseMonitor:{teclado: blankPerif(), mouse: blankPerif(), monitor:{estado:""}, obs:""},
       miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
-      multifuncional:{tipo:"", serie:"", obs:"", relatorioUso:null},
+      multifuncional:{tipo:"", modelo:"", serie:"", falhaImpressao:null, obs:"", relatorioUso:null},
       telefoneVoip:{possui:null, numero:"", ip:"", obs:""},
       gposBackup:{possui:null, serie:"", obs:""},
       pdaZebra:{serie1:"", serie2:"", obs:""},
@@ -639,6 +639,8 @@
       if(!Array.isArray(s.miniNobreak.leds)) s.miniNobreak.leds = [];
     }
     if(s.multifuncional && s.multifuncional.relatorioUso===undefined) s.multifuncional.relatorioUso = null;
+    if(s.multifuncional && s.multifuncional.modelo===undefined) s.multifuncional.modelo = "";
+    if(s.multifuncional && s.multifuncional.falhaImpressao===undefined) s.multifuncional.falhaImpressao = null;
     // nunca deixar um anexo em base64 vazar para o documento salvo (causa erro de tamanho no armazenamento)
     if(s.multifuncional) delete s.multifuncional.relatorioUsoBase64;
     return s;
@@ -1959,11 +1961,15 @@
         '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="miniNobreak.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.miniNobreak.obs)+'</textarea></div></div>') +
 
       '<div class="item-card"><div class="item-title"><span>Impressora Multifuncional</span>'+clearBtn("multifuncional")+'</div>' +
+        '<div class="field"><label>Modelo</label><input type="text" data-setor="'+setorKey+'" data-path="multifuncional.modelo" value="'+escapeHtml(s.multifuncional.modelo)+'"></div>' +
         '<div class="field-row">' +
           '<div class="field"><label>Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="multifuncional.serie" value="'+escapeHtml(s.multifuncional.serie)+'"></div>' +
           '<div class="field"><label>Colorida ou P&amp;B?</label><div class="toggle-group" data-setor-select="'+setorKey+'" data-path="multifuncional.tipo">' +
             '<button type="button" class="toggle-btn'+(s.multifuncional.tipo==="Colorida"?' on-good':'')+'" data-val="Colorida">Colorida</button>' +
             '<button type="button" class="toggle-btn'+(s.multifuncional.tipo==="P&B"?' on-good':'')+'" data-val="P&B">P&amp;B</button></div></div></div>' +
+        '<div class="field"><label>Apresenta alguma falha de impressão?</label><div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="multifuncional.falhaImpressao">' +
+          '<button type="button" class="toggle-btn'+(s.multifuncional.falhaImpressao===true?' on-bad':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(s.multifuncional.falhaImpressao===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
         '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="multifuncional.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.multifuncional.obs)+'</textarea></div>' +
         '<div class="field"><label>Relatório de Uso</label><div class="hint" style="margin:0 0 6px;">Faça a impressão do Relatório de Uso e anexe o arquivo/foto correspondente.</div>' +
           (s.multifuncional.relatorioUso && s.multifuncional.relatorioUso.id ?
