@@ -2439,14 +2439,19 @@
     }
     fitCanvas();
     let drawing = false, hasContent = false, lastX = 0, lastY = 0;
-    function pos(e){ const rect = canvas.getBoundingClientRect(); return { x: e.clientX - rect.left, y: e.clientY - rect.top }; }
-    function start(e){ e.preventDefault(); drawing = true; hasContent = true; const p = pos(e); lastX = p.x; lastY = p.y; try{ canvas.setPointerCapture(e.pointerId); }catch(err){} }
-    function move(e){ if(!drawing) return; e.preventDefault(); const p = pos(e); ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.stroke(); lastX = p.x; lastY = p.y; }
-    function end(){ if(drawing){ drawing = false; if(onStrokeEnd) onStrokeEnd(); } }
-    canvas.addEventListener("pointerdown", start);
-    canvas.addEventListener("pointermove", move);
-    canvas.addEventListener("pointerup", end);
-    canvas.addEventListener("pointerleave", end);
+    function posFromXY(clientX, clientY){ const rect = canvas.getBoundingClientRect(); return { x: clientX - rect.left, y: clientY - rect.top }; }
+    function startAt(x, y){ drawing = true; hasContent = true; lastX = x; lastY = y; }
+    function moveTo(x, y){ if(!drawing) return; ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke(); lastX = x; lastY = y; }
+    function endStroke(){ if(drawing){ drawing = false; if(onStrokeEnd) onStrokeEnd(); } }
+    // Mouse (desktop)
+    canvas.addEventListener("mousedown", function(e){ const p = posFromXY(e.clientX, e.clientY); startAt(p.x, p.y); });
+    canvas.addEventListener("mousemove", function(e){ if(!drawing) return; const p = posFromXY(e.clientX, e.clientY); moveTo(p.x, p.y); });
+    window.addEventListener("mouseup", endStroke);
+    // Touch (celular/tablet) — usado em vez de Pointer Events por compatibilidade mais ampla em navegadores Android
+    canvas.addEventListener("touchstart", function(e){ e.preventDefault(); const t = e.touches[0]; if(!t) return; const p = posFromXY(t.clientX, t.clientY); startAt(p.x, p.y); }, {passive:false});
+    canvas.addEventListener("touchmove", function(e){ if(!drawing) return; e.preventDefault(); const t = e.touches[0]; if(!t) return; const p = posFromXY(t.clientX, t.clientY); moveTo(p.x, p.y); }, {passive:false});
+    canvas.addEventListener("touchend", function(e){ e.preventDefault(); endStroke(); }, {passive:false});
+    canvas.addEventListener("touchcancel", function(e){ endStroke(); });
     return {
       clear: function(){ ctx.clearRect(0, 0, canvas.width, canvas.height); hasContent = false; },
       isEmpty: function(){ return !hasContent; },
@@ -2527,7 +2532,7 @@
       }
       document.getElementById("rat-sign-"+key+"-limpar").addEventListener("click", limparAssinatura);
       // Tocar/clicar direto na assinatura já salva libera a área para assinar de novo, sem precisar do botão "Limpar".
-      document.getElementById("rat-sign-"+key+"-img").addEventListener("pointerdown", limparAssinatura);
+      document.getElementById("rat-sign-"+key+"-img").addEventListener("click", limparAssinatura);
     });
     ["rat-causa","rat-atividade"].forEach(function(id){
       document.getElementById(id).addEventListener("input", function(e){
