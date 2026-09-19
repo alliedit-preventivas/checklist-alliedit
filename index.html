@@ -117,7 +117,7 @@
   .item-card{border:none; border-radius:0; padding:0; margin-bottom:16px; position:relative; background:transparent;}
   .rat-sign-box{border:1px dashed var(--border); border-radius:8px; background:var(--surface); width:100%; max-width:300px; height:120px; overflow:hidden; position:relative;}
   .rat-sign-box canvas{width:100%; height:100%; display:block; touch-action:none; cursor:crosshair;}
-  .rat-sign-box img{width:100%; height:100%; object-fit:contain; display:block;}
+  .rat-sign-box img{width:100%; height:100%; object-fit:contain; display:block; cursor:pointer;}
   .item-card .item-title{font-weight:600; font-size:13px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;}
   .toggle-group{display:flex; gap:6px; flex-wrap:wrap;}
   .toggle-btn{flex:1; min-width:70px; border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:8px; border-radius:7px; font-size:12.5px; cursor:pointer; font-weight:600; user-select:none; -webkit-user-select:none;}
@@ -415,7 +415,7 @@
           <label>Assinatura do técnico</label>
           <div class="rat-sign-box">
             <canvas id="rat-sign-tecnico" width="300" height="120"></canvas>
-            <img id="rat-sign-tecnico-img" class="hidden" alt="Assinatura do técnico">
+            <img id="rat-sign-tecnico-img" class="hidden" alt="Assinatura do técnico" title="Toque para assinar novamente">
           </div>
           <div style="display:flex; gap:8px; margin-top:6px;">
             <button type="button" class="btn btn-ghost btn-sm" id="rat-sign-tecnico-limpar">Limpar assinatura</button>
@@ -425,7 +425,7 @@
           <label>Assinatura do responsável da loja</label>
           <div class="rat-sign-box">
             <canvas id="rat-sign-loja" width="300" height="120"></canvas>
-            <img id="rat-sign-loja-img" class="hidden" alt="Assinatura do responsável">
+            <img id="rat-sign-loja-img" class="hidden" alt="Assinatura do responsável" title="Toque para assinar novamente">
           </div>
           <div style="display:flex; gap:8px; margin-top:6px;">
             <button type="button" class="btn btn-ghost btn-sm" id="rat-sign-loja-limpar">Limpar assinatura</button>
@@ -2516,15 +2516,18 @@
         }, 900);
       });
       ratSignPads[key] = pad;
-      document.getElementById("rat-sign-"+(key==="loja"?"loja":key)+"-limpar").addEventListener("click", async function(){
+      function limparAssinatura(){
         pad.clear();
         const campo = key==="tecnico" ? "assinaturaTecnico" : "assinaturaResponsavel";
         const antiga = currentLoja.rat[campo];
         currentLoja.rat[campo] = null;
         mostrarAssinaturaSalva(key);
         scheduleSave();
-        if(assetsApi && antiga && antiga.id){ try{ await assetsApi.delete(antiga.id); }catch(e){} }
-      });
+        if(assetsApi && antiga && antiga.id){ (async function(){ try{ await assetsApi.delete(antiga.id); }catch(e){} })(); }
+      }
+      document.getElementById("rat-sign-"+key+"-limpar").addEventListener("click", limparAssinatura);
+      // Tocar/clicar direto na assinatura já salva libera a área para assinar de novo, sem precisar do botão "Limpar".
+      document.getElementById("rat-sign-"+key+"-img").addEventListener("pointerdown", limparAssinatura);
     });
     ["rat-causa","rat-atividade"].forEach(function(id){
       document.getElementById(id).addEventListener("input", function(e){
