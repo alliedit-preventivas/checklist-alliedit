@@ -111,10 +111,10 @@
   @media(max-width:520px){.field-row{grid-template-columns:1fr;} .field-row-3{grid-template-columns:1fr;}}
   label{font-size:11.5px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:3px; text-transform:uppercase; letter-spacing:.3px;}
   .field{margin-bottom:8px;}
-  section.block{margin-bottom:22px;}
+  section.block{margin-bottom:22px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 14px 4px;}
   section.block > h3{font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal); border-bottom:2px solid var(--border); padding-bottom:6px; margin:0 0 12px;}
   section.block > .sub-h4{font-size:11px; color:var(--text-muted); margin:-4px 0 12px; font-weight:600;}
-  .item-card{border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:10px; position:relative; background:var(--bg);}
+  .item-card{border:none; border-radius:0; padding:0; margin-bottom:16px; position:relative; background:transparent;}
   .item-card .item-title{font-weight:600; font-size:13px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;}
   .toggle-group{display:flex; gap:6px; flex-wrap:wrap;}
   .toggle-btn{flex:1; min-width:70px; border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:8px; border-radius:7px; font-size:12.5px; cursor:pointer; font-weight:600; user-select:none; -webkit-user-select:none;}
@@ -270,7 +270,6 @@
         <button type="button" class="btn btn-ghost btn-sm" id="btn-limpar-cancelar">Cancelar</button>
       </span>
     </div>
-    <div id="banner-validacao" class="banner-erro hidden"></div>
 
     <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
 
@@ -314,9 +313,16 @@
       </div>
     </section>
 
-    <section class="block" id="setor-gerencia"></section>
-    <section class="block" id="setor-estoque"></section>
-    <section class="block" id="setor-notebooks"></section>
+    <section class="block" id="setor-gerencia">
+      <h3>Gerência</h3>
+      <div id="setor-gerencia-notebooks"></div>
+      <div id="setor-gerencia-body"></div>
+    </section>
+    <section class="block" id="setor-estoque">
+      <h3>Estoque</h3>
+      <div id="setor-estoque-notebooks"></div>
+      <div id="setor-estoque-body"></div>
+    </section>
 
     <section class="block">
       <h3>Stage de Vendas</h3>
@@ -342,6 +348,8 @@
         <div class="hint">Anexe a foto do RAT preenchido antes de finalizar o checklist.</div>
       </div>
     </section>
+
+    <div id="banner-validacao" class="banner-erro hidden"></div>
 
     </fieldset>
 
@@ -791,17 +799,17 @@
       if(sk==="gerencia" && s.gposBackup.possui===null) add(label+": GPOS Backup existe?", b+'[data-path="gposBackup.possui"]');
       if(!s.wifi.barras) add(label+": sinal do WIFI", b+'[data-path="wifi.barras"]');
     });
-    ["gerencia","estoque","educacao"].forEach(function(k){
-      const label = {gerencia:"Notebook Gerência", estoque:"Notebook Estoque", educacao:"Notebook Educação"}[k];
-      const n = l.notebooks[k]; const b = '#setor-notebooks ';
+    [["gerencia","Notebook Gerência","#setor-gerencia-notebooks "],["estoque","Notebook Estoque","#setor-estoque-notebooks "]].forEach(function(triple){
+      const k = triple[0], label = triple[1], b = triple[2];
+      const n = l.notebooks[k];
       if(!n.hostname) add(label+": Hostname", b+'[data-nb="'+k+'.hostname"]');
       if(!n.serie) add(label+": Nº Série", b+'[data-nb="'+k+'.serie"]');
       if(!n.modelo) add(label+": Modelo", b+'[data-nb="'+k+'.modelo"]');
       if(!n.estado) add(label+": estado de conservação", b+'[data-nb="'+k+'.estado"]');
     });
-    if(l.notebooks.adm.possui===null) add("Notebook ADM: possui este equipamento?", '#setor-notebooks [data-nb-possui="adm"]');
+    if(l.notebooks.adm.possui===null) add("Notebook ADM: possui este equipamento?", '#setor-gerencia-notebooks [data-nb-possui="adm"]');
     else if(l.notebooks.adm.possui===true){
-      const n = l.notebooks.adm; const b = '#setor-notebooks ';
+      const n = l.notebooks.adm; const b = '#setor-gerencia-notebooks ';
       if(!n.hostname) add("Notebook ADM: Hostname", b+'[data-nb="adm.hostname"]');
       if(!n.serie) add("Notebook ADM: Nº Série", b+'[data-nb="adm.serie"]');
       if(!n.modelo) add("Notebook ADM: Modelo", b+'[data-nb="adm.modelo"]');
@@ -1715,8 +1723,8 @@
     document.getElementById("cl-tempo-atendimento").textContent = duracao ? ("Tempo de atendimento: " + duracao) : "";
     updateFinalizeUi();
     fillRackForm();
-    renderSetor("setor-gerencia", "Gerência", currentLoja.gerencia, "gerencia", true);
-    renderSetor("setor-estoque", "Estoque", currentLoja.estoque, "estoque", false);
+    renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
+    renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
     renderNotebooks();
     renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto();
     document.getElementById("save-status").textContent = "";
@@ -1818,8 +1826,8 @@
       // corretamente (ex: Liberado para Atendimento); se estiver tudo vazio, cai em Não Iniciado.
       currentLoja.status = statusAutomatico(currentLoja);
       fillRackForm();
-      renderSetor("setor-gerencia", "Gerência", currentLoja.gerencia, "gerencia", true);
-      renderSetor("setor-estoque", "Estoque", currentLoja.estoque, "estoque", false);
+      renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
+      renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
       renderNotebooks();
       renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); updateFinalizeUi();
       document.getElementById("btn-limpar-formulario").classList.remove("hidden");
@@ -1839,8 +1847,8 @@
       if(e.target.value!=="NHS") currentLoja.rack.nobreak.autonomiaNhs = "";
       updateRackNobreakVisibility(); scheduleSave();
       // a exibição/obrigatoriedade do Mini Nobreak depende da marca (EATON x NHS) — re-renderiza os dois setores imediatamente
-      renderSetor("setor-gerencia", "Gerência", currentLoja.gerencia, "gerencia", true);
-      renderSetor("setor-estoque", "Estoque", currentLoja.estoque, "estoque", false);
+      renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
+      renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
     });
     document.getElementById("rack-nobreak-serie").addEventListener("input", function(e){ currentLoja.rack.nobreak.serie = e.target.value; scheduleSave(); });
     document.getElementById("rack-obs").addEventListener("input", function(e){ currentLoja.rack.obs = e.target.value; scheduleSave(); });
@@ -1920,7 +1928,7 @@
     const eaton = currentLoja.rack.nobreak.marca === "EATON";
     function clearBtn(keys){ return '<button type="button" class="btn btn-ghost btn-sm" data-setor-clearcard="'+setorKey+'" data-clear-keys="'+keys+'">Limpar</button>'; }
     c.innerHTML =
-      '<h3>'+titulo+'</h3>' +
+      ((setorKey==="gerencia"||setorKey==="estoque") ? '' : '<h3>'+titulo+'</h3>') +
       '<div class="item-card"><div class="item-title"><span>Desktop</span>'+clearBtn("desktop")+'</div>' +
       '<div class="field-row">' +
         '<div class="field"><label>Hostname</label><input type="text" data-setor="'+setorKey+'" data-path="desktop.hostname" value="'+escapeHtml(s.desktop.hostname)+'"></div>' +
@@ -2057,9 +2065,10 @@
     });
   }
 
-  // ---- Notebooks ----
+  // ---- Notebooks (fazem parte dos grupos de validação de Gerência e Estoque) ----
   function renderNotebooks(){
-    const c = document.getElementById("setor-notebooks");
+    const cGer = document.getElementById("setor-gerencia-notebooks");
+    const cEst = document.getElementById("setor-estoque-notebooks");
     const n = currentLoja.notebooks;
     function card(key, titulo, obrigatorioSempre){
       const item = n[key];
@@ -2080,20 +2089,23 @@
           : '') +
       '</div>';
     }
-    c.innerHTML = '<h3>Notebooks</h3>' + card("gerencia","Notebook Gerência") + card("estoque","Notebook Estoque") + card("educacao","Notebook Educação") + card("adm","Notebook ADM");
-    c.querySelectorAll("[data-nb]").forEach(function(el){
+    cGer.innerHTML = card("gerencia","Notebook Gerência") + card("adm","Possui Notebook ADM?");
+    cEst.innerHTML = card("estoque","Notebook Estoque");
+    [cGer, cEst].forEach(function(container){
+    container.querySelectorAll("[data-nb]").forEach(function(el){
       const h = function(){ setDeep(n, el.dataset.nb, el.value); scheduleSave(); };
       el.addEventListener("input", h); if(el.tagName==="SELECT") el.addEventListener("change", h);
     });
-    c.querySelectorAll("[data-nb-possui]").forEach(function(group){
+    container.querySelectorAll("[data-nb-possui]").forEach(function(group){
       group.addEventListener("click", function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; n.adm.possui = b.dataset.val==="true"; renderNotebooks(); scheduleSave(); });
     });
-    c.querySelectorAll("[data-nb-clear]").forEach(function(btn){
+    container.querySelectorAll("[data-nb-clear]").forEach(function(btn){
       btn.addEventListener("click", function(){
         const key = btn.dataset.nbClear;
         n[key] = key==="adm" ? Object.assign({possui:null}, blankNotebook()) : blankNotebook();
         renderNotebooks(); scheduleSave();
       });
+    });
     });
   }
 
@@ -2471,7 +2483,7 @@
         if(nhsRack && s.miniNobreak && s.miniNobreak.possui===false) itens.push({setor:label, equip:"Mini Nobreak", serie:"—", obs:"Loja NHS sem Mini Nobreak — necessária instalação"});
       });
       if(l.notebooks){
-        [["gerencia","Notebook Gerência"],["estoque","Notebook Estoque"],["educacao","Notebook Educação"],["adm","Notebook ADM"]].forEach(function(pair){
+        [["gerencia","Notebook Gerência"],["estoque","Notebook Estoque"],["adm","Notebook ADM"]].forEach(function(pair){
           const nb = l.notebooks[pair[0]];
           if(pair[0]==="adm" && (!nb || nb.possui!==true)) return;
           if(nb && nb.estado==="Ruim - substituir") itens.push({setor:"Notebooks", equip:pair[1], serie:nb.serie||"—", obs:nb.obs||""});
