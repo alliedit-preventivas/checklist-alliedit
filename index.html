@@ -28,7 +28,7 @@
   nav{display:flex; gap:6px;}
   nav button{background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; padding:7px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; font-weight:500; user-select:none; -webkit-user-select:none;}
   nav button.active{background:#fff; color:var(--teal); border-color:#fff;}
-  main{max-width:880px; margin:0 auto; padding:16px 14px 80px;}
+  main{max-width:1320px; margin:0 auto; padding:16px 14px 80px;}
   .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
   .toolbar{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
   input[type=text], input[type=date], select, textarea{font-family:inherit; font-size:13.5px; padding:9px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--navy); width:100%;}
@@ -65,10 +65,13 @@
   .chip{border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:6px 12px; border-radius:20px; font-size:11.5px; font-weight:600; cursor:pointer; user-select:none; -webkit-user-select:none;}
   .chip.active{background:var(--teal); color:#fff; border-color:var(--teal);}
   th.th-ordenar{cursor:pointer; user-select:none; white-space:nowrap;}
-  .loja-row{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px; cursor:pointer; transition:border-color .15s; user-select:text;}
+  .loja-row{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; cursor:pointer; transition:border-color .15s; user-select:text; height:100%; box-sizing:border-box;}
   .loja-row:hover{border-color:var(--teal-lt);}
   .loja-row .name{font-weight:600; font-size:14px;}
   .loja-row .meta{font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+  #lojas-list{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; align-items:start;}
+  @media(max-width:1180px){ #lojas-list{grid-template-columns:1fr 1fr;} }
+  @media(max-width:760px){ #lojas-list{grid-template-columns:1fr;} }
   .loja-quick-fields{display:flex; flex-direction:column; gap:8px; padding-top:10px; border-top:1px solid var(--border);}
   .loja-quick-fields label{margin:0 0 2px;}
   .loja-quick-fields input, .loja-quick-fields textarea{font-size:12.5px; padding:7px 8px; font-family:inherit;}
@@ -76,8 +79,10 @@
   .agendamento-linha1 .field{flex:0 0 auto;}
   .agendamento-linha1 input[type="date"]{width:132px;}
   .agendamento-linha1 input[type="time"]{width:98px;}
+  .loja-row{container-type:inline-size;}
   .agendamento-linha2{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;}
-  @media(max-width:520px){ .agendamento-linha2{grid-template-columns:1fr;} .agendamento-linha1 input[type="date"], .agendamento-linha1 input[type="time"]{width:auto; flex:1 1 120px;} }
+  @container (max-width:380px){ .agendamento-linha2{grid-template-columns:1fr;} }
+  @media(max-width:520px){ .agendamento-linha1 input[type="date"], .agendamento-linha1 input[type="time"]{width:auto; flex:1 1 120px;} }
   .badge{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; letter-spacing:.3px; text-transform:uppercase; white-space:nowrap;}
   .badge.nao_iniciado{background:var(--muted); color:#3a3a3a;}
   .badge.pendente_confirmacao{background:#E3E0F5; color:#5B3FA0;}
@@ -198,12 +203,28 @@
             <button class="config-item" id="btn-editar-loja-central"><span class="config-icon">✏️</span> Editar cadastro</button>
             <button class="config-item" id="btn-modo-selecao"><span class="config-icon">🗑️</span> Excluir cadastro</button>
           </div>
+          <button class="config-submenu-label" id="btn-toggle-submenu-import" type="button">
+            <span class="config-icon">📤</span> Importação/Exportação <span class="chevron" id="submenu-import-chevron">▾</span>
+          </button>
+          <div class="config-submenu-items" id="submenu-import">
+            <button class="config-item" id="btn-abrir-importar"><span class="config-icon">📥</span> Importar checklist offline</button>
+            <div id="importar-offline-box" class="hidden" style="padding:10px 8px 4px 22px;">
+              <div class="hint" style="margin-bottom:8px;">Selecione um ou vários arquivos .json baixados pelos técnicos. Você pode selecionar mais arquivos depois — eles se somam à fila.</div>
+              <div class="field"><label>Arquivos (.json)</label><input type="file" id="importar-arquivo" accept="application/json" multiple></div>
+              <div id="importar-fila" style="margin:10px 0;"></div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-primary btn-sm" id="btn-importar-confirmar">Importar</button>
+                <button class="btn btn-ghost btn-sm" id="btn-importar-cancelar">Cancelar</button>
+              </div>
+              <div id="importar-status" style="margin-top:8px;"></div>
+            </div>
+          </div>
         </nav>
       </aside>
       <div class="lojas-content">
+        <h2 style="font-size:22px; font-weight:700; color:var(--navy); text-align:center; margin:2px 0 16px;">Painel de Agendamento</h2>
         <div class="toolbar">
           <input type="text" id="search-loja" placeholder="Buscar loja...">
-          <button class="btn btn-ghost btn-sm" id="btn-abrir-importar">Importar checklist offline</button>
         </div>
         <div id="selecao-toolbar" class="hidden" style="display:flex; align-items:center; gap:10px; margin-bottom:12px; background:var(--bad-bg); border-radius:8px; padding:10px 12px;">
           <span id="selecao-contagem" style="font-size:12.5px; color:var(--bad); font-weight:600;">0 loja(s) selecionada(s)</span>
@@ -212,17 +233,6 @@
         </div>
         <div id="zerar-status" style="margin-bottom:10px;"></div>
         <div class="filtro-chips" id="filtro-chips-home"></div>
-        <div id="importar-offline-box" class="card hidden">
-          <h3 style="margin-top:0;">Importar checklist offline</h3>
-          <div class="hint" style="margin-bottom:8px;">Selecione um ou vários arquivos .json baixados pelos técnicos. Você pode selecionar mais arquivos depois — eles se somam à fila.</div>
-          <div class="field"><label>Arquivos (.json)</label><input type="file" id="importar-arquivo" accept="application/json" multiple></div>
-          <div id="importar-fila" style="margin:10px 0;"></div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" id="btn-importar-confirmar">Importar</button>
-            <button class="btn btn-ghost btn-sm" id="btn-importar-cancelar">Cancelar</button>
-          </div>
-          <div id="importar-status" style="margin-top:8px;"></div>
-        </div>
         <div id="lojas-list"></div>
       </div>
     </div>
@@ -1435,6 +1445,10 @@
     document.getElementById("btn-toggle-submenu").addEventListener("click", function(){
       document.getElementById("submenu-cadastro").classList.toggle("collapsed");
       document.getElementById("btn-toggle-submenu").classList.toggle("collapsed");
+    });
+    document.getElementById("btn-toggle-submenu-import").addEventListener("click", function(){
+      document.getElementById("submenu-import").classList.toggle("collapsed");
+      document.getElementById("btn-toggle-submenu-import").classList.toggle("collapsed");
     });
     document.getElementById("btn-duplicar-loja-central").addEventListener("click", function(){
       abrirModalDuplicar();
