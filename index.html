@@ -10,21 +10,19 @@
     --muted:#C7CDD1; --navy:#0E2841; --text-muted:#5B7280;
     --bg:#F7F9FA; --surface:#FFFFFF; --border:#E3E8EA;
     --ok:#1E7A46; --ok-bg:#E7F5EC; --warn:#8A6D00; --warn-bg:#FFF3C4; --bad:#B3261E; --bad-bg:#FCE8E6;
-    --radius:10px; --grad:linear-gradient(90deg, var(--teal), var(--teal-lt));
+    --radius:10px;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){ --bg:#0E1A22; --surface:#132530; --border:#22374290; --navy:#EAF1F4; --text-muted:#9FB3BC; --ok-bg:#123322; --warn-bg:#3A2E06; --bad-bg:#3A1512; }
   }
   :root[data-theme="dark"]{ --bg:#0E1A22; --surface:#132530; --border:#22374290; --navy:#EAF1F4; --text-muted:#9FB3BC; --ok-bg:#123322; --warn-bg:#3A2E06; --bad-bg:#3A1512; }
   *{box-sizing:border-box;}
-  body{margin:0; background-color:#F7F9FA; background-image:url('/_blob/eb71b62d1b379f89f7101778664c7497'), url('/_blob/9c37dfd095d1510590f72d09b2e5b14a'); background-repeat:repeat, repeat; background-size:180px 180px, 480px 270px; color:var(--navy); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased;}
-  header{background:var(--teal); color:#fff; padding:12px 16px; position:sticky; top:0; z-index:10;}
-  .header-inner{position:relative; display:flex; align-items:center; justify-content:space-between; width:100%; gap:10px; flex-wrap:wrap; min-height:34px;}
+  body{margin:0; background:var(--bg); color:var(--navy); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased;}
+  header{background:var(--teal); color:#fff; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; position:sticky; top:0; z-index:10;}
   header .brand{display:flex; align-items:center; gap:10px;}
   header .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);}
   header h1{font-size:15px; margin:0; font-weight:600; letter-spacing:.2px;}
   header .sub{font-size:11px; opacity:.85; margin-top:1px;}
-  header .brand-logo{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); height:32px; display:block;}
   nav{display:flex; gap:6px;}
   nav button{background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; padding:7px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; font-weight:500;}
   nav button.active{background:#fff; color:var(--teal); border-color:#fff;}
@@ -34,32 +32,12 @@
   input[type=text], input[type=date], select, textarea{font-family:inherit; font-size:13.5px; padding:9px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--navy); width:100%;}
   input:focus, select:focus, textarea:focus{outline:2px solid var(--teal-lt); outline-offset:-1px;}
   .toolbar input{flex:1; min-width:160px;}
-  .btn{border:none; border-radius:20px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;}
-  .btn-primary{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);} .btn-primary:hover{filter:brightness(1.05);} .btn-primary:disabled{opacity:.5; cursor:not-allowed; filter:none;}
-  .btn-ghost{background:transparent; color:var(--teal); border:1px solid var(--teal); border-radius:20px;}
-  .btn-danger{background:transparent; color:var(--bad); border:1px solid var(--bad); border-radius:20px;}
+  .btn{border:none; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;}
+  .btn-primary{background:var(--teal); color:#fff;} .btn-primary:hover{background:#025972;} .btn-primary:disabled{opacity:.5; cursor:not-allowed;}
+  .btn-ghost{background:transparent; color:var(--teal); border:1px solid var(--teal);}
+  .btn-danger{background:transparent; color:var(--bad); border:1px solid var(--bad);}
   .btn-sm{padding:6px 10px; font-size:12px;}
   .btn:disabled{opacity:.5; cursor:not-allowed;}
-  .config-item{display:flex; align-items:center; gap:9px; width:100%; box-sizing:border-box; text-align:left; padding:8px 6px 8px 22px; border:none; background:transparent; border-radius:6px; font-size:13px; font-weight:400; color:var(--text-muted); cursor:pointer; margin-bottom:1px; white-space:normal; overflow-wrap:break-word;}
-  .config-item:hover{background:var(--bg); color:var(--navy);}
-  .config-item .config-icon{font-size:13px; width:16px; text-align:center; flex-shrink:0; opacity:.75;}
-  .config-submenu-label{display:flex; align-items:center; gap:7px; width:100%; box-sizing:border-box; text-align:left; padding:8px 4px; border:none; background:transparent; border-radius:6px; font-size:13px; font-weight:600; color:var(--navy); cursor:pointer; white-space:nowrap;}
-  .config-submenu-label:hover{background:var(--bg);}
-  .config-submenu-label .chevron{margin-left:auto; font-size:11px; color:var(--text-muted); transition:transform .15s;}
-  .config-submenu-label.collapsed .chevron{transform:rotate(-90deg);}
-  .config-submenu-items{display:flex; flex-direction:column; overflow:hidden;}
-  .config-submenu-items.collapsed{display:none;}
-  .lojas-layout{display:flex; gap:22px; align-items:stretch;}
-  .config-sidebar{width:200px; min-width:200px; max-width:200px; flex-shrink:0; box-sizing:border-box; padding-right:14px; border-right:1px solid var(--border); position:sticky; top:70px; overflow:hidden;}
-  .config-sidebar h3{display:flex; align-items:center; gap:7px; margin:0 0 10px; font-size:13px; color:var(--text-muted); font-weight:600; letter-spacing:.2px;}
-  .config-sidebar nav{display:flex; flex-direction:column; width:100%;}
-  .lojas-content{flex:1; min-width:0;}
-  @media (max-width:700px){
-    .lojas-layout{flex-direction:column;}
-    .config-sidebar{width:100%; min-width:0; max-width:none; border-right:none; border-bottom:1px solid var(--border); padding-right:0; padding-bottom:10px; margin-bottom:6px; position:static; overflow:visible;}
-    .config-sidebar nav{flex-direction:row; flex-wrap:wrap; gap:6px;}
-    .config-item, .config-submenu-label{width:auto;}
-  }
   .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:10px;}
   .filtro-chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
   .chip{border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:6px 12px; border-radius:20px; font-size:11.5px; font-weight:600; cursor:pointer;}
@@ -154,23 +132,21 @@
   .cal-nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
   .cal-nav b{font-size:13.5px;}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <header>
-  <div class="header-inner">
-    <div class="brand"><span class="dot"></span><div><h1>Checklist de Preventivas</h1><div class="sub">Sephora 2026 · AlliedIT</div></div></div>
-    <img class="brand-logo" src="/_blob/6da2b07de5cee4e5a1065744c226eb5d" alt="AlliedIT">
-    <nav><button id="nav-lojas" class="active">Lojas</button><button id="nav-painel">Painel</button></nav>
-  </div>
+  <div class="brand"><span class="dot"></span><div><h1>Checklist de Preventivas</h1><div class="sub">Sephora 2026 · AlliedIT</div></div></div>
+  <nav><button id="nav-lojas" class="active">Lojas</button><button id="nav-painel">Painel</button></nav>
 </header>
 
 <main>
 
-  <div id="view-tecnico-id" class="hidden" style="display:flex; align-items:center; justify-content:center; min-height:70vh;">
-    <div class="card" style="max-width:420px; width:100%; margin:0; padding:30px 26px; border-radius:16px; box-shadow:0 10px 30px rgba(2,110,140,.08); border:none;">
-      <h3 style="margin:0 0 4px; text-align:center; font-size:19px; color:#000000;">Área do Técnico</h3>
-      <div class="hint" style="text-align:center; margin-bottom:18px;">Digite o código da loja para abrir o checklist.</div>
+  <div id="view-tecnico-id" class="hidden">
+    <div class="card" style="max-width:420px; margin:40px auto; padding:28px 22px;">
+      <h3 style="margin:0 0 4px; text-align:center;">Área do técnico</h3>
+      <div class="hint" style="text-align:center; margin-bottom:16px;">Digite o código da loja para abrir o checklist.</div>
       <div class="field">
         <label>Código da loja</label>
         <input type="text" id="tec-id-codigo" list="tec-lista-codigos" placeholder="Ex: 2305" inputmode="numeric">
@@ -178,54 +154,49 @@
       <datalist id="tec-lista-codigos"></datalist>
       <div class="field">
         <label>Nome da loja</label>
-        <input type="text" id="tec-id-nome" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
+        <input type="text" id="tec-id-nome" placeholder="Preenchido automaticamente" readonly>
       </div>
       <div class="hint" id="tec-id-erro" style="display:none; color:var(--bad);">Código não encontrado.</div>
-      <button class="btn btn-primary" id="tec-btn-abrir" disabled style="width:100%; margin-top:10px; padding:12px;">Abrir checklist desta loja</button>
+      <button class="btn btn-primary" id="tec-btn-abrir" disabled style="width:100%; margin-top:6px;">Abrir checklist desta loja</button>
     </div>
   </div>
 
   <div id="view-lojas" class="view active">
-    <div class="lojas-layout">
-      <aside class="config-sidebar">
-        <h3>⚙️ Configurações</h3>
-        <nav>
-          <button class="config-submenu-label" id="btn-toggle-submenu" type="button">
-            <span class="config-icon">📁</span> Cadastro de loja <span class="chevron" id="submenu-chevron">▾</span>
-          </button>
-          <div class="config-submenu-items" id="submenu-cadastro">
-            <button class="config-item" id="btn-duplicar-loja-central"><span class="config-icon">➕</span> Criar novo cadastro</button>
-            <button class="config-item" id="btn-editar-loja-central"><span class="config-icon">✏️</span> Editar cadastro</button>
-            <button class="config-item" id="btn-modo-selecao"><span class="config-icon">🗑️</span> Excluir cadastro</button>
-          </div>
-        </nav>
-      </aside>
-      <div class="lojas-content">
-        <div class="toolbar">
-          <input type="text" id="search-loja" placeholder="Buscar loja...">
-          <button class="btn btn-ghost btn-sm" id="btn-abrir-importar">Importar checklist offline</button>
+    <div class="toolbar">
+      <input type="text" id="search-loja" placeholder="Buscar loja...">
+      <button class="btn btn-ghost btn-sm" id="btn-abrir-importar">Importar checklist offline</button>
+      <button class="btn btn-ghost btn-sm" id="btn-abrir-config">⚙ Configurações</button>
+    </div>
+    <div id="selecao-toolbar" class="hidden" style="display:flex; align-items:center; gap:10px; margin-bottom:12px; background:var(--bad-bg); border-radius:8px; padding:10px 12px;">
+      <span id="selecao-contagem" style="font-size:12.5px; color:var(--bad); font-weight:600;">0 loja(s) selecionada(s)</span>
+      <button class="btn btn-danger btn-sm" id="btn-excluir-selecionadas" disabled>Excluir selecionadas</button>
+      <button class="btn btn-ghost btn-sm" id="btn-cancelar-selecao">Cancelar</button>
+    </div>
+    <div id="zerar-status" style="margin-bottom:10px;"></div>
+    <div class="filtro-chips" id="filtro-chips-home"></div>
+
+    <div id="config-overlay" class="hidden" onclick="if(event.target===this) document.getElementById('btn-fechar-config').click();" style="position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:40;">
+      <div id="painel-config" style="position:fixed; top:0; right:0; height:100%; width:280px; max-width:85vw; background:var(--surface); box-shadow:-4px 0 16px rgba(0,0,0,.2); padding:18px; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="margin:0; font-size:14px; color:var(--teal); text-transform:uppercase; letter-spacing:.4px;">Configurações</h3>
+          <button class="btn btn-ghost btn-sm" id="btn-fechar-config">✕</button>
         </div>
-        <div id="selecao-toolbar" class="hidden" style="display:flex; align-items:center; gap:10px; margin-bottom:12px; background:var(--bad-bg); border-radius:8px; padding:10px 12px;">
-          <span id="selecao-contagem" style="font-size:12.5px; color:var(--bad); font-weight:600;">0 loja(s) selecionada(s)</span>
-          <button class="btn btn-danger btn-sm" id="btn-excluir-selecionadas" disabled>Excluir selecionadas</button>
-          <button class="btn btn-ghost btn-sm" id="btn-cancelar-selecao">Cancelar</button>
-        </div>
-        <div id="zerar-status" style="margin-bottom:10px;"></div>
-        <div class="filtro-chips" id="filtro-chips-home"></div>
-        <div id="importar-offline-box" class="card hidden">
-          <h3 style="margin-top:0;">Importar checklist offline</h3>
-          <div class="hint" style="margin-bottom:8px;">Selecione um ou vários arquivos .json baixados pelos técnicos. Você pode selecionar mais arquivos depois — eles se somam à fila.</div>
-          <div class="field"><label>Arquivos (.json)</label><input type="file" id="importar-arquivo" accept="application/json" multiple></div>
-          <div id="importar-fila" style="margin:10px 0;"></div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" id="btn-importar-confirmar">Importar</button>
-            <button class="btn btn-ghost btn-sm" id="btn-importar-cancelar">Cancelar</button>
-          </div>
-          <div id="importar-status" style="margin-top:8px;"></div>
-        </div>
-        <div id="lojas-list"></div>
+        <button class="btn btn-ghost btn-sm" id="btn-modo-selecao" style="width:100%; margin-bottom:10px;">Selecionar e excluir lojas</button>
+        <button class="btn btn-ghost btn-sm" id="btn-duplicar-loja-central" style="width:100%;">Duplicar Loja</button>
       </div>
     </div>
+    <div id="importar-offline-box" class="card hidden">
+      <h3 style="margin-top:0;">Importar checklist offline</h3>
+      <div class="hint" style="margin-bottom:8px;">Selecione um ou vários arquivos .json baixados pelos técnicos. Você pode selecionar mais arquivos depois — eles se somam à fila.</div>
+      <div class="field"><label>Arquivos (.json)</label><input type="file" id="importar-arquivo" accept="application/json" multiple></div>
+      <div id="importar-fila" style="margin:10px 0;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary btn-sm" id="btn-importar-confirmar">Importar</button>
+        <button class="btn btn-ghost btn-sm" id="btn-importar-cancelar">Cancelar</button>
+      </div>
+      <div id="importar-status" style="margin-top:8px;"></div>
+    </div>
+    <div id="lojas-list"></div>
   </div>
 
   <div id="view-checklist" class="view">
@@ -391,6 +362,102 @@
   const LEDS_OPCOES = ["Proteção (vermelho)","Atenção (laranja)","Normal (azul)"];
 
   let db = null, assetsApi = null;
+
+  // ================== CONFIGURAÇÃO DO SUPABASE ==================
+  // Preencha com os dados do SEU projeto Supabase (Project Settings > API).
+  // Esses valores não são segredo: eles já ficam visíveis no HTML público,
+  // a segurança de verdade é controlada pelas Row Level Security (RLS) do projeto.
+  const SUPABASE_URL = "https://uxfjowfihfytxeirnexd.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_oJJxFqDz9fsmQ0BH7v2uYg_Mxvd3FBn";
+  const SUPABASE_BUCKET = "anexos";                             // nome do bucket de Storage criado
+  // =================================================================
+
+  // Adaptador: expõe a mesma API (collection/doc/get/set/update/delete/onSnapshot)
+  // que o restante do código já usa, só que por baixo dos panos fala com o Supabase.
+  // Isso preserva 100% da lógica de negócio já escrita — nada abaixo deste bloco precisa mudar.
+  function criarAdaptadorDb(sb){
+    function linhaParaDoc(row){ return Object.assign({id: row.id}, row.data||{}); }
+    function colecao(nome){
+      return {
+        get: async function(){
+          const { data, error } = await sb.from(nome).select("id,data");
+          if(error) throw error;
+          return { docs: (data||[]).map(function(row){ return { id: row.id, data: function(){ return row.data||{}; } }; }) };
+        },
+        orderBy: function(campo, direcao){
+          return {
+            onSnapshot: function(aoAtualizar, aoErrar){
+              let cancelado = false;
+              async function buscarTudo(){
+                if(cancelado) return;
+                try{
+                  const { data, error } = await sb.from(nome).select("id,data");
+                  if(error) throw error;
+                  const linhas = (data||[]).slice();
+                  linhas.sort(function(a,b){
+                    const va = (a.data && a.data[campo]) || "";
+                    const vb = (b.data && b.data[campo]) || "";
+                    const cmp = String(va).localeCompare(String(vb), "pt-BR");
+                    return direcao === "desc" ? -cmp : cmp;
+                  });
+                  const docs = linhas.map(function(row){ return { id: row.id, data: function(){ return row.data||{}; } }; });
+                  aoAtualizar({ docs: docs });
+                }catch(e){ if(aoErrar) aoErrar(e); }
+              }
+              buscarTudo();
+              const canal = sb.channel("realtime:"+nome)
+                .on("postgres_changes", { event: "*", schema: "public", table: nome }, buscarTudo)
+                .subscribe();
+              return function(){ cancelado = true; sb.removeChannel(canal); };
+            }
+          };
+        }
+      };
+    }
+    function documento(caminho){
+      const partes = caminho.split("/"); const tabela = partes[0], id = partes[1];
+      return {
+        get: async function(){
+          const { data, error } = await sb.from(tabela).select("data").eq("id", id).maybeSingle();
+          if(error) throw error;
+          return { exists: !!data, data: function(){ return data ? data.data : undefined; } };
+        },
+        set: async function(obj){
+          const { error } = await sb.from(tabela).upsert({ id: id, data: obj });
+          if(error) throw error;
+        },
+        update: async function(patch){
+          const { data: existente, error: e1 } = await sb.from(tabela).select("data").eq("id", id).maybeSingle();
+          if(e1) throw e1;
+          const mesclado = Object.assign({}, existente ? existente.data : {}, patch);
+          const { error } = await sb.from(tabela).upsert({ id: id, data: mesclado });
+          if(error) throw error;
+        },
+        delete: async function(){
+          const { error } = await sb.from(tabela).delete().eq("id", id);
+          if(error) throw error;
+        }
+      };
+    }
+    return { collection: colecao, doc: documento };
+  }
+
+  // Adaptador de anexos (fotos): usa o Supabase Storage no lugar do "assets" do Claude.
+  function criarAdaptadorAssets(sb, bucket){
+    return {
+      upload: async function(file){
+        const nomeSeguro = (file.name||"arquivo").replace(/[^a-zA-Z0-9._-]/g,"_");
+        const caminho = Date.now()+"_"+Math.random().toString(36).slice(2)+"_"+nomeSeguro;
+        const { error } = await sb.storage.from(bucket).upload(caminho, file, { upsert: true, contentType: file.type||undefined });
+        if(error) throw error;
+        const { data } = sb.storage.from(bucket).getPublicUrl(caminho);
+        return { id: caminho, url: data.publicUrl };
+      },
+      delete: async function(id){
+        try{ await sb.storage.from(bucket).remove([id]); }catch(e){}
+      }
+    };
+  }
   let lojasCache = [];
   let currentLojaId = null, currentLoja = null;
   let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
@@ -785,8 +852,9 @@
     modoTecnicoId = modoTecnico && !lojaParamId;
     if(modoTecnico){
       document.querySelector("header nav").style.display = "none";
-      document.querySelector("header .sub").textContent = "Área do Técnico";
+      document.querySelector("header .sub").textContent = "Área do técnico";
       document.getElementById("btn-abrir-importar").style.display = "none";
+      document.getElementById("btn-abrir-config").style.display = "none";
       if(lojaParamId) document.getElementById("btn-voltar-lojas").style.display = "none";
     }
     if(modoTecnicoId){
@@ -794,8 +862,11 @@
       document.getElementById("view-tecnico-id").classList.remove("hidden");
       document.getElementById("btn-voltar-lojas").textContent = "← Trocar de loja";
     }
-    try{ db = await claude.use("db"); }catch(e){ db = null; }
-    try{ assetsApi = await claude.use("assets"); }catch(e){ assetsApi = null; }
+    try{
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      db = criarAdaptadorDb(sb);
+      assetsApi = criarAdaptadorAssets(sb, SUPABASE_BUCKET);
+    }catch(e){ db = null; assetsApi = null; }
     if(!db){ document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível conectar ao armazenamento compartilhado. Recarregue a página.</div>'; return; }
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario();
     subscribeLojas();
@@ -813,7 +884,7 @@
     unsubLojas = db.collection("lojas").orderBy("nome","asc").onSnapshot(function(snap){
       lojasCache = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
       renderFiltroChipsHome(); renderLojasList();
-      if(modoTecnicoId){ renderTecIdDatalist(); validarCodigoTecnico(); }
+      if(modoTecnicoId) renderTecIdDatalist();
       if(!modoTecnico) renderPainel();
       if(currentLojaId){
         const badge = document.getElementById("cl-badge");
@@ -1030,7 +1101,12 @@
     const nomeInput = document.getElementById("tec-id-nome");
     const erroEl = document.getElementById("tec-id-erro");
     const btn = document.getElementById("tec-btn-abrir");
-    codigoInput.addEventListener("input", validarCodigoTecnico);
+    codigoInput.addEventListener("input", function(){
+      const codigo = codigoInput.value.trim();
+      const l = lojasCache.find(function(x){ return x.id === codigo; });
+      if(l){ nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false; }
+      else{ nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none"; }
+    });
     btn.addEventListener("click", function(){
       const codigo = codigoInput.value.trim();
       const l = lojasCache.find(function(x){ return x.id === codigo; });
@@ -1038,17 +1114,6 @@
       document.getElementById("view-tecnico-id").classList.add("hidden");
       tentarAbrirLoja(l.id, l);
     });
-  }
-  function validarCodigoTecnico(){
-    const codigoInput = document.getElementById("tec-id-codigo");
-    const nomeInput = document.getElementById("tec-id-nome");
-    const erroEl = document.getElementById("tec-id-erro");
-    const btn = document.getElementById("tec-btn-abrir");
-    if(!codigoInput) return;
-    const codigo = codigoInput.value.trim();
-    const l = lojasCache.find(function(x){ return x.id === codigo; });
-    if(l){ nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false; }
-    else{ nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none"; }
   }
   wireTecnicoId();
 
@@ -1106,7 +1171,7 @@
     modoSelecao = false;
     lojasSelecionadas.clear();
     document.getElementById("selecao-toolbar").classList.add("hidden");
-    document.getElementById("btn-modo-selecao").innerHTML = '<span class="config-icon">🗑️</span> Excluir cadastro';
+    document.getElementById("btn-modo-selecao").textContent = "Selecionar e excluir lojas";
     renderLojasList();
   }
 
@@ -1209,14 +1274,14 @@
     const c = document.getElementById("modal-container");
     const opcoesLojas = lojasCache.map(function(l){ return '<option value="'+l.id+'">'+escapeHtml(l.nome)+'</option>'; }).join("");
     c.innerHTML = '<div class="modal-overlay" id="modal-overlay"><div class="modal-box">' +
-      '<p><b>Criar nova loja</b><br>A nova loja começa com a estrutura de checklist já pronta, copiada de uma loja existente.</p>' +
-      '<div class="field"><label>Copiar estrutura de</label><select id="dup-origem">'+opcoesLojas+'</select></div>' +
+      '<p><b>Duplicar loja</b><br>A cópia terá todos os dados já preenchidos na loja de origem escolhida.</p>' +
+      '<div class="field"><label>Loja de origem</label><select id="dup-origem">'+opcoesLojas+'</select></div>' +
       '<div class="field"><label>Código da nova loja</label><input type="text" id="dup-codigo" placeholder="Ex: 9001"></div>' +
       '<div class="field"><label>Nome da nova loja</label><input type="text" id="dup-nome" placeholder="Ex: NOVA UNIDADE"></div>' +
       '<div class="hint" id="dup-erro" style="color:var(--bad); margin-bottom:8px;"></div>' +
       '<div style="display:flex; gap:8px; justify-content:flex-end;">' +
       '<button class="btn btn-ghost btn-sm" id="dup-cancelar">Cancelar</button>' +
-      '<button class="btn btn-primary btn-sm" id="dup-confirmar">Criar loja</button></div></div></div>';
+      '<button class="btn btn-primary btn-sm" id="dup-confirmar">Duplicar</button></div></div></div>';
     document.getElementById("dup-cancelar").addEventListener("click", function(){ c.innerHTML=""; });
     document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay") c.innerHTML=""; });
     document.getElementById("dup-confirmar").addEventListener("click", async function(){
@@ -1240,39 +1305,6 @@
     });
   }
 
-  function abrirModalEditar(){
-    const c = document.getElementById("modal-container");
-    const opcoesLojas = lojasCache.map(function(l){ return '<option value="'+l.id+'">'+escapeHtml(l.nome)+'</option>'; }).join("");
-    c.innerHTML = '<div class="modal-overlay" id="modal-overlay"><div class="modal-box">' +
-      '<p><b>Editar loja</b><br>Altere o nome de exibição da loja selecionada.</p>' +
-      '<div class="field"><label>Loja</label><select id="edit-loja">'+opcoesLojas+'</select></div>' +
-      '<div class="field"><label>Nome da loja</label><input type="text" id="edit-nome" placeholder="Ex: 2305 - NOVA UNIDADE"></div>' +
-      '<div class="hint" id="edit-erro" style="color:var(--bad); margin-bottom:8px;"></div>' +
-      '<div style="display:flex; gap:8px; justify-content:flex-end;">' +
-      '<button class="btn btn-ghost btn-sm" id="edit-cancelar">Cancelar</button>' +
-      '<button class="btn btn-primary btn-sm" id="edit-confirmar">Salvar</button></div></div></div>';
-    const selectLoja = document.getElementById("edit-loja");
-    const inputNome = document.getElementById("edit-nome");
-    function preencherNome(){
-      const loja = lojasCache.find(function(x){ return x.id === selectLoja.value; });
-      inputNome.value = loja ? loja.nome : "";
-    }
-    preencherNome();
-    selectLoja.addEventListener("change", preencherNome);
-    document.getElementById("edit-cancelar").addEventListener("click", function(){ c.innerHTML=""; });
-    document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay") c.innerHTML=""; });
-    document.getElementById("edit-confirmar").addEventListener("click", async function(){
-      const id = selectLoja.value;
-      const nome = inputNome.value.trim();
-      const erro = document.getElementById("edit-erro");
-      if(!nome){ erro.textContent = "Informe o nome da loja."; return; }
-      try{
-        await db.doc("lojas/"+id).update({ nome: nome, atualizadoEm: now() });
-        c.innerHTML = "";
-      }catch(e){ erro.textContent = "Não foi possível salvar: " + (e.message||String(e)); }
-    });
-  }
-
   function wireLojasView(){
     document.getElementById("search-loja").addEventListener("input", renderLojasList);
     // Ao sair de um campo rápido (Chamado/Protocolo/Técnico/Data/Hora), aplica a
@@ -1288,22 +1320,23 @@
         if(!aindaEditando) renderLojasList();
       }, 0);
     });
-    document.getElementById("btn-toggle-submenu").addEventListener("click", function(){
-      document.getElementById("submenu-cadastro").classList.toggle("collapsed");
-      document.getElementById("btn-toggle-submenu").classList.toggle("collapsed");
+    document.getElementById("btn-abrir-config").addEventListener("click", function(){
+      document.getElementById("config-overlay").classList.remove("hidden");
+    });
+    document.getElementById("btn-fechar-config").addEventListener("click", function(){
+      document.getElementById("config-overlay").classList.add("hidden");
     });
     document.getElementById("btn-duplicar-loja-central").addEventListener("click", function(){
+      document.getElementById("config-overlay").classList.add("hidden");
       abrirModalDuplicar();
-    });
-    document.getElementById("btn-editar-loja-central").addEventListener("click", function(){
-      abrirModalEditar();
     });
     document.getElementById("btn-modo-selecao").addEventListener("click", function(){
       modoSelecao = !modoSelecao;
       lojasSelecionadas.clear();
       document.getElementById("selecao-toolbar").classList.toggle("hidden", !modoSelecao);
-      document.getElementById("btn-modo-selecao").innerHTML = modoSelecao ? '<span class="config-icon">✕</span> Sair da seleção' : '<span class="config-icon">🗑️</span> Excluir cadastro';
+      document.getElementById("btn-modo-selecao").textContent = modoSelecao ? "Sair da seleção" : "Selecionar e excluir lojas";
       atualizarContagemSelecao();
+      document.getElementById("config-overlay").classList.add("hidden");
       renderLojasList();
     });
     document.getElementById("btn-cancelar-selecao").addEventListener("click", sairModoSelecao);
@@ -1386,7 +1419,7 @@
     const blob = dataURLtoBlob(base64);
     const file = new File([blob], nomeBase+"."+(blob.type.split("/")[1]||"jpg"), {type: blob.type});
     const result = await assetsApi.upload(file);
-    return {id: result.id};
+    return {id: result.id, url: result.url};
   }
 
   async function importarDados(dados){
@@ -1786,7 +1819,7 @@
         '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="multifuncional.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.multifuncional.obs)+'</textarea></div>' +
         '<div class="field"><label>Relatório de Uso</label><div class="hint" style="margin:0 0 6px;">Faça a impressão do Relatório de Uso e anexe o arquivo/foto correspondente.</div>' +
           (s.multifuncional.relatorioUso && s.multifuncional.relatorioUso.id ?
-            '<img src="/_blob/'+s.multifuncional.relatorioUso.id+'" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:6px;">' +
+            '<img src="'+escapeHtml(s.multifuncional.relatorioUso.url||"")+'" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:6px;">' +
             '<button type="button" class="btn btn-danger btn-sm" data-remove-relatorio="'+setorKey+'">Remover anexo</button>'
             : '<input type="file" accept="image/*" data-relatorio-input="'+setorKey+'">') +
         '</div></div>' +
@@ -2104,7 +2137,7 @@
     if(!assetsApi){ preview.innerHTML = '<div class="hint">Envio de foto indisponível nesta visualização.</div>'; input.style.display="none"; return; }
     input.style.display = "block";
     if(currentLoja.ratFoto && currentLoja.ratFoto.id){
-      preview.innerHTML = '<img src="/_blob/'+currentLoja.ratFoto.id+'" alt="Foto do RAT" style="max-width:100%; max-height:260px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:8px;">' +
+      preview.innerHTML = '<img src="'+escapeHtml(currentLoja.ratFoto.url||"")+'" alt="Foto do RAT" style="max-width:100%; max-height:260px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:8px;">' +
         '<button type="button" class="btn btn-danger btn-sm" id="rat-foto-remover">Remover foto</button>';
       input.value = "";
       document.getElementById("rat-foto-remover").addEventListener("click", async function(){
