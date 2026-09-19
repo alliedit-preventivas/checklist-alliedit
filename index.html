@@ -271,10 +271,13 @@
       </span>
     </div>
 
-    <div class="field" style="max-width:220px;">
-      <label>Início do atendimento</label>
-      <input type="time" id="cl-horario-inicio">
-    </div>
+    <section class="block">
+      <h3>Início do atendimento</h3>
+      <div class="field" style="max-width:220px;">
+        <label>Horário de início</label>
+        <input type="time" id="cl-horario-inicio">
+      </div>
+    </section>
 
     <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
 
@@ -558,7 +561,21 @@
   function atualizarTempoAtendimento(){
     const duracao = calcularDuracao(currentLoja.horarioInicio, currentLoja.horarioFim);
     document.getElementById("cl-tempo-atendimento").textContent = duracao ? ("Tempo de atendimento: " + duracao) : "";
-    document.getElementById("cl-tempo-atendimento-fim").textContent = duracao ? ("Tempo total de atendimento: " + duracao) : "Preencha os dois horários para calcular o tempo total.";
+    const elFim = document.getElementById("cl-tempo-atendimento-fim");
+    let html = '<div style="color:var(--ok);">Tempo estimado de até 3 horas de atendimento.</div>';
+    if(!duracao){ elFim.innerHTML = html; return; }
+    html += '<div style="color:var(--teal);">Tempo total de atendimento: ' + duracao + '</div>';
+    const pi = String(currentLoja.horarioInicio).split(":"), pf = String(currentLoja.horarioFim).split(":");
+    const mi = (+pi[0])*60 + (+pi[1]);
+    let mf = (+pf[0])*60 + (+pf[1]);
+    if(mf < mi) mf += 24*60;
+    const excedente = (mf - mi) - 180; // limite de 3h
+    if(excedente > 0){
+      const eh = Math.floor(excedente/60), em = excedente%60;
+      const excTxt = (eh>0 ? eh+"h " : "") + em + "min";
+      html += '<div style="color:var(--bad);">Tempo Excedido: ' + excTxt + '</div>';
+    }
+    elFim.innerHTML = html;
   }
   function fmtDateBR(iso){ if(!iso) return ""; const p=iso.split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : iso; }
   function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
