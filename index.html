@@ -456,7 +456,24 @@
           const channel = sb.channel("realtime:"+table)
             .on("postgres_changes", { event: "*", schema: "public", table: table }, function(){ fetchAndEmit(); })
             .subscribe();
-          return function unsubscribe(){ closed = true; sb.removeChannel(channel); };
+          // Rede de segurança: a conexão em tempo real pode cair silenciosamente
+          // (redes de loja/celular instáveis, aba em segundo plano). Reconsulta
+          // periodicamente e sempre que a aba volta a ficar visível ou a conexão
+          // de internet é restabelecida, para nunca deixar os dados presos.
+          const pollInterval = setInterval(function(){ if(!closed) fetchAndEmit(); }, 20000);
+          const onVisible = function(){ if(!closed && document.visibilityState === "visible") fetchAndEmit(); };
+          const onOnline = function(){ if(!closed) fetchAndEmit(); };
+          document.addEventListener("visibilitychange", onVisible);
+          window.addEventListener("online", onOnline);
+          window.addEventListener("focus", onVisible);
+          return function unsubscribe(){
+            closed = true;
+            sb.removeChannel(channel);
+            clearInterval(pollInterval);
+            document.removeEventListener("visibilitychange", onVisible);
+            window.removeEventListener("online", onOnline);
+            window.removeEventListener("focus", onVisible);
+          };
         },
         get: async function(){
           const { data, error } = await sb.from(table).select("id,data");
@@ -1644,7 +1661,9 @@
               rack: blankRack(), gerencia: blankSetorEquip(), estoque: blankSetorEquip(), notebooks: blankNotebooks(), pdvs: [], mobiles:[], dvrs:[],
               criadoEm: now(), atualizadoEm: now()
             });
-          }else if(existingById.get(codigo).nome !== nomeEsperado){ await db.doc("lojas/"+codigo).update({ nome: nomeEsperado }); }
+          }
+          // Não sobrescreve mais o nome de lojas já existentes: uma vez criada,
+          // o nome só muda por ação explícita em "Editar cadastro".
         }catch(e){ /* isola por loja para não travar a correção de status abaixo */ }
       }
       for(const [codigo, dados] of existingById){
