@@ -1974,7 +1974,10 @@
         '<div class="field"><label>Relatório de Uso</label><div class="hint" style="margin:0 0 6px;">Faça a impressão do Relatório de Uso e anexe o arquivo/foto correspondente.</div>' +
           (s.multifuncional.relatorioUso && s.multifuncional.relatorioUso.id ?
             '<img src="'+s.multifuncional.relatorioUso.id+'" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:6px;">' +
-            '<button type="button" class="btn btn-danger btn-sm" data-remove-relatorio="'+setorKey+'">Remover anexo</button>'
+            '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+            '<a class="btn btn-ghost btn-sm" href="'+s.multifuncional.relatorioUso.id+'" download target="_blank" rel="noopener">Salvar anexo</a>' +
+            '<button type="button" class="btn btn-danger btn-sm" data-remove-relatorio="'+setorKey+'">Remover anexo</button>' +
+            '</div>'
             : '<input type="file" accept="image/*" data-relatorio-input="'+setorKey+'">') +
         '</div></div>' +
 
@@ -2305,7 +2308,10 @@
     input.style.display = "block";
     if(currentLoja.ratFoto && currentLoja.ratFoto.id){
       preview.innerHTML = '<img src="'+currentLoja.ratFoto.id+'" alt="Foto do RAT" style="max-width:100%; max-height:260px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:8px;">' +
-        '<button type="button" class="btn btn-danger btn-sm" id="rat-foto-remover">Remover foto</button>';
+        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+        '<a class="btn btn-ghost btn-sm" href="'+currentLoja.ratFoto.id+'" download target="_blank" rel="noopener">Salvar anexo</a>' +
+        '<button type="button" class="btn btn-danger btn-sm" id="rat-foto-remover">Remover foto</button>' +
+        '</div>';
       input.value = "";
       document.getElementById("rat-foto-remover").addEventListener("click", async function(){
         const id = currentLoja.ratFoto.id; currentLoja.ratFoto = null; renderRatFoto(); scheduleSave();
