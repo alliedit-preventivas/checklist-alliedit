@@ -458,10 +458,6 @@
           const channel = sb.channel("realtime:"+table)
             .on("postgres_changes", { event: "*", schema: "public", table: table }, function(){ fetchAndEmit(); })
             .subscribe();
-          // Rede de segurança: a conexão em tempo real pode cair silenciosamente
-          // (redes de loja/celular instáveis, aba em segundo plano). Reconsulta
-          // periodicamente e sempre que a aba volta a ficar visível ou a conexão
-          // de internet é restabelecida, para nunca deixar os dados presos.
           const pollInterval = setInterval(function(){ if(!closed) fetchAndEmit(); }, 20000);
           const onVisible = function(){ if(!closed && document.visibilityState === "visible") fetchAndEmit(); };
           const onOnline = function(){ if(!closed) fetchAndEmit(); };
@@ -595,7 +591,7 @@
 
   // ---------------- blank data builders ----------------
   function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
-  function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, obs:"" }; }
+  function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, hd:{quantidade:"", erro:null}, obs:"" }; }
   function blankDesktop(){ return {hostname:"", serie:"", modelo:"", estado:"", obs:""}; }
   function blankPerif(){ return {tipo:"", estado:""}; }
   function blankSetorEquip(){
@@ -673,6 +669,7 @@
     if(d.portasDanificadas && !Array.isArray(d.portasDanificadas.portas)) d.portasDanificadas.portas = [];
     if(d.camerasSemFuncionar && !Array.isArray(d.camerasSemFuncionar.quais)) d.camerasSemFuncionar.quais = [];
     if(!d.monitorCftv) d.monitorCftv = {possui:null};
+    if(!d.hd) d.hd = {quantidade:"", erro:null};
     if(d.tipo === "Ambos") d.tipo = "";
     return d;
   }
@@ -2104,14 +2101,14 @@
           '<span><button type="button" class="btn btn-ghost btn-sm" data-clear-dvr="'+idx+'">Limpar</button> ' + (idx>0 ? '<button type="button" class="remove-x" data-remove-dvr="'+idx+'">&times;</button>' : '') + '</span></div>' +
         (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Até 3 DVRs por loja</div>' : '') +
         '<div class="field-row">' +
-          '<div class="field"><label>Nº Série</label><input type="text" data-dvr="serie" data-idx="'+idx+'" value="'+escapeHtml(d.serie)+'"></div>' +
+          '<div class="field"><label>Nº Série ou Modelo</label><input type="text" data-dvr="serie" data-idx="'+idx+'" value="'+escapeHtml(d.serie)+'"></div>' +
           '<div class="field"><label>Analógico ou IP?</label><div class="toggle-group" data-dvr-select="tipo" data-idx="'+idx+'">' +
             '<button type="button" class="toggle-btn'+(d.tipo==="Analógico"?' on-good':'')+'" data-val="Analógico">Analógico</button>' +
             '<button type="button" class="toggle-btn'+(d.tipo==="IP"?' on-good':'')+'" data-val="IP">IP</button></div></div>' +
         '</div>' +
         '<div class="field"><label>Possui câmeras com defeito/falha?</label><div class="toggle-group" data-dvr-toggle="camerasSemFuncionar" data-idx="'+idx+'">' +
-          '<button type="button" class="toggle-btn'+(d.camerasSemFuncionar.tem===true?' on-bad':'')+'" data-val="true">FALHA/DEFEITO</button>' +
-          '<button type="button" class="toggle-btn'+(d.camerasSemFuncionar.tem===false?' on-good':'')+'" data-val="false">FUNCIONANDO</button></div>' +
+          '<button type="button" class="toggle-btn'+(d.camerasSemFuncionar.tem===true?' on-bad':'')+'" data-val="true">Defeito ou Falha</button>' +
+          '<button type="button" class="toggle-btn'+(d.camerasSemFuncionar.tem===false?' on-good':'')+'" data-val="false">Funcionando</button></div>' +
           (d.camerasSemFuncionar.tem===true ? '<div class="ports-grid">' + CAMS.map(function(c){ const on=d.camerasSemFuncionar.quais.indexOf(c)!==-1; return '<button type="button" class="port-chk'+(on?' on':'')+'" data-dvr-cam="'+idx+'" data-cam="'+c+'">CAM '+c+'</button>'; }).join("") + '</div>' : '') + '</div>' +
         '<div class="field"><label>Existem portas danificadas?</label><div class="toggle-group" data-dvr-toggle="portasDanificadas" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(d.portasDanificadas.tem===true?' on-bad':'')+'" data-val="true">Sim</button>' +
@@ -2120,6 +2117,12 @@
         '<div class="field"><label>Possui monitor de CFTV?</label><div class="toggle-group" data-dvr-toggle="monitorCftv" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(d.monitorCftv.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
           '<button type="button" class="toggle-btn'+(d.monitorCftv.possui===false?' on-bad':'')+'" data-val="false">Não</button></div></div>' +
+        '<div class="field"><label>Quantos HDs este equipamento possui?</label><div class="toggle-group" data-dvr-select="hdQtd" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(d.hd.quantidade==="01"?' on-good':'')+'" data-val="01">01</button>' +
+          '<button type="button" class="toggle-btn'+(d.hd.quantidade==="02"?' on-good':'')+'" data-val="02">02</button></div></div>' +
+        '<div class="field"><label>O HD apresenta algum erro?</label><div class="toggle-group" data-dvr-toggle="hdErro" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(d.hd.erro===true?' on-bad':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(d.hd.erro===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
         '<div class="field"><label>Observação</label><textarea data-dvr="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(d.obs)+'</textarea></div>' +
       '</div>';
     }).join("");
@@ -2132,7 +2135,13 @@
       });
     });
     wrap.querySelectorAll("[data-dvr-select]").forEach(function(group){
-      group.addEventListener("click", function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; currentLoja.dvrs[+group.dataset.idx].tipo = b.dataset.val; renderDvrs(); scheduleSave(); });
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        const idx=+group.dataset.idx, key=group.dataset.dvrSelect, d=currentLoja.dvrs[idx];
+        if(key==="hdQtd"){ d.hd.quantidade = b.dataset.val; }
+        else{ d.tipo = b.dataset.val; }
+        renderDvrs(); scheduleSave();
+      });
     });
     wrap.querySelectorAll("[data-dvr-toggle]").forEach(function(group){
       group.addEventListener("click", function(e){
@@ -2141,6 +2150,7 @@
         if(key==="camerasSemFuncionar"){ d.camerasSemFuncionar.tem=val; if(!val) d.camerasSemFuncionar.quais=[]; }
         if(key==="portasDanificadas"){ d.portasDanificadas.tem=val; if(!val) d.portasDanificadas.portas=[]; }
         if(key==="monitorCftv"){ d.monitorCftv.possui=val; }
+        if(key==="hdErro"){ d.hd.erro=val; }
         renderDvrs(); scheduleSave();
       });
     });
