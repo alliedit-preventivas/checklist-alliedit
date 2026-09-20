@@ -1327,11 +1327,11 @@
     const dropdown = document.getElementById("tec-id-dropdown");
     if(dropdown && !dropdown.classList.contains("hidden")) abrirDropdownTecnico();
   }
-  function abrirDropdownTecnico(){
+  function abrirDropdownTecnico(mostrarTudo){
     const dropdown = document.getElementById("tec-id-dropdown");
     const codigoInput = document.getElementById("tec-id-codigo");
     if(!dropdown || !codigoInput) return;
-    const termo = codigoInput.value.trim().toLowerCase();
+    const termo = mostrarTudo ? "" : codigoInput.value.trim().toLowerCase();
     const lista = lojasCache.filter(function(l){
       if(!termo) return true;
       return l.id.toLowerCase().indexOf(termo) !== -1 || (l.nome||"").toLowerCase().indexOf(termo) !== -1;
@@ -1364,9 +1364,9 @@
     const nomeInput = document.getElementById("tec-id-nome");
     const erroEl = document.getElementById("tec-id-erro");
     const btn = document.getElementById("tec-btn-abrir");
-    codigoInput.addEventListener("input", function(){ validarCodigoTecnico(); abrirDropdownTecnico(); });
-    codigoInput.addEventListener("focus", abrirDropdownTecnico);
-    codigoInput.addEventListener("click", abrirDropdownTecnico);
+    codigoInput.addEventListener("input", function(){ validarCodigoTecnico(); abrirDropdownTecnico(false); });
+    codigoInput.addEventListener("focus", function(){ codigoInput.select(); abrirDropdownTecnico(true); });
+    codigoInput.addEventListener("click", function(){ abrirDropdownTecnico(true); });
     codigoInput.addEventListener("blur", function(){ setTimeout(fecharDropdownTecnico, 150); });
     document.addEventListener("click", function(e){
       if(e.target !== codigoInput && !document.getElementById("tec-id-dropdown").contains(e.target)) fecharDropdownTecnico();
