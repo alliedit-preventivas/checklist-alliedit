@@ -1879,7 +1879,8 @@
     bloqueadoPorConclusao = (data.status === "concluido") && !desbloqueado;
     currentLoja = JSON.parse(JSON.stringify({
       nome: data.nome||"", tecnico:data.tecnico||"", chamado:data.chamado||"", protocolo:data.protocolo||"",
-      responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", status:data.status||"nao_iniciado",
+      responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", agendamentoPrevisto:data.agendamentoPrevisto||"",
+      dadosTecnico:data.dadosTecnico||"", status:data.status||"nao_iniciado",
       horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       rack: migrarRack(data.rack),
