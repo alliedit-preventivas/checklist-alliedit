@@ -39,7 +39,7 @@
   nav{display:flex; gap:6px;}
   nav button{background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; padding:7px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; font-weight:500; user-select:none; -webkit-user-select:none;}
   nav button.active{background:#fff; color:var(--teal); border-color:#fff;}
-  main{max-width:1390px; margin:0 auto; padding:16px 14px 80px;}
+  main{max-width:1440px; margin:0 auto; padding:16px 14px 80px;}
   #view-checklist{max-width:620px; margin:0 auto;}
   .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
   .toolbar{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
@@ -61,11 +61,34 @@
   .config-submenu-label.collapsed .chevron{transform:rotate(-90deg);}
   .config-submenu-items{display:flex; flex-direction:column; overflow:hidden;}
   .config-submenu-items.collapsed{display:none;}
-  .lojas-layout{display:flex; gap:22px; align-items:stretch;}
-  .config-sidebar{width:200px; min-width:200px; max-width:200px; flex-shrink:0; box-sizing:border-box; padding-right:14px; border-right:1px solid var(--border); position:sticky; top:70px; overflow:hidden;}
+  .lojas-layout{display:flex; gap:18px; align-items:stretch;}
+  .config-sidebar{width:170px; min-width:170px; max-width:170px; flex-shrink:0; box-sizing:border-box; padding-right:10px; border-right:1px solid var(--border); position:sticky; top:70px; overflow:hidden;}
   .config-sidebar h3{display:flex; align-items:center; gap:7px; margin:0 0 10px; font-size:13px; color:var(--text-muted); font-weight:600; letter-spacing:.2px;}
   .config-sidebar nav{display:flex; flex-direction:column; width:100%;}
   .lojas-content{flex:1; min-width:0;}
+  .status-sidebar{width:340px; min-width:340px; max-width:340px; flex-shrink:0; box-sizing:border-box; padding-left:12px; border-left:1px solid var(--border); position:sticky; top:70px; align-self:flex-start;}
+  .status-cols{display:flex; gap:14px;}
+  .status-col{flex:1; min-width:0; position:relative;}
+  .status-col:first-child{padding-right:14px; border-right:1px solid var(--border);}
+  .status-col-title{font-size:12px; font-weight:700; color:var(--navy); text-align:center; margin-bottom:4px;}
+  .status-col-sub{font-size:11px; font-weight:700; color:var(--teal); text-align:center; letter-spacing:.4px; margin-bottom:10px;}
+  @media (max-width:980px){
+    .status-cols{flex-direction:column;}
+    .status-col:first-child{padding-right:0; border-right:none; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:4px;}
+  }
+  .status-sidebar h3{margin:0 0 12px; font-size:13px; color:var(--teal); font-weight:700; letter-spacing:.4px; text-align:center; text-transform:uppercase;}
+  @media (min-width:981px){
+    .titulo-painel-lojas{padding-left:188px; padding-right:358px; box-sizing:border-box;}
+  }
+  .status-filter-list{display:flex; flex-direction:column; gap:8px;}
+  .status-filter-item{border:none; background:var(--surface); color:var(--navy); box-shadow:0 1px 3px rgba(14,40,65,.08); padding:9px 14px; border-radius:20px; font-size:12.5px; font-weight:600; cursor:pointer; user-select:none; -webkit-user-select:none; text-align:center; transition:filter .15s;}
+  .status-filter-item:hover{filter:brightness(1.05);}
+  .status-filter-item.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);}
+  @media (max-width:980px){
+    .status-sidebar{width:100%; min-width:0; max-width:none; border-left:none; border-top:1px solid var(--border); padding-left:0; padding-top:12px; margin-top:10px; position:static;}
+    .status-filter-list{flex-direction:row; flex-wrap:wrap;}
+    .status-filter-item{flex:1 1 auto;}
+  }
   @media (max-width:700px){
     .lojas-layout{flex-direction:column;}
     .config-sidebar{width:100%; min-width:0; max-width:none; border-right:none; border-bottom:1px solid var(--border); padding-right:0; padding-bottom:10px; margin-bottom:6px; position:static; overflow:visible;}
@@ -95,12 +118,13 @@
   @container (max-width:380px){ .agendamento-linha2{grid-template-columns:1fr;} }
   @media(max-width:520px){ .agendamento-linha1 input[type="date"], .agendamento-linha1 input[type="time"]{width:auto; flex:1 1 120px;} }
   .badge{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; letter-spacing:.3px; text-transform:uppercase; white-space:nowrap;}
-  .badge.nao_iniciado{background:var(--muted); color:#3a3a3a;}
-  .badge.pendente_confirmacao{background:#E3E0F5; color:#5B3FA0;}
+  .badge.nao_iniciado{background:#E4E4E4; color:#111111;}
   .badge.aguardando{background:#FBE3D0; color:#B0560F;}
   .badge.liberado{background:#D8ECD9; color:#2E7D32;}
   .badge.em_andamento{background:var(--warn-bg); color:var(--warn);}
-  .badge-bloco{display:inline-block; border-radius:8px; padding:4px 10px; text-align:right; line-height:1.3;}
+  .badge.reagendar{background:var(--warn-bg); color:var(--warn);}
+  .badge.em_prospeccao_tecnico{background:#DCEEFB; color:#0B5A8A;}
+  .badge-bloco{display:inline-block; border-radius:8px; padding:4px 10px; text-align:right; line-height:1.3; white-space:normal; max-width:220px;}
   .badge-bloco .linha1{font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.3px;}
   .badge-bloco .linha2{font-size:11px; font-weight:600;}
   .badge.concluido{background:var(--ok-bg); color:var(--ok);}
@@ -202,6 +226,7 @@
   </div>
 
   <div id="view-lojas" class="view active">
+    <h2 class="titulo-painel-lojas" style="font-size:22px; font-weight:700; color:var(--teal); text-align:center; margin:2px 0 16px;">Painel de Agendamento</h2>
     <div class="lojas-layout">
       <aside class="config-sidebar">
         <h3>⚙️ Configurações</h3>
@@ -233,7 +258,6 @@
         </nav>
       </aside>
       <div class="lojas-content">
-        <h2 style="font-size:22px; font-weight:700; color:var(--navy); text-align:center; margin:2px 0 16px;">Painel de Agendamento</h2>
         <div class="toolbar">
           <input type="text" id="search-loja" placeholder="Buscar loja...">
         </div>
@@ -243,9 +267,23 @@
           <button class="btn btn-ghost btn-sm" id="btn-cancelar-selecao">Cancelar</button>
         </div>
         <div id="zerar-status" style="margin-bottom:10px;"></div>
-        <div class="filtro-chips" id="filtro-chips-home"></div>
         <div id="lojas-list"></div>
       </div>
+      <aside class="status-sidebar">
+        <h3>Responsabilidade</h3>
+        <div class="status-cols">
+          <div class="status-col">
+            <div class="status-col-title">Service Desk</div>
+            <div class="status-col-sub">STATUS</div>
+            <div class="status-filter-list" id="filtro-chips-servicedesk"></div>
+          </div>
+          <div class="status-col">
+            <div class="status-col-title">Time Agendamento</div>
+            <div class="status-col-sub">STATUS</div>
+            <div class="status-filter-list" id="filtro-chips-agendamento"></div>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -433,7 +471,7 @@
   function wifiSelectHtml(dataAttrs, value){
     return '<select '+dataAttrs+'><option value="">Selecionar</option>' + WIFI_OPCOES.map(function(o){ return '<option value="'+o.v+'"'+(value===o.v?' selected':'')+'>'+o.label+'</option>'; }).join("") + '</select>';
   }
-  const STATUS_LABEL = {nao_iniciado:"Não Iniciado", pendente_confirmacao:"Pendente: Aguardando Confirmação Técnica", aguardando:"Aguardando", liberado:"Atendimento Agendado", em_andamento:"Em Andamento", concluido:"Concluído"};
+  const STATUS_LABEL = {nao_iniciado:"Não Iniciado", aguardando:"Aguardando", liberado:"Confirmado", em_andamento:"Andamento", reagendar:"Reagendar", em_prospeccao_tecnico:"Prospecção", concluido:"Concluídos"};
   const LEDS_OPCOES = ["Proteção (vermelho)","Atenção (laranja)","Normal (azul)"];
 
   // ---------------- Supabase config ----------------
@@ -614,27 +652,23 @@
           P=!!(l.protocolo&&l.protocolo.trim()), T=!!(l.tecnico&&l.tecnico.trim()), DT=!!(l.dadosTecnico&&l.dadosTecnico.trim());
     if(!D && !HP && !C && !P && !T && !DT) return {status:"nao_iniciado", detalhe:""};
     if(D && HP && C && P && T && DT) return {status:"liberado", detalhe:""};
-    if(D && !HP && !C && !P && !T && !DT) return {status:"pendente_confirmacao", detalhe:"Aguardando confirmação técnica"};
     const faltando = [];
-    if(T){
-      if(!D) faltando.push("Data");
-      if(!C) faltando.push("Chamado");
-      if(!P) faltando.push("Protocolo");
-      if(!DT) faltando.push("Dados do Técnico");
-      if(faltando.length===0) faltando.push("Hora Prevista");
-    }else{
-      if(!D) faltando.push("Data");
-      if(!HP) faltando.push("Hora Prevista");
-      if(!C) faltando.push("Chamado");
-      if(!P) faltando.push("Protocolo");
-      faltando.push("Nome do Técnico");
-      if(!DT) faltando.push("Dados do Técnico");
-    }
+    if(!D) faltando.push("Data");
+    if(!HP) faltando.push("Hora Prevista");
+    if(!C) faltando.push("Chamado");
+    if(!P) faltando.push("Protocolo");
+    if(!T) faltando.push("Nome do Técnico");
+    if(!DT) faltando.push("Dados do Técnico");
     return {status:"aguardando", detalhe: faltando.join(", ")};
   }
   function statusDetalheAgendamento(l){ return statusAgendamentoDetalhado(l).detalhe; }
+  // Ordem de prioridade: Concluído > Em Prospecção de Técnico > Reagendar > Em Andamento > (Aguardando/Atendimento Confirmado/Não Iniciado).
+  // Os três primeiros são status manuais e "grudam" (não são recalculados) até serem explicitamente alterados por uma ação do usuário.
   function statusAutomatico(l){
-    if(lojaTemDados(l)) return "em_andamento";
+    if(l.status === "concluido") return "concluido";
+    if(l.status === "em_prospeccao_tecnico") return "em_prospeccao_tecnico";
+    if(l.status === "reagendar") return "reagendar";
+    if(!!l.horarioInicio) return "em_andamento"; // o técnico já iniciou o atendimento no formulário
     return statusAgendamentoDetalhado(l).status;
   }
 
@@ -746,7 +780,8 @@
       notebooks: migrarNotebooks(dados.notebooks), wifiStage: dados.wifiStage||{barras:"", obs:""},
       pdvs: (dados.pdvs||[]).map(migrarPdv), mobiles: dados.mobiles||[], dvrs: (dados.dvrs||[]).map(migrarDvr),
       agendamento: dados.agendamento||"", agendamentoPrevisto: dados.agendamentoPrevisto||"",
-      chamado: dados.chamado||"", protocolo: dados.protocolo||"", tecnico: dados.tecnico||"", dadosTecnico: dados.dadosTecnico||""
+      chamado: dados.chamado||"", protocolo: dados.protocolo||"", tecnico: dados.tecnico||"", dadosTecnico: dados.dadosTecnico||"",
+      status: dados.status||"", horarioInicio: dados.horarioInicio||"", reagendamentos: dados.reagendamentos||0
     };
   }
 
@@ -1053,25 +1088,46 @@
     });
   }
 
-  const FILTRO_STATUS_ORDEM = ["nao_iniciado","pendente_confirmacao","aguardando","liberado","em_andamento","concluido","atrasada"];
+  const GRUPO_SERVICE_DESK = ["falta_chamado","falta_protocolo","liberado","em_andamento","concluido"];
+  const GRUPO_AGENDAMENTO = ["nao_iniciado","falta_tecnico","reagendar","atrasada","em_prospeccao_tecnico"];
   function renderFiltroChipsHome(){
-    const wrap = document.getElementById("filtro-chips-home");
     const hoje = todayStr();
     function count(key){
       if(key==="atrasada") return lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
       return lojasCache.filter(function(l){ return l.status===key; }).length;
     }
-    wrap.innerHTML = FILTRO_STATUS_ORDEM.map(function(key){
-      const label = key==="atrasada" ? "Atrasadas" : STATUS_LABEL[key];
-      return '<button type="button" class="chip'+(filtroHome===key?' active':'')+'" data-chip="'+key+'">'+label+' ('+count(key)+')</button>';
-    }).join("");
-    wrap.querySelectorAll(".chip").forEach(function(chip){
-      chip.addEventListener("click", function(){ filtroHome = (filtroHome===chip.dataset.chip)?null:chip.dataset.chip; renderFiltroChipsHome(); renderLojasList(); });
-    });
+    function countFalta(key){
+      if(key==="falta_chamado") return lojasCache.filter(function(l){ return l.status==="aguardando" && !(l.chamado&&l.chamado.trim()); }).length;
+      if(key==="falta_protocolo") return lojasCache.filter(function(l){ return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim()); }).length;
+      if(key==="falta_tecnico") return lojasCache.filter(function(l){ return l.status==="aguardando" && !(l.tecnico&&l.tecnico.trim()); }).length;
+      return 0;
+    }
+    function labelDe(key){
+      if(key==="falta_chamado") return "Chamado";
+      if(key==="falta_protocolo") return "Protocolo";
+      if(key==="falta_tecnico") return "Técnico";
+      if(key==="atrasada") return "Atrasado";
+      return STATUS_LABEL[key];
+    }
+    function contagemDe(key){ return key.indexOf("falta_")===0 ? countFalta(key) : count(key); }
+    function renderGrupo(containerId, chaves){
+      const wrap = document.getElementById(containerId);
+      wrap.innerHTML = chaves.map(function(key){
+        return '<button type="button" class="status-filter-item'+(filtroHome===key?' active':'')+'" data-chip="'+key+'">'+labelDe(key)+' ('+contagemDe(key)+')</button>';
+      }).join("");
+      wrap.querySelectorAll(".status-filter-item").forEach(function(chip){
+        chip.addEventListener("click", function(){ filtroHome = (filtroHome===chip.dataset.chip)?null:chip.dataset.chip; renderFiltroChipsHome(); renderLojasList(); });
+      });
+    }
+    renderGrupo("filtro-chips-servicedesk", GRUPO_SERVICE_DESK);
+    renderGrupo("filtro-chips-agendamento", GRUPO_AGENDAMENTO);
   }
   function matchesFiltroHome(l, hoje){
     if(!filtroHome) return true;
     if(filtroHome==="atrasada") return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+    if(filtroHome==="falta_chamado") return l.status==="aguardando" && !(l.chamado&&l.chamado.trim());
+    if(filtroHome==="falta_protocolo") return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim());
+    if(filtroHome==="falta_tecnico") return l.status==="aguardando" && !(l.tecnico&&l.tecnico.trim());
     return l.status === filtroHome;
   }
 
@@ -1079,10 +1135,11 @@
   // badge de status na lista de lojas: pill simples, ou bloco de duas linhas para "Aguardando"/"Pendente"
   function renderBadgeHtml(l){
     if(l.status === "aguardando"){
-      return '<span class="badge-bloco badge aguardando"><div class="linha1">Aguardando:</div><div class="linha2">'+escapeHtml(statusDetalheAgendamento(l))+'</div></span>';
+      return '<span class="badge-bloco badge aguardando">'+escapeHtml(statusDetalheAgendamento(l))+'</span>';
     }
-    if(l.status === "pendente_confirmacao"){
-      return '<span class="badge-bloco badge pendente_confirmacao"><div class="linha1">Pendente:</div><div class="linha2">Aguardando confirmação técnica</div></span>';
+    if(l.status === "reagendar"){
+      const n = l.reagendamentos || 1;
+      return '<span class="badge reagendar">Reagendar ('+n+'x)</span>';
     }
     return '<span class="badge '+l.status+'">'+STATUS_LABEL[l.status]+'</span>';
   }
@@ -1112,7 +1169,7 @@
             '<div><div class="name">'+escapeHtml(l.nome)+'</div><div class="meta">Atualizado '+fmtDate(l.atualizadoEm)+'</div></div>' +
           '</div>' +
           '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-            (atrasada ? '<span class="badge" style="background:var(--bad-bg); color:var(--bad);">Atrasada</span>' : '') +
+            (atrasada ? '<span class="badge" style="background:var(--bad-bg); color:var(--bad);">Atrasado</span>' : '') +
             renderBadgeHtml(l) +
           '</div></div>' +
         (modoTecnico || modoSelecao ? '' :
@@ -1129,6 +1186,13 @@
               (l.agendamentoPrevisto && !bloq ? '<button type="button" class="btn btn-ghost btn-sm previsto-clear" data-id="'+l.id+'" style="padding:3px 8px; font-size:10.5px; margin-top:4px;">Limpar</button>' : '') + '</div>' +
           '</div>' +
           '<div class="field"><label>Dados do técnico</label><textarea class="quick-input auto-grow" data-id="'+l.id+'" data-field="dadosTecnico" placeholder="Telefone, matrícula, observações, etc." maxlength="170" rows="1" style="resize:none; overflow-y:hidden;"'+(bloq?' disabled':'')+'>'+escapeHtml(l.dadosTecnico)+'</textarea></div>' +
+          (!bloq ? '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:2px;">' +
+            '<button type="button" class="btn btn-ghost btn-sm status-reagendar" data-id="'+l.id+'">Reagendar</button>' +
+            '<div class="field" style="max-width:220px; margin:0;"><select class="status-manual-select" data-id="'+l.id+'">' +
+              '<option value=""'+(l.status!=="em_prospeccao_tecnico"?' selected':'')+'>Status automático</option>' +
+              '<option value="em_prospeccao_tecnico"'+(l.status==="em_prospeccao_tecnico"?' selected':'')+'>Em Prospecção de Técnico</option>' +
+            '</select></div>' +
+          '</div>' : '') +
         '</div>') +
       '</div>';
     }).join("");
@@ -1159,13 +1223,40 @@
       });
     });
     if(modoTecnico) return;
+    list.querySelectorAll(".status-reagendar").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
+        const n = (l.reagendamentos || 0) + 1;
+        db.doc("lojas/"+btn.dataset.id).update({ status: "reagendar", reagendamentos: n, atualizadoEm: now() }).catch(function(){});
+      });
+    });
+    list.querySelectorAll(".status-manual-select").forEach(function(sel){
+      sel.addEventListener("click", function(e){ e.stopPropagation(); });
+      sel.addEventListener("change", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === sel.dataset.id; }) || {};
+        if(sel.value === "em_prospeccao_tecnico"){
+          db.doc("lojas/"+sel.dataset.id).update({ status: "em_prospeccao_tecnico", atualizadoEm: now() }).catch(function(){});
+        }else{
+          // Volta para automático — o status é recalculado a partir dos dados atuais
+          const baseStatus = (l.status === "em_prospeccao_tecnico") ? "" : l.status;
+          const novo = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {status: baseStatus})));
+          db.doc("lojas/"+sel.dataset.id).update({ status: novo, atualizadoEm: now() }).catch(function(){});
+        }
+      });
+    });
     list.querySelectorAll(".agendamento-input").forEach(function(input){
       input.addEventListener("click", function(e){ e.stopPropagation(); });
       input.addEventListener("change", function(e){
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
         const payload = { agendamento: input.value, atualizadoEm: now() };
-        if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: input.value})));
+        if(l.status !== "concluido"){
+          // Definir uma nova data resolve um "Reagendar" pendente — volta ao cálculo automático normal.
+          const baseStatus = l.status === "reagendar" ? "" : l.status;
+          payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: input.value, status: baseStatus})));
+        }
         db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
       });
     });
@@ -1468,6 +1559,7 @@
         delete copia.id;
         copia.nome = codigo + " - " + nome;
         copia.criadoEm = now(); copia.atualizadoEm = now();
+        copia.status = "nao_iniciado"; copia.reagendamentos = 0;
         await db.doc("lojas/"+codigo).set(sanitizeParaJson(copia));
         c.innerHTML = "";
       }catch(e){ erro.textContent = "Não foi possível duplicar: " + (e.message||String(e)); }
@@ -1717,7 +1809,7 @@
           const codigo = s[0], nomeEsperado = s[0] + " - " + s[1];
           if(!existingById.has(codigo)){
             await db.doc("lojas/"+codigo).set({
-              nome: nomeEsperado, tecnico:"", chamado:"", agendamento:"", agendamentoPrevisto:"", protocolo:"", dadosTecnico:"", status:"nao_iniciado",
+              nome: nomeEsperado, tecnico:"", chamado:"", agendamento:"", agendamentoPrevisto:"", protocolo:"", dadosTecnico:"", status:"nao_iniciado", reagendamentos:0,
               rack: blankRack(), gerencia: blankSetorEquip(), estoque: blankSetorEquip(), notebooks: blankNotebooks(), pdvs: [], mobiles:[], dvrs:[],
               criadoEm: now(), atualizadoEm: now()
             });
@@ -2532,7 +2624,7 @@
       default: return true;
     }
   }
-  const FILTRO_LABEL = {concluido:"Concluído", em_andamento:"Em Andamento", nao_iniciado:"Não Iniciado", atrasada:"Atrasadas", liberado:"Liberado para Atendimento"};
+  const FILTRO_LABEL = {concluido:"Concluídos", em_andamento:"Andamento", nao_iniciado:"Não Iniciado", atrasada:"Atrasado", liberado:"Confirmado"};
 
   function renderPainel(){
     const total = lojasCache.length;
@@ -2600,20 +2692,20 @@
       '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:10px 0; font-size:12.5px;">' +
         '<span>✅ <b>'+concluidas+'</b> concluídas</span>' +
         '<span>🕓 <b>'+andamento+'</b> em andamento</span>' +
-        '<span>📅 <b>'+agendadas+'</b> agendadas</span>' +
+        '<span>📅 <b>'+agendadas+'</b> confirmadas</span>' +
         '<span>⬜ <b>'+naoIniciadas+'</b> não iniciadas</span>' +
-        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';">⚠️ <b>'+atrasadas+'</b> atrasadas</span>' +
+        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';">⚠️ <b>'+atrasadas+'</b> atrasada(s)</span>' +
       '</div><div class="hint">'+satisfacao.texto+' '+ritmoTxt+' '+(diasRestantes>=0 ? '('+diasRestantes+' dia(s) até o prazo)' : '(prazo vencido há '+Math.abs(diasRestantes)+' dia(s))')+'</div>';
 
     const barColor = {concluido:"var(--ok)", em_andamento:"var(--warn)", nao_iniciado:"var(--muted)", liberado:"#2E7D32", atrasada:"var(--bad)"};
     const cardsDef = [
       {label:"Lojas cadastradas", value:total, filter:null, bar:null},
       {label:"Não Iniciado", value:naoIniciadas, filter:"nao_iniciado", bar: total?(naoIniciadas/total*100):0},
-      {label:"Liberado", value:agendadas, filter:"liberado", bar: total?(agendadas/total*100):0},
-      {label:"Em Andamento", value:andamento, filter:"em_andamento", bar: total?(andamento/total*100):0},
-      {label:"Concluído", value:concluidas, filter:"concluido", bar: total?(concluidas/total*100):0},
+      {label:"Confirmado", value:agendadas, filter:"liberado", bar: total?(agendadas/total*100):0},
+      {label:"Andamento", value:andamento, filter:"em_andamento", bar: total?(andamento/total*100):0},
+      {label:"Concluídos", value:concluidas, filter:"concluido", bar: total?(concluidas/total*100):0},
       {label:"Equip. p/ substituir", value:totalSubstituicoes, filter:"substituicao", bar:null},
-      {label:"Atrasadas", value:atrasadas, filter:"atrasada", bar: total?(atrasadas/total*100):0}
+      {label:"Atrasado", value:atrasadas, filter:"atrasada", bar: total?(atrasadas/total*100):0}
     ];
     document.getElementById("painel-stats").innerHTML = cardsDef.map(function(s){
       const isActive = s.filter && s.filter===painelFiltro;
