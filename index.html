@@ -229,6 +229,10 @@
         <input type="text" id="tec-id-nome" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
       <div class="field">
+        <label>Data e hora do atendimento</label>
+        <input type="text" id="tec-id-data-hora" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
+      </div>
+      <div class="field">
         <label>Protocolo</label>
         <input type="text" id="tec-id-protocolo" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
@@ -1083,6 +1087,7 @@
       document.getElementById("view-tecnico-id").classList.remove("hidden");
       document.getElementById("tec-id-codigo").value = "";
       document.getElementById("tec-id-nome").value = "";
+      document.getElementById("tec-id-data-hora").value = "";
       document.getElementById("tec-id-protocolo").value = "";
       document.getElementById("tec-id-status").value = "";
       document.getElementById("tec-btn-abrir").disabled = true;
@@ -1411,10 +1416,12 @@
     const l = lojasCache.find(function(x){ return x.id === codigo; });
     if(l){
       nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false;
+      document.getElementById("tec-id-data-hora").value = l.agendamento ? (fmtDateBR(l.agendamento) + (l.agendamentoPrevisto ? " às " + l.agendamentoPrevisto : "")) : "—";
       protocoloInput.value = l.protocolo || "—";
       statusInput.value = labelResponsabilidade(l) === "Confirmado" ? "Atendimento Confirmado" : "Aguardando Agendamento";
     }else{
       nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none";
+      document.getElementById("tec-id-data-hora").value = "";
       protocoloInput.value = ""; statusInput.value = "";
     }
   }
