@@ -84,6 +84,8 @@
   .status-filter-item{border:none; background:var(--surface); color:var(--navy); box-shadow:0 1px 3px rgba(14,40,65,.08); padding:9px 14px; border-radius:20px; font-size:12.5px; font-weight:600; cursor:pointer; user-select:none; -webkit-user-select:none; text-align:center; transition:filter .15s;}
   .status-filter-item:hover{filter:brightness(1.05);}
   .status-filter-item.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);}
+  .status-filter-confirmado{background:#D8ECD9; color:#2E7D32;}
+  .status-filter-confirmado.active{background:linear-gradient(90deg, #2E7D32, #5CB85C); color:#fff; box-shadow:0 2px 8px rgba(46,125,50,.3);}
   @media (max-width:980px){
     .status-sidebar{width:100%; min-width:0; max-width:none; border-left:none; border-top:1px solid var(--border); padding-left:0; padding-top:12px; margin-top:10px; position:static;}
     .status-filter-list{flex-direction:row; flex-wrap:wrap;}
@@ -273,14 +275,14 @@
         <h3>Responsabilidade</h3>
         <div class="status-cols">
           <div class="status-col">
-            <div class="status-col-title">Service Desk</div>
-            <div class="status-col-sub">STATUS</div>
-            <div class="status-filter-list" id="filtro-chips-servicedesk"></div>
-          </div>
-          <div class="status-col">
             <div class="status-col-title">Time Agendamento</div>
             <div class="status-col-sub">STATUS</div>
             <div class="status-filter-list" id="filtro-chips-agendamento"></div>
+          </div>
+          <div class="status-col">
+            <div class="status-col-title">Service Desk</div>
+            <div class="status-col-sub">STATUS</div>
+            <div class="status-filter-list" id="filtro-chips-servicedesk"></div>
           </div>
         </div>
       </aside>
@@ -1089,7 +1091,7 @@
   }
 
   const GRUPO_SERVICE_DESK = ["falta_chamado","falta_protocolo","em_andamento","concluido"];
-  const GRUPO_AGENDAMENTO = ["nao_iniciado","liberado","falta_tecnico","reagendar","atrasada","em_prospeccao_tecnico"];
+  const GRUPO_AGENDAMENTO = ["liberado","nao_iniciado","falta_tecnico","reagendar","atrasada","em_prospeccao_tecnico"];
   function renderFiltroChipsHome(){
     const hoje = todayStr();
     function count(key){
@@ -1113,7 +1115,8 @@
     function renderGrupo(containerId, chaves){
       const wrap = document.getElementById(containerId);
       wrap.innerHTML = chaves.map(function(key){
-        return '<button type="button" class="status-filter-item'+(filtroHome===key?' active':'')+'" data-chip="'+key+'">'+labelDe(key)+' ('+contagemDe(key)+')</button>';
+        const classeExtra = key==="liberado" ? " status-filter-confirmado" : "";
+        return '<button type="button" class="status-filter-item'+classeExtra+(filtroHome===key?' active':'')+'" data-chip="'+key+'">'+labelDe(key)+' ('+contagemDe(key)+')</button>';
       }).join("");
       wrap.querySelectorAll(".status-filter-item").forEach(function(chip){
         chip.addEventListener("click", function(){ filtroHome = (filtroHome===chip.dataset.chip)?null:chip.dataset.chip; renderFiltroChipsHome(); renderLojasList(); });
