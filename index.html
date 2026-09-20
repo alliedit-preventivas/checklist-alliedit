@@ -222,6 +222,14 @@
         <label>Nome da loja</label>
         <input type="text" id="tec-id-nome" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
+      <div class="field">
+        <label>Protocolo</label>
+        <input type="text" id="tec-id-protocolo" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <input type="text" id="tec-id-status" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
+      </div>
       <div class="hint" id="tec-id-erro" style="display:none; color:var(--bad);">Código não encontrado.</div>
       <button class="btn btn-primary" id="tec-btn-abrir" disabled style="width:100%; margin-top:10px; padding:12px;">Abrir checklist desta loja</button>
     </div>
@@ -1068,6 +1076,8 @@
       document.getElementById("view-tecnico-id").classList.remove("hidden");
       document.getElementById("tec-id-codigo").value = "";
       document.getElementById("tec-id-nome").value = "";
+      document.getElementById("tec-id-protocolo").value = "";
+      document.getElementById("tec-id-status").value = "";
       document.getElementById("tec-btn-abrir").disabled = true;
       window.scrollTo({top:0});
     }else{ showView("lojas"); }
@@ -1356,6 +1366,7 @@
     const btn = document.getElementById("tec-btn-abrir");
     codigoInput.addEventListener("input", function(){ validarCodigoTecnico(); abrirDropdownTecnico(); });
     codigoInput.addEventListener("focus", abrirDropdownTecnico);
+    codigoInput.addEventListener("click", abrirDropdownTecnico);
     codigoInput.addEventListener("blur", function(){ setTimeout(fecharDropdownTecnico, 150); });
     document.addEventListener("click", function(e){
       if(e.target !== codigoInput && !document.getElementById("tec-id-dropdown").contains(e.target)) fecharDropdownTecnico();
@@ -1367,16 +1378,38 @@
       tentarAbrirLoja(l.id, l);
     });
   }
+  function labelResponsabilidade(l){
+    if(l.status==="concluido") return STATUS_LABEL.concluido;
+    if(l.status==="em_prospeccao_tecnico") return STATUS_LABEL.em_prospeccao_tecnico;
+    if(l.status==="reagendar") return STATUS_LABEL.reagendar;
+    if(l.status==="em_andamento") return STATUS_LABEL.em_andamento;
+    if(l.status==="liberado") return STATUS_LABEL.liberado;
+    if(l.status==="aguardando"){
+      if(!(l.chamado&&l.chamado.trim())) return "Chamado";
+      if(!(l.protocolo&&l.protocolo.trim())) return "Protocolo";
+      if(!(l.tecnico&&l.tecnico.trim()) || !(l.dadosTecnico&&l.dadosTecnico.trim())) return "Técnico";
+      return STATUS_LABEL.aguardando;
+    }
+    return STATUS_LABEL.nao_iniciado;
+  }
   function validarCodigoTecnico(){
     const codigoInput = document.getElementById("tec-id-codigo");
     const nomeInput = document.getElementById("tec-id-nome");
+    const protocoloInput = document.getElementById("tec-id-protocolo");
+    const statusInput = document.getElementById("tec-id-status");
     const erroEl = document.getElementById("tec-id-erro");
     const btn = document.getElementById("tec-btn-abrir");
     if(!codigoInput) return;
     const codigo = codigoInput.value.trim();
     const l = lojasCache.find(function(x){ return x.id === codigo; });
-    if(l){ nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false; }
-    else{ nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none"; }
+    if(l){
+      nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false;
+      protocoloInput.value = l.protocolo || "—";
+      statusInput.value = labelResponsabilidade(l) === "Confirmado" ? "Atendimento Confirmado" : "Aguardando Agendamento";
+    }else{
+      nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none";
+      protocoloInput.value = ""; statusInput.value = "";
+    }
   }
   wireTecnicoId();
 
