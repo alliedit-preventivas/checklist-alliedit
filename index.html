@@ -235,12 +235,20 @@
         <input type="text" id="tec-id-data-hora" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
       <div class="field">
+        <label>Chamado</label>
+        <input type="text" id="tec-id-chamado" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
+      </div>
+      <div class="field">
         <label>Protocolo</label>
         <input type="text" id="tec-id-protocolo" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
       <div class="field">
         <label>Status</label>
         <input type="text" id="tec-id-status" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
+      </div>
+      <div class="field">
+        <label>Descrição / Escopo</label>
+        <input type="text" id="tec-id-descricao" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
       <div class="hint" id="tec-id-erro" style="display:none; color:var(--bad);">Código não encontrado.</div>
       <button class="btn btn-primary" id="tec-btn-abrir" disabled style="width:100%; margin-top:10px; padding:12px;">Abrir Checklist</button>
@@ -1428,8 +1436,10 @@
   function validarCodigoTecnico(){
     const codigoInput = document.getElementById("tec-id-codigo");
     const nomeInput = document.getElementById("tec-id-nome");
+    const chamadoInput = document.getElementById("tec-id-chamado");
     const protocoloInput = document.getElementById("tec-id-protocolo");
     const statusInput = document.getElementById("tec-id-status");
+    const descricaoInput = document.getElementById("tec-id-descricao");
     const erroEl = document.getElementById("tec-id-erro");
     const btn = document.getElementById("tec-btn-abrir");
     if(!codigoInput) return;
@@ -1438,12 +1448,17 @@
     if(l){
       nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false;
       document.getElementById("tec-id-data-hora").value = l.agendamento ? (fmtDateBR(l.agendamento) + (l.agendamentoPrevisto ? " às " + l.agendamentoPrevisto : "")) : "—";
+      chamadoInput.value = l.chamado || "—";
       protocoloInput.value = l.protocolo || "—";
       statusInput.value = labelResponsabilidade(l) === "Confirmado" ? "Atendimento Confirmado" : "Aguardando Agendamento";
+      // Origem ainda não definida; exibição temporária até decidirmos de onde virá o dado.
+      descricaoInput.value = "A definir";
     }else{
       nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none";
       document.getElementById("tec-id-data-hora").value = "";
+      chamadoInput.value = "";
       protocoloInput.value = ""; statusInput.value = "";
+      descricaoInput.value = "";
     }
   }
   wireTecnicoId();
