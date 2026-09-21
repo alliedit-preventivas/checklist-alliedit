@@ -716,7 +716,8 @@
   function blankNotebooks(){ return { gerencia: blankNotebook(), estoque: blankNotebook(), educacao: blankNotebook(), adm: Object.assign({possui:null}, blankNotebook()) }; }
   function blankPdv(n){
     return { id:uid(), nome:"PDV "+String(n).padStart(2,"0"), serie:"", marca:"", obs:"",
-      telaCliente:{touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null},
+      miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
+      telaCliente:{touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null, falhaImpressao:null},
       leitorCodBarras:{serie:""}, pinpad:{serieRede:"", modelo:"", serie:""}, mercadoPago:{modelo:"", serie:""},
       mouse: blankPerif(), teclado: blankPerif() };
   }
@@ -770,6 +771,9 @@
     p = Object.assign(blankPdv(i+1), p);
     if(!p.mouse || p.mouse.tipo===undefined) p.mouse = blankPerif();
     if(!p.teclado || p.teclado.tipo===undefined) p.teclado = blankPerif();
+    if(!p.miniNobreak) p.miniNobreak = {possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""};
+    if(!Array.isArray(p.miniNobreak.leds)) p.miniNobreak.leds = [];
+    if(p.impressoraTermica && p.impressoraTermica.falhaImpressao===undefined) p.impressoraTermica.falhaImpressao = null;
     return p;
   }
   function migrarDvr(d, i){
@@ -2424,6 +2428,7 @@
     const wrap = document.getElementById("pdvs-list");
     document.getElementById("btn-add-pdv").disabled = currentLoja.pdvs.length >= 5;
     if(currentLoja.pdvs.length===0){ wrap.innerHTML = '<div class="hint">Nenhum PDV adicionado ainda.</div>'; return; }
+    const eaton = currentLoja.rack.nobreak.marca === "EATON";
     wrap.innerHTML = currentLoja.pdvs.map(function(p, idx){
       const ehElgin = p.marca === "Elgin";
       return '<div class="item-card" data-idx="'+idx+'">' +
@@ -2433,6 +2438,28 @@
           '<div class="field"><label>Nº Série do PDV</label><input type="text" data-pdv="serie" data-idx="'+idx+'" value="'+escapeHtml(p.serie)+'"></div>' +
           '<div class="field"><label>Marca</label><select data-pdv="marca" data-idx="'+idx+'"><option value="">Selecionar</option><option'+(p.marca==="Toshiba"?' selected':'')+'>Toshiba</option><option'+(p.marca==="Elgin"?' selected':'')+'>Elgin</option></select></div>' +
         '</div>' +
+        (eaton ?
+          '<div class="field"><label>Mini Nobreak</label><div class="hint">Não aplicável — a loja possui Nobreak de Rack EATON.</div></div>'
+        :
+        '<div class="field"><label>Mini Nobreak</label><div class="toggle-group" data-pdv-toggle="nobreakPossui" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.miniNobreak.possui===true?' on-good':'')+'" data-val="true">Possui</button>' +
+          '<button type="button" class="toggle-btn'+(p.miniNobreak.possui===false?' on-bad':'')+'" data-val="false">Não possui</button></div></div>' +
+        (p.miniNobreak.possui===true ?
+          '<div class="field-row">' +
+            '<div class="field"><label>Nº Série</label><input type="text" data-pdv="nobreakSerie" data-idx="'+idx+'" value="'+escapeHtml(p.miniNobreak.serie)+'"></div>' +
+            '<div class="field"><label>Data de fabricação</label><input type="text" data-pdv="nobreakData" data-idx="'+idx+'" value="'+escapeHtml(p.miniNobreak.dataFabricacao)+'" placeholder="MM/AAAA"></div></div>' +
+          '<div class="field"><label>Autonomia acima de 5 minutos?</label><div class="toggle-group" data-pdv-toggle="nobreakAutonomia" data-idx="'+idx+'">' +
+            '<button type="button" class="toggle-btn'+(p.miniNobreak.autonomiaAcima5===true?' on-good':'')+'" data-val="true">Sim</button>' +
+            '<button type="button" class="toggle-btn'+(p.miniNobreak.autonomiaAcima5===false?' on-bad':'')+'" data-val="false">Não</button></div>' +
+          '<div class="hint">Teste com o nobreak fora da tomada, cronometrando o tempo de autonomia.</div>' +
+          (p.miniNobreak.autonomiaAcima5===false ?
+            '<div class="field"><label>Possui LEDs de atenção? (selecione um ou mais)</label>' +
+            LEDS_OPCOES.map(function(led){
+              const on = p.miniNobreak.leds.indexOf(led)!==-1;
+              return '<button type="button" class="toggle-btn'+(on?' on-bad':'')+'" data-pdv-led="'+idx+'" data-led="'+escapeHtml(led)+'" style="margin:2px 4px 2px 0;">'+led+'</button>';
+            }).join("") + '</div>' : '') +
+          '<div class="field"><label>Observação</label><textarea data-pdv="nobreakObs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(p.miniNobreak.obs)+'</textarea></div>'
+          : '')) +
         (!ehElgin ? '' :
         '<div class="field"><label>Tela do cliente</label>' +
           '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
@@ -2445,6 +2472,9 @@
           '<div class="field"><label>Limpeza básica com pincel</label><div class="toggle-group" data-pdv-toggle="impLimpeza" data-idx="'+idx+'">' +
             '<button type="button" class="toggle-btn'+(p.impressoraTermica.limpezaFeita===true?' on-good':'')+'" data-val="true">Feita</button>' +
             '<button type="button" class="toggle-btn'+(p.impressoraTermica.limpezaFeita===false?' on-bad':'')+'" data-val="false">Pendente</button></div></div></div>' +
+        '<div class="field"><label>Impressora Térmica apresenta falha ao imprimir?</label><div class="toggle-group" data-pdv-toggle="impFalha" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.impressoraTermica.falhaImpressao===true?' on-bad':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(p.impressoraTermica.falhaImpressao===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
         '<div class="field"><label>Leitor de código de barras &mdash; Nº Série</label><input type="text" data-pdv="leitorSerie" data-idx="'+idx+'" value="'+escapeHtml(p.leitorCodBarras.serie)+'"></div>' +
         '<div class="field-row-3">' +
           '<div class="field"><label>Pinpad GERTEC &mdash; NS rede</label><input type="text" data-pdv="pinSerieRede" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serieRede)+'"></div>' +
@@ -2462,6 +2492,9 @@
         const idx=+el.dataset.idx, key=el.dataset.pdv, p=currentLoja.pdvs[idx];
         if(key==="nome") p.nome=el.value; else if(key==="serie") p.serie=el.value; else if(key==="obs") p.obs=el.value;
         else if(key==="impSerie") p.impressoraTermica.serie=el.value;
+        else if(key==="nobreakSerie") p.miniNobreak.serie=el.value;
+        else if(key==="nobreakData") p.miniNobreak.dataFabricacao=el.value;
+        else if(key==="nobreakObs") p.miniNobreak.obs=el.value;
         else if(key==="leitorSerie") p.leitorCodBarras.serie=el.value;
         else if(key==="pinSerieRede") p.pinpad.serieRede=el.value; else if(key==="pinModelo") p.pinpad.modelo=el.value; else if(key==="pinSerie") p.pinpad.serie=el.value;
         else if(key==="mpModelo") p.mercadoPago.modelo=el.value; else if(key==="mpSerie") p.mercadoPago.serie=el.value;
@@ -2480,6 +2513,17 @@
         const b=e.target.closest(".toggle-btn"); if(!b) return;
         const idx=+group.dataset.idx, val=b.dataset.val==="true", key=group.dataset.pdvToggle, p=currentLoja.pdvs[idx];
         if(key==="impLimpeza") p.impressoraTermica.limpezaFeita=val;
+        else if(key==="impFalha") p.impressoraTermica.falhaImpressao=val;
+        else if(key==="nobreakPossui") p.miniNobreak.possui=val;
+        else if(key==="nobreakAutonomia") p.miniNobreak.autonomiaAcima5=val;
+        renderPdvs(); scheduleSave();
+      });
+    });
+    wrap.querySelectorAll("[data-pdv-led]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const idx=+btn.dataset.pdvLed, led=btn.dataset.led, p=currentLoja.pdvs[idx];
+        const pos = p.miniNobreak.leds.indexOf(led);
+        if(pos===-1) p.miniNobreak.leds.push(led); else p.miniNobreak.leds.splice(pos,1);
         renderPdvs(); scheduleSave();
       });
     });
@@ -2713,11 +2757,11 @@
       const nhsRack = !!(l.rack && l.rack.nobreak && l.rack.nobreak.marca === "NHS");
       ["gerencia","estoque"].forEach(function(setorKey){
         const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
-        if(s.desktop && s.desktop.estado==="Ruim - substituir") itens.push({setor:label, equip:"Desktop", serie:s.desktop.serie||"—", obs:s.desktop.obs||""});
+        if(s.desktop && s.desktop.estado==="Ruim - substituir") itens.push({setor:label, equip:"Desktop", serie:s.desktop.serie||"—", obs:"Ruim - substituir"});
         if(s.tecladoMouseMonitor){
-          if(s.tecladoMouseMonitor.teclado.estado==="Ruim - substituir") itens.push({setor:label, equip:"Teclado", serie:"—", obs:s.tecladoMouseMonitor.obs||""});
-          if(s.tecladoMouseMonitor.mouse.estado==="Ruim - substituir") itens.push({setor:label, equip:"Mouse", serie:"—", obs:s.tecladoMouseMonitor.obs||""});
-          if(s.tecladoMouseMonitor.monitor.estado==="Ruim - substituir") itens.push({setor:label, equip:"Monitor", serie:"—", obs:s.tecladoMouseMonitor.obs||""});
+          if(s.tecladoMouseMonitor.teclado.estado==="Ruim - substituir") itens.push({setor:label, equip:"Teclado", serie:"—", obs:"Ruim - substituir"});
+          if(s.tecladoMouseMonitor.mouse.estado==="Ruim - substituir") itens.push({setor:label, equip:"Mouse", serie:"—", obs:"Ruim - substituir"});
+          if(s.tecladoMouseMonitor.monitor.estado==="Ruim - substituir") itens.push({setor:label, equip:"Monitor", serie:"—", obs:"Ruim - substituir"});
         }
         if(s.miniNobreak && s.miniNobreak.possui===true && s.miniNobreak.autonomiaAcima5===false) itens.push({setor:label, equip:"Mini Nobreak", serie:s.miniNobreak.serie||"—", obs:"LEDs: "+(s.miniNobreak.leds||[]).join(", ")});
         if(nhsRack && s.miniNobreak && s.miniNobreak.possui===false) itens.push({setor:label, equip:"Mini Nobreak", serie:"—", obs:"Loja NHS sem Mini Nobreak — necessária instalação"});
@@ -2726,15 +2770,18 @@
         [["gerencia","Notebook Gerência"],["estoque","Notebook Estoque"],["adm","Notebook ADM"]].forEach(function(pair){
           const nb = l.notebooks[pair[0]];
           if(pair[0]==="adm" && (!nb || nb.possui!==true)) return;
-          if(nb && nb.estado==="Ruim - substituir") itens.push({setor:"Notebooks", equip:pair[1], serie:nb.serie||"—", obs:nb.obs||""});
+          if(nb && nb.estado==="Ruim - substituir") itens.push({setor:"Notebooks", equip:pair[1], serie:nb.serie||"—", obs:"Ruim - substituir"});
         });
       }
-      (l.mobiles||[]).forEach(function(m){ if(m.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:m.nome, serie:m.serie||"—", obs:m.obs||""}); });
+      (l.mobiles||[]).forEach(function(m){ if(m.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:m.nome, serie:m.serie||"—", obs:"Ruim - substituir"}); });
       (l.pdvs||[]).forEach(function(p){
-        if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:p.obs||""});
-        if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:p.obs||""});
+        if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:"Ruim - substituir"});
+        if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:"Ruim - substituir"});
+        if(p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
       });
-      (l.dvrs||[]).forEach(function(d){ if(d.serie && l.rack && l.rack.nobreak && l.rack.nobreak.autonomiaNhs==="desliga") itens.push({setor:"Rack", equip:"Nobreak de Rack (troca de equipamento)", serie:l.rack.nobreak.serie||"—", obs:l.rack.nobreak.obs||""}); });
+      if(l.rack && l.rack.nobreak && (l.rack.nobreak.autonomiaNhs==="abaixo" || l.rack.nobreak.autonomiaNhs==="desliga")){
+        itens.push({setor:"Rack", equip:"Nobreak de Rack", serie:l.rack.nobreak.serie||"—", obs: l.rack.nobreak.autonomiaNhs==="desliga" ? "Desliga imediatamente ao ser retirado da tomada" : "Autonomia abaixo de 5 minutos"});
+      }
       if(itens.length) substituicoesPorLoja[l.nome] = itens;
     });
     const totalSubstituicoes = Object.values(substituicoesPorLoja).reduce(function(a,b){ return a+b.length; }, 0);
@@ -2813,33 +2860,26 @@
 
     const alertsByLoja = {};
     function pushAlert(loja, msg){ if(!alertsByLoja[loja]) alertsByLoja[loja]=[]; alertsByLoja[loja].push(msg); }
-    function checkEstado(loja, label, estado){ if(estado==="Ruim - substituir") pushAlert(loja, label+" em estado ruim — substituir"); }
     lojasCache.forEach(function(l){
       const rack = l.rack||{};
       if(rack.organizado===false) pushAlert(l.nome, "Rack desorganizado");
       if(rack.limpo===false) pushAlert(l.nome, "Rack sujo");
-      if(rack.nobreak && rack.nobreak.marca==="NHS" && rack.nobreak.autonomiaNhs==="abaixo") pushAlert(l.nome, "Nobreak de rack (NHS): autonomia abaixo de 5 minutos — Alerta");
-      if(rack.nobreak && rack.nobreak.marca==="NHS" && rack.nobreak.autonomiaNhs==="desliga") pushAlert(l.nome, "Nobreak de rack (NHS): desliga imediatamente — Troca de equipamento");
+      if(rack.escada && rack.escada.possui===false) pushAlert(l.nome, "Loja não possui escada móvel");
       if(rack.escada && rack.escada.possui===true && rack.escada.alturaSuficiente===false) pushAlert(l.nome, "Escada móvel não alcança o teto");
       (l.dvrs||[]).forEach(function(d){
-        if(d.camerasSemFuncionar && d.camerasSemFuncionar.tem===true) pushAlert(l.nome, d.nome+": câmeras sem funcionar"+((d.camerasSemFuncionar.quais&&d.camerasSemFuncionar.quais.length)?" (CAM "+d.camerasSemFuncionar.quais.join(", CAM ")+")":""));
+        if(d.camerasSemFuncionar && d.camerasSemFuncionar.tem===true) pushAlert(l.nome, d.nome+": câmeras com defeito ou falha"+((d.camerasSemFuncionar.quais&&d.camerasSemFuncionar.quais.length)?" (CAM "+d.camerasSemFuncionar.quais.join(", CAM ")+")":""));
         if(d.portasDanificadas && d.portasDanificadas.tem===true) pushAlert(l.nome, d.nome+": portas danificadas ("+(d.portasDanificadas.portas||[]).join(", ")+")");
       });
       ["gerencia","estoque"].forEach(function(setorKey){
         const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
-        checkEstado(l.nome, label+": Desktop", s.desktop && s.desktop.estado);
-        if(s.tecladoMouseMonitor){
-          checkEstado(l.nome, label+": Teclado", s.tecladoMouseMonitor.teclado.estado);
-          checkEstado(l.nome, label+": Mouse", s.tecladoMouseMonitor.mouse.estado);
-          checkEstado(l.nome, label+": Monitor", s.tecladoMouseMonitor.monitor.estado);
-        }
-        if(s.wifi && s.wifi.barras==="1") pushAlert(l.nome, label+": sinal de WIFI fraco (1 barra)");
-        if(rack.nobreak && rack.nobreak.marca==="NHS" && s.miniNobreak && s.miniNobreak.possui===false) pushAlert(l.nome, label+": Mini Nobreak ausente (loja NHS) — Troca de equipamento");
+        if(s.multifuncional && s.multifuncional.falhaImpressao===true) pushAlert(l.nome, label+": Impressora Multifuncional com falha de impressão");
+        if(setorKey==="gerencia" && s.gposBackup && s.gposBackup.possui===false) pushAlert(l.nome, "GPOS Backup não existe");
+        if(s.wifi && (s.wifi.barras==="1" || s.wifi.barras==="2")) pushAlert(l.nome, label+": sinal de WIFI abaixo de 3 barras");
       });
-      if(l.wifiStage && l.wifiStage.barras==="1") pushAlert(l.nome, "Stage de Vendas: sinal de WIFI fraco (1 barra)");
+      if(l.wifiStage && (l.wifiStage.barras==="1" || l.wifiStage.barras==="2")) pushAlert(l.nome, "Stage de Vendas: sinal de WIFI abaixo de 3 barras");
       (l.pdvs||[]).forEach(function(p){
+        if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) pushAlert(l.nome, p.nome+": impressora térmica precisa de limpeza");
         if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) pushAlert(l.nome, p.nome+": USB do touch da tela do cliente ainda conectado");
-        if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) pushAlert(l.nome, p.nome+": limpeza da impressora térmica pendente");
       });
     });
     const lojasComAlerta = Object.keys(alertsByLoja);
