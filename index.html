@@ -103,7 +103,8 @@
   .chip{border:1px solid var(--border); background:var(--surface); color:var(--navy); padding:6px 12px; border-radius:20px; font-size:11.5px; font-weight:600; cursor:pointer; user-select:none; -webkit-user-select:none;}
   .chip.active{background:var(--teal); color:#fff; border-color:var(--teal);}
   th.th-ordenar{cursor:pointer; user-select:none; white-space:nowrap;}
-  .loja-row{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; cursor:pointer; transition:border-color .15s; user-select:text; height:100%; box-sizing:border-box;}
+  .loja-row{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; transition:border-color .15s; user-select:text; height:100%; box-sizing:border-box;}
+  .loja-row .name, .loja-row .badge, .loja-row .badge-bloco{cursor:pointer;}
   .loja-row:hover{border-color:var(--teal-lt);}
   .loja-row .name{font-weight:600; font-size:14px;}
   .loja-row .meta{font-size:11.5px; color:var(--text-muted); margin-top:2px;}
@@ -1231,20 +1232,22 @@
 
     // permite selecionar/copiar texto sem abrir o formulário
     list.querySelectorAll(".loja-row").forEach(function(row){
-      let mx=0, my=0;
-      row.addEventListener("mousedown", function(e){ mx=e.clientX; my=e.clientY; });
-      row.addEventListener("click", function(e){
-        const sel = window.getSelection ? window.getSelection().toString() : "";
-        if(sel && sel.trim().length>0) return;
-        if(Math.abs(e.clientX-mx)>6 || Math.abs(e.clientY-my)>6) return;
-        if(modoSelecao){
-          if(lojasSelecionadas.has(row.dataset.id)) lojasSelecionadas.delete(row.dataset.id); else lojasSelecionadas.add(row.dataset.id);
-          atualizarContagemSelecao();
-          renderLojasList();
-          return;
-        }
-        const l = lojasCache.find(function(x){ return x.id === row.dataset.id; });
-        if(l) tentarAbrirLoja(l.id, l);
+      const gatilhos = row.querySelectorAll(".name, .badge, .badge-bloco");
+      gatilhos.forEach(function(gatilho){
+        gatilho.style.cursor = "pointer";
+        gatilho.addEventListener("click", function(e){
+          e.stopPropagation();
+          const sel = window.getSelection ? window.getSelection().toString() : "";
+          if(sel && sel.trim().length>0) return;
+          if(modoSelecao){
+            if(lojasSelecionadas.has(row.dataset.id)) lojasSelecionadas.delete(row.dataset.id); else lojasSelecionadas.add(row.dataset.id);
+            atualizarContagemSelecao();
+            renderLojasList();
+            return;
+          }
+          const l = lojasCache.find(function(x){ return x.id === row.dataset.id; });
+          if(l) tentarAbrirLoja(l.id, l);
+        });
       });
     });
     list.querySelectorAll(".loja-checkbox").forEach(function(cb){
