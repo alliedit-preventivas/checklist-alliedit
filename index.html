@@ -1260,7 +1260,14 @@
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
         const n = (l.reagendamentos || 0) + 1;
-        db.doc("lojas/"+btn.dataset.id).update({ status: "reagendar", reagendamentos: n, atualizadoEm: now() }).catch(function(){});
+        db.doc("lojas/"+btn.dataset.id).update({ status: "reagendar", reagendamentos: n, agendamento: "", agendamentoPrevisto: "", atualizadoEm: now() }).catch(function(){});
+        const card = btn.closest(".loja-row");
+        if(card){
+          const dataInput = card.querySelector(".agendamento-input");
+          const previstoInput = card.querySelector(".previsto-input");
+          if(dataInput) dataInput.value = "";
+          if(previstoInput) previstoInput.value = "";
+        }
       });
     });
     list.querySelectorAll(".status-manual-select").forEach(function(sel){
