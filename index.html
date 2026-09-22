@@ -290,7 +290,7 @@
       </aside>
       <div class="lojas-content">
         <div class="toolbar">
-          <input type="text" id="search-loja" placeholder="Buscar loja...">
+          <input type="text" id="search-loja" placeholder="Buscar por loja, código, chamado, protocolo ou técnico...">
         </div>
         <div id="selecao-toolbar" class="hidden" style="display:flex; align-items:center; gap:10px; margin-bottom:12px; background:var(--bad-bg); border-radius:8px; padding:10px 12px;">
           <span id="selecao-contagem" style="font-size:12.5px; color:var(--bad); font-weight:600;">0 loja(s) selecionada(s)</span>
@@ -1202,7 +1202,10 @@
     pendingLojasRender = false;
     const q = (document.getElementById("search-loja").value||"").toLowerCase().trim();
     const hoje = todayStr();
-    const filtered = lojasCache.filter(function(l){ return (!q || (l.nome||"").toLowerCase().includes(q)) && matchesFiltroHome(l, hoje); });
+    const filtered = lojasCache.filter(function(l){
+      const alvo = !q || [l.nome, l.chamado, l.protocolo, l.tecnico].some(function(campo){ return (campo||"").toLowerCase().includes(q); });
+      return alvo && matchesFiltroHome(l, hoje);
+    });
     if(filtered.length===0){ list.innerHTML = '<div class="empty">Nenhuma loja encontrada.</div>'; return; }
     list.innerHTML = filtered.map(function(l){
       const atrasada = l.agendamento && l.agendamento < hoje && l.status !== "concluido";
