@@ -73,7 +73,7 @@
   .config-submenu-items{display:flex; flex-direction:column; overflow:hidden;}
   .config-submenu-items.collapsed{display:none;}
   .lojas-layout{display:flex; gap:18px; align-items:stretch;}
-  .agenda-sidebar-left{width:260px; min-width:260px; max-width:260px; flex-shrink:0; box-sizing:border-box; padding-right:10px; border-right:1px solid var(--border); position:sticky; top:70px;}
+  .agenda-sidebar-left{width:260px; min-width:260px; max-width:260px; flex-shrink:0; box-sizing:border-box; padding-right:10px; border-right:1px solid var(--border); position:sticky; top:70px; align-self:flex-start;}
   .lojas-content{flex:1; min-width:0;}
   .cadastro-dropdown-wrap{position:relative; display:inline-block; flex-shrink:0;}
   .cadastro-nav-toggle .chevron{margin-left:4px; font-size:10px; transition:transform .15s;}
@@ -1202,13 +1202,18 @@
       dias.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"));
     }
     wrap.innerHTML = dias.map(function(iso){
-      const qtd = (porDia[iso]||[]).length;
+      const lojasDoDia = porDia[iso]||[];
+      const qtd = lojasDoDia.length;
       const diaSemana = new Date(iso+"T00:00:00").getDay();
       const limite = diaSemana === 1 ? 1 : 2; // segunda-feira: limite combinado de 1 atendimento/dia
-      const alerta = qtd > limite;
-      return '<div class="agenda-dia-item'+(alerta?' alerta':'')+'">'+
+      // Agendamentos após as 12h não entram na contagem do limite (tarde tem mais flexibilidade).
+      const qtdManha = lojasDoDia.filter(function(l){ return !l.agendamentoPrevisto || l.agendamentoPrevisto < "12:00"; }).length;
+      const alerta = qtdManha > limite;
+      const tituloHover = qtd===0 ? "" : lojasDoDia.map(function(l){ return l.nome + (l.agendamentoPrevisto ? " ("+l.agendamentoPrevisto+")" : ""); }).join("\n");
+      const textoQtd = qtd===0 ? "Agenda Livre" : (qtd+' atendimento'+(qtd!==1?'s':''));
+      return '<div class="agenda-dia-item'+(alerta?' alerta':'')+'"'+(tituloHover?' title="'+escapeHtml(tituloHover)+'"':'')+'>'+
         '<span class="agenda-dia-data">'+fmtDateBR(iso)+' · '+DIAS_SEMANA_ABREV[diaSemana]+'</span>'+
-        '<span class="agenda-dia-count">'+qtd+' atendimento'+(qtd!==1?'s':'')+(alerta?' ⚠️':'')+'</span>'+
+        '<span class="agenda-dia-count">'+textoQtd+(alerta?' ⚠️':'')+'</span>'+
         '</div>';
     }).join("");
   }
