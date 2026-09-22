@@ -1217,28 +1217,6 @@
         '</div>';
     }).join("");
   }
-  const WHATSAPP_ATENDIMENTO = "5511917262154";
-  const WHATSAPP_CONFIRMACAO = "5511970797236";
-  function precisaAvisarAtendimento(l){
-    return !!(l.tecnico && l.tecnico.trim()) && !!l.agendamento && l.status === "aguardando" &&
-      (!(l.chamado&&l.chamado.trim()) || !(l.protocolo&&l.protocolo.trim()));
-  }
-  function precisaAvisarConfirmacao(l){
-    return l.status === "liberado";
-  }
-  function abrirWhatsAppComMensagem(numero, msg){
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile){
-      window.open("https://wa.me/"+numero+"?text="+encodeURIComponent(msg), "_blank");
-      return;
-    }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(msg).then(function(){
-        alert("Mensagem copiada! Cole (Ctrl+V) na conversa que vai abrir no WhatsApp Web.");
-      }).catch(function(){});
-    }
-    window.open("https://web.whatsapp.com/send?phone="+numero, "_blank");
-  }
   function matchesFiltroHome(l, hoje){
     if(!filtroHome) return true;
     if(filtroHome==="atrasada") return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
@@ -1310,8 +1288,6 @@
           (!bloq ? '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:2px;">' +
             '<button type="button" class="btn btn-ghost btn-sm status-reagendar" data-id="'+l.id+'">Reagendar</button>' +
             '<button type="button" class="btn btn-ghost btn-sm status-prospeccao-toggle'+(l.status==="em_prospeccao_tecnico"?' status-prospeccao-ativo':'')+'" data-id="'+l.id+'">Em Prospecção</button>' +
-            (precisaAvisarAtendimento(l) ? '<button type="button" class="btn btn-ghost btn-sm avisar-atendimento" data-id="'+l.id+'" style="border-color:var(--bad); color:var(--bad);">📣 Avisar Suporte</button>' : '') +
-            (precisaAvisarConfirmacao(l) ? '<button type="button" class="btn btn-ghost btn-sm avisar-confirmacao" data-id="'+l.id+'" style="border-color:var(--ok); color:var(--ok);">✅ Atendimento Confirmado</button>' : '') +
           '</div>' : '') +
         '</div>') +
       '</div>';
@@ -1373,27 +1349,6 @@
           const novo = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {status: ""})));
           db.doc("lojas/"+btn.dataset.id).update({ status: novo, atualizadoEm: now() }).catch(function(){});
         }
-      });
-    });
-    list.querySelectorAll(".avisar-atendimento").forEach(function(btn){
-      btn.addEventListener("click", function(e){
-        e.stopPropagation();
-        const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
-        const faltando = [];
-        if(!(l.chamado&&l.chamado.trim())) faltando.push("Chamado");
-        if(!(l.protocolo&&l.protocolo.trim())) faltando.push("Protocolo");
-        const msg = "Olá Suporte!\nA loja "+l.nome+" já tem técnico ("+l.tecnico+") e data ("+fmtDateBR(l.agendamento)+
-          (l.agendamentoPrevisto ? " às "+l.agendamentoPrevisto : "")+") agendados. Falta providenciar: "+faltando.join(" e ");
-        abrirWhatsAppComMensagem(WHATSAPP_ATENDIMENTO, msg);
-      });
-    });
-    list.querySelectorAll(".avisar-confirmacao").forEach(function(btn){
-      btn.addEventListener("click", function(e){
-        e.stopPropagation();
-        const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
-        const msg = "Olá Barbara!\nConfirmado atendimento para a loja: "+l.nome+" - Técnico: ("+l.tecnico+") data ("+fmtDateBR(l.agendamento)+
-          (l.agendamentoPrevisto ? " às "+l.agendamentoPrevisto : "")+") Chamado: "+l.chamado+" e Protocolo: "+l.protocolo;
-        abrirWhatsAppComMensagem(WHATSAPP_CONFIRMACAO, msg);
       });
     });
     list.querySelectorAll(".agendamento-input").forEach(function(input){
