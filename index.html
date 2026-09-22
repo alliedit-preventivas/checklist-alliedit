@@ -1125,10 +1125,14 @@
   }
   function abrirTecnicoNovaAba(){
     const isGithubPages = window.location.hostname.indexOf("github.io") !== -1;
-    const url = isGithubPages
-      ? "https://alliedit-preventivas.github.io/checklist-alliedit/?tecnico=1"
-      : (window.location.origin + window.location.pathname + "?tecnico=1");
-    window.open(url, "_blank");
+    if(isGithubPages){
+      window.open("https://alliedit-preventivas.github.io/checklist-alliedit/?tecnico=1", "_blank");
+    }else{
+      // No claude.ai, abrir nova aba para o endereço interno do artifact é bloqueado pela plataforma.
+      // Navega na mesma aba usando o hash #tecnico, que é reconhecido no carregamento.
+      window.location.hash = "tecnico";
+      window.location.reload();
+    }
   }
   function wireNav(){
     document.getElementById("nav-lojas").addEventListener("click", function(){ showView("lojas"); });
