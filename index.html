@@ -749,7 +749,7 @@
     return { id:uid(), nome:"PDV "+String(n).padStart(2,"0"), serie:"", marca:"", obs:"",
       miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
       telaCliente:{touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null, falhaImpressao:null},
-      leitorCodBarras:{serie:""}, pinpad:{serieRede:"", modelo:"", serie:""}, mercadoPago:{modelo:"", serie:""},
+      leitorCodBarras:{possui:null, serie:"", defeito:null, obs:""}, pinpad:{serieRede:"", modelo:"", serie:""}, mercadoPago:{modelo:"", serie:""},
       mouse: blankPerif(), teclado: blankPerif() };
   }
   function blankMobile(n){ return { id:uid(), nome:"Mobile "+String(n).padStart(2,"0"), serie:"", ip:"", estado:"", obs:"" }; }
@@ -805,6 +805,14 @@
     if(!p.miniNobreak) p.miniNobreak = {possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""};
     if(!Array.isArray(p.miniNobreak.leds)) p.miniNobreak.leds = [];
     if(p.impressoraTermica && p.impressoraTermica.falhaImpressao===undefined) p.impressoraTermica.falhaImpressao = null;
+    // dados antigos so tinham {serie}; preserva a serie ja preenchida e adiciona os novos campos de controle de defeito.
+    // Se ja havia uma serie preenchida no dado antigo, assume possui:true automaticamente (evita ocultar um dado ja salvo
+    // atras de um clique manual em "Possui"). Sem serie antiga, possui fica null (pergunta em aberto, como antes).
+    if(!p.leitorCodBarras || p.leitorCodBarras.possui===undefined){
+      const antigo = p.leitorCodBarras || {};
+      const temSerieAntiga = !!(antigo.serie && antigo.serie.trim());
+      p.leitorCodBarras = Object.assign({possui: temSerieAntiga ? true : null, serie:"", defeito:null, obs:""}, antigo);
+    }
     return p;
   }
   function migrarDvr(d, i){
@@ -934,7 +942,7 @@
       if(sk==="gerencia" && s.gposBackup.possui===null) add(label+": GPOS Backup existe?", b+'[data-path="gposBackup.possui"]');
       if(!s.wifi.barras) add(label+": sinal do WIFI", b+'[data-path="wifi.barras"]');
     });
-    [["gerencia","Notebook Gerência","#setor-gerencia-notebooks "],["estoque","Notebook Estoque","#setor-estoque-notebooks "]].forEach(function(triple){
+    [["gerencia","Notebook Gerência","#setor-gerencia-notebooks "]].forEach(function(triple){
       const k = triple[0], label = triple[1], b = triple[2];
       const n = l.notebooks[k];
       if(!n.hostname) add(label+": Hostname", b+'[data-nb="'+k+'.hostname"]');
@@ -959,6 +967,12 @@
       if(!p.mouse.estado) add(p.nome+": mouse estado", b+'[data-pdv="mouseEstado"]');
       if(!p.teclado.tipo) add(p.nome+": teclado com/sem fio", b+'[data-pdv-select="teclado"]');
       if(!p.teclado.estado) add(p.nome+": teclado estado", b+'[data-pdv="tecladoEstado"]');
+      if(p.leitorCodBarras.possui===null) add(p.nome+": leitor de código de barras possui?", b+'[data-pdv-toggle="leitorPossui"]');
+      else if(p.leitorCodBarras.possui===true){
+        if(!p.leitorCodBarras.serie) add(p.nome+": leitor de código de barras Nº Série", b+'[data-pdv="leitorSerie"]');
+        if(p.leitorCodBarras.defeito===null) add(p.nome+": leitor de código de barras apresenta defeito?", b+'[data-pdv-toggle="leitorDefeito"]');
+        else if(p.leitorCodBarras.defeito===true && !p.leitorCodBarras.obs) add(p.nome+": leitor de código de barras — descreva o defeito", b+'[data-pdv="leitorObs"]');
+      }
     });
     (l.mobiles||[]).forEach(function(m, i){
       const b = '#mobiles-list [data-idx="'+i+'"]';
@@ -2067,7 +2081,8 @@
 
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
       currentLoja.rack.nobreak.marca = e.target.value;
-      if(e.target.value!=="NHS") currentLoja.rack.nobreak.autonomiaNhs = "";
+      // Nao apaga autonomiaNhs ao trocar de marca: se o tecnico ja tinha registrado a autonomia (ex: voltou de EATON para NHS),
+      // o valor deve continuar preenchido. O campo so fica oculto (nao apagado) quando a marca atual nao e NHS.
       updateRackNobreakVisibility(); scheduleSave();
       // a exibição/obrigatoriedade do Mini Nobreak depende da marca (EATON x NHS) — re-renderiza os dois setores imediatamente
       renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
@@ -2317,7 +2332,9 @@
       '</div>';
     }
     cGer.innerHTML = card("gerencia","Notebook Gerência") + card("adm","Possui Notebook ADM?");
-    cEst.innerHTML = card("estoque","Notebook Estoque");
+    // Notebook Estoque removido da interface (nao aparece mais, nao e mais obrigatorio) -
+    // os dados historicos em currentLoja.notebooks.estoque sao preservados no JSON, so nao sao exibidos/editados aqui.
+    cEst.innerHTML = "";
     [cGer, cEst].forEach(function(container){
     container.querySelectorAll("[data-nb]").forEach(function(el){
       const h = function(){ setDeep(n, el.dataset.nb, el.value); scheduleSave(); };
@@ -2474,7 +2491,18 @@
         '<div class="field"><label>Impressora Térmica apresenta falha ao imprimir?</label><div class="toggle-group" data-pdv-toggle="impFalha" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(p.impressoraTermica.falhaImpressao===true?' on-bad':'')+'" data-val="true">Sim</button>' +
           '<button type="button" class="toggle-btn'+(p.impressoraTermica.falhaImpressao===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
-        '<div class="field"><label>Leitor de código de barras &mdash; Nº Série</label><input type="text" data-pdv="leitorSerie" data-idx="'+idx+'" value="'+escapeHtml(p.leitorCodBarras.serie)+'"></div>' +
+        '<div class="field"><label>Leitor de código de barras</label><div class="toggle-group" data-pdv-toggle="leitorPossui" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.leitorCodBarras.possui===true?' on-good':'')+'" data-val="true">Possui</button>' +
+          '<button type="button" class="toggle-btn'+(p.leitorCodBarras.possui===false?' on-bad':'')+'" data-val="false">Não possui</button></div></div>' +
+        (p.leitorCodBarras.possui===true ?
+          '<div class="field"><label>Nº Série</label><input type="text" data-pdv="leitorSerie" data-idx="'+idx+'" value="'+escapeHtml(p.leitorCodBarras.serie)+'"></div>' +
+          '<div class="field"><label>Leitor de código de barras apresenta defeito?</label><div class="toggle-group" data-pdv-toggle="leitorDefeito" data-idx="'+idx+'">' +
+            '<button type="button" class="toggle-btn'+(p.leitorCodBarras.defeito===true?' on-bad':'')+'" data-val="true">Sim</button>' +
+            '<button type="button" class="toggle-btn'+(p.leitorCodBarras.defeito===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
+          (p.leitorCodBarras.defeito===true ?
+            '<div class="field"><label>Descreva o defeito (obrigatório)</label><textarea data-pdv="leitorObs" data-idx="'+idx+'" rows="2">'+escapeHtml(p.leitorCodBarras.obs)+'</textarea></div>'
+            : '')
+          : '') +
         '<div class="field-row-3">' +
           '<div class="field"><label>Pinpad GERTEC &mdash; NS rede</label><input type="text" data-pdv="pinSerieRede" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serieRede)+'"></div>' +
           '<div class="field"><label>Modelo</label><input type="text" data-pdv="pinModelo" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.modelo)+'"></div>' +
@@ -2495,6 +2523,7 @@
         else if(key==="nobreakData") p.miniNobreak.dataFabricacao=el.value;
         else if(key==="nobreakObs") p.miniNobreak.obs=el.value;
         else if(key==="leitorSerie") p.leitorCodBarras.serie=el.value;
+        else if(key==="leitorObs") p.leitorCodBarras.obs=el.value;
         else if(key==="pinSerieRede") p.pinpad.serieRede=el.value; else if(key==="pinModelo") p.pinpad.modelo=el.value; else if(key==="pinSerie") p.pinpad.serie=el.value;
         else if(key==="mpModelo") p.mercadoPago.modelo=el.value; else if(key==="mpSerie") p.mercadoPago.serie=el.value;
         scheduleSave();
@@ -2515,6 +2544,8 @@
         else if(key==="impFalha") p.impressoraTermica.falhaImpressao=val;
         else if(key==="nobreakPossui") p.miniNobreak.possui=val;
         else if(key==="nobreakAutonomia") p.miniNobreak.autonomiaAcima5=val;
+        else if(key==="leitorPossui") p.leitorCodBarras.possui=val;
+        else if(key==="leitorDefeito") p.leitorCodBarras.defeito=val;
         renderPdvs(); scheduleSave();
       });
     });
