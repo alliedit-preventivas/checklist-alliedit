@@ -147,6 +147,19 @@
   .badge-bloco .linha2{font-size:11px; font-weight:600;}
   .badge.concluido{background:var(--ok-bg); color:var(--ok);}
   .empty{text-align:center; color:var(--text-muted); padding:40px 10px; font-size:13.5px;}
+  .tecnico-blocos-nav{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px; position:sticky; top:56px; background:var(--bg); z-index:5; padding:6px 0;}
+  .bloco-nav-btn{flex:1; min-width:120px; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:20px; padding:8px 12px; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;}
+  .bloco-nav-btn.bloco-ativo{background:var(--teal); color:#fff; border-color:var(--teal);}
+  .bloco-indicador{font-size:10px; font-weight:700; padding:2px 7px; border-radius:12px; letter-spacing:.2px;}
+  .bloco-indicador.bloco-nao-iniciado{background:#E4E4E4; color:#555;}
+  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-nao-iniciado{background:rgba(255,255,255,.25); color:#fff;}
+  .bloco-indicador.bloco-andamento{background:var(--warn-bg); color:var(--warn);}
+  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-andamento{background:rgba(255,255,255,.3); color:#fff;}
+  .bloco-indicador.bloco-completo{background:var(--ok-bg); color:var(--ok);}
+  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-completo{background:rgba(255,255,255,.3); color:#fff;}
+  .tecnico-bloco{display:none;}
+  .tecnico-bloco.bloco-ativo{display:block;}
+  @media(max-width:640px){ .tecnico-blocos-nav{position:static;} .bloco-nav-btn{min-width:45%; font-size:11.5px;} }
   .checklist-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
   .checklist-header h2{margin:0 0 4px; font-size:18px;}
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
@@ -372,9 +385,16 @@
       </div>
     </section>
 
+    <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
+    </div>
+
     <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
 
-    <section class="block">
+    <section class="block tecnico-bloco" id="bloco-rack" data-bloco="rack">
       <h3>Equipamentos RACK</h3>
       <div class="item-card">
         <div class="item-title"><span>Rack</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-rack">Limpar</button></div>
@@ -418,18 +438,18 @@
       </div>
     </section>
 
-    <section class="block" id="setor-gerencia">
+    <section class="block tecnico-bloco" id="setor-gerencia" data-bloco="gerencia">
       <h3>Gerência</h3>
       <div id="setor-gerencia-notebooks"></div>
       <div id="setor-gerencia-body"></div>
     </section>
-    <section class="block" id="setor-estoque">
+    <section class="block tecnico-bloco" id="setor-estoque" data-bloco="estoque">
       <h3>Estoque</h3>
       <div id="setor-estoque-notebooks"></div>
       <div id="setor-estoque-body"></div>
     </section>
 
-    <section class="block">
+    <section class="block tecnico-bloco" id="bloco-stage" data-bloco="stage">
       <h3>Stage de Vendas</h3>
       <div class="sub-h4">Até 5 PDVs por loja</div>
       <div id="pdvs-list"></div>
@@ -1992,12 +2012,15 @@
     document.getElementById("banner-validacao").classList.add("hidden");
     filaPendencias = [];
     atualizarTempoAtendimento();
-    updateFinalizeUi();
     fillRackForm();
     renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
     renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
     renderNotebooks();
     renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia();
+    mostrarBlocoTecnico("rack");
+    // updateFinalizeUi() (que tambem calcula os indicadores por bloco) precisa rodar DEPOIS que todo o DOM
+    // dinamico acima ja foi renderizado, senao os seletores de pendencia nao encontram os elementos ainda.
+    updateFinalizeUi();
     document.getElementById("save-status").textContent = "";
     aplicarBloqueio();
     showView("checklist");
@@ -2130,6 +2153,9 @@
     document.getElementById("wifi-stage-obs").addEventListener("input", function(e){ currentLoja.wifiStage.obs = e.target.value; scheduleSave(); });
     document.getElementById("btn-clear-wifi-stage").addEventListener("click", function(){ currentLoja.wifiStage = {barras:"", obs:""}; renderWifiStage(); scheduleSave(); });
 
+    document.querySelectorAll("[data-bloco-nav]").forEach(function(btn){
+      btn.addEventListener("click", function(){ mostrarBlocoTecnico(btn.dataset.blocoNav); });
+    });
     document.getElementById("rack-nobreak-eaton-minutos").addEventListener("input", function(e){ currentLoja.rack.nobreak.autonomiaEatonMinutos = e.target.value; scheduleSave(); });
     document.getElementById("ocorrencia-descricao").addEventListener("input", function(e){ currentLoja.ocorrencia.descricao = e.target.value; scheduleSave(); });
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
@@ -2196,6 +2222,60 @@
     badge.className = "badge " + currentLoja.status; badge.textContent = STATUS_LABEL[currentLoja.status];
     document.getElementById("btn-finalizar").style.display = currentLoja.status==="concluido" ? "none":"inline-flex";
     document.getElementById("btn-reabrir").style.display = currentLoja.status==="concluido" ? "inline-flex":"none";
+    atualizarIndicadoresBlocos();
+  }
+
+  // ---------------- Fase 6: navegacao por blocos (Rack/Gerencia/Estoque/Stage) ----------------
+  // Reaproveita validarObrigatorios() sem alterar sua logica: cada pendencia ja tem um seletor (sel)
+  // que aponta para um elemento real do formulario; descobrimos a qual bloco ela pertence subindo
+  // no DOM ate o container ".tecnico-bloco" mais proximo. Pendencias globais (fora dos 4 blocos,
+  // ex: horario, RAT, ocorrencia) simplesmente nao contam para nenhum indicador de bloco.
+  let blocoTecnicoAtivo = "rack";
+  function mostrarBlocoTecnico(nome){
+    blocoTecnicoAtivo = nome;
+    document.querySelectorAll(".tecnico-bloco").forEach(function(sec){
+      sec.classList.toggle("bloco-ativo", sec.dataset.bloco === nome);
+    });
+    document.querySelectorAll("[data-bloco-nav]").forEach(function(btn){
+      btn.classList.toggle("bloco-ativo", btn.dataset.blocoNav === nome);
+    });
+  }
+  function contarPendenciasPorBloco(pendencias){
+    const cont = {rack:0, gerencia:0, estoque:0, stage:0};
+    pendencias.forEach(function(p){
+      const el = document.querySelector(p.sel);
+      const blocoEl = el ? el.closest(".tecnico-bloco") : null;
+      if(blocoEl && cont[blocoEl.dataset.bloco] !== undefined) cont[blocoEl.dataset.bloco]++;
+    });
+    return cont;
+  }
+  // Copia profunda de currentLoja com SOMENTE o bloco indicado resetado ao estado em branco -
+  // usada so como referencia para saber quantas pendencias esse bloco teria se nunca tivesse sido tocado.
+  function copiaComBlocoEmBranco(nome){
+    const copia = JSON.parse(JSON.stringify(currentLoja));
+    if(nome === "rack"){ copia.rack = blankRack(); copia.dvrs = [blankDvr(1)]; }
+    else if(nome === "gerencia"){ copia.gerencia = blankSetorEquip(); copia.notebooks = Object.assign({}, copia.notebooks, {gerencia: blankNotebook(), adm: Object.assign({possui:null}, blankNotebook())}); }
+    else if(nome === "estoque"){ copia.estoque = blankSetorEquip(); }
+    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; }
+    return copia;
+  }
+  function atualizarIndicadoresBlocos(){
+    if(!currentLoja) return;
+    const atuais = contarPendenciasPorBloco(validarObrigatorios(currentLoja));
+    ["rack","gerencia","estoque","stage"].forEach(function(nome){
+      const el = document.querySelector('[data-indicador="'+nome+'"]');
+      if(!el) return;
+      const qtdAtual = atuais[nome];
+      let texto, classe;
+      if(qtdAtual === 0){ texto = "Completo"; classe = "bloco-completo"; }
+      else{
+        const qtdBranco = contarPendenciasPorBloco(validarObrigatorios(copiaComBlocoEmBranco(nome)))[nome];
+        if(qtdAtual >= qtdBranco){ texto = "Não iniciado"; classe = "bloco-nao-iniciado"; }
+        else{ texto = qtdAtual + " pendente" + (qtdAtual!==1?"s":""); classe = "bloco-andamento"; }
+      }
+      el.textContent = texto;
+      el.className = "bloco-indicador " + classe;
+    });
   }
 
   function setDeep(obj, path, value){ const parts=path.split("."); let cur=obj; for(let i=0;i<parts.length-1;i++) cur=cur[parts[i]]; cur[parts[parts.length-1]]=value; }
