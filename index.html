@@ -388,7 +388,11 @@
       <div class="item-card">
         <div class="item-title"><span>Nobreak de Rack</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-nobreak-rack">Limpar</button></div>
         <div class="field"><label>Marca</label><select id="rack-nobreak-marca"><option value="">Selecionar</option><option>NHS</option><option>EATON</option></select></div>
-        <div class="hint" id="rack-nobreak-eaton-hint" style="display:none; margin-bottom:8px;">EATON dispensa o teste de autonomia.</div>
+        <div class="field" id="rack-nobreak-eaton-wrap" style="display:none;">
+          <label>Autonomia do Nobreak (minutos)</label>
+          <input type="number" id="rack-nobreak-eaton-minutos" min="0" step="1" placeholder="Ex: 8">
+          <div class="hint">Obrigatório para finalizar o checklist.</div>
+        </div>
         <div class="field">
           <div class="toggle-group" id="rack-nobreak-serie-inacessivel-toggle"></div>
           <div class="hint" style="margin-bottom:8px;">Marque se não for possível visualizar o Nº Série sem movimentar o rack.</div>
@@ -727,7 +731,7 @@
   }
 
   // ---------------- blank data builders ----------------
-  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
+  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEatonMinutos:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
   function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, hd:{quantidade:"", erro:null}, obs:"" }; }
   function blankDesktop(){ return {hostname:"", serie:"", modelo:"", estado:"", obs:""}; }
   function blankPerif(){ return {tipo:"", estado:""}; }
@@ -830,6 +834,9 @@
     if(r.nobreak.autonomiaNhs===undefined){
       r.nobreak.autonomiaNhs = r.nobreak.autonomiaOk===true ? "acima" : (r.nobreak.autonomiaOk===false ? "abaixo" : "");
     }
+    // Campo novo e especifico para EATON (nao reaproveita autonomiaNhs, que e categorico
+    // e usado no painel de substituicao com semantica propria de NHS - misturar geraria ambiguidade historica).
+    if(r.nobreak.autonomiaEatonMinutos===undefined) r.nobreak.autonomiaEatonMinutos = "";
     return r;
   }
   function migrarNotebooks(n){
@@ -905,6 +912,11 @@
     else{
       if(!r.nobreak.serieInacessivel && !r.nobreak.serie) add("Nobreak de Rack: Nº Série", "#rack-nobreak-serie");
       if(r.nobreak.marca==="NHS" && !r.nobreak.autonomiaNhs) add("Nobreak de Rack: autonomia fora da tomada", "#rack-nobreak-nhs-toggle");
+      if(r.nobreak.marca==="EATON"){
+        const vEaton = r.nobreak.autonomiaEatonMinutos;
+        const nEaton = (vEaton==="" || vEaton===null || vEaton===undefined) ? NaN : Number(vEaton);
+        if(vEaton==="" || vEaton===null || vEaton===undefined || isNaN(nEaton) || nEaton < 0) add("Nobreak de Rack: autonomia em minutos (EATON)", "#rack-nobreak-eaton-minutos");
+      }
     }
     if(r.escada.possui===null) add("Escada móvel: possui ou não", "#rack-escada-possui-toggle");
     else if(r.escada.possui===true && r.escada.alturaSuficiente===null) add("Escada móvel: alcança o teto?", "#rack-escada-altura-toggle");
@@ -2012,6 +2024,8 @@
     document.getElementById("rack-nobreak-marca").value = r.nobreak.marca||"";
     document.getElementById("rack-nobreak-serie").value = r.nobreak.serie||"";
     document.getElementById("rack-nobreak-obs").value = r.nobreak.obs||"";
+    // != null (nao "||"") para nao tratar o valor 0 (minutos) como vazio - 0 e uma resposta valida.
+    document.getElementById("rack-nobreak-eaton-minutos").value = r.nobreak.autonomiaEatonMinutos != null ? r.nobreak.autonomiaEatonMinutos : "";
     (function(){
       const v = r.nobreak.serieInacessivel;
       const visivel = v===true ? false : (v===false ? true : null);
@@ -2035,7 +2049,7 @@
   function updateRackNobreakVisibility(){
     const marca = currentLoja.rack.nobreak.marca;
     document.getElementById("rack-nobreak-nhs-wrap").style.display = marca==="NHS" ? "block":"none";
-    document.getElementById("rack-nobreak-eaton-hint").style.display = marca==="EATON" ? "block":"none";
+    document.getElementById("rack-nobreak-eaton-wrap").style.display = marca==="EATON" ? "block":"none";
   }
 
   function wireChecklistStatic(){
@@ -2081,6 +2095,7 @@
     document.getElementById("wifi-stage-obs").addEventListener("input", function(e){ currentLoja.wifiStage.obs = e.target.value; scheduleSave(); });
     document.getElementById("btn-clear-wifi-stage").addEventListener("click", function(){ currentLoja.wifiStage = {barras:"", obs:""}; renderWifiStage(); scheduleSave(); });
 
+    document.getElementById("rack-nobreak-eaton-minutos").addEventListener("input", function(e){ currentLoja.rack.nobreak.autonomiaEatonMinutos = e.target.value; scheduleSave(); });
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
       currentLoja.rack.nobreak.marca = e.target.value;
       // Nao apaga autonomiaNhs ao trocar de marca: se o tecnico ja tinha registrado a autonomia (ex: voltou de EATON para NHS),
@@ -2096,7 +2111,7 @@
     document.getElementById("rack-nobreak-obs").addEventListener("input", function(e){ currentLoja.rack.nobreak.obs = e.target.value; scheduleSave(); });
     document.getElementById("rack-escada-obs").addEventListener("input", function(e){ currentLoja.rack.escada.obs = e.target.value; scheduleSave(); });
     document.getElementById("btn-clear-rack").addEventListener("click", function(){ currentLoja.rack.organizado=null; currentLoja.rack.limpo=null; currentLoja.rack.obs=""; fillRackForm(); scheduleSave(); });
-    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", obs:""}; fillRackForm(); scheduleSave(); });
+    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEatonMinutos:"", obs:""}; fillRackForm(); scheduleSave(); });
     document.getElementById("btn-clear-escada").addEventListener("click", function(){ currentLoja.rack.escada = {possui:null, alturaSuficiente:null, obs:""}; fillRackForm(); scheduleSave(); });
 
     document.getElementById("btn-add-dvr").addEventListener("click", function(){ if(currentLoja.dvrs.length>=3) return; currentLoja.dvrs.push(blankDvr(currentLoja.dvrs.length+1)); renderDvrs(); scheduleSave(); });
