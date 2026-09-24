@@ -455,6 +455,8 @@
       <div id="pdvs-list"></div>
       <button class="add-row" id="btn-add-pdv">+ Adicionar PDV</button>
 
+      <div id="mercado-pago-stage" style="margin-top:16px;"></div>
+
       <div id="mobiles-list" style="margin-top:16px;"></div>
       <button class="add-row" id="btn-add-mobile">+ Adicionar Mobile</button>
 
@@ -853,6 +855,12 @@
     }
     return p;
   }
+  // Mercado Pago passou a ser unico por loja (antes existia um por PDV). Se a loja ainda nao tem
+  // currentLoja.mercadoPago salvo, usa o primeiro PDV antigo que tenha modelo ou serie preenchidos.
+  function extrairMercadoPagoAntigo(pdvs){
+    const achado = (pdvs||[]).find(function(p){ return p && p.mercadoPago && (p.mercadoPago.modelo || p.mercadoPago.serie); });
+    return achado ? {modelo: achado.mercadoPago.modelo||"", serie: achado.mercadoPago.serie||""} : {modelo:"", serie:""};
+  }
   function migrarDvr(d, i){
     d = Object.assign(blankDvr(i+1), d);
     if(d.portasDanificadas && !Array.isArray(d.portasDanificadas.portas)) d.portasDanificadas.portas = [];
@@ -961,7 +969,6 @@
       if(d.camerasSemFuncionar.tem===null) add(d.nome+": câmeras sem funcionar?", base+'[data-dvr-toggle="camerasSemFuncionar"]');
       if(d.portasDanificadas.tem===null) add(d.nome+": portas danificadas?", base+'[data-dvr-toggle="portasDanificadas"]');
       if(d.monitorCftv.possui===null) add(d.nome+": possui monitor de CFTV?", base+'[data-dvr-toggle="monitorCftv"]');
-      if((d.camerasSemFuncionar.tem===true || d.portasDanificadas.tem===true || d.hd.erro===true) && !d.obs) add(d.nome+": descreva o defeito/falha identificado", base+'[data-dvr="obs"]');
     });
     ["gerencia","estoque"].forEach(function(sk){
       const s = l[sk]; const label = sk==="gerencia"?"Gerência":"Estoque"; const b = "#setor-"+sk+" ";
@@ -982,7 +989,6 @@
       if(!s.multifuncional.tipo) add(label+": Multifuncional colorida ou P&B", b+'[data-path="multifuncional.tipo"]');
       else if(assetsApi && !s.multifuncional.relatorioUso) add(label+": Relatório de Uso da Multifuncional (anexo)", b+'[data-relatorio-input]');
       if(s.multifuncional.transformador===null) add(label+": impressora possui transformador?", b+'[data-path="multifuncional.transformador"]');
-      if(s.multifuncional.falhaImpressao===true && !s.multifuncional.obs) add(label+": Multifuncional - descreva a falha de impressão", b+'[data-path="multifuncional.obs"]');
       if(s.telefoneVoip.possui===null) add(label+": Possui telefone VOIP?", b+'[data-path="telefoneVoip.possui"]');
       else if(s.telefoneVoip.possui===true && (!s.telefoneVoip.numero || !s.telefoneVoip.ip)) add(label+": Telefone VOIP número/IP", b+'[data-path="telefoneVoip.numero"]');
       if(sk==="gerencia" && s.gposBackup.possui===null) add(label+": GPOS Backup existe?", b+'[data-path="gposBackup.possui"]');
@@ -1009,11 +1015,8 @@
       if(!p.marca) add(p.nome+": marca", b+'[data-pdv="marca"]');
       if(p.marca==="Elgin" && p.telaCliente.touchDesativado!==true) add(p.nome+": remover USB do touch da tela do cliente", '#pdvs-list [data-pdv-removido="'+i+'"]');
       if(p.impressoraTermica.limpezaFeita===null) add(p.nome+": limpeza da impressora térmica", b+'[data-pdv-toggle="impLimpeza"]');
-      if(p.impressoraTermica.falhaImpressao===true && !p.obs) add(p.nome+": descreva a falha da impressora térmica", b+'[data-pdv="obs"]');
       if(!p.pinpad.modelo) add(p.nome+": Pinpad GERTEC - modelo", b+'[data-pdv="pinModelo"]');
       if(!p.pinpad.serie) add(p.nome+": Pinpad GERTEC - Nº Série", b+'[data-pdv="pinSerie"]');
-      if(!p.mercadoPago.modelo) add(p.nome+": Mercado Pago - modelo", b+'[data-pdv="mpModelo"]');
-      if(!p.mercadoPago.serie) add(p.nome+": Mercado Pago - Nº Série", b+'[data-pdv="mpSerie"]');
       if(!p.mouse.tipo) add(p.nome+": mouse com/sem fio", b+'[data-pdv-select="mouse"]');
       if(!p.mouse.estado) add(p.nome+": mouse estado", b+'[data-pdv="mouseEstado"]');
       if(!p.teclado.tipo) add(p.nome+": teclado com/sem fio", b+'[data-pdv-select="teclado"]');
@@ -1027,9 +1030,11 @@
       else if(p.leitorCodBarras.possui===true){
         if(!p.leitorCodBarras.serie) add(p.nome+": leitor de código de barras Nº Série", b+'[data-pdv="leitorSerie"]');
         if(p.leitorCodBarras.defeito===null) add(p.nome+": leitor de código de barras apresenta defeito?", b+'[data-pdv-toggle="leitorDefeito"]');
-        else if(p.leitorCodBarras.defeito===true && !p.leitorCodBarras.obs) add(p.nome+": leitor de código de barras — descreva o defeito", b+'[data-pdv="leitorObs"]');
       }
     });
+    if(!l.mercadoPago) l.mercadoPago = {modelo:"", serie:""};
+    if(!l.mercadoPago.modelo) add("Mercado Pago - modelo", '#mercado-pago-stage [data-mp="modelo"]');
+    if(!l.mercadoPago.serie) add("Mercado Pago - Nº Série", '#mercado-pago-stage [data-mp="serie"]');
     (l.mobiles||[]).forEach(function(m, i){
       const b = '#mobiles-list [data-idx="'+i+'"]';
       if(!m.estado) add(m.nome+": estado de conservação", b+'[data-mobile="estado"]');
@@ -1039,7 +1044,6 @@
     if(!l.wifiStage.barras) add("Stage de Vendas: sinal do WIFI", '#wifi-stage-select');
     if(!l.ocorrencia) l.ocorrencia = {tem:null, descricao:""};
     if(l.ocorrencia.tem===null) add("A loja deseja pontuar alguma ocorrência ou necessidade?", "#ocorrencia-tem-toggle");
-    else if(l.ocorrencia.tem===true && !l.ocorrencia.descricao) add("Descreva a ocorrência ou necessidade", "#ocorrencia-descricao");
     if(!l.rat) l.rat = {};
     if(!l.ratFoto || !l.ratFoto.id) add("Anexe a foto do RAT preenchido", "#rat-foto-input");
     return faltando;
@@ -1986,6 +1990,7 @@
       horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
+      mercadoPago: Object.assign({modelo:"", serie:""}, data.mercadoPago || extrairMercadoPagoAntigo(data.pdvs)),
       rack: migrarRack(data.rack),
       gerencia: migrarSetor(data.gerencia),
       estoque: migrarSetor(data.estoque),
@@ -2016,7 +2021,7 @@
     renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
     renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
     renderNotebooks();
-    renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia();
+    renderPdvs(); renderMercadoPago(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia();
     mostrarBlocoTecnico("rack");
     // updateFinalizeUi() (que tambem calcula os indicadores por bloco) precisa rodar DEPOIS que todo o DOM
     // dinamico acima ja foi renderizado, senao os seletores de pendencia nao encontram os elementos ainda.
@@ -2127,6 +2132,7 @@
       currentLoja.pdvs = [blankPdv(1)]; currentLoja.mobiles = [blankMobile(1)]; currentLoja.dvrs = [blankDvr(1)];
       currentLoja.ratFoto = null;
       currentLoja.ocorrencia = {tem:null, descricao:""};
+      currentLoja.mercadoPago = {modelo:"", serie:""};
       currentLoja.horarioInicio = ""; currentLoja.horarioFim = "";
       document.getElementById("cl-horario-inicio").value = "";
       document.getElementById("cl-horario-fim").value = "";
@@ -2138,7 +2144,7 @@
       renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
       renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
       renderNotebooks();
-      renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia(); updateFinalizeUi();
+      renderPdvs(); renderMercadoPago(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia(); updateFinalizeUi();
       document.getElementById("btn-limpar-formulario").classList.remove("hidden");
       document.getElementById("limpar-form-confirm").classList.add("hidden");
       persistNow();
@@ -2589,6 +2595,13 @@
           '<div class="field"><label>Nº Série do PDV</label><input type="text" data-pdv="serie" data-idx="'+idx+'" value="'+escapeHtml(p.serie)+'"></div>' +
           '<div class="field"><label>Marca</label><select data-pdv="marca" data-idx="'+idx+'"><option value="">Selecionar</option><option'+(p.marca==="Toshiba"?' selected':'')+'>Toshiba</option><option'+(p.marca==="Elgin"?' selected':'')+'>Elgin</option></select></div>' +
         '</div>' +
+        (!ehElgin ? '' :
+        '<div class="field"><label>Tela do cliente</label>' +
+          '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
+          (p.telaCliente.touchDesativado===true ?
+            '<button type="button" class="toggle-btn on-good" style="width:100%;" disabled>Removido</button>'
+            : '<button type="button" class="toggle-btn on-bad" style="width:100%;" data-pdv-removido="'+idx+'">Remover Cabo USB</button>') +
+        '</div>') +
         // Mini Nobreak: sempre exibido e exigido por PDV, independente da marca do Nobreak de Rack.
         '<div class="field"><label>Mini Nobreak</label><div class="toggle-group" data-pdv-toggle="nobreakPossui" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(p.miniNobreak.possui===true?' on-good':'')+'" data-val="true">Possui</button>' +
@@ -2609,13 +2622,6 @@
             }).join("") + '</div>' : '') +
           '<div class="field"><label>Observação</label><textarea data-pdv="nobreakObs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(p.miniNobreak.obs)+'</textarea></div>'
           : '') +
-        (!ehElgin ? '' :
-        '<div class="field"><label>Tela do cliente</label>' +
-          '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
-          (p.telaCliente.touchDesativado===true ?
-            '<button type="button" class="toggle-btn on-good" style="width:100%;" disabled>Removido</button>'
-            : '<button type="button" class="toggle-btn on-bad" style="width:100%;" data-pdv-removido="'+idx+'">Remover Cabo USB</button>') +
-        '</div>') +
         '<div class="field-row">' +
           '<div class="field"><label>Impressora térmica &mdash; Nº Série</label><input type="text" data-pdv="impSerie" data-idx="'+idx+'" value="'+escapeHtml(p.impressoraTermica.serie)+'"></div>' +
           '<div class="field"><label>Limpeza básica com pincel</label><div class="toggle-group" data-pdv-toggle="impLimpeza" data-idx="'+idx+'">' +
@@ -2633,16 +2639,13 @@
             '<button type="button" class="toggle-btn'+(p.leitorCodBarras.defeito===true?' on-bad':'')+'" data-val="true">Sim</button>' +
             '<button type="button" class="toggle-btn'+(p.leitorCodBarras.defeito===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
           (p.leitorCodBarras.defeito===true ?
-            '<div class="field"><label>Descreva o defeito (obrigatório)</label><textarea data-pdv="leitorObs" data-idx="'+idx+'" rows="2">'+escapeHtml(p.leitorCodBarras.obs)+'</textarea></div>'
+            '<div class="field"><label>Descreva o defeito</label><textarea data-pdv="leitorObs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(p.leitorCodBarras.obs)+'</textarea></div>'
             : '')
           : '') +
         '<div class="field-row-3">' +
           '<div class="field"><label>Pinpad GERTEC &mdash; NS rede</label><input type="text" data-pdv="pinSerieRede" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serieRede)+'"></div>' +
           '<div class="field"><label>Modelo</label><input type="text" data-pdv="pinModelo" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.modelo)+'"></div>' +
           '<div class="field"><label>NS do pinpad</label><input type="text" data-pdv="pinSerie" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serie)+'"></div></div>' +
-        '<div class="field-row">' +
-          '<div class="field"><label>Mercado Pago &mdash; modelo</label><input type="text" data-pdv="mpModelo" data-idx="'+idx+'" value="'+escapeHtml(p.mercadoPago.modelo)+'"></div>' +
-          '<div class="field"><label>Mercado Pago &mdash; NS</label><input type="text" data-pdv="mpSerie" data-idx="'+idx+'" value="'+escapeHtml(p.mercadoPago.serie)+'"></div></div>' +
         '<div class="field-row">' + perifHtmlPdv(idx,"mouse","Mouse",p.mouse) + perifHtmlPdv(idx,"teclado","Teclado",p.teclado) + '</div>' +
         '<div class="field"><label>Observação</label><textarea data-pdv="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(p.obs)+'</textarea></div>' +
       '</div>';
@@ -2658,7 +2661,6 @@
         else if(key==="leitorSerie") p.leitorCodBarras.serie=el.value;
         else if(key==="leitorObs") p.leitorCodBarras.obs=el.value;
         else if(key==="pinSerieRede") p.pinpad.serieRede=el.value; else if(key==="pinModelo") p.pinpad.modelo=el.value; else if(key==="pinSerie") p.pinpad.serie=el.value;
-        else if(key==="mpModelo") p.mercadoPago.modelo=el.value; else if(key==="mpSerie") p.mercadoPago.serie=el.value;
         scheduleSave();
       });
       if(el.tagName==="SELECT") el.addEventListener("change", function(){
@@ -2707,6 +2709,23 @@
     wrap.querySelectorAll("[data-remove-pdv]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.pdvs.splice(+el.dataset.removePdv,1); renderPdvs(); scheduleSave(); }); });
     wrap.querySelectorAll("[data-clear-pdv]").forEach(function(el){
       el.addEventListener("click", function(){ const idx=+el.dataset.clearPdv; const nomeAtual=currentLoja.pdvs[idx].nome; currentLoja.pdvs[idx]=blankPdv(idx+1); currentLoja.pdvs[idx].nome=nomeAtual; renderPdvs(); scheduleSave(); });
+    });
+  }
+
+  // ---- Mercado Pago (unico por loja, nao repete por PDV) ----
+  function renderMercadoPago(){
+    const wrap = document.getElementById("mercado-pago-stage");
+    const mp = currentLoja.mercadoPago;
+    wrap.innerHTML =
+      '<div class="item-card">' +
+        '<div class="item-title"><span>Mercado Pago</span></div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label>Modelo</label><input type="text" data-mp="modelo" value="'+escapeHtml(mp.modelo)+'"></div>' +
+          '<div class="field"><label>Nº Série</label><input type="text" data-mp="serie" value="'+escapeHtml(mp.serie)+'"></div>' +
+        '</div>' +
+      '</div>';
+    wrap.querySelectorAll('[data-mp]').forEach(function(el){
+      el.addEventListener('input', function(){ currentLoja.mercadoPago[el.dataset.mp] = el.value; scheduleSave(); });
     });
   }
 
@@ -2799,7 +2818,7 @@
         rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
         pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
         wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
-        ocorrencia: currentLoja.ocorrencia,
+        ocorrencia: currentLoja.ocorrencia, mercadoPago: currentLoja.mercadoPago,
         horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
         atualizadoEm: now()
       });
