@@ -147,19 +147,24 @@
   .badge-bloco .linha2{font-size:11px; font-weight:600;}
   .badge.concluido{background:var(--ok-bg); color:var(--ok);}
   .empty{text-align:center; color:var(--text-muted); padding:40px 10px; font-size:13.5px;}
-  .tecnico-blocos-nav{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px; position:sticky; top:56px; background:var(--bg); z-index:5; padding:6px 0;}
-  .bloco-nav-btn{flex:1; min-width:120px; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:20px; padding:8px 12px; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;}
-  .bloco-nav-btn.bloco-ativo{background:var(--teal); color:#fff; border-color:var(--teal);}
-  .bloco-indicador{font-size:10px; font-weight:700; padding:2px 7px; border-radius:12px; letter-spacing:.2px;}
+  .setores-pergunta{font-size:15px; font-weight:700; color:var(--navy); margin:18px 0 10px;}
+  .tecnico-blocos-nav{display:grid; grid-template-columns:1fr; gap:10px; margin:0 0 16px;}
+  .bloco-nav-btn{width:100%; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:12px; padding:16px 18px; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left;}
+  .bloco-nav-btn:hover{border-color:var(--teal);}
+  .bloco-nav-btn.bloco-bloqueado{border-style:dashed; color:var(--text-muted);}
+  .bloco-indicador{font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px; letter-spacing:.2px; white-space:nowrap;}
   .bloco-indicador.bloco-nao-iniciado{background:#E4E4E4; color:#555;}
-  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-nao-iniciado{background:rgba(255,255,255,.25); color:#fff;}
   .bloco-indicador.bloco-andamento{background:var(--warn-bg); color:var(--warn);}
-  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-andamento{background:rgba(255,255,255,.3); color:#fff;}
   .bloco-indicador.bloco-completo{background:var(--ok-bg); color:var(--ok);}
-  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-completo{background:rgba(255,255,255,.3); color:#fff;}
+  .setor-rodape{display:flex; gap:8px; justify-content:space-between; flex-wrap:wrap; margin:6px 0 10px;}
   .tecnico-bloco{display:none;}
   .tecnico-bloco.bloco-ativo{display:block;}
-  @media(max-width:640px){ .tecnico-blocos-nav{position:static;} .bloco-nav-btn{min-width:45%; font-size:11.5px;} }
+  /* Fluxo por etapas: data-fase no #view-checklist = "setores" (escolha), "setor" (um bloco) ou "encerramento" */
+  #view-checklist:not([data-fase="setores"]) .so-hub{display:none !important;}
+  #view-checklist[data-fase="setores"] .nao-hub{display:none !important;}
+  #view-checklist:not([data-fase="setor"]) .so-setor{display:none !important;}
+  #view-checklist:not([data-fase="setor"]) .tecnico-bloco{display:none !important;}
+  #view-checklist:not([data-fase="encerramento"]) .so-encerramento{display:none !important;}
   .checklist-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
   .checklist-header h2{margin:0 0 4px; font-size:18px;}
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
@@ -355,21 +360,22 @@
     </div>
   </div>
 
-  <div id="view-checklist" class="view">
-    <button class="btn btn-ghost btn-sm" id="btn-voltar-lojas" style="margin-bottom:12px;">&larr; Voltar para lojas</button>
+  <div id="view-checklist" class="view" data-fase="setores">
+    <button class="btn btn-ghost btn-sm so-hub" id="btn-voltar-lojas" style="margin-bottom:12px;">&larr; Voltar para lojas</button>
+    <button class="btn btn-ghost btn-sm nao-hub" id="btn-voltar-setores" style="margin-bottom:12px;">&larr; Voltar aos setores</button>
     <div id="banner-lock" class="banner-lock hidden">
       <span>🔒 Checklist concluído — dados protegidos contra alteração acidental.</span>
       <button class="btn btn-ghost btn-sm" id="btn-solicitar-edicao">Reabrir formulário</button>
     </div>
 
     <div style="margin-bottom:4px;"><h2 id="cl-nome-loja" style="margin:0 0 4px; font-size:18px;">Loja</h2><span id="cl-badge" class="badge nao_iniciado">Não Iniciado</span><div class="hint" id="cl-tempo-atendimento"></div></div>
-    <div class="checklist-header">
+    <div class="checklist-header so-hub">
       <div style="min-width:110px; flex:1 1 110px;"><label>Chamado</label><input type="text" id="cl-chamado" placeholder="Ex: R123456"></div>
       <div style="min-width:150px; flex:1 1 150px;"><label>Técnico responsável</label><input type="text" id="cl-tecnico" placeholder="Nome do técnico"></div>
       <div style="min-width:150px; flex:1 1 150px;"><label>Responsável da loja</label><input type="text" id="cl-responsavel" placeholder="Nome do responsável"></div>
     </div>
 
-    <div style="margin-bottom:18px;" id="bloco-limpar-formulario">
+    <div style="margin-bottom:18px;" id="bloco-limpar-formulario" class="so-hub">
       <button type="button" class="btn btn-danger btn-sm" id="btn-limpar-formulario">Limpar Formulário</button>
       <span id="limpar-form-confirm" class="hidden" style="font-size:12px; color:var(--bad); margin-left:4px;">
         Isso apaga todos os dados do checklist técnico. Técnico, chamado, protocolo e agendamento são mantidos.
@@ -378,20 +384,25 @@
       </span>
     </div>
 
-    <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
-    </div>
-
-    <section class="block">
+    <section class="block so-hub">
       <h3>Início do atendimento</h3>
       <div class="field" style="max-width:220px;">
         <label>Horário de início</label>
         <input type="time" id="cl-horario-inicio">
       </div>
     </section>
+
+    <div class="so-hub">
+      <div class="setores-pergunta">Qual setor você gostaria de iniciar a preventiva?</div>
+      <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
+        <button type="button" class="bloco-nav-btn" id="btn-fase-encerramento">Encerramento<span class="bloco-indicador" id="indicador-encerramento"></span></button>
+      </div>
+      <div id="hub-aviso" class="banner-erro hidden"></div>
+    </div>
 
     <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
 
@@ -467,6 +478,7 @@
       </div>
     </section>
 
+    <div class="so-encerramento" id="fase-encerramento">
     <section class="block">
       <h3>Encerramento do atendimento</h3>
       <div class="field" style="max-width:220px;">
@@ -499,14 +511,23 @@
     </section>
 
     <div id="banner-validacao" class="banner-erro hidden"></div>
+    </div>
 
     </fieldset>
+
+    <div class="so-setor">
+      <div id="banner-setor" class="banner-erro hidden"></div>
+      <div class="setor-rodape">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-setor-voltar">&larr; Voltar aos setores</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-concluir-setor">Concluir setor</button>
+      </div>
+    </div>
 
     <div class="save-bar">
       <span class="save-status" id="save-status">&nbsp;</span>
       <div style="display:flex; gap:8px;">
         <button class="btn btn-ghost btn-sm" id="btn-reabrir" style="display:none;">Reabrir formulário</button>
-        <button class="btn btn-primary btn-sm" id="btn-finalizar">Finalizar checklist</button>
+        <button class="btn btn-primary btn-sm so-encerramento" id="btn-finalizar">Finalizar checklist</button>
       </div>
     </div>
   </div>
@@ -909,45 +930,12 @@
   }
 
   // ---------------- validação de IP dos mobiles ----------------
-  function octetoEsperado(nome){
-    const m = /(\d+)\D*$/.exec(nome||"");
-    if(!m) return null;
-    return (parseInt(m[1],10) + 5) % 256;
-  }
+  // Campo livre: so exige que esteja preenchido. A digitacao ja aceita apenas numeros e pontos
+  // (ver renderMobiles); nao ha mais regra de formato (10.102.xxx / final pelo numero do mobile).
   function erroMobileIp(m){
     const ip = (m.ip||"").trim();
     if(!ip) return "endereço IP não informado";
-    const octs = ip.split(".");
-    if(octs.length !== 4 || octs.some(function(o){ return o===""; })) return "IP incompleto — informe o endereço completo, ex: 10.102.196.56";
-    if(!octs.every(function(o){ return /^\d{1,3}$/.test(o) && parseInt(o,10)<=255; })) return "IP inválido — cada parte deve ser um número entre 0 e 255";
-    if(octs[0] !== "10") return "IP inválido — o primeiro octeto deve ser 10";
-    if(octs[1] !== "102") return "IP inválido — o segundo octeto deve ser 102";
-    if(octs[2].length !== 3) return "IP inválido — o terceiro octeto deve ter exatamente 3 dígitos (ex: 019, 196)";
-    const esperado = octetoEsperado(m.nome);
-    if(esperado!==null && parseInt(octs[3],10) !== esperado) return "IP fora do padrão — para "+m.nome+", o endereço deve terminar em ."+esperado;
     return null;
-  }
-  // mantém compatibilidade com o uso no painel: retorna o octeto esperado só quando o IP é válido mas termina errado
-  function validarMobileIp(m){
-    const ip = (m.ip||"").trim();
-    const octs = ip.split(".");
-    if(octs.length !== 4 || !octs.every(function(o){ return /^\d{1,3}$/.test(o) && parseInt(o,10)<=255; })) return null;
-    const esperado = octetoEsperado(m.nome);
-    if(esperado!==null && parseInt(octs[3],10) !== esperado) return esperado;
-    return null;
-  }
-  // Não reagrupa os dígitos (isso embaralhava o IP digitado). Mantém exatamente os pontos que o técnico digitou,
-  // só limita cada octeto a 3 dígitos e o total a 4 octetos, e insere o ponto automaticamente apenas quando um
-  // octeto completa 3 dígitos (nunca obriga isso — o técnico pode digitar "." manualmente para octetos de 1 ou 2 dígitos).
-  function formatarIp(raw){
-    let v = (raw||"").replace(/[^\d.]/g,"");
-    v = v.replace(/\.{2,}/g,".");
-    if(v.charAt(0)===".") v = v.slice(1);
-    let segs = v.split(".").slice(0,4).map(function(s){ return s.slice(0,3); });
-    let out = segs.join(".");
-    const ultimo = segs[segs.length-1];
-    if(ultimo && ultimo.length===3 && segs.length<4 && !v.endsWith(".")){ out += "."; }
-    return out;
   }
 
   // ---------------- validação obrigatória ----------------
@@ -1058,6 +1046,11 @@
     if(!sel) return;
     const el = document.querySelector(sel);
     if(!el) return;
+    // No fluxo por etapas o campo pode estar em outra tela: abre o setor/encerramento certo antes de rolar
+    const blocoEl = el.closest(".tecnico-bloco");
+    if(blocoEl) irParaFase("setor", blocoEl.dataset.bloco, true);
+    else if(el.closest("#fase-encerramento")) irParaFase("encerramento", null, true);
+    else irParaFase("setores", null, true);
     el.scrollIntoView({behavior:"smooth", block:"center"});
     if(typeof el.focus === "function") setTimeout(function(){ el.focus({preventScroll:true}); }, 350);
     el.style.transition = "box-shadow .2s";
@@ -2027,6 +2020,9 @@
     renderNotebooks();
     renderPdvs(); renderMercadoPago(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia();
     mostrarBlocoTecnico("rack");
+    document.getElementById("view-checklist").dataset.fase = "setores";
+    document.getElementById("hub-aviso").classList.add("hidden");
+    document.getElementById("banner-setor").classList.add("hidden");
     // updateFinalizeUi() (que tambem calcula os indicadores por bloco) precisa rodar DEPOIS que todo o DOM
     // dinamico acima ja foi renderizado, senao os seletores de pendencia nao encontram os elementos ainda.
     updateFinalizeUi();
@@ -2040,6 +2036,8 @@
     document.getElementById("form-fieldset").disabled = bloqueadoPorConclusao;
     document.getElementById("bloco-limpar-formulario").classList.toggle("hidden", bloqueadoPorConclusao);
     document.getElementById("btn-reabrir").disabled = bloqueadoPorConclusao;
+    // Checklist concluido: so consulta - "Concluir setor" some, "Voltar aos setores" continua
+    document.getElementById("btn-concluir-setor").classList.toggle("hidden", bloqueadoPorConclusao);
     document.getElementById("cl-tecnico").disabled = bloqueadoPorConclusao;
     document.getElementById("cl-chamado").disabled = bloqueadoPorConclusao;
     document.getElementById("cl-horario-inicio").disabled = bloqueadoPorConclusao;
@@ -2165,8 +2163,12 @@
     document.getElementById("btn-clear-wifi-stage").addEventListener("click", function(){ currentLoja.wifiStage = {barras:"", obs:""}; renderWifiStage(); scheduleSave(); });
 
     document.querySelectorAll("[data-bloco-nav]").forEach(function(btn){
-      btn.addEventListener("click", function(){ mostrarBlocoTecnico(btn.dataset.blocoNav); });
+      btn.addEventListener("click", function(){ irParaFase("setor", btn.dataset.blocoNav); });
     });
+    document.getElementById("btn-fase-encerramento").addEventListener("click", abrirEncerramento);
+    document.getElementById("btn-concluir-setor").addEventListener("click", concluirSetor);
+    document.getElementById("btn-setor-voltar").addEventListener("click", function(){ irParaFase("setores"); });
+    document.getElementById("btn-voltar-setores").addEventListener("click", function(){ irParaFase("setores"); });
     document.getElementById("ocorrencia-descricao").addEventListener("input", function(e){ currentLoja.ocorrencia.descricao = e.target.value; scheduleSave(); });
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
       currentLoja.rack.nobreak.marca = e.target.value;
@@ -2250,14 +2252,82 @@
       btn.classList.toggle("bloco-ativo", btn.dataset.blocoNav === nome);
     });
   }
-  function contarPendenciasPorBloco(pendencias){
-    const cont = {rack:0, gerencia:0, estoque:0, stage:0};
+  function pendenciasPorBloco(pendencias){
+    const grupos = {rack:[], gerencia:[], estoque:[], stage:[]};
     pendencias.forEach(function(p){
       const el = document.querySelector(p.sel);
       const blocoEl = el ? el.closest(".tecnico-bloco") : null;
-      if(blocoEl && cont[blocoEl.dataset.bloco] !== undefined) cont[blocoEl.dataset.bloco]++;
+      if(blocoEl && grupos[blocoEl.dataset.bloco]) grupos[blocoEl.dataset.bloco].push(p);
     });
+    return grupos;
+  }
+  function contarPendenciasPorBloco(pendencias){
+    const grupos = pendenciasPorBloco(pendencias), cont = {};
+    Object.keys(grupos).forEach(function(k){ cont[k] = grupos[k].length; });
     return cont;
+  }
+
+  // ---------------- Fluxo por etapas: escolha do setor -> setor -> encerramento ----------------
+  // So muda a navegacao da tela; os dados, o salvamento e validarObrigatorios() continuam os mesmos.
+  // O status de cada setor (Completo / pendentes / Nao iniciado) vem de atualizarIndicadoresBlocos().
+  const NOMES_BLOCOS = {rack:"Rack", gerencia:"Gerência", estoque:"Estoque", stage:"Stage de Vendas"};
+  function faseAtual(){ return document.getElementById("view-checklist").dataset.fase; }
+  function irParaFase(fase, bloco, manterRolagem){
+    const mudou = faseAtual() !== fase || (fase === "setor" && bloco !== blocoTecnicoAtivo);
+    document.getElementById("view-checklist").dataset.fase = fase;
+    if(fase === "setor") mostrarBlocoTecnico(bloco);
+    if(mudou){
+      document.getElementById("banner-setor").classList.add("hidden");
+      if(fase !== "setores") document.getElementById("hub-aviso").classList.add("hidden");
+      if(!manterRolagem) window.scrollTo({top:0});
+    }
+    atualizarIndicadoresBlocos();
+  }
+  function setoresIncompletos(){
+    const grupos = pendenciasPorBloco(validarObrigatorios(currentLoja));
+    return Object.keys(grupos).filter(function(k){ return grupos[k].length > 0; });
+  }
+  function avisoHub(html, sucesso){
+    const el = document.getElementById("hub-aviso");
+    el.innerHTML = html;
+    el.style.background = sucesso ? "var(--ok-bg)" : ""; el.style.color = sucesso ? "var(--ok)" : "";
+    el.classList.remove("hidden");
+  }
+  function renderBannerSetor(){
+    const banner = document.getElementById("banner-setor");
+    const pend = pendenciasPorBloco(validarObrigatorios(currentLoja))[blocoTecnicoAtivo] || [];
+    if(pend.length === 0){
+      banner.innerHTML = "✅ Todos os itens deste setor foram preenchidos. Clique em <b>Concluir setor</b>.";
+      banner.style.background = "var(--ok-bg)"; banner.style.color = "var(--ok)";
+    } else {
+      banner.style.background = ""; banner.style.color = "";
+      banner.innerHTML = "<b>Faltam "+pend.length+" item(ns) neste setor:</b><ul>" +
+        pend.map(function(f){ return '<li><a href="#" data-sel="'+escapeHtml(f.sel)+'" style="color:var(--bad); text-decoration:underline;">'+escapeHtml(f.texto)+'</a></li>'; }).join("") + "</ul>";
+      banner.querySelectorAll("[data-sel]").forEach(function(a){
+        a.addEventListener("click", function(e){ e.preventDefault(); irParaPendencia(a.dataset.sel); });
+      });
+    }
+    banner.classList.remove("hidden");
+  }
+  function concluirSetor(){
+    const pend = pendenciasPorBloco(validarObrigatorios(currentLoja))[blocoTecnicoAtivo] || [];
+    if(pend.length){
+      renderBannerSetor();
+      irParaPendencia(pend[0].sel);
+      return;
+    }
+    const nome = NOMES_BLOCOS[blocoTecnicoAtivo];
+    irParaFase("setores");
+    const faltam = setoresIncompletos();
+    avisoHub("✅ Setor <b>"+escapeHtml(nome)+"</b> concluído." + (faltam.length ? " Escolha o próximo setor." : " Todos os setores estão completos: siga para o <b>Encerramento</b>."), true);
+  }
+  function abrirEncerramento(){
+    const faltam = setoresIncompletos();
+    if(faltam.length && !bloqueadoPorConclusao){
+      avisoHub("🔒 Para liberar o Encerramento, conclua antes: <b>" + faltam.map(function(k){ return NOMES_BLOCOS[k]; }).join(", ") + "</b>.", false);
+      return;
+    }
+    irParaFase("encerramento");
   }
   // Copia profunda de currentLoja com SOMENTE o bloco indicado resetado ao estado em branco -
   // usada so como referencia para saber quantas pendencias esse bloco teria se nunca tivesse sido tocado.
@@ -2286,6 +2356,14 @@
       el.textContent = texto;
       el.className = "bloco-indicador " + classe;
     });
+    const completos = ["rack","gerencia","estoque","stage"].filter(function(n){ return atuais[n] === 0; }).length;
+    const liberado = completos === 4 || bloqueadoPorConclusao;
+    const indEnc = document.getElementById("indicador-encerramento");
+    indEnc.textContent = liberado ? "Liberado" : "🔒 " + completos + " de 4 setores";
+    indEnc.className = "bloco-indicador " + (liberado ? "bloco-completo" : "bloco-nao-iniciado");
+    document.getElementById("btn-fase-encerramento").classList.toggle("bloco-bloqueado", !liberado);
+    // Se a lista de pendencias do setor ja esta aberta, ela acompanha o preenchimento
+    if(faseAtual() === "setor" && !document.getElementById("banner-setor").classList.contains("hidden")) renderBannerSetor();
   }
 
   function setDeep(obj, path, value){ const parts=path.split("."); let cur=obj; for(let i=0;i<parts.length-1;i++) cur=cur[parts[i]]; cur[parts[parts.length-1]]=value; }
@@ -2745,13 +2823,17 @@
         (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Mobiles — até 6 por loja</div>' : '') +
         '<div class="field-row">' +
           '<div class="field"><label>Nº Série</label><input type="text" data-mobile="serie" data-idx="'+idx+'" value="'+escapeHtml(m.serie)+'"></div>' +
-          '<div class="field"><label>IP</label><input type="text" data-mobile="ip" data-idx="'+idx+'" value="'+escapeHtml(m.ip)+'" placeholder="10.102.196.56"></div></div>' +
+          '<div class="field"><label>IP</label><input type="text" inputmode="decimal" data-mobile="ip" data-idx="'+idx+'" value="'+escapeHtml(m.ip)+'" placeholder="Somente números"></div></div>' +
         '<div class="field"><label>Estado de conservação</label><select data-mobile="estado" data-idx="'+idx+'"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(m.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>' +
         '<div class="field"><label>Observação</label><textarea data-mobile="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(m.obs)+'</textarea></div>' +
       '</div>';
     }).join("");
     wrap.querySelectorAll('[data-mobile]').forEach(function(el){
-      const h=function(){ currentLoja.mobiles[+el.dataset.idx][el.dataset.mobile]=el.value; scheduleSave(); };
+      const h=function(){
+        // IP: aceita somente numeros e pontos (remove qualquer outro caractere digitado ou colado)
+        if(el.dataset.mobile==="ip"){ const limpo = el.value.replace(/[^0-9.]/g, ""); if(limpo!==el.value) el.value = limpo; }
+        currentLoja.mobiles[+el.dataset.idx][el.dataset.mobile]=el.value; scheduleSave();
+      };
       el.addEventListener("input", h); if(el.tagName==="SELECT") el.addEventListener("change", h);
     });
     wrap.querySelectorAll("[data-remove-mobile]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.mobiles.splice(+el.dataset.removeMobile,1); renderMobiles(); scheduleSave(); }); });
