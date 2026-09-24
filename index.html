@@ -151,7 +151,6 @@
   .tecnico-blocos-nav{display:grid; grid-template-columns:1fr; gap:10px; margin:0 0 16px;}
   .bloco-nav-btn{width:100%; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:12px; padding:16px 18px; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left;}
   .bloco-nav-btn:hover{border-color:var(--teal);}
-  .bloco-nav-btn.bloco-bloqueado{border-style:dashed; color:var(--text-muted);}
   .bloco-indicador{font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px; letter-spacing:.2px; white-space:nowrap;}
   .bloco-indicador.bloco-nao-iniciado{background:#E4E4E4; color:#555;}
   .bloco-indicador.bloco-andamento{background:var(--warn-bg); color:var(--warn);}
@@ -159,12 +158,11 @@
   .setor-rodape{display:flex; gap:8px; justify-content:space-between; flex-wrap:wrap; margin:6px 0 10px;}
   .tecnico-bloco{display:none;}
   .tecnico-bloco.bloco-ativo{display:block;}
-  /* Fluxo por etapas: data-fase no #view-checklist = "setores" (escolha), "setor" (um bloco) ou "encerramento" */
+  /* Fluxo por etapas: data-fase no #view-checklist = "setores" (tela principal) ou "setor" (um bloco) */
   #view-checklist:not([data-fase="setores"]) .so-hub{display:none !important;}
   #view-checklist[data-fase="setores"] .nao-hub{display:none !important;}
   #view-checklist:not([data-fase="setor"]) .so-setor{display:none !important;}
   #view-checklist:not([data-fase="setor"]) .tecnico-bloco{display:none !important;}
-  #view-checklist:not([data-fase="encerramento"]) .so-encerramento{display:none !important;}
   .checklist-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
   .checklist-header h2{margin:0 0 4px; font-size:18px;}
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
@@ -399,7 +397,6 @@
         <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
         <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
         <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
-        <button type="button" class="bloco-nav-btn" id="btn-fase-encerramento">Encerramento<span class="bloco-indicador" id="indicador-encerramento"></span></button>
       </div>
       <div id="hub-aviso" class="banner-erro hidden"></div>
     </div>
@@ -478,7 +475,7 @@
       </div>
     </section>
 
-    <div class="so-encerramento" id="fase-encerramento">
+    <div class="so-hub" id="fase-encerramento">
     <section class="block">
       <h3>Encerramento do atendimento</h3>
       <div class="field" style="max-width:220px;">
@@ -527,7 +524,7 @@
       <span class="save-status" id="save-status">&nbsp;</span>
       <div style="display:flex; gap:8px;">
         <button class="btn btn-ghost btn-sm" id="btn-reabrir" style="display:none;">Reabrir formulário</button>
-        <button class="btn btn-primary btn-sm so-encerramento" id="btn-finalizar">Finalizar checklist</button>
+        <button class="btn btn-primary btn-sm so-hub" id="btn-finalizar">Finalizar checklist</button>
       </div>
     </div>
   </div>
@@ -1046,10 +1043,9 @@
     if(!sel) return;
     const el = document.querySelector(sel);
     if(!el) return;
-    // No fluxo por etapas o campo pode estar em outra tela: abre o setor/encerramento certo antes de rolar
+    // No fluxo por etapas o campo pode estar dentro de um setor: abre o setor certo antes de rolar
     const blocoEl = el.closest(".tecnico-bloco");
     if(blocoEl) irParaFase("setor", blocoEl.dataset.bloco, true);
-    else if(el.closest("#fase-encerramento")) irParaFase("encerramento", null, true);
     else irParaFase("setores", null, true);
     el.scrollIntoView({behavior:"smooth", block:"center"});
     if(typeof el.focus === "function") setTimeout(function(){ el.focus({preventScroll:true}); }, 350);
@@ -2165,7 +2161,6 @@
     document.querySelectorAll("[data-bloco-nav]").forEach(function(btn){
       btn.addEventListener("click", function(){ irParaFase("setor", btn.dataset.blocoNav); });
     });
-    document.getElementById("btn-fase-encerramento").addEventListener("click", abrirEncerramento);
     document.getElementById("btn-concluir-setor").addEventListener("click", concluirSetor);
     document.getElementById("btn-setor-voltar").addEventListener("click", function(){ irParaFase("setores"); });
     document.getElementById("btn-voltar-setores").addEventListener("click", function(){ irParaFase("setores"); });
@@ -2267,7 +2262,7 @@
     return cont;
   }
 
-  // ---------------- Fluxo por etapas: escolha do setor -> setor -> encerramento ----------------
+  // ---------------- Fluxo por etapas: tela principal (setores + encerramento) -> setor ----------------
   // So muda a navegacao da tela; os dados, o salvamento e validarObrigatorios() continuam os mesmos.
   // O status de cada setor (Completo / pendentes / Nao iniciado) vem de atualizarIndicadoresBlocos().
   const NOMES_BLOCOS = {rack:"Rack", gerencia:"Gerência", estoque:"Estoque", stage:"Stage de Vendas"};
@@ -2319,15 +2314,7 @@
     const nome = NOMES_BLOCOS[blocoTecnicoAtivo];
     irParaFase("setores");
     const faltam = setoresIncompletos();
-    avisoHub("✅ Setor <b>"+escapeHtml(nome)+"</b> concluído." + (faltam.length ? " Escolha o próximo setor." : " Todos os setores estão completos: siga para o <b>Encerramento</b>."), true);
-  }
-  function abrirEncerramento(){
-    const faltam = setoresIncompletos();
-    if(faltam.length && !bloqueadoPorConclusao){
-      avisoHub("🔒 Para liberar o Encerramento, conclua antes: <b>" + faltam.map(function(k){ return NOMES_BLOCOS[k]; }).join(", ") + "</b>.", false);
-      return;
-    }
-    irParaFase("encerramento");
+    avisoHub("✅ Setor <b>"+escapeHtml(nome)+"</b> concluído." + (faltam.length ? " Escolha o próximo setor." : " Todos os setores estão completos: preencha o encerramento abaixo e finalize o checklist."), true);
   }
   // Copia profunda de currentLoja com SOMENTE o bloco indicado resetado ao estado em branco -
   // usada so como referencia para saber quantas pendencias esse bloco teria se nunca tivesse sido tocado.
@@ -2356,12 +2343,6 @@
       el.textContent = texto;
       el.className = "bloco-indicador " + classe;
     });
-    const completos = ["rack","gerencia","estoque","stage"].filter(function(n){ return atuais[n] === 0; }).length;
-    const liberado = completos === 4 || bloqueadoPorConclusao;
-    const indEnc = document.getElementById("indicador-encerramento");
-    indEnc.textContent = liberado ? "Liberado" : "🔒 " + completos + " de 4 setores";
-    indEnc.className = "bloco-indicador " + (liberado ? "bloco-completo" : "bloco-nao-iniciado");
-    document.getElementById("btn-fase-encerramento").classList.toggle("bloco-bloqueado", !liberado);
     // Se a lista de pendencias do setor ja esta aberta, ela acompanha o preenchimento
     if(faseAtual() === "setor" && !document.getElementById("banner-setor").classList.contains("hidden")) renderBannerSetor();
   }
