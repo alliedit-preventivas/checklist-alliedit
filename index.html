@@ -216,9 +216,9 @@
   .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;}
   .modal-box{background:var(--surface); border-radius:12px; padding:18px; max-width:420px; width:100%;}
   .modal-box p{font-size:13.5px; margin:0 0 14px;}
-  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px;}
   .cal-dow{font-size:10px; text-align:center; color:var(--text-muted); font-weight:700; text-transform:uppercase; padding-bottom:4px;}
-  .cal-day{min-height:64px; border:1px solid var(--border); border-radius:6px; padding:4px; font-size:10.5px; background:var(--bg);}
+  .cal-day{min-height:64px; min-width:0; border:1px solid var(--border); border-radius:6px; padding:4px; font-size:10.5px; background:var(--bg);}
   .cal-day.outro-mes{opacity:.35;}
   .cal-day .num{font-weight:700; font-size:11px; margin-bottom:2px;}
   .cal-day .loja-chip{display:block; background:var(--teal); color:#fff; border-radius:4px; padding:1px 4px; margin-bottom:2px; font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;}
