@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `ab3459f` (equivale à `develop` `041d290`) |
+| Última publicação | `main` = commit `234d551` (equivale à `develop` `84d50df`) |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -28,7 +28,8 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-setores-2026-09-24` | Produção antes do checklist por setores e do PDF |
 | `producao-antes-telefone-2026-09-24` | Produção antes do card Telefone |
 | `producao-antes-maquinas-pos-2026-09-24` | Produção antes do PINPAD reserva, Máquinas POS e fotos |
-| `producao-antes-eaton-substituicao-2026-09-24` | Produção antes do EATON na substituição e do login "Acesso ao Painel" (versão anterior à atual) |
+| `producao-antes-eaton-substituicao-2026-09-24` | Produção antes do EATON na substituição e do login "Acesso ao Painel" |
+| `producao-antes-mercado-pago-lista-2026-09-24` | Produção antes da lista de Mercado Pago / POS PIX (versão anterior à atual) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
