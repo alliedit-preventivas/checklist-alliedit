@@ -194,6 +194,8 @@
   /* Divisão entre as seções de um card (ex.: partes do PDV) */
   .divisor-secao{border-top:1px solid var(--border); margin:16px 0 14px;}
   #pos-rede-cielo-stage .item-card{border-top:1px solid var(--border); padding-top:14px;}
+  .mp-item + .mp-item{border-top:1px solid var(--border); padding-top:14px;}
+  #btn-add-mp{margin:0 0 14px;}
   .pos-opcoes{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 12px;}
   .pos-opcao{border:2px solid var(--border); border-radius:10px; background:var(--surface); padding:10px 8px; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--navy);}
   .pos-opcao:hover{border-color:var(--teal-lt);}
@@ -929,6 +931,19 @@
     const achado = (pdvs||[]).find(function(p){ return p && p.mercadoPago && (p.mercadoPago.modelo || p.mercadoPago.serie); });
     return achado ? {modelo: achado.mercadoPago.modelo||"", serie: achado.mercadoPago.serie||""} : {modelo:"", serie:""};
   }
+  // Mercado Pago / POS PIX aceita mais de uma máquina (lista mercadoPagos, até MAX_MERCADO_PAGO), igual aos PDVs.
+  // Lojas antigas só têm o objeto único mercadoPago (ou o do PDV antigo): ele vira o primeiro item da lista.
+  // Ao salvar, o primeiro item também é gravado em mercadoPago, para versões anteriores continuarem lendo.
+  const MAX_MERCADO_PAGO = 5;
+  function blankMercadoPago(){ return { id:uid(), modelo:"", serie:"" }; }
+  function migrarMercadoPagos(data){
+    let lista = Array.isArray(data.mercadoPagos) ? data.mercadoPagos
+      : [Object.assign({modelo:"", serie:""}, data.mercadoPago || extrairMercadoPagoAntigo(data.pdvs))];
+    lista = lista.map(function(m){ return Object.assign(blankMercadoPago(), m); });
+    if(lista.length === 0) lista.push(blankMercadoPago());
+    return lista;
+  }
+  function nomeMercadoPago(i){ return "Mercado Pago / POS PIX " + String(i+1).padStart(2,"0"); }
   function migrarDvr(d, i){
     d = Object.assign(blankDvr(i+1), d);
     if(d.portasDanificadas && !Array.isArray(d.portasDanificadas.portas)) d.portasDanificadas.portas = [];
@@ -1071,9 +1086,12 @@
         if(p.leitorCodBarras.defeito===null) add(p.nome+": leitor de código de barras apresenta defeito?", b+'[data-pdv-toggle="leitorDefeito"]');
       }
     });
-    if(!l.mercadoPago) l.mercadoPago = {modelo:"", serie:""};
-    if(!l.mercadoPago.modelo) add("Mercado Pago / POS PIX - modelo", '#mercado-pago-stage [data-mp="modelo"]');
-    if(!l.mercadoPago.serie) add("Mercado Pago / POS PIX - Nº Série", '#mercado-pago-stage [data-mp="serie"]');
+    if(!Array.isArray(l.mercadoPagos) || l.mercadoPagos.length===0) l.mercadoPagos = migrarMercadoPagos(l);
+    l.mercadoPagos.forEach(function(mp, i){
+      const bMp = '#mercado-pago-stage [data-idx="'+i+'"] ';
+      if(!mp.modelo) add(nomeMercadoPago(i)+" - modelo", bMp+'[data-mp="modelo"]');
+      if(!mp.serie) add(nomeMercadoPago(i)+" - Nº Série", bMp+'[data-mp="serie"]');
+    });
     if(!l.posRedeCielo) l.posRedeCielo = blankPosRedeCielo();
     const pos = l.posRedeCielo, bPos = '#pos-rede-cielo-stage ';
     if(!pos.operadora) add("POS REDE / CIELO: selecione a máquina (REDE ou CIELO)", bPos+'[data-pos-op]');
@@ -2061,7 +2079,7 @@
       horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
-      mercadoPago: Object.assign({modelo:"", serie:""}, data.mercadoPago || extrairMercadoPagoAntigo(data.pdvs)),
+      mercadoPagos: migrarMercadoPagos(data),
       telefoneStage: Object.assign({possui:null, numero:"", ip:"", obs:""}, data.telefoneStage||{}),
       posRedeCielo: Object.assign(blankPosRedeCielo(), data.posRedeCielo||{}),
       pinpadReserva: Object.assign(blankPinpadReserva(), data.pinpadReserva||{}),
@@ -2214,7 +2232,7 @@
       currentLoja.pdvs = [blankPdv(1)]; currentLoja.mobiles = [blankMobile(1)]; currentLoja.dvrs = [blankDvr(1)];
       currentLoja.ratFoto = null;
       currentLoja.ocorrencia = {tem:null, descricao:""};
-      currentLoja.mercadoPago = {modelo:"", serie:""};
+      currentLoja.mercadoPagos = [blankMercadoPago()];
       currentLoja.telefoneStage = {possui:null, numero:"", ip:"", obs:""};
       currentLoja.posRedeCielo = blankPosRedeCielo();
       currentLoja.pinpadReserva = blankPinpadReserva();
@@ -2409,7 +2427,7 @@
     if(nome === "rack"){ copia.rack = blankRack(); copia.dvrs = [blankDvr(1)]; }
     else if(nome === "gerencia"){ copia.gerencia = blankSetorEquip(); copia.pinpadReserva = blankPinpadReserva(); copia.notebooks = Object.assign({}, copia.notebooks, {gerencia: blankNotebook(), adm: Object.assign({possui:null}, blankNotebook())}); }
     else if(nome === "estoque"){ copia.estoque = blankSetorEquip(); }
-    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; copia.telefoneStage = {possui:null, numero:"", ip:"", obs:""}; copia.posRedeCielo = blankPosRedeCielo(); }
+    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; copia.telefoneStage = {possui:null, numero:"", ip:"", obs:""}; copia.posRedeCielo = blankPosRedeCielo(); copia.mercadoPagos = [blankMercadoPago()]; }
     return copia;
   }
   function atualizarIndicadoresBlocos(){
@@ -2867,21 +2885,32 @@
     });
   }
 
-  // ---- Mercado Pago (unico por loja, nao repete por PDV) ----
+  // ---- Mercado Pago / POS PIX (lista de máquinas, até MAX_MERCADO_PAGO; botão de adicionar igual aos PDVs) ----
   function renderMercadoPago(){
     const wrap = document.getElementById("mercado-pago-stage");
-    const mp = currentLoja.mercadoPago;
-    wrap.innerHTML =
-      '<div class="item-card">' +
-        '<div class="item-title"><span>Mercado Pago / POS PIX</span></div>' +
+    const lista = currentLoja.mercadoPagos;
+    wrap.innerHTML = lista.map(function(mp, idx){
+      return '<div class="item-card mp-item" data-idx="'+idx+'">' +
+        '<div class="item-title"><span>'+nomeMercadoPago(idx)+'</span>' +
+          (idx>0 ? '<button type="button" class="remove-x" data-remove-mp="'+idx+'" title="Remover">&times;</button>' : '') + '</div>' +
+        (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Até '+MAX_MERCADO_PAGO+' por loja</div>' : '') +
         '<div class="foto-campos">' + fotoExemploHtml("mercadoPago", "POS Mercado Pago (sem fio)") +
         '<div class="foto-campos-lista">' +
-          '<div class="field"><label>Modelo</label><input type="text" data-mp="modelo" value="'+escapeHtml(mp.modelo)+'"></div>' +
-          '<div class="field"><label>Nº Série</label><input type="text" data-mp="serie" value="'+escapeHtml(mp.serie)+'"></div>' +
+          '<div class="field"><label>Modelo</label><input type="text" data-mp="modelo" data-idx="'+idx+'" value="'+escapeHtml(mp.modelo)+'"></div>' +
+          '<div class="field"><label>Nº Série</label><input type="text" data-mp="serie" data-idx="'+idx+'" value="'+escapeHtml(mp.serie)+'"></div>' +
         '</div></div>' +
       '</div>';
-    wrap.querySelectorAll('[data-mp]').forEach(function(el){
-      el.addEventListener('input', function(){ currentLoja.mercadoPago[el.dataset.mp] = el.value; scheduleSave(); });
+    }).join("") +
+    '<button type="button" class="add-row" id="btn-add-mp"'+(lista.length>=MAX_MERCADO_PAGO?' disabled':'')+'>+ Adicionar Mercado Pago / POS PIX</button>';
+    wrap.querySelectorAll("[data-mp]").forEach(function(el){
+      el.addEventListener("input", function(){ currentLoja.mercadoPagos[+el.dataset.idx][el.dataset.mp] = el.value; scheduleSave(); });
+    });
+    wrap.querySelectorAll("[data-remove-mp]").forEach(function(el){
+      el.addEventListener("click", function(){ currentLoja.mercadoPagos.splice(+el.dataset.removeMp, 1); renderMercadoPago(); scheduleSave(); });
+    });
+    document.getElementById("btn-add-mp").addEventListener("click", function(){
+      if(currentLoja.mercadoPagos.length >= MAX_MERCADO_PAGO) return;
+      currentLoja.mercadoPagos.push(blankMercadoPago()); renderMercadoPago(); scheduleSave();
     });
   }
 
@@ -3109,7 +3138,9 @@
         rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
         pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
         wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
-        ocorrencia: currentLoja.ocorrencia, mercadoPago: currentLoja.mercadoPago, telefoneStage: currentLoja.telefoneStage, posRedeCielo: currentLoja.posRedeCielo, pinpadReserva: currentLoja.pinpadReserva,
+        ocorrencia: currentLoja.ocorrencia, mercadoPagos: currentLoja.mercadoPagos,
+        mercadoPago: { modelo: (currentLoja.mercadoPagos[0]||{}).modelo||"", serie: (currentLoja.mercadoPagos[0]||{}).serie||"" }, // compatibilidade com versões anteriores
+        telefoneStage: currentLoja.telefoneStage, posRedeCielo: currentLoja.posRedeCielo, pinpadReserva: currentLoja.pinpadReserva,
         horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
         atualizadoEm: now()
       });
@@ -3300,7 +3331,7 @@
       horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
       wifiStage:Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia:Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
-      mercadoPago:Object.assign({modelo:"", serie:""}, data.mercadoPago || extrairMercadoPagoAntigo(data.pdvs)),
+      mercadoPagos:migrarMercadoPagos(data),
       telefoneStage:Object.assign({possui:null, numero:"", ip:"", obs:""}, data.telefoneStage||{}),
       posRedeCielo:Object.assign(blankPosRedeCielo(), data.posRedeCielo||{}),
       pinpadReserva:Object.assign(blankPinpadReserva(), data.pinpadReserva||{}),
@@ -3475,7 +3506,7 @@
       // Seção "Máquinas POS": Mercado Pago / POS PIX e POS Rede/Cielo (mesma ordem do formulário)
       (function(){
         const pos = l.posRedeCielo;
-        const cards = card("Mercado Pago / POS PIX", [lin("Modelo", l.mercadoPago.modelo), lin("Nº Série", l.mercadoPago.serie)]) +
+        const cards = l.mercadoPagos.map(function(mp, i){ return card(nomeMercadoPago(i), [lin("Modelo", mp.modelo), lin("Nº Série", mp.serie)]); }).join("") +
           card("POS REDE / CIELO", [lin("Máquina", pos.operadora ? pos.operadora.toUpperCase() : ""), lin("Modelo", pos.modelo), lin("Nº Série", pos.serie)]);
         return cards ? '<div class="grupo"><h3>Máquinas POS</h3>' + cards + '</div>' : "";
       })() +
