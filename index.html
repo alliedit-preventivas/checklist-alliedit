@@ -147,19 +147,22 @@
   .badge-bloco .linha2{font-size:11px; font-weight:600;}
   .badge.concluido{background:var(--ok-bg); color:var(--ok);}
   .empty{text-align:center; color:var(--text-muted); padding:40px 10px; font-size:13.5px;}
-  .tecnico-blocos-nav{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px; position:sticky; top:56px; background:var(--bg); z-index:5; padding:6px 0;}
-  .bloco-nav-btn{flex:1; min-width:120px; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:20px; padding:8px 12px; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;}
-  .bloco-nav-btn.bloco-ativo{background:var(--teal); color:#fff; border-color:var(--teal);}
-  .bloco-indicador{font-size:10px; font-weight:700; padding:2px 7px; border-radius:12px; letter-spacing:.2px;}
+  .setores-pergunta{font-size:15px; font-weight:700; color:var(--navy); margin:18px 0 10px;}
+  .tecnico-blocos-nav{display:grid; grid-template-columns:1fr; gap:10px; margin:0 0 16px;}
+  .bloco-nav-btn{width:100%; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:12px; padding:16px 18px; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left;}
+  .bloco-nav-btn:hover{border-color:var(--teal);}
+  .bloco-indicador{font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px; letter-spacing:.2px; white-space:nowrap;}
   .bloco-indicador.bloco-nao-iniciado{background:#E4E4E4; color:#555;}
-  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-nao-iniciado{background:rgba(255,255,255,.25); color:#fff;}
   .bloco-indicador.bloco-andamento{background:var(--warn-bg); color:var(--warn);}
-  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-andamento{background:rgba(255,255,255,.3); color:#fff;}
   .bloco-indicador.bloco-completo{background:var(--ok-bg); color:var(--ok);}
-  .bloco-nav-btn.bloco-ativo .bloco-indicador.bloco-completo{background:rgba(255,255,255,.3); color:#fff;}
+  .setor-rodape{display:flex; gap:8px; justify-content:space-between; flex-wrap:wrap; margin:6px 0 10px;}
   .tecnico-bloco{display:none;}
   .tecnico-bloco.bloco-ativo{display:block;}
-  @media(max-width:640px){ .tecnico-blocos-nav{position:static;} .bloco-nav-btn{min-width:45%; font-size:11.5px;} }
+  /* Fluxo por etapas: data-fase no #view-checklist = "setores" (tela principal) ou "setor" (um bloco) */
+  #view-checklist:not([data-fase="setores"]) .so-hub{display:none !important;}
+  #view-checklist[data-fase="setores"] .nao-hub{display:none !important;}
+  #view-checklist:not([data-fase="setor"]) .so-setor{display:none !important;}
+  #view-checklist:not([data-fase="setor"]) .tecnico-bloco{display:none !important;}
   .checklist-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
   .checklist-header h2{margin:0 0 4px; font-size:18px;}
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
@@ -180,6 +183,7 @@
   .hint{font-size:11px; color:var(--text-muted); margin-top:3px; font-style:italic;}
   .warn-inline{font-size:11.5px; color:var(--bad); margin-top:4px; font-weight:600;}
   .warn-destaque{font-size:15px; color:var(--bad); background:var(--bad-bg); border:1.5px solid var(--bad); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-weight:700; display:flex; align-items:center; gap:8px; line-height:1.3;}
+  .toggle-group + .warn-destaque{margin-top:12px;}
   .remove-x{background:none; border:none; color:var(--text-muted); cursor:pointer; font-family:inherit; font-size:16px; line-height:1; padding:2px 6px;}
   .add-row{width:100%; padding:10px; border:1.5px dashed var(--border); background:transparent; color:var(--teal); border-radius:8px; font-family:inherit; font-weight:600; font-size:12.5px; cursor:pointer;}
   .add-row:disabled{opacity:.5; cursor:not-allowed; border-style:solid;}
@@ -235,7 +239,7 @@
       <div class="brand"><span class="dot"></span><div><h1>Checklist de Preventivas</h1><div class="sub">Sephora 2026 · AlliedIT</div></div></div>
     </div>
     <div class="header-titulo" id="header-titulo">Painel de Agendamento</div>
-    <nav><button id="nav-lojas" class="active">Agendamento</button><button id="nav-painel">Gestão</button><button id="nav-tecnico">Técnico</button><button id="btn-logout" class="hidden">Sair</button></nav>
+    <nav><button id="nav-lojas" class="active">Agendamento</button><button id="nav-painel">Painel</button><button id="nav-tecnico">Técnico</button><button id="btn-logout" class="hidden">Sair</button></nav>
   </div>
 </header>
 
@@ -305,7 +309,7 @@
   <div id="view-lojas" class="view active">
     <nav class="lojas-topo-nav" id="lojas-topo-nav">
       <button id="topo-nav-lojas" class="active">Agendamento</button>
-      <button id="topo-nav-painel">Gestão</button>
+      <button id="topo-nav-painel">Painel</button>
       <button id="topo-nav-tecnico">Técnico</button>
       <div class="cadastro-dropdown-wrap" id="cadastro-dropdown-wrap">
         <button class="cadastro-nav-toggle collapsed" id="btn-toggle-submenu" type="button">
@@ -354,21 +358,22 @@
     </div>
   </div>
 
-  <div id="view-checklist" class="view">
-    <button class="btn btn-ghost btn-sm" id="btn-voltar-lojas" style="margin-bottom:12px;">&larr; Voltar para lojas</button>
+  <div id="view-checklist" class="view" data-fase="setores">
+    <button class="btn btn-ghost btn-sm so-hub" id="btn-voltar-lojas" style="margin-bottom:12px;">&larr; Voltar para lojas</button>
+    <button class="btn btn-ghost btn-sm nao-hub" id="btn-voltar-setores" style="margin-bottom:12px;">&larr; Voltar aos setores</button>
     <div id="banner-lock" class="banner-lock hidden">
       <span>🔒 Checklist concluído — dados protegidos contra alteração acidental.</span>
       <button class="btn btn-ghost btn-sm" id="btn-solicitar-edicao">Reabrir formulário</button>
     </div>
 
     <div style="margin-bottom:4px;"><h2 id="cl-nome-loja" style="margin:0 0 4px; font-size:18px;">Loja</h2><span id="cl-badge" class="badge nao_iniciado">Não Iniciado</span><div class="hint" id="cl-tempo-atendimento"></div></div>
-    <div class="checklist-header">
+    <div class="checklist-header so-hub">
       <div style="min-width:110px; flex:1 1 110px;"><label>Chamado</label><input type="text" id="cl-chamado" placeholder="Ex: R123456"></div>
       <div style="min-width:150px; flex:1 1 150px;"><label>Técnico responsável</label><input type="text" id="cl-tecnico" placeholder="Nome do técnico"></div>
       <div style="min-width:150px; flex:1 1 150px;"><label>Responsável da loja</label><input type="text" id="cl-responsavel" placeholder="Nome do responsável"></div>
     </div>
 
-    <div style="margin-bottom:18px;" id="bloco-limpar-formulario">
+    <div style="margin-bottom:18px;" id="bloco-limpar-formulario" class="so-hub">
       <button type="button" class="btn btn-danger btn-sm" id="btn-limpar-formulario">Limpar Formulário</button>
       <span id="limpar-form-confirm" class="hidden" style="font-size:12px; color:var(--bad); margin-left:4px;">
         Isso apaga todos os dados do checklist técnico. Técnico, chamado, protocolo e agendamento são mantidos.
@@ -377,7 +382,7 @@
       </span>
     </div>
 
-    <section class="block">
+    <section class="block so-hub">
       <h3>Início do atendimento</h3>
       <div class="field" style="max-width:220px;">
         <label>Horário de início</label>
@@ -385,11 +390,15 @@
       </div>
     </section>
 
-    <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
+    <div class="so-hub">
+      <div class="setores-pergunta">Qual setor você gostaria de iniciar a preventiva?</div>
+      <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
+        <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
+      </div>
+      <div id="hub-aviso" class="banner-erro hidden"></div>
     </div>
 
     <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
@@ -408,11 +417,6 @@
       <div class="item-card">
         <div class="item-title"><span>Nobreak de Rack</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-nobreak-rack">Limpar</button></div>
         <div class="field"><label>Marca</label><select id="rack-nobreak-marca"><option value="">Selecionar</option><option>NHS</option><option>EATON</option></select></div>
-        <div class="field" id="rack-nobreak-eaton-wrap" style="display:none;">
-          <label>Autonomia do Nobreak (minutos)</label>
-          <input type="number" id="rack-nobreak-eaton-minutos" min="0" step="1" placeholder="Ex: 8">
-          <div class="hint">Obrigatório para finalizar o checklist.</div>
-        </div>
         <div class="field">
           <div class="toggle-group" id="rack-nobreak-serie-inacessivel-toggle"></div>
           <div class="hint" style="margin-bottom:8px;">Marque se não for possível visualizar o Nº Série sem movimentar o rack.</div>
@@ -421,6 +425,10 @@
         <div class="field" id="rack-nobreak-nhs-wrap" style="display:none;">
           <label>Qual a autonomia fora da tomada?</label>
           <div class="toggle-group" id="rack-nobreak-nhs-toggle"></div>
+        </div>
+        <div class="field" id="rack-nobreak-eaton-wrap" style="display:none;">
+          <label>Qual a autonomia fora da tomada?</label>
+          <div class="toggle-group" id="rack-nobreak-eaton-toggle"></div>
         </div>
         <div class="field"><label>Observação</label><textarea id="rack-nobreak-obs" rows="2" placeholder="Opcional"></textarea></div>
       </div>
@@ -467,6 +475,21 @@
       </div>
     </section>
 
+    <div class="so-hub" id="fase-encerramento">
+    <section class="block">
+      <h3>Ocorrências e necessidades</h3>
+      <div class="item-card">
+        <div class="field"><label>A loja deseja pontuar alguma ocorrência ou necessidade?</label>
+          <div class="toggle-group" id="ocorrencia-tem-toggle"></div>
+          <div class="hint" style="margin-top:4px;">Para desmarcar, clique novamente na opção selecionada.</div>
+        </div>
+        <div class="field" id="ocorrencia-descricao-wrap" style="display:none;">
+          <label>Descreva a ocorrência ou necessidade</label>
+          <textarea id="ocorrencia-descricao" rows="3"></textarea>
+        </div>
+      </div>
+    </section>
+
     <section class="block">
       <h3>Encerramento do atendimento</h3>
       <div class="field" style="max-width:220px;">
@@ -485,28 +508,24 @@
       </div>
     </section>
 
-    <section class="block">
-      <h3>Ocorrências e necessidades</h3>
-      <div class="item-card">
-        <div class="field"><label>A loja deseja pontuar alguma ocorrência ou necessidade?</label>
-          <div class="toggle-group" id="ocorrencia-tem-toggle"></div>
-        </div>
-        <div class="field" id="ocorrencia-descricao-wrap" style="display:none;">
-          <label>Descreva a ocorrência ou necessidade</label>
-          <textarea id="ocorrencia-descricao" rows="3"></textarea>
-        </div>
-      </div>
-    </section>
-
     <div id="banner-validacao" class="banner-erro hidden"></div>
+    </div>
 
     </fieldset>
+
+    <div class="so-setor">
+      <div id="banner-setor" class="banner-erro hidden"></div>
+      <div class="setor-rodape">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-setor-voltar">&larr; Voltar aos setores</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-concluir-setor">Concluir setor</button>
+      </div>
+    </div>
 
     <div class="save-bar">
       <span class="save-status" id="save-status">&nbsp;</span>
       <div style="display:flex; gap:8px;">
         <button class="btn btn-ghost btn-sm" id="btn-reabrir" style="display:none;">Reabrir formulário</button>
-        <button class="btn btn-primary btn-sm" id="btn-finalizar">Finalizar checklist</button>
+        <button class="btn btn-primary btn-sm so-hub" id="btn-finalizar">Finalizar checklist</button>
       </div>
     </div>
   </div>
@@ -766,7 +785,7 @@
   }
 
   // ---------------- blank data builders ----------------
-  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEatonMinutos:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
+  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEaton:"", autonomiaEatonMinutos:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
   function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, hd:{quantidade:"", erro:null}, obs:"" }; }
   function blankDesktop(){ return {hostname:"", serie:"", modelo:"", estado:"", obs:""}; }
   function blankPerif(){ return {tipo:"", estado:""}; }
@@ -879,6 +898,14 @@
     // Campo novo e especifico para EATON (nao reaproveita autonomiaNhs, que e categorico
     // e usado no painel de substituicao com semantica propria de NHS - misturar geraria ambiguidade historica).
     if(r.nobreak.autonomiaEatonMinutos===undefined) r.nobreak.autonomiaEatonMinutos = "";
+    // EATON passou a usar os mesmos botoes da NHS (acima/abaixo/desliga), mas em campo proprio
+    // (autonomiaEaton) pelo mesmo motivo acima. autonomiaEatonMinutos e mantido so como historico;
+    // checklists antigos com minutos preenchidos sao convertidos para a opcao equivalente.
+    if(r.nobreak.autonomiaEaton===undefined){
+      const m = r.nobreak.autonomiaEatonMinutos;
+      const n = (m==="" || m===null) ? NaN : Number(m);
+      r.nobreak.autonomiaEaton = isNaN(n) || n < 0 ? "" : (n===0 ? "desliga" : (n>=5 ? "acima" : "abaixo"));
+    }
     return r;
   }
   function migrarNotebooks(n){
@@ -901,45 +928,12 @@
   }
 
   // ---------------- validação de IP dos mobiles ----------------
-  function octetoEsperado(nome){
-    const m = /(\d+)\D*$/.exec(nome||"");
-    if(!m) return null;
-    return (parseInt(m[1],10) + 5) % 256;
-  }
+  // Campo livre: so exige que esteja preenchido. A digitacao ja aceita apenas numeros e pontos
+  // (ver renderMobiles); nao ha mais regra de formato (10.102.xxx / final pelo numero do mobile).
   function erroMobileIp(m){
     const ip = (m.ip||"").trim();
     if(!ip) return "endereço IP não informado";
-    const octs = ip.split(".");
-    if(octs.length !== 4 || octs.some(function(o){ return o===""; })) return "IP incompleto — informe o endereço completo, ex: 10.102.196.56";
-    if(!octs.every(function(o){ return /^\d{1,3}$/.test(o) && parseInt(o,10)<=255; })) return "IP inválido — cada parte deve ser um número entre 0 e 255";
-    if(octs[0] !== "10") return "IP inválido — o primeiro octeto deve ser 10";
-    if(octs[1] !== "102") return "IP inválido — o segundo octeto deve ser 102";
-    if(octs[2].length !== 3) return "IP inválido — o terceiro octeto deve ter exatamente 3 dígitos (ex: 019, 196)";
-    const esperado = octetoEsperado(m.nome);
-    if(esperado!==null && parseInt(octs[3],10) !== esperado) return "IP fora do padrão — para "+m.nome+", o endereço deve terminar em ."+esperado;
     return null;
-  }
-  // mantém compatibilidade com o uso no painel: retorna o octeto esperado só quando o IP é válido mas termina errado
-  function validarMobileIp(m){
-    const ip = (m.ip||"").trim();
-    const octs = ip.split(".");
-    if(octs.length !== 4 || !octs.every(function(o){ return /^\d{1,3}$/.test(o) && parseInt(o,10)<=255; })) return null;
-    const esperado = octetoEsperado(m.nome);
-    if(esperado!==null && parseInt(octs[3],10) !== esperado) return esperado;
-    return null;
-  }
-  // Não reagrupa os dígitos (isso embaralhava o IP digitado). Mantém exatamente os pontos que o técnico digitou,
-  // só limita cada octeto a 3 dígitos e o total a 4 octetos, e insere o ponto automaticamente apenas quando um
-  // octeto completa 3 dígitos (nunca obriga isso — o técnico pode digitar "." manualmente para octetos de 1 ou 2 dígitos).
-  function formatarIp(raw){
-    let v = (raw||"").replace(/[^\d.]/g,"");
-    v = v.replace(/\.{2,}/g,".");
-    if(v.charAt(0)===".") v = v.slice(1);
-    let segs = v.split(".").slice(0,4).map(function(s){ return s.slice(0,3); });
-    let out = segs.join(".");
-    const ultimo = segs[segs.length-1];
-    if(ultimo && ultimo.length===3 && segs.length<4 && !v.endsWith(".")){ out += "."; }
-    return out;
   }
 
   // ---------------- validação obrigatória ----------------
@@ -954,11 +948,7 @@
     else{
       if(!r.nobreak.serieInacessivel && !r.nobreak.serie) add("Nobreak de Rack: Nº Série", "#rack-nobreak-serie");
       if(r.nobreak.marca==="NHS" && !r.nobreak.autonomiaNhs) add("Nobreak de Rack: autonomia fora da tomada", "#rack-nobreak-nhs-toggle");
-      if(r.nobreak.marca==="EATON"){
-        const vEaton = r.nobreak.autonomiaEatonMinutos;
-        const nEaton = (vEaton==="" || vEaton===null || vEaton===undefined) ? NaN : Number(vEaton);
-        if(vEaton==="" || vEaton===null || vEaton===undefined || isNaN(nEaton) || nEaton < 0) add("Nobreak de Rack: autonomia em minutos (EATON)", "#rack-nobreak-eaton-minutos");
-      }
+      if(r.nobreak.marca==="EATON" && !r.nobreak.autonomiaEaton) add("Nobreak de Rack: autonomia fora da tomada", "#rack-nobreak-eaton-toggle");
     }
     if(r.escada.possui===null) add("Escada móvel: possui ou não", "#rack-escada-possui-toggle");
     else if(r.escada.possui===true && r.escada.alturaSuficiente===null) add("Escada móvel: alcança o teto?", "#rack-escada-altura-toggle");
@@ -1054,6 +1044,10 @@
     if(!sel) return;
     const el = document.querySelector(sel);
     if(!el) return;
+    // No fluxo por etapas o campo pode estar dentro de um setor: abre o setor certo antes de rolar
+    const blocoEl = el.closest(".tecnico-bloco");
+    if(blocoEl) irParaFase("setor", blocoEl.dataset.bloco, true);
+    else irParaFase("setores", null, true);
     el.scrollIntoView({behavior:"smooth", block:"center"});
     if(typeof el.focus === "function") setTimeout(function(){ el.focus({preventScroll:true}); }, 350);
     el.style.transition = "box-shadow .2s";
@@ -1263,7 +1257,7 @@
     const headerNav = document.querySelector("header nav");
     if(headerNav && !modoTecnico) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
-    if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Gestão" : "Painel de Agendamento";
+    if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
     window.scrollTo({top:0});
   }
   function voltarDaChecklist(concluidoAgora){
@@ -1449,7 +1443,10 @@
           (!bloq ? '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:2px;">' +
             '<button type="button" class="btn btn-ghost btn-sm status-reagendar" data-id="'+l.id+'">Reagendar</button>' +
             '<button type="button" class="btn btn-ghost btn-sm status-prospeccao-toggle'+(l.status==="em_prospeccao_tecnico"?' status-prospeccao-ativo':'')+'" data-id="'+l.id+'">Em Prospecção</button>' +
-          '</div>' : '') +
+          '</div>' :
+          '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:2px;">' +
+            '<button type="button" class="btn btn-primary btn-sm gerar-pdf-loja" data-id="'+l.id+'">📄 Gerar PDF</button>' +
+          '</div>') +
         '</div>') +
       '</div>';
     }).join("");
@@ -1482,6 +1479,9 @@
       });
     });
     if(modoTecnico) return;
+    list.querySelectorAll(".gerar-pdf-loja").forEach(function(btn){
+      btn.addEventListener("click", function(e){ e.stopPropagation(); gerarRelatorioPdf(btn.dataset.id, btn); });
+    });
     list.querySelectorAll(".status-reagendar").forEach(function(btn){
       btn.addEventListener("click", function(e){
         e.stopPropagation();
@@ -2023,6 +2023,9 @@
     renderNotebooks();
     renderPdvs(); renderMercadoPago(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia();
     mostrarBlocoTecnico("rack");
+    document.getElementById("view-checklist").dataset.fase = "setores";
+    document.getElementById("hub-aviso").classList.add("hidden");
+    document.getElementById("banner-setor").classList.add("hidden");
     // updateFinalizeUi() (que tambem calcula os indicadores por bloco) precisa rodar DEPOIS que todo o DOM
     // dinamico acima ja foi renderizado, senao os seletores de pendencia nao encontram os elementos ainda.
     updateFinalizeUi();
@@ -2036,6 +2039,8 @@
     document.getElementById("form-fieldset").disabled = bloqueadoPorConclusao;
     document.getElementById("bloco-limpar-formulario").classList.toggle("hidden", bloqueadoPorConclusao);
     document.getElementById("btn-reabrir").disabled = bloqueadoPorConclusao;
+    // Checklist concluido: so consulta - "Concluir setor" some, "Voltar aos setores" continua
+    document.getElementById("btn-concluir-setor").classList.toggle("hidden", bloqueadoPorConclusao);
     document.getElementById("cl-tecnico").disabled = bloqueadoPorConclusao;
     document.getElementById("cl-chamado").disabled = bloqueadoPorConclusao;
     document.getElementById("cl-horario-inicio").disabled = bloqueadoPorConclusao;
@@ -2067,7 +2072,9 @@
 
   function renderOcorrencia(){
     const o = currentLoja.ocorrencia;
-    setToggleGroup("ocorrencia-tem-toggle", o.tem, "Sim","Não", function(v){ o.tem=v; renderOcorrencia(); scheduleSave(); });
+    // Liga/desliga: clicar de novo na opção já marcada desmarca (volta a ficar sem resposta).
+    // O texto da descrição não é apagado ao desmarcar; ele só fica oculto enquanto a resposta não for "Sim".
+    setToggleGroup("ocorrencia-tem-toggle", o.tem, "Sim","Não", function(v){ o.tem = (o.tem===v) ? null : v; renderOcorrencia(); scheduleSave(); });
     document.getElementById("ocorrencia-descricao-wrap").style.display = o.tem===true ? "block":"none";
     document.getElementById("ocorrencia-descricao").value = o.descricao||"";
   }
@@ -2086,8 +2093,6 @@
     document.getElementById("rack-nobreak-marca").value = r.nobreak.marca||"";
     document.getElementById("rack-nobreak-serie").value = r.nobreak.serie||"";
     document.getElementById("rack-nobreak-obs").value = r.nobreak.obs||"";
-    // != null (nao "||"") para nao tratar o valor 0 (minutos) como vazio - 0 e uma resposta valida.
-    document.getElementById("rack-nobreak-eaton-minutos").value = r.nobreak.autonomiaEatonMinutos != null ? r.nobreak.autonomiaEatonMinutos : "";
     (function(){
       const v = r.nobreak.serieInacessivel;
       const visivel = v===true ? false : (v===false ? true : null);
@@ -2095,13 +2100,16 @@
     })();
     document.getElementById("rack-nobreak-serie").disabled = !!r.nobreak.serieInacessivel;
     updateRackNobreakVisibility();
-    const nhsEl = document.getElementById("rack-nobreak-nhs-toggle");
-    nhsEl.innerHTML = ["acima","abaixo","desliga"].map(function(v){
-      const labels = {acima:"Acima de 5 minutos", abaixo:"Abaixo de 5 minutos", desliga:"Desliga imediatamente"};
-      const cls = r.nobreak.autonomiaNhs===v ? (v==="acima"?" on-good":" on-bad") : "";
-      return '<button type="button" class="toggle-btn'+cls+'" data-val="'+v+'">'+labels[v]+'</button>';
-    }).join("");
-    nhsEl.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; r.nobreak.autonomiaNhs=b.dataset.val; fillRackForm(); scheduleSave(); };
+    // NHS e EATON usam os mesmos 3 botoes de autonomia, cada um gravando no seu proprio campo.
+    [["rack-nobreak-nhs-toggle","autonomiaNhs"],["rack-nobreak-eaton-toggle","autonomiaEaton"]].forEach(function(cfg){
+      const el = document.getElementById(cfg[0]), campo = cfg[1];
+      el.innerHTML = ["acima","abaixo","desliga"].map(function(v){
+        const labels = {acima:"Acima de 5 minutos", abaixo:"Abaixo de 5 minutos", desliga:"Desliga imediatamente"};
+        const cls = r.nobreak[campo]===v ? (v==="acima"?" on-good":" on-bad") : "";
+        return '<button type="button" class="toggle-btn'+cls+'" data-val="'+v+'">'+labels[v]+'</button>';
+      }).join("");
+      el.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; r.nobreak[campo]=b.dataset.val; fillRackForm(); scheduleSave(); };
+    });
     document.getElementById("rack-escada-obs").value = r.escada.obs||"";
     updateEscadaVisibility();
     setToggleGroup("rack-escada-possui-toggle", r.escada.possui, "Possui","Não possui", function(v){ r.escada.possui=v; if(!v) r.escada.alturaSuficiente=null; fillRackForm(); scheduleSave(); });
@@ -2160,9 +2168,11 @@
     document.getElementById("btn-clear-wifi-stage").addEventListener("click", function(){ currentLoja.wifiStage = {barras:"", obs:""}; renderWifiStage(); scheduleSave(); });
 
     document.querySelectorAll("[data-bloco-nav]").forEach(function(btn){
-      btn.addEventListener("click", function(){ mostrarBlocoTecnico(btn.dataset.blocoNav); });
+      btn.addEventListener("click", function(){ irParaFase("setor", btn.dataset.blocoNav); });
     });
-    document.getElementById("rack-nobreak-eaton-minutos").addEventListener("input", function(e){ currentLoja.rack.nobreak.autonomiaEatonMinutos = e.target.value; scheduleSave(); });
+    document.getElementById("btn-concluir-setor").addEventListener("click", concluirSetor);
+    document.getElementById("btn-setor-voltar").addEventListener("click", function(){ irParaFase("setores"); });
+    document.getElementById("btn-voltar-setores").addEventListener("click", function(){ irParaFase("setores"); });
     document.getElementById("ocorrencia-descricao").addEventListener("input", function(e){ currentLoja.ocorrencia.descricao = e.target.value; scheduleSave(); });
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
       currentLoja.rack.nobreak.marca = e.target.value;
@@ -2179,7 +2189,7 @@
     document.getElementById("rack-nobreak-obs").addEventListener("input", function(e){ currentLoja.rack.nobreak.obs = e.target.value; scheduleSave(); });
     document.getElementById("rack-escada-obs").addEventListener("input", function(e){ currentLoja.rack.escada.obs = e.target.value; scheduleSave(); });
     document.getElementById("btn-clear-rack").addEventListener("click", function(){ currentLoja.rack.organizado=null; currentLoja.rack.limpo=null; currentLoja.rack.obs=""; fillRackForm(); scheduleSave(); });
-    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEatonMinutos:"", obs:""}; fillRackForm(); scheduleSave(); });
+    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEaton:"", autonomiaEatonMinutos:"", obs:""}; fillRackForm(); scheduleSave(); });
     document.getElementById("btn-clear-escada").addEventListener("click", function(){ currentLoja.rack.escada = {possui:null, alturaSuficiente:null, obs:""}; fillRackForm(); scheduleSave(); });
 
     document.getElementById("btn-add-dvr").addEventListener("click", function(){ if(currentLoja.dvrs.length>=3) return; currentLoja.dvrs.push(blankDvr(currentLoja.dvrs.length+1)); renderDvrs(); scheduleSave(); });
@@ -2246,14 +2256,74 @@
       btn.classList.toggle("bloco-ativo", btn.dataset.blocoNav === nome);
     });
   }
-  function contarPendenciasPorBloco(pendencias){
-    const cont = {rack:0, gerencia:0, estoque:0, stage:0};
+  function pendenciasPorBloco(pendencias){
+    const grupos = {rack:[], gerencia:[], estoque:[], stage:[]};
     pendencias.forEach(function(p){
       const el = document.querySelector(p.sel);
       const blocoEl = el ? el.closest(".tecnico-bloco") : null;
-      if(blocoEl && cont[blocoEl.dataset.bloco] !== undefined) cont[blocoEl.dataset.bloco]++;
+      if(blocoEl && grupos[blocoEl.dataset.bloco]) grupos[blocoEl.dataset.bloco].push(p);
     });
+    return grupos;
+  }
+  function contarPendenciasPorBloco(pendencias){
+    const grupos = pendenciasPorBloco(pendencias), cont = {};
+    Object.keys(grupos).forEach(function(k){ cont[k] = grupos[k].length; });
     return cont;
+  }
+
+  // ---------------- Fluxo por etapas: tela principal (setores + encerramento) -> setor ----------------
+  // So muda a navegacao da tela; os dados, o salvamento e validarObrigatorios() continuam os mesmos.
+  // O status de cada setor (Completo / pendentes / Nao iniciado) vem de atualizarIndicadoresBlocos().
+  const NOMES_BLOCOS = {rack:"Rack", gerencia:"Gerência", estoque:"Estoque", stage:"Stage de Vendas"};
+  function faseAtual(){ return document.getElementById("view-checklist").dataset.fase; }
+  function irParaFase(fase, bloco, manterRolagem){
+    const mudou = faseAtual() !== fase || (fase === "setor" && bloco !== blocoTecnicoAtivo);
+    document.getElementById("view-checklist").dataset.fase = fase;
+    if(fase === "setor") mostrarBlocoTecnico(bloco);
+    if(mudou){
+      document.getElementById("banner-setor").classList.add("hidden");
+      if(fase !== "setores") document.getElementById("hub-aviso").classList.add("hidden");
+      if(!manterRolagem) window.scrollTo({top:0});
+    }
+    atualizarIndicadoresBlocos();
+  }
+  function setoresIncompletos(){
+    const grupos = pendenciasPorBloco(validarObrigatorios(currentLoja));
+    return Object.keys(grupos).filter(function(k){ return grupos[k].length > 0; });
+  }
+  function avisoHub(html, sucesso){
+    const el = document.getElementById("hub-aviso");
+    el.innerHTML = html;
+    el.style.background = sucesso ? "var(--ok-bg)" : ""; el.style.color = sucesso ? "var(--ok)" : "";
+    el.classList.remove("hidden");
+  }
+  function renderBannerSetor(){
+    const banner = document.getElementById("banner-setor");
+    const pend = pendenciasPorBloco(validarObrigatorios(currentLoja))[blocoTecnicoAtivo] || [];
+    if(pend.length === 0){
+      banner.innerHTML = "✅ Todos os itens deste setor foram preenchidos. Clique em <b>Concluir setor</b>.";
+      banner.style.background = "var(--ok-bg)"; banner.style.color = "var(--ok)";
+    } else {
+      banner.style.background = ""; banner.style.color = "";
+      banner.innerHTML = "<b>Faltam "+pend.length+" item(ns) neste setor:</b><ul>" +
+        pend.map(function(f){ return '<li><a href="#" data-sel="'+escapeHtml(f.sel)+'" style="color:var(--bad); text-decoration:underline;">'+escapeHtml(f.texto)+'</a></li>'; }).join("") + "</ul>";
+      banner.querySelectorAll("[data-sel]").forEach(function(a){
+        a.addEventListener("click", function(e){ e.preventDefault(); irParaPendencia(a.dataset.sel); });
+      });
+    }
+    banner.classList.remove("hidden");
+  }
+  function concluirSetor(){
+    const pend = pendenciasPorBloco(validarObrigatorios(currentLoja))[blocoTecnicoAtivo] || [];
+    if(pend.length){
+      renderBannerSetor();
+      irParaPendencia(pend[0].sel);
+      return;
+    }
+    const nome = NOMES_BLOCOS[blocoTecnicoAtivo];
+    irParaFase("setores");
+    const faltam = setoresIncompletos();
+    avisoHub("✅ Setor <b>"+escapeHtml(nome)+"</b> concluído." + (faltam.length ? " Escolha o próximo setor." : " Todos os setores estão completos: preencha o encerramento abaixo e finalize o checklist."), true);
   }
   // Copia profunda de currentLoja com SOMENTE o bloco indicado resetado ao estado em branco -
   // usada so como referencia para saber quantas pendencias esse bloco teria se nunca tivesse sido tocado.
@@ -2282,6 +2352,8 @@
       el.textContent = texto;
       el.className = "bloco-indicador " + classe;
     });
+    // Se a lista de pendencias do setor ja esta aberta, ela acompanha o preenchimento
+    if(faseAtual() === "setor" && !document.getElementById("banner-setor").classList.contains("hidden")) renderBannerSetor();
   }
 
   function setDeep(obj, path, value){ const parts=path.split("."); let cur=obj; for(let i=0;i<parts.length-1;i++) cur=cur[parts[i]]; cur[parts[parts.length-1]]=value; }
@@ -2741,13 +2813,17 @@
         (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Mobiles — até 6 por loja</div>' : '') +
         '<div class="field-row">' +
           '<div class="field"><label>Nº Série</label><input type="text" data-mobile="serie" data-idx="'+idx+'" value="'+escapeHtml(m.serie)+'"></div>' +
-          '<div class="field"><label>IP</label><input type="text" data-mobile="ip" data-idx="'+idx+'" value="'+escapeHtml(m.ip)+'" placeholder="10.102.196.56"></div></div>' +
+          '<div class="field"><label>IP</label><input type="text" inputmode="decimal" data-mobile="ip" data-idx="'+idx+'" value="'+escapeHtml(m.ip)+'" placeholder="Somente números"></div></div>' +
         '<div class="field"><label>Estado de conservação</label><select data-mobile="estado" data-idx="'+idx+'"><option value="">Selecionar</option>' + ESTADOS.map(function(e){return '<option'+(m.estado===e?' selected':'')+'>'+e+'</option>';}).join("") + '</select></div>' +
         '<div class="field"><label>Observação</label><textarea data-mobile="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(m.obs)+'</textarea></div>' +
       '</div>';
     }).join("");
     wrap.querySelectorAll('[data-mobile]').forEach(function(el){
-      const h=function(){ currentLoja.mobiles[+el.dataset.idx][el.dataset.mobile]=el.value; scheduleSave(); };
+      const h=function(){
+        // IP: aceita somente numeros e pontos (remove qualquer outro caractere digitado ou colado)
+        if(el.dataset.mobile==="ip"){ const limpo = el.value.replace(/[^0-9.]/g, ""); if(limpo!==el.value) el.value = limpo; }
+        currentLoja.mobiles[+el.dataset.idx][el.dataset.mobile]=el.value; scheduleSave();
+      };
       el.addEventListener("input", h); if(el.tagName==="SELECT") el.addEventListener("change", h);
     });
     wrap.querySelectorAll("[data-remove-mobile]").forEach(function(el){ el.addEventListener("click", function(){ currentLoja.mobiles.splice(+el.dataset.removeMobile,1); renderMobiles(); scheduleSave(); }); });
@@ -2925,6 +3001,300 @@
   }
   const FILTRO_LABEL = {concluido:"Concluídos", em_andamento:"Andamento", nao_iniciado:"Não Iniciado", atrasada:"Atrasado", liberado:"Confirmado"};
 
+  // Equipamentos para substituicao de uma loja (usado no Painel e no relatorio PDF)
+  function substituicoesDaLoja(l){
+    const itens = [];
+    const nhsRack = !!(l.rack && l.rack.nobreak && l.rack.nobreak.marca === "NHS");
+    ["gerencia","estoque"].forEach(function(setorKey){
+      const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
+      if(s.desktop && s.desktop.estado==="Ruim - substituir") itens.push({setor:label, equip:"Desktop", serie:s.desktop.serie||"—", obs:"Ruim - substituir"});
+      if(s.tecladoMouseMonitor){
+        if(s.tecladoMouseMonitor.teclado.estado==="Ruim - substituir") itens.push({setor:label, equip:"Teclado", serie:"—", obs:"Ruim - substituir"});
+        if(s.tecladoMouseMonitor.mouse.estado==="Ruim - substituir") itens.push({setor:label, equip:"Mouse", serie:"—", obs:"Ruim - substituir"});
+        if(s.tecladoMouseMonitor.monitor.estado==="Ruim - substituir") itens.push({setor:label, equip:"Monitor", serie:"—", obs:"Ruim - substituir"});
+      }
+      if(s.miniNobreak && s.miniNobreak.possui===true && s.miniNobreak.autonomiaAcima5===false) itens.push({setor:label, equip:"Mini Nobreak", serie:s.miniNobreak.serie||"—", obs:"LEDs: "+(s.miniNobreak.leds||[]).join(", ")});
+      if(nhsRack && s.miniNobreak && s.miniNobreak.possui===false) itens.push({setor:label, equip:"Mini Nobreak", serie:"—", obs:"Loja NHS sem Mini Nobreak — necessária instalação"});
+    });
+    if(l.notebooks){
+      [["gerencia","Notebook Gerência"],["estoque","Notebook Estoque"],["adm","Notebook ADM"]].forEach(function(pair){
+        const nb = l.notebooks[pair[0]];
+        if(pair[0]==="adm" && (!nb || nb.possui!==true)) return;
+        if(nb && nb.estado==="Ruim - substituir") itens.push({setor:"Notebooks", equip:pair[1], serie:nb.serie||"—", obs:"Ruim - substituir"});
+      });
+    }
+    (l.mobiles||[]).forEach(function(m){ if(m.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:m.nome, serie:m.serie||"—", obs:"Ruim - substituir"}); });
+    (l.pdvs||[]).forEach(function(p){
+      if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:"Ruim - substituir"});
+      if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:"Ruim - substituir"});
+      if(p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
+    });
+    if(l.rack && l.rack.nobreak && (l.rack.nobreak.autonomiaNhs==="abaixo" || l.rack.nobreak.autonomiaNhs==="desliga")){
+      itens.push({setor:"Rack", equip:"Nobreak de Rack", serie:l.rack.nobreak.serie||"—", obs: l.rack.nobreak.autonomiaNhs==="desliga" ? "Desliga imediatamente ao ser retirado da tomada" : "Autonomia abaixo de 5 minutos"});
+    }
+    return itens;
+  }
+  // Alertas de uma loja (usado no Painel e no relatorio PDF)
+  function alertasDaLoja(l){
+    const msgs = [];
+    const rack = l.rack||{};
+    if(rack.organizado===false) msgs.push("Rack desorganizado");
+    if(rack.limpo===false) msgs.push("Rack sujo");
+    if(rack.escada && rack.escada.possui===false) msgs.push("Loja não possui escada móvel");
+    if(rack.escada && rack.escada.possui===true && rack.escada.alturaSuficiente===false) msgs.push("Escada móvel não alcança o teto");
+    (l.dvrs||[]).forEach(function(d){
+      if(d.camerasSemFuncionar && d.camerasSemFuncionar.tem===true) msgs.push(d.nome+": câmeras com defeito ou falha"+((d.camerasSemFuncionar.quais&&d.camerasSemFuncionar.quais.length)?" (CAM "+d.camerasSemFuncionar.quais.join(", CAM ")+")":""));
+      if(d.portasDanificadas && d.portasDanificadas.tem===true) msgs.push(d.nome+": portas danificadas ("+(d.portasDanificadas.portas||[]).join(", ")+")");
+    });
+    ["gerencia","estoque"].forEach(function(setorKey){
+      const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
+      if(s.multifuncional && s.multifuncional.falhaImpressao===true) msgs.push(label+": Impressora Multifuncional com falha de impressão");
+      if(setorKey==="gerencia" && s.gposBackup && s.gposBackup.possui===false) msgs.push("GPOS Backup não existe");
+      if(s.wifi && (s.wifi.barras==="1" || s.wifi.barras==="2")) msgs.push(label+": sinal de WIFI abaixo de 3 barras");
+    });
+    if(l.wifiStage && (l.wifiStage.barras==="1" || l.wifiStage.barras==="2")) msgs.push("Stage de Vendas: sinal de WIFI abaixo de 3 barras");
+    (l.pdvs||[]).forEach(function(p){
+      if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) msgs.push(p.nome+": impressora térmica precisa de limpeza");
+      if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) msgs.push(p.nome+": USB do touch da tela do cliente ainda conectado");
+    });
+    return msgs;
+  }
+
+  // ---------------- Relatório PDF (todos os checklists concluídos) ----------------
+  // Monta um documento HTML próprio para impressão num iframe oculto e abre a janela de impressão do
+  // navegador, onde o usuário escolhe "Salvar como PDF". Somente leitura: não altera nenhum dado.
+  function lojaParaRelatorio(bruto){
+    const data = JSON.parse(JSON.stringify(bruto||{})); // as migrações alteram objetos; nunca mexer no lojasCache
+    const l = {
+      nome:data.nome||"", tecnico:data.tecnico||"", chamado:data.chamado||"", protocolo:data.protocolo||"",
+      responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", status:data.status||"",
+      horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
+      wifiStage:Object.assign({barras:"", obs:""}, data.wifiStage||{}),
+      ocorrencia:Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
+      mercadoPago:Object.assign({modelo:"", serie:""}, data.mercadoPago || extrairMercadoPagoAntigo(data.pdvs)),
+      rack:migrarRack(data.rack), gerencia:migrarSetor(data.gerencia), estoque:migrarSetor(data.estoque),
+      notebooks:migrarNotebooks(data.notebooks),
+      pdvs:(data.pdvs||[]).map(migrarPdv),
+      mobiles:(data.mobiles||[]).map(function(m,i){ return Object.assign(blankMobile(i+1), m); }),
+      dvrs:(data.dvrs||[]).map(migrarDvr),
+      ratFoto:(data.ratFoto && data.ratFoto.id) ? {id:data.ratFoto.id} : null
+    };
+    if(data.estoque && data.estoque.pdaZebra && data.estoque.pdaZebra.serie && !l.estoque.pdaZebra.serie1) l.estoque.pdaZebra.serie1 = data.estoque.pdaZebra.serie;
+    return l;
+  }
+  // Reduz a foto (máx. 1000px, JPEG) para o PDF não ficar pesado. Se não conseguir (ex: bloqueio do
+  // servidor da imagem), usa a foto original.
+  function reduzirImagemParaRelatorio(url){
+    return new Promise(function(resolve){
+      if(!url){ resolve(""); return; }
+      const img = new Image(); let feito = false;
+      function fim(v){ if(!feito){ feito = true; resolve(v); } }
+      const timer = setTimeout(function(){ fim(url); }, 20000);
+      img.crossOrigin = "anonymous";
+      img.onload = function(){
+        clearTimeout(timer);
+        try{
+          const esc = Math.min(1, 1000 / Math.max(img.naturalWidth||1, img.naturalHeight||1));
+          const c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(img.naturalWidth*esc)); c.height = Math.max(1, Math.round(img.naturalHeight*esc));
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          fim(c.toDataURL("image/jpeg", 0.72));
+        }catch(e){ fim(url); }
+      };
+      img.onerror = function(){ clearTimeout(timer); fim(url); };
+      img.src = url;
+    });
+  }
+  // Estrutura do PDF (uma loja): 1) resumo - dados, substituições, alertas e observação da loja;
+  // 2) Rack; 3) Gerência; 4) Estoque; 5) Stage de Vendas; 6) fotos reduzidas. Cada parte começa numa
+  // página nova e, nas páginas dos setores, só entra o que foi preenchido (campos vazios são omitidos).
+  function htmlRelatorioPdf(l, foto){
+    const E = escapeHtml, RUIM = "Ruim - substituir";
+    function vazio(v){ return v===null || v===undefined || String(v).trim()===""; }
+    function sn(v, sim, nao){ return v===true ? (sim||"Sim") : (v===false ? (nao||"Não") : ""); }
+    function lin(rotulo, valor, ruim){ return vazio(valor) ? "" : '<tr><th>'+E(rotulo)+'</th><td'+(ruim?' class="ruim"':'')+'>'+E(String(valor))+'</td></tr>'; }
+    function card(titulo, linhas){ const c = linhas.join(""); return c ? '<div class="eq"><h4>'+E(titulo)+'</h4><table>'+c+'</table></div>' : ""; }
+    function estado(rotulo, e){ return lin(rotulo, e, e===RUIM); }
+    function perif(rotulo, p){ const t = p.tipo==="com_fio" ? "Com fio" : (p.tipo==="sem_fio" ? "Sem fio" : ""); return lin(rotulo, [t, p.estado].filter(Boolean).join(" · "), p.estado===RUIM); }
+    function wifi(b){ const o = WIFI_OPCOES.find(function(x){ return x.v===b; }); return o ? o.label.replace(/^[^\d]+/, "") : ""; }
+    function wifiRuim(b){ return b==="1" || b==="2"; }
+    function autonomia(v){ return {acima:"Acima de 5 minutos", abaixo:"Abaixo de 5 minutos", desliga:"Desliga imediatamente"}[v] || ""; }
+    function dataBR(ag){ if(!ag) return ""; const s = String(ag); return fmtDateBR(s.slice(0,10)) + (s.length>10 && s.indexOf("T")===10 ? " "+s.slice(11,16) : ""); }
+    function pagina(titulo, conteudo){ return '<section class="pagina"><h2 class="titulo-pagina">'+E(titulo)+'</h2>'+(conteudo || '<p class="nada">Nenhuma informação registrada.</p>')+'</section>'; }
+    function miniNobreak(titulo, m){
+      const ls = [lin("Possui", sn(m.possui,"Possui","Não possui"))];
+      if(m.possui===true){
+        ls.push(lin("Nº Série", m.serie), lin("Data de fabricação", m.dataFabricacao),
+          lin("Autonomia", sn(m.autonomiaAcima5,"Acima de 5 minutos","Abaixo de 5 minutos"), m.autonomiaAcima5===false));
+        if(m.autonomiaAcima5===false) ls.push(lin("LEDs de atenção", (m.leds||[]).join(", "), true));
+      }
+      ls.push(lin("Observação", m.obs));
+      return card(titulo, ls);
+    }
+    function notebook(titulo, n){ return card(titulo, [lin("Hostname", n.hostname), lin("Nº Série", n.serie), lin("Modelo", n.modelo), estado("Estado de conservação", n.estado), lin("Observação", n.obs)]); }
+    function setor(s, ehGerencia){
+      const out = [];
+      out.push(card("Desktop", [lin("Hostname", s.desktop.hostname), lin("Nº Série", s.desktop.serie), lin("Modelo", s.desktop.modelo), estado("Estado de conservação", s.desktop.estado), lin("Observação", s.desktop.obs)]));
+      out.push(card("Teclado / Mouse / Monitor", [perif("Teclado", s.tecladoMouseMonitor.teclado), perif("Mouse", s.tecladoMouseMonitor.mouse), estado("Monitor", s.tecladoMouseMonitor.monitor.estado), lin("Observação", s.tecladoMouseMonitor.obs)]));
+      out.push(miniNobreak("Mini Nobreak", s.miniNobreak));
+      const mf = s.multifuncional;
+      out.push(card("Impressora Multifuncional", [lin("Modelo", mf.modelo), lin("Nº Série", mf.serie), lin("Colorida ou P&B", mf.tipo),
+        lin("Possui transformador", sn(mf.transformador), mf.transformador===false), lin("Falha de impressão", sn(mf.falhaImpressao), mf.falhaImpressao===true),
+        lin("Relatório de Uso", mf.relatorioUso && mf.relatorioUso.id ? "Anexado (ver fotos no final)" : ""), lin("Observação", mf.obs)]));
+      const tv = s.telefoneVoip, tvl = [lin("Possui", sn(tv.possui))];
+      if(tv.possui===true) tvl.push(lin("Número", tv.numero), lin("IP", tv.ip));
+      tvl.push(lin("Observação", tv.obs));
+      out.push(card("Telefone VoIP", tvl));
+      if(ehGerencia){
+        const g = s.gposBackup, gl = [lin("GPOS Backup", sn(g.possui,"Existe","Não existe"), g.possui===false)];
+        if(g.possui===true) gl.push(lin("Nº Série", g.serie));
+        gl.push(lin("Observação", g.obs));
+        out.push(card("GPOS Backup", gl));
+      } else {
+        out.push(card("PDA Zebra", [lin("PDA 1 — Nº Série", s.pdaZebra.serie1), lin("PDA 2 — Nº Série", s.pdaZebra.serie2), lin("Observação", s.pdaZebra.obs)]));
+      }
+      out.push(card("Sinal do WIFI", [lin("Sinal", wifi(s.wifi.barras), wifiRuim(s.wifi.barras)), lin("Observação", s.wifi.obs)]));
+      return out.join("");
+    }
+
+    // ---- Página 1: resumo ----
+    const agora = new Date();
+    const alertas = alertasDaLoja(l), subst = substituicoesDaLoja(l);
+    const duracao = calcularDuracao(l.horarioInicio, l.horarioFim);
+    const obsLoja = l.ocorrencia.tem===true ? (l.ocorrencia.descricao || "Ocorrência pontuada, sem descrição.")
+      : (l.ocorrencia.tem===false ? "A loja não pontuou ocorrências ou necessidades." : "Não informado.");
+    const resumo = '<section class="pagina">' +
+      '<p class="sub">Checklist de Preventiva · Sephora 2026 · AlliedIT · Gerado em '+E(agora.toLocaleDateString("pt-BR"))+' às '+E(agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}))+'</p>' +
+      '<div class="loja-topo"><h1>'+E(l.nome)+'</h1><span class="selo">Concluído</span></div>' +
+      '<table class="dados">' +
+        '<tr><th>Data da preventiva</th><td>'+E(dataBR(l.agendamento)||"—")+'</td><th>Chamado</th><td>'+E(l.chamado||"—")+'</td></tr>' +
+        '<tr><th>Técnico responsável</th><td>'+E(l.tecnico||"—")+'</td><th>Responsável da loja</th><td>'+E(l.responsavelLoja||"—")+'</td></tr>' +
+        '<tr><th>Atendimento</th><td>'+E(l.horarioInicio && l.horarioFim ? l.horarioInicio+" às "+l.horarioFim : (l.horarioInicio||"—"))+'</td><th>Duração</th><td>'+E(duracao||"—")+'</td></tr>' +
+      '</table>' +
+      '<h3>Equipamentos para substituição ('+subst.length+')</h3>' +
+      (subst.length ? '<table class="lista"><thead><tr><th>Setor</th><th>Equipamento</th><th>Nº Série</th><th>Motivo</th></tr></thead><tbody>' +
+        subst.map(function(s){ return '<tr><td>'+E(s.setor)+'</td><td>'+E(s.equip)+'</td><td>'+E(s.serie||"—")+'</td><td class="ruim">'+E(s.obs)+'</td></tr>'; }).join("") + '</tbody></table>'
+        : '<p class="ok">Nenhum equipamento para substituição.</p>') +
+      '<h3>Alertas ('+alertas.length+')</h3>' +
+      (alertas.length ? '<ul class="alertas">'+alertas.map(function(a){ return '<li>'+E(a)+'</li>'; }).join("")+'</ul>' : '<p class="ok">Nenhum alerta.</p>') +
+      '<h3>Observação da loja</h3><p class="obs">'+E(obsLoja)+'</p>' +
+    '</section>';
+
+    // ---- Página 2: Rack ----
+    const r = l.rack, nb = r.nobreak, autNb = nb.marca==="EATON" ? nb.autonomiaEaton : nb.autonomiaNhs;
+    const rack = card("Rack", [lin("Organização", sn(r.organizado,"Organizado","Desorganizado"), r.organizado===false), lin("Limpeza", sn(r.limpo,"Limpo","Sujo"), r.limpo===false), lin("Observação", r.obs)]) +
+      card("Nobreak de Rack", [lin("Marca", nb.marca), lin("Nº Série", nb.serieInacessivel ? "Não é possível ver o Nº Série" : nb.serie),
+        lin("Autonomia fora da tomada", autonomia(autNb), autNb==="abaixo" || autNb==="desliga"), lin("Observação", nb.obs)]) +
+      l.dvrs.map(function(d){
+        const cams = d.camerasSemFuncionar, portas = d.portasDanificadas;
+        return card(d.nome, [lin("Nº Série ou Modelo", d.serie), lin("Analógico ou IP", d.tipo),
+          lin("Câmeras com defeito/falha", cams.tem===true ? "Sim" + (cams.quais.length ? " (CAM "+cams.quais.join(", CAM ")+")" : "") : sn(cams.tem), cams.tem===true),
+          lin("Portas danificadas", portas.tem===true ? "Sim" + (portas.portas.length ? " ("+portas.portas.join(", ")+")" : "") : sn(portas.tem), portas.tem===true),
+          lin("Monitor de CFTV", sn(d.monitorCftv.possui,"Possui","Não possui")), lin("Quantidade de HDs", d.hd.quantidade),
+          lin("HD apresenta erro", sn(d.hd.erro), d.hd.erro===true), lin("Observação", d.obs)]);
+      }).join("") +
+      card("Escada móvel", [lin("Possui escada móvel", sn(r.escada.possui,"Possui","Não possui"), r.escada.possui===false),
+        r.escada.possui===true ? lin("Alcança o teto", sn(r.escada.alturaSuficiente), r.escada.alturaSuficiente===false) : "", lin("Observação", r.escada.obs)]);
+
+    // ---- Página 3: Gerência ----
+    const adm = l.notebooks.adm;
+    const gerencia = notebook("Notebook Gerência", l.notebooks.gerencia) +
+      (adm.possui===true ? notebook("Notebook ADM", adm) : card("Notebook ADM", [lin("Possui", sn(adm.possui))])) +
+      setor(l.gerencia, true);
+
+    // ---- Página 5: Stage de Vendas ----
+    const stage = l.pdvs.map(function(p){
+      const ls = [lin("Nº Série do PDV", p.serie), lin("Marca", p.marca)];
+      if(p.marca==="Elgin") ls.push(lin("Tela do cliente (USB do touch)", p.telaCliente.touchDesativado===true ? "Removido" : "Não removido", p.telaCliente.touchDesativado!==true));
+      const mn = p.miniNobreak;
+      ls.push(lin("Mini Nobreak", sn(mn.possui,"Possui","Não possui")));
+      if(mn.possui===true){
+        ls.push(lin("Mini Nobreak — Nº Série", mn.serie), lin("Mini Nobreak — Data de fabricação", mn.dataFabricacao),
+          lin("Mini Nobreak — Autonomia", sn(mn.autonomiaAcima5,"Acima de 5 minutos","Abaixo de 5 minutos"), mn.autonomiaAcima5===false));
+        if(mn.autonomiaAcima5===false) ls.push(lin("Mini Nobreak — LEDs de atenção", (mn.leds||[]).join(", "), true));
+      }
+      const it = p.impressoraTermica, lc = p.leitorCodBarras;
+      ls.push(lin("Impressora térmica — Nº Série", it.serie), lin("Limpeza básica com pincel", sn(it.limpezaFeita,"Feita","Não feita"), it.limpezaFeita===false),
+        lin("Impressora térmica — falha ao imprimir", sn(it.falhaImpressao), it.falhaImpressao===true),
+        lin("Leitor de código de barras", sn(lc.possui,"Possui","Não possui")));
+      if(lc.possui===true) ls.push(lin("Leitor — Nº Série", lc.serie), lin("Leitor — apresenta defeito", sn(lc.defeito), lc.defeito===true), lin("Leitor — descrição do defeito", lc.obs));
+      ls.push(lin("Pinpad GERTEC — NS rede", p.pinpad.serieRede), lin("Pinpad — Modelo", p.pinpad.modelo), lin("Pinpad — NS", p.pinpad.serie),
+        perif("Mouse", p.mouse), perif("Teclado", p.teclado), lin("Observação", p.obs));
+      return card(p.nome, ls);
+    }).join("") +
+      card("Mercado Pago", [lin("Modelo", l.mercadoPago.modelo), lin("Nº Série", l.mercadoPago.serie)]) +
+      l.mobiles.map(function(m){ return card(m.nome, [lin("Nº Série", m.serie), lin("IP", m.ip), estado("Estado de conservação", m.estado), lin("Observação", m.obs)]); }).join("") +
+      card("Sinal do WIFI — Stage de Vendas", [lin("Sinal", wifi(l.wifiStage.barras), wifiRuim(l.wifiStage.barras)), lin("Observação", l.wifiStage.obs)]);
+
+    // ---- Última página: fotos reduzidas ----
+    const listaFotos = [["Foto do RAT preenchida", foto.rat], ["Relatório de Uso — Multifuncional Gerência", foto.relGer], ["Relatório de Uso — Multifuncional Estoque", foto.relEst]]
+      .filter(function(x){ return x[1]; });
+    const fotos = listaFotos.length ? pagina("Fotos", '<div class="fotos">' + listaFotos.map(function(x){ return '<figure><img src="'+E(x[1])+'" alt=""><figcaption>'+E(x[0])+'</figcaption></figure>'; }).join("") + '</div>') : "";
+
+    const css = '@page{size:A4; margin:12mm;}' +
+      '*{box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact;}' +
+      'body{margin:0; font-family:"Segoe UI",Arial,sans-serif; font-size:9.5pt; color:#0E2841;}' +
+      '.pagina{break-before:page;} .pagina:first-child{break-before:auto;}' +
+      '.sub{margin:0 0 6px; color:#5B7280; font-size:8.5pt;}' +
+      '.loja-topo{display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #026E8C; padding-bottom:4px; margin-bottom:8px;}' +
+      'h1{margin:0; font-size:17pt;} .selo{background:#E7F5EC; color:#1E7A46; border-radius:10px; padding:2px 10px; font-weight:700; font-size:8.5pt;}' +
+      'table{border-collapse:collapse; width:100%;}' +
+      '.dados th{text-align:left; color:#5B7280; font-weight:600; width:18%; padding:3px 6px 3px 0;} .dados td{width:32%; padding:3px 6px 3px 0;}' +
+      'h2.titulo-pagina{margin:0 0 8px; font-size:14pt; color:#026E8C; text-transform:uppercase; letter-spacing:.3px; border-bottom:2px solid #026E8C; padding-bottom:4px;}' +
+      'h3{font-size:11pt; color:#026E8C; text-transform:uppercase; letter-spacing:.3px; margin:14px 0 5px; break-after:avoid;}' +
+      '.lista th,.lista td{border-bottom:1px solid #E3E8EA; padding:4px 6px; text-align:left; vertical-align:top;} .lista th{background:#EEF4F6; font-size:8.5pt;}' +
+      '.alertas{margin:0; padding-left:18px; color:#B3261E;} .alertas li{margin:2px 0;}' +
+      '.ok{margin:0; color:#1E7A46;} .nada{color:#5B7280;} .obs{margin:0; white-space:pre-wrap; border:1px solid #E3E8EA; border-radius:6px; padding:6px 8px;}' +
+      'h4{margin:0 0 3px; font-size:10pt;}' +
+      '.eq{border:1px solid #E3E8EA; border-radius:6px; padding:6px 8px; margin-bottom:6px; break-inside:avoid;}' +
+      '.eq th{text-align:left; font-weight:400; color:#5B7280; padding:1px 8px 1px 0; width:42%; vertical-align:top;} .eq td{padding:1px 0; vertical-align:top;}' +
+      'td.ruim{color:#B3261E; font-weight:700;}' +
+      '.fotos{display:grid; grid-template-columns:1fr 1fr; gap:8px;} figure{margin:0; break-inside:avoid; border:1px solid #E3E8EA; border-radius:6px; padding:5px;}' +
+      'figure img{display:block; max-width:100%; max-height:90mm; margin:0 auto;} figcaption{font-size:8.5pt; color:#5B7280; margin-top:3px;}';
+    // O título vira o nome sugerido do arquivo ao salvar o PDF
+    const titulo = (l.nome || "Loja") + " - Checklist";
+    return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>'+E(titulo)+'</title><style>'+css+'</style></head><body>' +
+      resumo + pagina("Equipamentos do Rack", rack) + pagina("Gerência", gerencia) + pagina("Estoque", setor(l.estoque, false)) + pagina("Stage de Vendas", stage) + fotos +
+      '</body></html>';
+  }
+  let tituloPaginaBase = null;
+  // Gera o PDF de uma loja concluída (botão "Gerar PDF" do cartão da loja, na tela de Agendamento)
+  async function gerarRelatorioPdf(id, btn){
+    const bruto = lojasCache.find(function(x){ return x.id===id; });
+    if(!bruto || bruto.status!=="concluido"){ alert("O PDF só pode ser gerado para checklists concluídos."); return; }
+    const textoOriginal = btn.textContent;
+    btn.disabled = true; btn.textContent = "Gerando PDF…";
+    try{
+      const l = lojaParaRelatorio(bruto);
+      const mfG = l.gerencia.multifuncional.relatorioUso, mfE = l.estoque.multifuncional.relatorioUso;
+      btn.textContent = "Preparando fotos…";
+      const r = await Promise.all([reduzirImagemParaRelatorio(l.ratFoto && l.ratFoto.id), reduzirImagemParaRelatorio(mfG && mfG.id), reduzirImagemParaRelatorio(mfE && mfE.id)]);
+      const antigo = document.getElementById("iframe-relatorio-pdf"); if(antigo) antigo.remove();
+      const frame = document.createElement("iframe");
+      frame.id = "iframe-relatorio-pdf";
+      frame.style.cssText = "position:fixed; right:0; bottom:0; width:0; height:0; border:0; visibility:hidden;";
+      document.body.appendChild(frame);
+      const doc = frame.contentWindow.document;
+      doc.open(); doc.write(htmlRelatorioPdf(l, {rat:r[0], relGer:r[1], relEst:r[2]})); doc.close();
+      btn.textContent = "Carregando fotos…";
+      await Promise.all(Array.from(doc.images).map(function(img){
+        return img.complete ? null : new Promise(function(ok){ img.onload = img.onerror = ok; setTimeout(ok, 20000); });
+      }));
+      // O nome sugerido do arquivo PDF vem do título da página (o título original é guardado uma única vez,
+      // para não "prender" o nome do relatório na aba se dois PDFs forem gerados em seguida)
+      if(!tituloPaginaBase) tituloPaginaBase = document.title;
+      document.title = doc.title;
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+      setTimeout(function(){ document.title = tituloPaginaBase; }, 1000);
+    }catch(e){
+      console.error("Falha ao gerar PDF:", e);
+      alert("Não foi possível gerar o PDF. Tente novamente.");
+    }finally{
+      btn.disabled = false; btn.textContent = textoOriginal;
+    }
+  }
+
   function renderPainel(){
     const total = lojasCache.length;
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
@@ -2936,35 +3306,7 @@
 
     const substituicoesPorLoja = {};
     lojasCache.forEach(function(l){
-      const itens = [];
-      const nhsRack = !!(l.rack && l.rack.nobreak && l.rack.nobreak.marca === "NHS");
-      ["gerencia","estoque"].forEach(function(setorKey){
-        const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
-        if(s.desktop && s.desktop.estado==="Ruim - substituir") itens.push({setor:label, equip:"Desktop", serie:s.desktop.serie||"—", obs:"Ruim - substituir"});
-        if(s.tecladoMouseMonitor){
-          if(s.tecladoMouseMonitor.teclado.estado==="Ruim - substituir") itens.push({setor:label, equip:"Teclado", serie:"—", obs:"Ruim - substituir"});
-          if(s.tecladoMouseMonitor.mouse.estado==="Ruim - substituir") itens.push({setor:label, equip:"Mouse", serie:"—", obs:"Ruim - substituir"});
-          if(s.tecladoMouseMonitor.monitor.estado==="Ruim - substituir") itens.push({setor:label, equip:"Monitor", serie:"—", obs:"Ruim - substituir"});
-        }
-        if(s.miniNobreak && s.miniNobreak.possui===true && s.miniNobreak.autonomiaAcima5===false) itens.push({setor:label, equip:"Mini Nobreak", serie:s.miniNobreak.serie||"—", obs:"LEDs: "+(s.miniNobreak.leds||[]).join(", ")});
-        if(nhsRack && s.miniNobreak && s.miniNobreak.possui===false) itens.push({setor:label, equip:"Mini Nobreak", serie:"—", obs:"Loja NHS sem Mini Nobreak — necessária instalação"});
-      });
-      if(l.notebooks){
-        [["gerencia","Notebook Gerência"],["estoque","Notebook Estoque"],["adm","Notebook ADM"]].forEach(function(pair){
-          const nb = l.notebooks[pair[0]];
-          if(pair[0]==="adm" && (!nb || nb.possui!==true)) return;
-          if(nb && nb.estado==="Ruim - substituir") itens.push({setor:"Notebooks", equip:pair[1], serie:nb.serie||"—", obs:"Ruim - substituir"});
-        });
-      }
-      (l.mobiles||[]).forEach(function(m){ if(m.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:m.nome, serie:m.serie||"—", obs:"Ruim - substituir"}); });
-      (l.pdvs||[]).forEach(function(p){
-        if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:"Ruim - substituir"});
-        if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:"Ruim - substituir"});
-        if(p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
-      });
-      if(l.rack && l.rack.nobreak && (l.rack.nobreak.autonomiaNhs==="abaixo" || l.rack.nobreak.autonomiaNhs==="desliga")){
-        itens.push({setor:"Rack", equip:"Nobreak de Rack", serie:l.rack.nobreak.serie||"—", obs: l.rack.nobreak.autonomiaNhs==="desliga" ? "Desliga imediatamente ao ser retirado da tomada" : "Autonomia abaixo de 5 minutos"});
-      }
+      const itens = substituicoesDaLoja(l);
       if(itens.length) substituicoesPorLoja[l.nome] = itens;
     });
     const totalSubstituicoes = Object.values(substituicoesPorLoja).reduce(function(a,b){ return a+b.length; }, 0);
@@ -3044,26 +3386,7 @@
     const alertsByLoja = {};
     function pushAlert(loja, msg){ if(!alertsByLoja[loja]) alertsByLoja[loja]=[]; alertsByLoja[loja].push(msg); }
     lojasCache.forEach(function(l){
-      const rack = l.rack||{};
-      if(rack.organizado===false) pushAlert(l.nome, "Rack desorganizado");
-      if(rack.limpo===false) pushAlert(l.nome, "Rack sujo");
-      if(rack.escada && rack.escada.possui===false) pushAlert(l.nome, "Loja não possui escada móvel");
-      if(rack.escada && rack.escada.possui===true && rack.escada.alturaSuficiente===false) pushAlert(l.nome, "Escada móvel não alcança o teto");
-      (l.dvrs||[]).forEach(function(d){
-        if(d.camerasSemFuncionar && d.camerasSemFuncionar.tem===true) pushAlert(l.nome, d.nome+": câmeras com defeito ou falha"+((d.camerasSemFuncionar.quais&&d.camerasSemFuncionar.quais.length)?" (CAM "+d.camerasSemFuncionar.quais.join(", CAM ")+")":""));
-        if(d.portasDanificadas && d.portasDanificadas.tem===true) pushAlert(l.nome, d.nome+": portas danificadas ("+(d.portasDanificadas.portas||[]).join(", ")+")");
-      });
-      ["gerencia","estoque"].forEach(function(setorKey){
-        const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
-        if(s.multifuncional && s.multifuncional.falhaImpressao===true) pushAlert(l.nome, label+": Impressora Multifuncional com falha de impressão");
-        if(setorKey==="gerencia" && s.gposBackup && s.gposBackup.possui===false) pushAlert(l.nome, "GPOS Backup não existe");
-        if(s.wifi && (s.wifi.barras==="1" || s.wifi.barras==="2")) pushAlert(l.nome, label+": sinal de WIFI abaixo de 3 barras");
-      });
-      if(l.wifiStage && (l.wifiStage.barras==="1" || l.wifiStage.barras==="2")) pushAlert(l.nome, "Stage de Vendas: sinal de WIFI abaixo de 3 barras");
-      (l.pdvs||[]).forEach(function(p){
-        if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) pushAlert(l.nome, p.nome+": impressora térmica precisa de limpeza");
-        if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) pushAlert(l.nome, p.nome+": USB do touch da tela do cliente ainda conectado");
-      });
+      alertasDaLoja(l).forEach(function(msg){ pushAlert(l.nome, msg); });
     });
     const lojasComAlerta = Object.keys(alertsByLoja);
     document.getElementById("painel-alertas").innerHTML = lojasComAlerta.length===0 ? '<div class="empty" style="padding:12px;">Nenhum alerta no momento.</div>' :
