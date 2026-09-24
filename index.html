@@ -180,6 +180,7 @@
   .hint{font-size:11px; color:var(--text-muted); margin-top:3px; font-style:italic;}
   .warn-inline{font-size:11.5px; color:var(--bad); margin-top:4px; font-weight:600;}
   .warn-destaque{font-size:15px; color:var(--bad); background:var(--bad-bg); border:1.5px solid var(--bad); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-weight:700; display:flex; align-items:center; gap:8px; line-height:1.3;}
+  .toggle-group + .warn-destaque{margin-top:12px;}
   .remove-x{background:none; border:none; color:var(--text-muted); cursor:pointer; font-family:inherit; font-size:16px; line-height:1; padding:2px 6px;}
   .add-row{width:100%; padding:10px; border:1.5px dashed var(--border); background:transparent; color:var(--teal); border-radius:8px; font-family:inherit; font-weight:600; font-size:12.5px; cursor:pointer;}
   .add-row:disabled{opacity:.5; cursor:not-allowed; border-style:solid;}
@@ -377,6 +378,13 @@
       </span>
     </div>
 
+    <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
+      <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
+    </div>
+
     <section class="block">
       <h3>Início do atendimento</h3>
       <div class="field" style="max-width:220px;">
@@ -384,13 +392,6 @@
         <input type="time" id="cl-horario-inicio">
       </div>
     </section>
-
-    <div class="tecnico-blocos-nav" id="tecnico-blocos-nav">
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="rack">Rack<span class="bloco-indicador" data-indicador="rack"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="gerencia">Gerência<span class="bloco-indicador" data-indicador="gerencia"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="estoque">Estoque<span class="bloco-indicador" data-indicador="estoque"></span></button>
-      <button type="button" class="bloco-nav-btn" data-bloco-nav="stage">Stage de Vendas<span class="bloco-indicador" data-indicador="stage"></span></button>
-    </div>
 
     <fieldset id="form-fieldset" style="border:none; padding:0; margin:0;">
 
@@ -408,11 +409,6 @@
       <div class="item-card">
         <div class="item-title"><span>Nobreak de Rack</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-nobreak-rack">Limpar</button></div>
         <div class="field"><label>Marca</label><select id="rack-nobreak-marca"><option value="">Selecionar</option><option>NHS</option><option>EATON</option></select></div>
-        <div class="field" id="rack-nobreak-eaton-wrap" style="display:none;">
-          <label>Autonomia do Nobreak (minutos)</label>
-          <input type="number" id="rack-nobreak-eaton-minutos" min="0" step="1" placeholder="Ex: 8">
-          <div class="hint">Obrigatório para finalizar o checklist.</div>
-        </div>
         <div class="field">
           <div class="toggle-group" id="rack-nobreak-serie-inacessivel-toggle"></div>
           <div class="hint" style="margin-bottom:8px;">Marque se não for possível visualizar o Nº Série sem movimentar o rack.</div>
@@ -421,6 +417,10 @@
         <div class="field" id="rack-nobreak-nhs-wrap" style="display:none;">
           <label>Qual a autonomia fora da tomada?</label>
           <div class="toggle-group" id="rack-nobreak-nhs-toggle"></div>
+        </div>
+        <div class="field" id="rack-nobreak-eaton-wrap" style="display:none;">
+          <label>Qual a autonomia fora da tomada?</label>
+          <div class="toggle-group" id="rack-nobreak-eaton-toggle"></div>
         </div>
         <div class="field"><label>Observação</label><textarea id="rack-nobreak-obs" rows="2" placeholder="Opcional"></textarea></div>
       </div>
@@ -477,15 +477,6 @@
     </section>
 
     <section class="block">
-      <h3>Foto do RAT preenchida</h3>
-      <div class="item-card">
-        <div id="rat-foto-preview" style="margin-bottom:8px;"></div>
-        <input type="file" id="rat-foto-input" accept="image/*">
-        <div class="hint">Anexe a foto do RAT preenchido antes de finalizar o checklist.</div>
-      </div>
-    </section>
-
-    <section class="block">
       <h3>Ocorrências e necessidades</h3>
       <div class="item-card">
         <div class="field"><label>A loja deseja pontuar alguma ocorrência ou necessidade?</label>
@@ -495,6 +486,15 @@
           <label>Descreva a ocorrência ou necessidade</label>
           <textarea id="ocorrencia-descricao" rows="3"></textarea>
         </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>Foto do RAT preenchida</h3>
+      <div class="item-card">
+        <div id="rat-foto-preview" style="margin-bottom:8px;"></div>
+        <input type="file" id="rat-foto-input" accept="image/*">
+        <div class="hint">Anexe a foto do RAT preenchido antes de finalizar o checklist.</div>
       </div>
     </section>
 
@@ -766,7 +766,7 @@
   }
 
   // ---------------- blank data builders ----------------
-  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEatonMinutos:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
+  function blankRack(){ return { organizado:null, limpo:null, obs:"", nobreak:{marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEaton:"", autonomiaEatonMinutos:"", obs:""}, escada:{possui:null, alturaSuficiente:null, obs:""} }; }
   function blankDvr(n){ return { id:uid(), nome:"DVR "+String(n).padStart(2,"0"), serie:"", tipo:"", camerasSemFuncionar:{tem:null, quais:[]}, portasDanificadas:{tem:null, portas:[]}, monitorCftv:{possui:null}, hd:{quantidade:"", erro:null}, obs:"" }; }
   function blankDesktop(){ return {hostname:"", serie:"", modelo:"", estado:"", obs:""}; }
   function blankPerif(){ return {tipo:"", estado:""}; }
@@ -879,6 +879,14 @@
     // Campo novo e especifico para EATON (nao reaproveita autonomiaNhs, que e categorico
     // e usado no painel de substituicao com semantica propria de NHS - misturar geraria ambiguidade historica).
     if(r.nobreak.autonomiaEatonMinutos===undefined) r.nobreak.autonomiaEatonMinutos = "";
+    // EATON passou a usar os mesmos botoes da NHS (acima/abaixo/desliga), mas em campo proprio
+    // (autonomiaEaton) pelo mesmo motivo acima. autonomiaEatonMinutos e mantido so como historico;
+    // checklists antigos com minutos preenchidos sao convertidos para a opcao equivalente.
+    if(r.nobreak.autonomiaEaton===undefined){
+      const m = r.nobreak.autonomiaEatonMinutos;
+      const n = (m==="" || m===null) ? NaN : Number(m);
+      r.nobreak.autonomiaEaton = isNaN(n) || n < 0 ? "" : (n===0 ? "desliga" : (n>=5 ? "acima" : "abaixo"));
+    }
     return r;
   }
   function migrarNotebooks(n){
@@ -954,11 +962,7 @@
     else{
       if(!r.nobreak.serieInacessivel && !r.nobreak.serie) add("Nobreak de Rack: Nº Série", "#rack-nobreak-serie");
       if(r.nobreak.marca==="NHS" && !r.nobreak.autonomiaNhs) add("Nobreak de Rack: autonomia fora da tomada", "#rack-nobreak-nhs-toggle");
-      if(r.nobreak.marca==="EATON"){
-        const vEaton = r.nobreak.autonomiaEatonMinutos;
-        const nEaton = (vEaton==="" || vEaton===null || vEaton===undefined) ? NaN : Number(vEaton);
-        if(vEaton==="" || vEaton===null || vEaton===undefined || isNaN(nEaton) || nEaton < 0) add("Nobreak de Rack: autonomia em minutos (EATON)", "#rack-nobreak-eaton-minutos");
-      }
+      if(r.nobreak.marca==="EATON" && !r.nobreak.autonomiaEaton) add("Nobreak de Rack: autonomia fora da tomada", "#rack-nobreak-eaton-toggle");
     }
     if(r.escada.possui===null) add("Escada móvel: possui ou não", "#rack-escada-possui-toggle");
     else if(r.escada.possui===true && r.escada.alturaSuficiente===null) add("Escada móvel: alcança o teto?", "#rack-escada-altura-toggle");
@@ -2086,8 +2090,6 @@
     document.getElementById("rack-nobreak-marca").value = r.nobreak.marca||"";
     document.getElementById("rack-nobreak-serie").value = r.nobreak.serie||"";
     document.getElementById("rack-nobreak-obs").value = r.nobreak.obs||"";
-    // != null (nao "||"") para nao tratar o valor 0 (minutos) como vazio - 0 e uma resposta valida.
-    document.getElementById("rack-nobreak-eaton-minutos").value = r.nobreak.autonomiaEatonMinutos != null ? r.nobreak.autonomiaEatonMinutos : "";
     (function(){
       const v = r.nobreak.serieInacessivel;
       const visivel = v===true ? false : (v===false ? true : null);
@@ -2095,13 +2097,16 @@
     })();
     document.getElementById("rack-nobreak-serie").disabled = !!r.nobreak.serieInacessivel;
     updateRackNobreakVisibility();
-    const nhsEl = document.getElementById("rack-nobreak-nhs-toggle");
-    nhsEl.innerHTML = ["acima","abaixo","desliga"].map(function(v){
-      const labels = {acima:"Acima de 5 minutos", abaixo:"Abaixo de 5 minutos", desliga:"Desliga imediatamente"};
-      const cls = r.nobreak.autonomiaNhs===v ? (v==="acima"?" on-good":" on-bad") : "";
-      return '<button type="button" class="toggle-btn'+cls+'" data-val="'+v+'">'+labels[v]+'</button>';
-    }).join("");
-    nhsEl.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; r.nobreak.autonomiaNhs=b.dataset.val; fillRackForm(); scheduleSave(); };
+    // NHS e EATON usam os mesmos 3 botoes de autonomia, cada um gravando no seu proprio campo.
+    [["rack-nobreak-nhs-toggle","autonomiaNhs"],["rack-nobreak-eaton-toggle","autonomiaEaton"]].forEach(function(cfg){
+      const el = document.getElementById(cfg[0]), campo = cfg[1];
+      el.innerHTML = ["acima","abaixo","desliga"].map(function(v){
+        const labels = {acima:"Acima de 5 minutos", abaixo:"Abaixo de 5 minutos", desliga:"Desliga imediatamente"};
+        const cls = r.nobreak[campo]===v ? (v==="acima"?" on-good":" on-bad") : "";
+        return '<button type="button" class="toggle-btn'+cls+'" data-val="'+v+'">'+labels[v]+'</button>';
+      }).join("");
+      el.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; r.nobreak[campo]=b.dataset.val; fillRackForm(); scheduleSave(); };
+    });
     document.getElementById("rack-escada-obs").value = r.escada.obs||"";
     updateEscadaVisibility();
     setToggleGroup("rack-escada-possui-toggle", r.escada.possui, "Possui","Não possui", function(v){ r.escada.possui=v; if(!v) r.escada.alturaSuficiente=null; fillRackForm(); scheduleSave(); });
@@ -2162,7 +2167,6 @@
     document.querySelectorAll("[data-bloco-nav]").forEach(function(btn){
       btn.addEventListener("click", function(){ mostrarBlocoTecnico(btn.dataset.blocoNav); });
     });
-    document.getElementById("rack-nobreak-eaton-minutos").addEventListener("input", function(e){ currentLoja.rack.nobreak.autonomiaEatonMinutos = e.target.value; scheduleSave(); });
     document.getElementById("ocorrencia-descricao").addEventListener("input", function(e){ currentLoja.ocorrencia.descricao = e.target.value; scheduleSave(); });
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
       currentLoja.rack.nobreak.marca = e.target.value;
@@ -2179,7 +2183,7 @@
     document.getElementById("rack-nobreak-obs").addEventListener("input", function(e){ currentLoja.rack.nobreak.obs = e.target.value; scheduleSave(); });
     document.getElementById("rack-escada-obs").addEventListener("input", function(e){ currentLoja.rack.escada.obs = e.target.value; scheduleSave(); });
     document.getElementById("btn-clear-rack").addEventListener("click", function(){ currentLoja.rack.organizado=null; currentLoja.rack.limpo=null; currentLoja.rack.obs=""; fillRackForm(); scheduleSave(); });
-    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEatonMinutos:"", obs:""}; fillRackForm(); scheduleSave(); });
+    document.getElementById("btn-clear-nobreak-rack").addEventListener("click", function(){ currentLoja.rack.nobreak = {marca:"", serieInacessivel:null, serie:"", autonomiaNhs:"", autonomiaEaton:"", autonomiaEatonMinutos:"", obs:""}; fillRackForm(); scheduleSave(); });
     document.getElementById("btn-clear-escada").addEventListener("click", function(){ currentLoja.rack.escada = {possui:null, alturaSuficiente:null, obs:""}; fillRackForm(); scheduleSave(); });
 
     document.getElementById("btn-add-dvr").addEventListener("click", function(){ if(currentLoja.dvrs.length>=3) return; currentLoja.dvrs.push(blankDvr(currentLoja.dvrs.length+1)); renderDvrs(); scheduleSave(); });
