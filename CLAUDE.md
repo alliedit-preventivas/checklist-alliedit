@@ -70,3 +70,11 @@ Portanto:
 
 \- Quando houver risco de perda de dados, explique o risco antes de continuar.
 
+
+
+\## Continuidade
+
+\- Antes de começar, leia o arquivo `RESUMO-AJUSTES.md`: ele tem o estado atual, o procedimento seguro de publicação, os pontos de restauração e as pendências.
+
+\- Para rodar localmente: `node ferramentas/servidor-local.js` (porta 5174).
+

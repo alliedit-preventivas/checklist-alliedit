@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "checklist-local",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["ferramentas/servidor-local.js"],
+      "port": 5174
+    }
+  ]
+}
