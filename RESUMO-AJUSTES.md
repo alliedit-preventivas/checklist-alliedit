@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 24/09/2026.
+Última atualização: 24/09/2026 (inclui as decisões sobre as pendências).
 
 ---
 
@@ -76,6 +76,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### 4.3 Nobreak de Rack
 - EATON usa os mesmos 3 botões de autonomia da NHS (campo próprio `autonomiaEaton`; minutos antigos convertidos automaticamente e guardados como histórico).
 - **Lojas EATON**: os mini nobreaks (Gerência, Estoque, PDVs) **não entram** em "Equipamentos para substituição" e não ficam em vermelho no PDF (nota "Loja EATON: mini nobreak não exigido"). O card de mini nobreak continua habilitado e obrigatório.
+- **Nobreak de Rack com autonomia baixa** ("Abaixo de 5 minutos" ou "Desliga imediatamente") entra em "Equipamentos para substituição" **tanto NHS quanto EATON**, com a marca no nome (ex.: "Nobreak de Rack (EATON)"). A regra fica na função `autonomiaNobreakRack` e também considera checklists antigos do EATON que só tinham os minutos digitados.
 
 ### 4.4 Stage de Vendas
 - IP do Mobile: campo livre, aceita só números e pontos (continua obrigatório).
@@ -100,6 +101,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### 4.7 Menus
 - "Gestão" passou a se chamar **"Painel"**; título da tela: **"Painel de Indicadores"** (só visualização).
 - "Agendamento" concentra os cartões das lojas e os PDFs; "Técnico" é o acesso dos técnicos.
+- Tela de login: título **"Acesso ao Painel"** (antes "Acesso à Gestão").
 
 ### 4.8 Fotos de exemplo
 - Todas foram enviadas pela usuária, reduzidas (240×360 ou 300px de altura) e **guardadas dentro do próprio `index.html`** (não dependem de sites externos): PINPAD Rede (PDV e reserva), POS Mercado Pago, POS Rede e POS Cielo. Não entram no PDF.
@@ -114,15 +116,20 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ---
 
-## 6. Pendências e decisões em aberto
+## 6. Decisões tomadas (não reabrir sem a usuária pedir)
 
-- **Fotos de evidência** por equipamento (tirar foto quando houver problema, com carimbo de data/hora e redução automática antes de enviar): adiado pela usuária.
-- **Foto do RAT** ainda é enviada sem redução (fotos de celular de 3 a 4 MB). Reduzir antes de enviar economiza espaço no Supabase (o plano gratuito tem 1 GB de arquivos).
-- **Nobreak de Rack EATON com autonomia baixa**: hoje não entra em "Equipamentos para substituição" (a NHS entra). Decisão não tomada.
-- **POS REDE / CIELO obrigatório** sem opção "Loja não possui": se alguma loja não tiver nenhuma das duas, é preciso incluir essa opção.
-- A tela de login ainda tem o título "Acesso à Gestão".
-- Ideia: ao "Finalizar checklist" com muitas pendências, resumir por setor em vez de listar todas.
-- Verificar no painel do Supabase o plano de cada projeto (o gratuito pausa após 1 semana sem uso) e lembrar que a área de fotos é pública (quem tem o link abre).
+| Assunto | Decisão |
+|---|---|
+| Fotos de evidência dos equipamentos | **Não será feito.** Desconsiderar a ideia. |
+| Foto do RAT | **Continua em tamanho real**, sem redução (a usuária precisa dela no tamanho original). |
+| Nobreak de Rack EATON com autonomia baixa | **Entra** em "Equipamentos para substituição" (feito). |
+| POS REDE / CIELO sem opção "Loja não possui" | **Fica como está**: toda loja sempre tem uma das duas. |
+| Título da tela de login | **"Acesso ao Painel"** (feito). |
+| Hospedagem do banco | **Continua no Supabase** por enquanto. |
+
+### Ideias ainda em aberto (opcionais)
+- Ao "Finalizar checklist" com muitas pendências, resumir por setor em vez de listar todas.
+- Lembrete: a área de fotos do Supabase é pública (quem tem o link abre a foto).
 
 ---
 

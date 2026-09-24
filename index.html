@@ -278,7 +278,7 @@
 
   <div id="view-login" class="hidden" style="display:flex; align-items:center; justify-content:center; min-height:70vh;">
     <div class="card" style="max-width:420px; width:100%; margin:0; padding:30px 26px; border-radius:16px; box-shadow:0 10px 30px rgba(2,110,140,.08); border:none;">
-      <h3 style="margin:0 0 4px; text-align:center; font-size:19px; color:var(--teal);">Acesso à Gestão</h3>
+      <h3 style="margin:0 0 4px; text-align:center; font-size:19px; color:var(--teal);">Acesso ao Painel</h3>
       <div class="hint" style="text-align:center; margin-bottom:18px;">Entre com seu e-mail @alliedit.com.br</div>
       <div class="field">
         <label>E-mail</label>
@@ -849,6 +849,16 @@
   // POS Rede/Cielo do Stage de Vendas (seção "Máquinas POS", junto do Mercado Pago / POS PIX).
   // O técnico escolhe a máquina clicando na foto: operadora "Rede" | "Cielo"; depois preenche modelo e nº série.
   function blankPosRedeCielo(){ return { operadora:"", modelo:"", serie:"" }; }
+  // Autonomia do Nobreak de Rack conforme a marca (EATON usa campo próprio, NHS usa autonomiaNhs).
+  // Também cobre dados antigos do EATON que só têm os minutos digitados (mesma conversão de migrarRack),
+  // sem alterar o objeto original (o Painel lê os dados brutos do lojasCache).
+  function autonomiaNobreakRack(nb){
+    if(!nb) return "";
+    if(nb.marca !== "EATON") return nb.autonomiaNhs || "";
+    if(nb.autonomiaEaton !== undefined) return nb.autonomiaEaton || "";
+    const m = nb.autonomiaEatonMinutos, n = (m==="" || m===null || m===undefined) ? NaN : Number(m);
+    return isNaN(n) || n < 0 ? "" : (n===0 ? "desliga" : (n>=5 ? "acima" : "abaixo"));
+  }
   function lojaComRackEaton(l){ return !!(l && l.rack && l.rack.nobreak && l.rack.nobreak.marca === "EATON"); }
 
   // ---------------- migração de dados antigos ----------------
@@ -3237,8 +3247,11 @@
       if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:"Ruim - substituir"});
       if(!eatonRack && p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
     });
-    if(l.rack && l.rack.nobreak && (l.rack.nobreak.autonomiaNhs==="abaixo" || l.rack.nobreak.autonomiaNhs==="desliga")){
-      itens.push({setor:"Rack", equip:"Nobreak de Rack", serie:l.rack.nobreak.serie||"—", obs: l.rack.nobreak.autonomiaNhs==="desliga" ? "Desliga imediatamente ao ser retirado da tomada" : "Autonomia abaixo de 5 minutos"});
+    // Nobreak de Rack (NHS ou EATON) com autonomia baixa entra na substituição
+    const autRack = autonomiaNobreakRack(l.rack && l.rack.nobreak);
+    if(autRack==="abaixo" || autRack==="desliga"){
+      const nb = l.rack.nobreak;
+      itens.push({setor:"Rack", equip:"Nobreak de Rack"+(nb.marca ? " ("+nb.marca+")" : ""), serie:nb.serie||"—", obs: autRack==="desliga" ? "Desliga imediatamente ao ser retirado da tomada" : "Autonomia abaixo de 5 minutos"});
     }
     const pr = l.pinpadReserva;
     if(pr && pr.situacao==="quebrado") itens.push({setor:"Gerência", equip:"PINPAD reserva", serie:pr.serie||"—", obs:"Quebrado ou não funciona"+(pr.defeito ? ": "+pr.defeito : "")});
