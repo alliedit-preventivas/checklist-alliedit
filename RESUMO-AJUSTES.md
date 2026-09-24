@@ -83,7 +83,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - IP do Mobile: campo livre, aceita só números e pontos (continua obrigatório).
 - Card **Telefone** (Possui? Sim/Não; se Sim, número, IP e observação).
 - Seção **Máquinas POS** (moldura com título):
-  - **Mercado Pago / POS PIX**: foto de exemplo, Modelo e Nº Série ao lado.
+  - **Mercado Pago / POS PIX**: lista de máquinas (até 5), com botão **"+ Adicionar Mercado Pago / POS PIX"** igual aos PDVs (a partir da 2ª dá para remover no "×"). Cada uma com foto de exemplo e Modelo / Nº Série ao lado, obrigatórios.
   - **POS REDE / CIELO**: duas fotos lado a lado (REDE e CIELO); o técnico clica na máquina encontrada e os campos Modelo e Nº Série são liberados. Obrigatório.
 - Em cada PDV, seção **PINPAD REDE LARANJINHA** (foto à esquerda; Nº Rede, Nº Série e Modelo à direita, centralizados).
 - Linhas de divisão entre as partes do PDV (identificação, Mini Nobreak, Impressora térmica, Leitor, PINPAD, Mouse/Teclado).
@@ -112,7 +112,8 @@ Só com autorização explícita da usuária ("pode publicar"):
 ## 5. Dados e banco
 
 - **Nenhuma tabela, permissão (RLS), Storage ou SQL foi alterado.** Os dados de cada loja ficam num campo JSON flexível da tabela `lojas`; as fotos ficam na área `checklist-anexos` do Storage.
-- Campos novos dentro do JSON da loja: `rack.nobreak.autonomiaEaton`, `telefoneStage`, `pinpadReserva`, `posRedeCielo`.
+- Campos novos dentro do JSON da loja: `rack.nobreak.autonomiaEaton`, `telefoneStage`, `pinpadReserva`, `posRedeCielo`, `mercadoPagos` (lista).
+- Mercado Pago: a lista fica em `mercadoPagos`; lojas antigas com o objeto único `mercadoPago` são convertidas automaticamente (viram o item 01). Ao salvar, o 1º item também é gravado em `mercadoPago`, para a versão anterior continuar funcionando se for preciso voltar um ponto de restauração.
 - As regras de "Alertas" e "Equipamentos para substituição" ficam nas funções `alertasDaLoja` e `substituicoesDaLoja` (usadas pelo Painel e pelo PDF).
 
 ---
