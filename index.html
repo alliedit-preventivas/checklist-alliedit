@@ -463,6 +463,19 @@
       </div>
     </section>
 
+    <section class="block">
+      <h3>Ocorrências e necessidades</h3>
+      <div class="item-card">
+        <div class="field"><label>A loja deseja pontuar alguma ocorrência ou necessidade?</label>
+          <div class="toggle-group" id="ocorrencia-tem-toggle"></div>
+        </div>
+        <div class="field" id="ocorrencia-descricao-wrap" style="display:none;">
+          <label>Descreva a ocorrência ou necessidade</label>
+          <textarea id="ocorrencia-descricao" rows="3"></textarea>
+        </div>
+      </div>
+    </section>
+
     <div id="banner-validacao" class="banner-erro hidden"></div>
 
     </fieldset>
@@ -740,7 +753,7 @@
       desktop: blankDesktop(),
       tecladoMouseMonitor:{teclado: blankPerif(), mouse: blankPerif(), monitor:{estado:""}, obs:""},
       miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
-      multifuncional:{tipo:"", modelo:"", serie:"", falhaImpressao:null, obs:"", relatorioUso:null},
+      multifuncional:{tipo:"", modelo:"", serie:"", falhaImpressao:null, transformador:null, obs:"", relatorioUso:null},
       telefoneVoip:{possui:null, numero:"", ip:"", obs:""},
       gposBackup:{possui:null, serie:"", obs:""},
       pdaZebra:{serie1:"", serie2:"", obs:""},
@@ -783,6 +796,7 @@
     if(s.multifuncional && s.multifuncional.relatorioUso===undefined) s.multifuncional.relatorioUso = null;
     if(s.multifuncional && s.multifuncional.modelo===undefined) s.multifuncional.modelo = "";
     if(s.multifuncional && s.multifuncional.falhaImpressao===undefined) s.multifuncional.falhaImpressao = null;
+    if(s.multifuncional && s.multifuncional.transformador===undefined) s.multifuncional.transformador = null;
     // nunca deixar um anexo em base64 vazar para o documento salvo (causa erro de tamanho no armazenamento)
     if(s.multifuncional) delete s.multifuncional.relatorioUsoBase64;
     return s;
@@ -927,6 +941,7 @@
       if(d.camerasSemFuncionar.tem===null) add(d.nome+": câmeras sem funcionar?", base+'[data-dvr-toggle="camerasSemFuncionar"]');
       if(d.portasDanificadas.tem===null) add(d.nome+": portas danificadas?", base+'[data-dvr-toggle="portasDanificadas"]');
       if(d.monitorCftv.possui===null) add(d.nome+": possui monitor de CFTV?", base+'[data-dvr-toggle="monitorCftv"]');
+      if((d.camerasSemFuncionar.tem===true || d.portasDanificadas.tem===true || d.hd.erro===true) && !d.obs) add(d.nome+": descreva o defeito/falha identificado", base+'[data-dvr="obs"]');
     });
     ["gerencia","estoque"].forEach(function(sk){
       const s = l[sk]; const label = sk==="gerencia"?"Gerência":"Estoque"; const b = "#setor-"+sk+" ";
@@ -946,6 +961,8 @@
       }
       if(!s.multifuncional.tipo) add(label+": Multifuncional colorida ou P&B", b+'[data-path="multifuncional.tipo"]');
       else if(assetsApi && !s.multifuncional.relatorioUso) add(label+": Relatório de Uso da Multifuncional (anexo)", b+'[data-relatorio-input]');
+      if(s.multifuncional.transformador===null) add(label+": impressora possui transformador?", b+'[data-path="multifuncional.transformador"]');
+      if(s.multifuncional.falhaImpressao===true && !s.multifuncional.obs) add(label+": Multifuncional - descreva a falha de impressão", b+'[data-path="multifuncional.obs"]');
       if(s.telefoneVoip.possui===null) add(label+": Possui telefone VOIP?", b+'[data-path="telefoneVoip.possui"]');
       else if(s.telefoneVoip.possui===true && (!s.telefoneVoip.numero || !s.telefoneVoip.ip)) add(label+": Telefone VOIP número/IP", b+'[data-path="telefoneVoip.numero"]');
       if(sk==="gerencia" && s.gposBackup.possui===null) add(label+": GPOS Backup existe?", b+'[data-path="gposBackup.possui"]');
@@ -972,6 +989,11 @@
       if(!p.marca) add(p.nome+": marca", b+'[data-pdv="marca"]');
       if(p.marca==="Elgin" && p.telaCliente.touchDesativado!==true) add(p.nome+": remover USB do touch da tela do cliente", '#pdvs-list [data-pdv-removido="'+i+'"]');
       if(p.impressoraTermica.limpezaFeita===null) add(p.nome+": limpeza da impressora térmica", b+'[data-pdv-toggle="impLimpeza"]');
+      if(p.impressoraTermica.falhaImpressao===true && !p.obs) add(p.nome+": descreva a falha da impressora térmica", b+'[data-pdv="obs"]');
+      if(!p.pinpad.modelo) add(p.nome+": Pinpad GERTEC - modelo", b+'[data-pdv="pinModelo"]');
+      if(!p.pinpad.serie) add(p.nome+": Pinpad GERTEC - Nº Série", b+'[data-pdv="pinSerie"]');
+      if(!p.mercadoPago.modelo) add(p.nome+": Mercado Pago - modelo", b+'[data-pdv="mpModelo"]');
+      if(!p.mercadoPago.serie) add(p.nome+": Mercado Pago - Nº Série", b+'[data-pdv="mpSerie"]');
       if(!p.mouse.tipo) add(p.nome+": mouse com/sem fio", b+'[data-pdv-select="mouse"]');
       if(!p.mouse.estado) add(p.nome+": mouse estado", b+'[data-pdv="mouseEstado"]');
       if(!p.teclado.tipo) add(p.nome+": teclado com/sem fio", b+'[data-pdv-select="teclado"]');
@@ -991,8 +1013,13 @@
     (l.mobiles||[]).forEach(function(m, i){
       const b = '#mobiles-list [data-idx="'+i+'"]';
       if(!m.estado) add(m.nome+": estado de conservação", b+'[data-mobile="estado"]');
+      const erroIp = erroMobileIp(m);
+      if(erroIp) add(m.nome+": "+erroIp, b+'[data-mobile="ip"]');
     });
     if(!l.wifiStage.barras) add("Stage de Vendas: sinal do WIFI", '#wifi-stage-select');
+    if(!l.ocorrencia) l.ocorrencia = {tem:null, descricao:""};
+    if(l.ocorrencia.tem===null) add("A loja deseja pontuar alguma ocorrência ou necessidade?", "#ocorrencia-tem-toggle");
+    else if(l.ocorrencia.tem===true && !l.ocorrencia.descricao) add("Descreva a ocorrência ou necessidade", "#ocorrencia-descricao");
     if(!l.rat) l.rat = {};
     if(!l.ratFoto || !l.ratFoto.id) add("Anexe a foto do RAT preenchido", "#rat-foto-input");
     return faltando;
@@ -1938,6 +1965,7 @@
       dadosTecnico:data.dadosTecnico||"", status:data.status||"nao_iniciado",
       horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
+      ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       rack: migrarRack(data.rack),
       gerencia: migrarSetor(data.gerencia),
       estoque: migrarSetor(data.estoque),
@@ -1969,7 +1997,7 @@
     renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
     renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
     renderNotebooks();
-    renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto();
+    renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia();
     document.getElementById("save-status").textContent = "";
     aplicarBloqueio();
     showView("checklist");
@@ -2009,6 +2037,12 @@
     el.onclick = function(e){ const b=e.target.closest(".toggle-btn"); if(!b) return; onClick(b.dataset.val==="true"); };
   }
 
+  function renderOcorrencia(){
+    const o = currentLoja.ocorrencia;
+    setToggleGroup("ocorrencia-tem-toggle", o.tem, "Sim","Não", function(v){ o.tem=v; renderOcorrencia(); scheduleSave(); });
+    document.getElementById("ocorrencia-descricao-wrap").style.display = o.tem===true ? "block":"none";
+    document.getElementById("ocorrencia-descricao").value = o.descricao||"";
+  }
   function renderWifiStage(){
     const wrap = document.getElementById("wifi-stage-select-wrap");
     wrap.innerHTML = wifiSelectHtml('id="wifi-stage-select"', currentLoja.wifiStage.barras);
@@ -2069,6 +2103,7 @@
       currentLoja.wifiStage = {barras:"", obs:""};
       currentLoja.pdvs = [blankPdv(1)]; currentLoja.mobiles = [blankMobile(1)]; currentLoja.dvrs = [blankDvr(1)];
       currentLoja.ratFoto = null;
+      currentLoja.ocorrencia = {tem:null, descricao:""};
       currentLoja.horarioInicio = ""; currentLoja.horarioFim = "";
       document.getElementById("cl-horario-inicio").value = "";
       document.getElementById("cl-horario-fim").value = "";
@@ -2080,7 +2115,7 @@
       renderSetor("setor-gerencia-body", "Gerência", currentLoja.gerencia, "gerencia", true);
       renderSetor("setor-estoque-body", "Estoque", currentLoja.estoque, "estoque", false);
       renderNotebooks();
-      renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); updateFinalizeUi();
+      renderPdvs(); renderMobiles(); renderDvrs(); renderWifiStage(); renderRatFoto(); renderOcorrencia(); updateFinalizeUi();
       document.getElementById("btn-limpar-formulario").classList.remove("hidden");
       document.getElementById("limpar-form-confirm").classList.add("hidden");
       persistNow();
@@ -2096,6 +2131,7 @@
     document.getElementById("btn-clear-wifi-stage").addEventListener("click", function(){ currentLoja.wifiStage = {barras:"", obs:""}; renderWifiStage(); scheduleSave(); });
 
     document.getElementById("rack-nobreak-eaton-minutos").addEventListener("input", function(e){ currentLoja.rack.nobreak.autonomiaEatonMinutos = e.target.value; scheduleSave(); });
+    document.getElementById("ocorrencia-descricao").addEventListener("input", function(e){ currentLoja.ocorrencia.descricao = e.target.value; scheduleSave(); });
     document.getElementById("rack-nobreak-marca").addEventListener("change", function(e){
       currentLoja.rack.nobreak.marca = e.target.value;
       // Nao apaga autonomiaNhs ao trocar de marca: se o tecnico ja tinha registrado a autonomia (ex: voltou de EATON para NHS),
@@ -2229,11 +2265,15 @@
           '<div class="field"><label>Colorida ou P&amp;B?</label><div class="toggle-group" data-setor-select="'+setorKey+'" data-path="multifuncional.tipo">' +
             '<button type="button" class="toggle-btn'+(s.multifuncional.tipo==="Colorida"?' on-good':'')+'" data-val="Colorida">Colorida</button>' +
             '<button type="button" class="toggle-btn'+(s.multifuncional.tipo==="P&B"?' on-good':'')+'" data-val="P&B">P&amp;B</button></div></div></div>' +
+        '<div class="field"><label>Impressora possui transformador?</label><div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="multifuncional.transformador">' +
+          '<button type="button" class="toggle-btn'+(s.multifuncional.transformador===true?' on-good':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(s.multifuncional.transformador===false?' on-bad':'')+'" data-val="false">Não</button></div>' +
+          '<div class="warn-destaque">⚠️ ATENÇÃO: a impressora é 110V e deve ser ligada somente no transformador.</div></div>' +
         '<div class="field"><label>Apresenta alguma falha de impressão?</label><div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="multifuncional.falhaImpressao">' +
           '<button type="button" class="toggle-btn'+(s.multifuncional.falhaImpressao===true?' on-bad':'')+'" data-val="true">Sim</button>' +
           '<button type="button" class="toggle-btn'+(s.multifuncional.falhaImpressao===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
         '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="multifuncional.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.multifuncional.obs)+'</textarea></div>' +
-        '<div class="field"><label>Relatório de Uso</label><div class="hint" style="margin:0 0 6px;">Faça a impressão do Relatório de Uso e anexe o arquivo/foto correspondente.</div>' +
+        '<div class="field"><label>Relatório de Uso</label><div class="hint" style="margin:0 0 6px;">Faça a impressão do Relatório de Uso e anexe o arquivo/foto correspondente.<br>Caminho para consultar o contador de uso: Menu &gt; Imprimir.</div>' +
           (s.multifuncional.relatorioUso && s.multifuncional.relatorioUso.id ?
             '<img src="'+s.multifuncional.relatorioUso.id+'" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--border); display:block; margin-bottom:6px;">' +
             '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
@@ -2679,6 +2719,7 @@
         rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
         pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
         wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
+        ocorrencia: currentLoja.ocorrencia,
         horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
         atualizadoEm: now()
       });
