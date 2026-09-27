@@ -121,6 +121,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **2025:** números fixos no código (`TROCAS_2025`), tirados da planilha "PREVENTIVA 2025 - SEPHORA" (41 lojas, 109 indicações). Entram só o código, o nome da loja e as contagens, sem nomes de pessoas, IPs ou números de série.
 - **Critério 2025 escolhido pela usuária (critério 2):** nobreaks com autonomia ruim (rack, mini PDV e estoque; lojas EATON sem mini nobreak), teclado/mouse/monitor "precisa trocar", PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada, computador com queixa grave ("impossível usar" ou "gostaria de trocar") e PDA Zebra sem funcionar. Por incluir mais tipos de problema que 2026, 2025 tende a ter números maiores (o aviso aparece no próprio cartão).
 - **2026:** "Equipamentos para substituição" (`substituicoesDaLoja`), atualizado sozinho. Loja concluída = número final; em andamento = número parcial (com *); sem checklist = "Aguardando atendimento". A variação só é calculada para lojas concluídas.
+- Acima dele, cartão **"Top 5 Lojas com Mais Trocas: 2025 x 2026"**: duas colunas (2025 e 2026), cada loja com o total e os equipamentos em etiquetas (ex.: "Mini Nobreak PDV ×3"). 2026 considera checklists concluídos e em andamento (* = em andamento) e agrupa os itens por tipo (ex.: "Mouse Gerência", "Mini Nobreak PDV").
 - Resumo no topo do cartão compara 2025 x 2026 **só nas lojas já concluídas em 2026 que também foram atendidas em 2025** (mesma base).
 - Nenhuma alteração de banco.
 
