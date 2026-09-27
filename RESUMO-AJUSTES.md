@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 27/09/2026 (aviso de pendências resolvidas; publicação em produção ainda pendente — ver seção 8).
+Última atualização: 27/09/2026 (aviso de pendências resolvidas já publicado; Painel Executivo na `develop`, aguardando publicação — ver seção 8).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `31411de` (equivale à `develop` `7d6dab5`) — a `develop` já está um commit à frente (`c06eb2c`), aguardando publicação |
+| Última publicação | `main` = commit `adf6366` (equivale à `develop` `c06eb2c`, aviso de pendências resolvidas). A `develop` está à frente com o Painel Executivo (`55c05b4`), aguardando publicação |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -109,7 +109,14 @@ Só com autorização explícita da usuária ("pode publicar"):
 - "Agendamento" concentra os cartões das lojas e os PDFs; "Técnico" é o acesso dos técnicos.
 - Tela de login: título **"Acesso ao Painel"** (antes "Acesso à Gestão").
 
-### 4.8 Fotos de exemplo
+### 4.8 Painel Executivo (só na `develop`, ainda não publicado)
+- A tela **Painel** ganhou o bloco **"Painel Executivo: Preventiva 2026"** com cartões de indicadores: Lojas Cadastradas (e nº de estados), Concentração SP, Regionais Mapeadas (e lojas pendentes de alocação), Top Solicitação de Troca e Lojas em Levantamento.
+- **Lojas em Levantamento (sem troca de equipamentos):** lojas inauguradas em 2026 (3096, 3130, 3135, 3114, 3142) e a loja em reforma 2868 (Leblon). Equipamento todo novo: a preventiva ali é só levantamento de informações. A lista fica fixa no código (`LOJAS_LEVANTAMENTO`). Por enquanto isso aparece **só no Painel**: as regras de "Equipamentos para substituição" e o PDF não mudaram.
+- **Pareto de Problemas Recorrentes:** base histórica da Preventiva 2025 (41 lojas), com valores fixos no código (`PARETO_2025`). Não é calculado a partir dos checklists de 2026.
+- Também: Concentração Territorial (lojas por UF), Lojas com Maior Volume de Troca, Estrutura Operacional por Regional e Maior tempo de atendimento.
+- Commit na `develop`: `55c05b4`. Nenhuma alteração de banco.
+
+### 4.9 Fotos de exemplo
 - Todas foram enviadas pela usuária, reduzidas (240×360 ou 300px de altura) e **guardadas dentro do próprio `index.html`** (não dependem de sites externos): PINPAD Rede (PDV e reserva), POS Mercado Pago, POS Rede e POS Cielo. Não entram no PDF.
 
 ---
@@ -147,9 +154,15 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ---
 
-## 8. Pendente de publicação (27/09/2026)
+## 8. Publicações e pendências (27/09/2026)
 
-**Ajuste feito e já na `develop`:** quando o técnico corrige o último campo obrigatório que faltava (ex.: depois de anexar a foto do RAT e ver a lista de pendências), agora aparece uma janela avisando "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora". Antes, esse aviso só aparecia discretamente no topo da tela e podia passar despercebido.
-- Commit na `develop`: `c06eb2c`.
+### 8.1 Aviso de pendências resolvidas: PUBLICADO
+Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
+- Commit na `develop`: `c06eb2c`. Commit na `main`: `adf6366`.
+- Conferido: a `main` difere da `develop` `c06eb2c` só nas 3 linhas obrigatórias de produção, mais 2 linhas de comentário removidas (não mudam o funcionamento).
 - Ponto de restauração da produção (antes deste ajuste): branch `restauracao-producao-antes-aviso-pendencias-2026-09-27`.
-- **Ainda não publicado na `main`/produção** — a sessão de nuvem usada não teve permissão técnica para publicar (ver observação na seção 1). Falta repetir o passo 3 do procedimento de publicação (seção 3) numa sessão com essa permissão, ou aplicar direto pelo site do GitHub.
+- Falta só conferir no site no ar se a janela aparece.
+
+### 8.2 Painel Executivo: PENDENTE DE PUBLICAÇÃO
+- Commit `55c05b4` na `develop` (detalhes na seção 4.8).
+- Antes de publicar: testar localmente e seguir o procedimento seguro (seção 3), com autorização da usuária.
