@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 24/09/2026 (inclui as decisões sobre as pendências).
+Última atualização: 27/09/2026 (aviso de pendências resolvidas; publicação em produção ainda pendente — ver seção 8).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `234d551` (equivale à `develop` `84d50df`) |
+| Última publicação | `main` = commit `31411de` (equivale à `develop` `7d6dab5`) — a `develop` já está um commit à frente (`c06eb2c`), aguardando publicação |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -30,8 +30,12 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-maquinas-pos-2026-09-24` | Produção antes do PINPAD reserva, Máquinas POS e fotos |
 | `producao-antes-eaton-substituicao-2026-09-24` | Produção antes do EATON na substituição e do login "Acesso ao Painel" |
 | `producao-antes-mercado-pago-lista-2026-09-24` | Produção antes da lista de Mercado Pago / POS PIX (versão anterior à atual) |
+| `producao-antes-trava-encerramento` | Produção antes da trava de encerramento (modal ao anexar RAT) |
+| `antes-trava-encerramento` | `develop` antes da trava de encerramento |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
+
+**Observação (27/09/2026):** em uma sessão de nuvem (Claude Code on the web), criar tags novas e apagar branches remotas foi bloqueado por uma trava técnica do próprio ambiente (não é uma questão de autorização). Nessa sessão, o ponto de restauração precisou ser criado como **branch** em vez de tag: `restauracao-producao-antes-aviso-pendencias-2026-09-27` (aponta para a produção como estava antes do ajuste da seção 8). Se isso se repetir, use uma sessão local ou uma conta com permissão de publicação para criar as tags e publicar em produção.
 
 ---
 
@@ -140,3 +144,12 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 - O formulário só abre depois do login. Para testar sem login, o Claude monta uma cópia do `index.html` numa pasta temporária com o Supabase **simulado** (nada é gravado em banco nenhum) e confere tudo por medições e simulações de clique.
 - Para imagens de prévia, o Edge instalado no Windows pode gerar capturas com `msedge --headless --screenshot`.
+
+---
+
+## 8. Pendente de publicação (27/09/2026)
+
+**Ajuste feito e já na `develop`:** quando o técnico corrige o último campo obrigatório que faltava (ex.: depois de anexar a foto do RAT e ver a lista de pendências), agora aparece uma janela avisando "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora". Antes, esse aviso só aparecia discretamente no topo da tela e podia passar despercebido.
+- Commit na `develop`: `c06eb2c`.
+- Ponto de restauração da produção (antes deste ajuste): branch `restauracao-producao-antes-aviso-pendencias-2026-09-27`.
+- **Ainda não publicado na `main`/produção** — a sessão de nuvem usada não teve permissão técnica para publicar (ver observação na seção 1). Falta repetir o passo 3 do procedimento de publicação (seção 3) numa sessão com essa permissão, ou aplicar direto pelo site do GitHub.
