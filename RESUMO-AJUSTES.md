@@ -127,6 +127,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ### 4.10 Painel mais enxuto (só na `develop`, ainda não publicado)
 - **Card "Lojas"** (tabela com busca e filtros) **escondido por enquanto**, a pedido da usuária. O código foi mantido: para voltar, remover o `display:none` do card `painel-card-lojas` e mudar `PAINEL_MOSTRAR_TABELA_LOJAS` para `true`. Enquanto estiver escondido, clicar nos cartões de status (Concluídos, Andamento etc.) não filtra nada; o cartão "Equip. p/ substituir" continua levando à lista de substituições.
+- **Card "Maior tempo de atendimento"** escondido a pedido da usuária (código mantido; para voltar, remover o `display:none` do card `painel-card-tempo`). O calendário ficou sozinho na metade esquerda da linha.
 - **Calendário compacto:** agora fica ao lado de "Maior tempo de atendimento", com o título "Calendário de agendamentos". Cada dia mostra só o **número de lojas agendadas**. Clicando no dia, a lista das lojas aparece abaixo, e clicar na loja abre o checklist, como antes. Mostra só as semanas do mês (5 ou 6 linhas) e sublinha o dia de hoje.
 
 ### 4.11 Lojas concluídas não aparecem mais como "Atrasado" (só na `develop`, ainda não publicado)
