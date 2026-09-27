@@ -98,7 +98,32 @@
   .status-filter-item.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);}
   .status-filter-confirmado{background:#D8ECD9; color:#2E7D32;}
   .status-filter-confirmado.active{background:linear-gradient(90deg, #2E7D32, #5CB85C); color:#fff; box-shadow:0 2px 8px rgba(46,125,50,.3);}
-  .agenda-dia-item{display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--surface); box-shadow:0 1px 3px rgba(14,40,65,.08); border-radius:8px; padding:8px 12px; font-size:10.7px; margin-bottom:6px;}
+  .painel-exec-header{margin-bottom:14px;}
+  .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
+  .painel-kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin-bottom:14px;}
+  .painel-kpi-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
+  .painel-kpi-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-muted); margin-bottom:6px;}
+  .painel-kpi-valor{font-size:24px; font-weight:800; color:var(--navy); line-height:1.1;}
+  .painel-kpi-sub{font-size:11.5px; color:var(--text-muted); margin-top:4px;}
+  .painel-tabela{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .painel-tabela th{text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.3px; color:var(--text-muted); font-weight:700; padding:6px 8px; border-bottom:2px solid var(--border);}
+  .painel-tabela td{padding:7px 8px; border-bottom:1px solid var(--border);}
+  .painel-tabela tr:last-child td{border-bottom:none;}
+  .painel-tabela .num{text-align:right; font-weight:700; color:var(--navy);}
+  .painel-regional-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin-bottom:14px;}
+  .painel-regional-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
+  .painel-regional-titulo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .painel-regional-titulo b{font-size:13px; color:var(--teal);}
+  .painel-regional-titulo span{font-size:12px; font-weight:700; color:var(--navy);}
+  .painel-regional-lojas{font-size:12px; color:var(--text-muted); line-height:1.5;}
+  .painel-2col{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  @media (max-width:640px){ .painel-2col{grid-template-columns:1fr;} }
+  .painel-barra-track{background:var(--bg); border-radius:6px; height:10px; overflow:hidden;}
+  .painel-barra-fill{background:var(--grad); height:100%; border-radius:6px;}
+  .painel-lista-item{display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .painel-lista-item:last-child{border-bottom:none;}
+  .painel-lista-item .painel-lista-nome{font-weight:600;}
+  .painel-lista-item .painel-lista-valor{color:var(--teal); font-weight:700;}  .agenda-dia-item{display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--surface); box-shadow:0 1px 3px rgba(14,40,65,.08); border-radius:8px; padding:8px 12px; font-size:10.7px; margin-bottom:6px;}
   .agenda-dia-item.alerta{background:var(--warn-bg); box-shadow:0 1px 3px rgba(138,109,0,.15);}
   .agenda-dia-data{font-weight:700; color:var(--navy);}
   .agenda-dia-item.alerta .agenda-dia-data{color:var(--warn);}
@@ -565,10 +590,60 @@
   </div>
 
 
-  <div id="view-painel" class="view">
+  <div id="view-painel" class="view" style="max-width:1240px; margin:0 auto;">
+    <div class="card painel-exec-header">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="margin:0 0 4px; font-size:19px; font-weight:800; color:var(--navy);">Painel Executivo: Preventiva 2026</h2>
+          <div class="hint" style="margin:0;">Visão consolidada de progresso, riscos e distribuição operacional da campanha</div>
+        </div>
+        <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
+      </div>
+    </div>
+
+    <div class="painel-kpi-grid" id="painel-kpis-executivos"></div>
+
     <div class="card" id="painel-progresso"></div>
     <div class="stats-grid" id="painel-stats"></div>
     <div class="hint" id="painel-filtro-ativo" style="margin:-10px 0 14px; display:none;"></div>
+
+    <div class="card" id="painel-card-levantamento" style="margin-bottom:14px; display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas em Levantamento (sem troca de equipamentos)</h3>
+      </div>
+      <div class="hint" style="margin:0 0 10px;">Lojas inauguradas em 2026 ou em reforma — equipamento todo novo, a preventiva aqui é só levantamento de informações, sem previsão de substituição.</div>
+      <div id="painel-lista-levantamento"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Pareto de Problemas Recorrentes</h3>
+        <span class="hint" style="margin:0;">Base histórica: Preventiva 2025 (41 lojas)</span>
+      </div>
+      <div id="painel-pareto"></div>
+    </div>
+
+    <div class="painel-2col">
+      <div class="card" style="margin-bottom:0;">
+        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Concentração Territorial (Lojas por UF)</h3>
+        <div class="hint" style="margin:-4px 0 10px;">Base: range_de_ips.xlsx</div>
+        <div id="painel-tabela-uf"></div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas com Maior Volume de Troca</h3>
+        <div id="painel-ranking-substituicao"></div>
+      </div>
+    </div>
+
+    <h3 style="margin:14px 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Estrutura Operacional por Regional</h3>
+    <div class="painel-regional-grid" id="painel-estrutura-regional"></div>
+
+    <div class="painel-2col">
+      <div class="card" style="margin-bottom:0;">
+        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Maior tempo de atendimento</h3>
+        <div id="painel-ranking-tempo"></div>
+      </div>
+    </div>
 
     <div class="card">
       <div class="cal-nav">
@@ -610,6 +685,29 @@
 <script>
 (function(){
   const ESTADOS = ["Bom","Regular","Ruim - substituir"];
+const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":["SP",1],"2305":["SP",1],"2306":["SP - Interior",4],"2307":["PR",2],"2308":["RJ",2],"2309":["SP",1],"2310":["SP",1],"2311":["SP - Interior",4],"2312":["SP",1],"2313":["RJ",2],"2314":["DF",3],"2315":["SP - Interior",4],"2317":["SP",1],"2318":["SP",4],"2320":["RS",2],"2346":["PR",2],"2451":["PE",3],"2454":["GO",3],"2455":["DF",3],"2496":["BA",3],"2746":["SP - Interior",1],"2765":["RJ",2],"2766":["SP",1],"2868":["RJ",2],"2875":["MG",3],"2906":["SC",2],"2909":["SP - Litoral",4],"2918":["CE",3],"2924":["AL",3],"2944":["SP",4],"2953":["SC",2],"2971":["SP",1],"2976":["SP - Interior",4],"2992":["PA",3],"2993":["PR",2],"2994":["MG",3],"3010":["SP",4],"3040":["SP",1],"3044":["SP - Interior",4],"3067":["SP",4],"3071":["MS",4],"3075":["SP - Interior",4],"3096":["ES",2],"3130":["SP","Confirmar"],"3135":["MG","Confirmar"],"3142":["SP","Confirmar"],"3114":["RS","Confirmar"]};
+  const LOJAS_LEVANTAMENTO = {
+    "3096": "Inaugurada em 2026",
+    "3130": "Inaugurada em 2026",
+    "3135": "Inaugurada em 2026",
+    "3114": "Inaugurada em 2026",
+    "3142": "Inaugurada em 2026",
+    "2868": "Loja em reforma (Leblon)"
+  };
+  function ehLojaLevantamento(l){ return !!LOJAS_LEVANTAMENTO[codigoDaLoja(l)]; }
+  const PARETO_2025 = [
+    {categoria:"Mini Nobreak PDV (autonomia ruim)", qtd:30, pctLojas:73.2},
+    {categoria:"Queixa de computador (Estoque)", qtd:18, pctLojas:43.9},
+    {categoria:"Queixa de computador (Gerência)", qtd:16, pctLojas:39.0},
+    {categoria:"Escada sem alcançar o teto ou ausente", qtd:11, pctLojas:26.8},
+    {categoria:"Nobreak de Rack (autonomia ruim)", qtd:10, pctLojas:24.4},
+    {categoria:"Câmeras de CFTV sem funcionar", qtd:9, pctLojas:22.0},
+    {categoria:"Mini Nobreak Estoque (autonomia ruim)", qtd:9, pctLojas:22.0},
+    {categoria:"Rack extremamente sujo", qtd:6, pctLojas:14.6},
+    {categoria:"Rack desorganizado", qtd:4, pctLojas:9.8},
+    {categoria:"Som com baixa qualidade", qtd:2, pctLojas:4.9},
+    {categoria:"Monitor com falha (Estoque + Gerência)", qtd:2, pctLojas:4.9}
+  ];
   const WIFI_OPCOES = [
     {v:"1", label:"▮▯▯▯  1 barra — Ruim"}, {v:"2", label:"▮▮▯▯  2 barras — Médio"},
     {v:"3", label:"▮▮▮▯  3 barras — Médio"}, {v:"4", label:"▮▮▮▮  4 barras — Bom"}
@@ -3646,7 +3744,157 @@
     }
   }
 
-  function renderPainel(){
+function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
+  function ufDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; const uf = info ? info[0] : "Não mapeada"; return uf.split(" - ")[0].trim(); }
+  function regionalDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; return info ? info[1] : "—"; }
+  function renderPainelListaVazia(containerId){ document.getElementById(containerId).innerHTML = '<div class="hint">Sem dados suficientes ainda.</div>'; }
+  function ufBrutaDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; return info ? info[0] : "Não mapeada"; }
+  function renderPainelUfRegional(){
+    const total = lojasCache.length;
+    const porUfBruta = {};
+    lojasCache.forEach(function(l){ const uf = ufBrutaDaLoja(l); porUfBruta[uf] = (porUfBruta[uf]||0) + 1; });
+
+    const estadosDistintos = new Set(Object.keys(porUfBruta).map(function(u){ return u.split(" - ")[0].trim(); }).filter(function(u){ return u!=="Não mapeada" && u!=="DF"; }));
+    const temDF = Object.keys(porUfBruta).some(function(u){ return u.split(" - ")[0].trim()==="DF"; });
+    const spCount = lojasCache.filter(function(l){ return ufDaLoja(l)==="SP"; }).length;
+    const spPct = total ? (spCount/total*100).toFixed(1).replace(".", ",") : "0,0";
+    const regionaisDistintos = new Set(lojasCache.map(function(l){ return regionalDaLoja(l); }).filter(function(r){ return r!=="—"; }));
+    const pendentesAlocacao = lojasCache.filter(function(l){ return regionalDaLoja(l)==="—"; }).length;
+    const topTroca = (window.__ultimoRankingSubstituicao||[])[0];
+    const qtdLevantamento = lojasCache.filter(ehLojaLevantamento).length;
+
+    document.getElementById("painel-status-ativo").textContent = "STATUS ATIVO • " + total + " LOJAS";
+    document.getElementById("painel-kpis-executivos").innerHTML =
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas Cadastradas</div><div class="painel-kpi-valor">'+total+'</div><div class="painel-kpi-sub">'+estadosDistintos.size+' Estados'+(temDF?' + DF':'')+'</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Concentração SP</div><div class="painel-kpi-valor">'+spPct+'%</div><div class="painel-kpi-sub">'+spCount+' Unidades (Cap. + Int.)</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Regionais Mapeadas</div><div class="painel-kpi-valor">'+regionaisDistintos.size+(pendentesAlocacao>0?' + Pend.':'')+'</div><div class="painel-kpi-sub">'+pendentesAlocacao+' loja(s) pendente(s) alocação</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Top Solicitação Troca</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas em Levantamento</div><div class="painel-kpi-valor">'+qtdLevantamento+'</div><div class="painel-kpi-sub">Novas 2026 + reforma — sem troca de equipamento</div></div>';
+
+    renderPainelLevantamento();
+
+    function regionalPredominante(nomesUf){
+      const contagem = {};
+      lojasCache.forEach(function(l){ if(ufBrutaDaLoja(l)===nomesUf){ const r = regionalDaLoja(l); if(r!=="—") contagem[r] = (contagem[r]||0)+1; } });
+      const entries = Object.entries(contagem).sort(function(a,b){ return b[1]-a[1]; });
+      return entries.length ? "Regional "+entries[0][0] : "—";
+    }
+    const ufEntries = Object.entries(porUfBruta).sort(function(a,b){ return b[1]-a[1]; });
+    const principais = ufEntries.filter(function(e){ return e[1] >= 2 && e[0]!=="Não mapeada"; });
+    const demais = ufEntries.filter(function(e){ return e[1] < 2 && e[0]!=="Não mapeada"; });
+    const naoMapeadas = ufEntries.find(function(e){ return e[0]==="Não mapeada"; });
+    let linhasTabela = principais.map(function(e){
+      const pct = total ? (e[1]/total*100).toFixed(1).replace(".", ",") : "0,0";
+      return '<tr><td>'+escapeHtml(e[0])+'</td><td class="num">'+e[1]+'</td><td class="num">'+pct+'%</td><td>'+regionalPredominante(e[0])+'</td></tr>';
+    });
+    if(demais.length){
+      const totalDemais = demais.reduce(function(a,e){ return a+e[1]; }, 0);
+      const pct = total ? (totalDemais/total*100).toFixed(1).replace(".", ",") : "0,0";
+      linhasTabela.push('<tr><td>Demais Estados ('+demais.length+' UFs)</td><td class="num">'+totalDemais+'</td><td class="num">'+pct+'%</td><td>Mistas (1 un./UF)</td></tr>');
+    }
+    if(naoMapeadas){
+      const pct = total ? (naoMapeadas[1]/total*100).toFixed(1).replace(".", ",") : "0,0";
+      linhasTabela.push('<tr><td>Não mapeada</td><td class="num">'+naoMapeadas[1]+'</td><td class="num">'+pct+'%</td><td>—</td></tr>');
+    }
+    document.getElementById("painel-tabela-uf").innerHTML = !linhasTabela.length ? '<div class="hint">Sem dados suficientes ainda.</div>' :
+      '<table class="painel-tabela"><thead><tr><th>Estado / UF</th><th>Qtd</th><th>Distribuição (%)</th><th>Regional Predom.</th></tr></thead><tbody>'+linhasTabela.join("")+'</tbody></table>';
+
+    const porRegionalDetalhe = {};
+    lojasCache.forEach(function(l){
+      const r = regionalDaLoja(l);
+      const chave = r==="—" ? "Não alocada" : "Regional "+r;
+      if(!porRegionalDetalhe[chave]) porRegionalDetalhe[chave] = [];
+      porRegionalDetalhe[chave].push(l.nome.split(" - ").slice(1).join(" - ") || l.nome);
+    });
+    const regionaisOrdenadas = Object.keys(porRegionalDetalhe).sort(function(a,b){
+      const na = parseInt(a.replace(/\D/g,""),10), nb = parseInt(b.replace(/\D/g,""),10);
+      if(isNaN(na)) return 1; if(isNaN(nb)) return -1;
+      return na-nb;
+    });
+    document.getElementById("painel-estrutura-regional").innerHTML = !regionaisOrdenadas.length ? '<div class="hint">Sem dados suficientes ainda.</div>' :
+      regionaisOrdenadas.map(function(chave){
+        const lojas = porRegionalDetalhe[chave].sort();
+        return '<div class="painel-regional-card">' +
+          '<div class="painel-regional-titulo"><b>'+chave.toUpperCase()+'</b><span>'+lojas.length+' Loja'+(lojas.length===1?'':'s')+'</span></div>' +
+          '<div class="painel-regional-lojas">'+lojas.map(escapeHtml).join(", ")+'</div>' +
+        '</div>';
+      }).join("");
+  }
+  function renderPainelRankingSubstituicao(substituicoesPorLoja){
+    const entries = Object.entries(substituicoesPorLoja).map(function(e){ return [e[0], e[1].length]; }).sort(function(a,b){ return b[1]-a[1]; }).slice(0, 8);
+    window.__ultimoRankingSubstituicao = entries;
+    if(!entries.length){ renderPainelListaVazia("painel-ranking-substituicao"); return; }
+    const max = entries[0][1];
+    function regionalPorNomeLoja(nome){
+      const l = lojasCache.find(function(x){ return x.nome===nome; });
+      if(!l) return "—";
+      const r = regionalDaLoja(l);
+      return r==="—" ? "—" : "Regional "+r;
+    }
+    document.getElementById("painel-ranking-substituicao").innerHTML =
+      '<table class="painel-tabela"><thead><tr><th>Loja</th><th>Regional</th><th>Trocas</th><th>Índice</th></tr></thead><tbody>' +
+      entries.map(function(e){
+        const pct = max ? Math.round(e[1]/max*100) : 0;
+        return '<tr><td>'+escapeHtml(e[0])+'</td><td>'+regionalPorNomeLoja(e[0])+'</td><td class="num">'+e[1]+'</td>' +
+          '<td style="min-width:100px;"><div class="painel-barra-track" style="height:8px;"><div class="painel-barra-fill" style="width:'+pct+'%;"></div></div></td></tr>';
+      }).join("") + '</tbody></table>';
+  }
+  function duracaoEmMinutos(inicio, fim){
+    if(!inicio || !fim) return null;
+    const pi = String(inicio).split(":"), pf = String(fim).split(":");
+    if(pi.length < 2 || pf.length < 2) return null;
+    const mi = (+pi[0])*60 + (+pi[1]); let mf = (+pf[0])*60 + (+pf[1]);
+    if(isNaN(mi) || isNaN(mf)) return null;
+    if(mf < mi) mf += 24*60;
+    return mf - mi;
+  }
+  function renderPainelRankingTempo(){
+    const entries = lojasCache
+      .map(function(l){ return { nome:l.nome, min: duracaoEmMinutos(l.horarioInicio, l.horarioFim) }; })
+      .filter(function(e){ return e.min !== null; })
+      .sort(function(a,b){ return b.min-a.min; })
+      .slice(0, 8);
+    if(!entries.length){ renderPainelListaVazia("painel-ranking-tempo"); return; }
+    document.getElementById("painel-ranking-tempo").innerHTML = entries.map(function(e){
+      const h = Math.floor(e.min/60), m = e.min%60;
+      const txt = (h>0 ? h+"h " : "") + m + "min";
+      return '<div class="painel-lista-item"><span class="painel-lista-nome">'+escapeHtml(e.nome)+'</span><span class="painel-lista-valor">'+txt+'</span></div>';
+    }).join("");
+  }
+  function renderPainelLevantamento(){
+    const lojasLevantamento = lojasCache.filter(ehLojaLevantamento);
+    const card = document.getElementById("painel-card-levantamento");
+    if(lojasLevantamento.length === 0){ card.style.display = "none"; return; }
+    card.style.display = "block";
+    document.getElementById("painel-lista-levantamento").innerHTML = lojasLevantamento.map(function(l){
+      const motivo = LOJAS_LEVANTAMENTO[codigoDaLoja(l)];
+      const concluida = l.status === "concluido";
+      return '<div class="painel-lista-item"><span class="painel-lista-nome">'+escapeHtml(l.nome)+
+        ' <span class="hint" style="font-weight:400;">— '+motivo+'</span></span>' +
+        '<span class="painel-lista-valor" style="color:'+(concluida?'var(--ok)':'var(--text-muted)')+';">'+(concluida?'✓ Levantamento feito':STATUS_LABEL[l.status]||'Não iniciado')+'</span></div>';
+    }).join("");
+  }
+  function renderPainelPareto(){
+    const max = PARETO_2025[0].qtd;
+    document.getElementById("painel-pareto").innerHTML =
+      '<table class="painel-tabela"><thead><tr><th>Categoria (Preventiva 2025)</th><th>Lojas afetadas</th><th>% das lojas</th><th style="min-width:140px;">Índice</th><th>% acumulado</th></tr></thead><tbody>' +
+      PARETO_2025.map(function(p, i){
+        let acum = 0;
+        for(let j=0;j<=i;j++) acum += PARETO_2025[j].qtd;
+        const totalOc = PARETO_2025.reduce(function(a,b){ return a+b.qtd; }, 0);
+        const pctAcum = (acum/totalOc*100).toFixed(1).replace(".", ",");
+        const destaque80 = (acum/totalOc*100) <= 80.5;
+        return '<tr'+(destaque80?' style="background:var(--warn-bg);"':'')+'>' +
+          '<td>'+escapeHtml(p.categoria)+'</td>' +
+          '<td class="num">'+p.qtd+'</td>' +
+          '<td class="num">'+p.pctLojas.toFixed(1).replace(".",",")+'%</td>' +
+          '<td><div class="painel-barra-track" style="height:8px;"><div class="painel-barra-fill" style="width:'+(p.qtd/max*100)+'%;"></div></div></td>' +
+          '<td class="num">'+pctAcum+'%</td>' +
+        '</tr>';
+      }).join("") + '</tbody></table>' +
+      '<div class="hint" style="margin-top:10px;">🟡 Linhas destacadas concentram ~80% de todas as ocorrências registradas na Preventiva 2025 — os pontos prioritários de atenção para 2026.</div>';
+  }
+        function renderPainel(){
     const total = lojasCache.length;
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
     const andamento = lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length;
@@ -3660,6 +3908,10 @@
       const itens = substituicoesDaLoja(l);
       if(itens.length) substituicoesPorLoja[l.nome] = itens;
     });
+    renderPainelRankingSubstituicao(substituicoesPorLoja);
+    renderPainelUfRegional();
+    renderPainelRankingTempo();
+    renderPainelPareto();
     const totalSubstituicoes = Object.values(substituicoesPorLoja).reduce(function(a,b){ return a+b.length; }, 0);
 
     const diasRestantes = diasEntre(hoje, DEADLINE);
