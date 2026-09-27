@@ -156,12 +156,12 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ## 8. Publicações e pendências (27/09/2026)
 
-### 8.1 Aviso de pendências resolvidas: PUBLICADO
+### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
 - Commit na `develop`: `c06eb2c`. Commit na `main`: `adf6366`.
 - Conferido: a `main` difere da `develop` `c06eb2c` só nas 3 linhas obrigatórias de produção, mais 2 linhas de comentário removidas (não mudam o funcionamento).
 - Ponto de restauração da produção (antes deste ajuste): branch `restauracao-producao-antes-aviso-pendencias-2026-09-27`.
-- Falta só conferir no site no ar se a janela aparece.
+- **Testado e validado pela usuária no site no ar (27/09/2026).**
 
 ### 8.2 Painel Executivo: PENDENTE DE PUBLICAÇÃO
 - Commit `55c05b4` na `develop` (detalhes na seção 4.8).
