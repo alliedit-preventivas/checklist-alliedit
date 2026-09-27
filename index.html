@@ -100,7 +100,28 @@
   .status-filter-confirmado.active{background:linear-gradient(90deg, #2E7D32, #5CB85C); color:#fff; box-shadow:0 2px 8px rgba(46,125,50,.3);}
   .painel-exec-header{margin-bottom:14px;}
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
-  .painel-kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin-bottom:14px;}
+  /* Painel: seções numeradas, cabeçalho padrão dos cards e listas com rolagem própria */
+  .painel-secao{display:flex; align-items:center; gap:10px; margin:28px 0 12px; font-size:15px; font-weight:800; color:var(--navy);}
+  .painel-secao:after{content:""; flex:1; height:1px; background:var(--border);}
+  .painel-secao-num{width:26px; height:26px; border-radius:50%; background:var(--teal); color:#fff; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .painel-subtitulo{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:var(--teal); margin:4px 0 10px;}
+  .painel-card-cab{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:4px 10px; margin:0 0 12px; padding-bottom:10px; border-bottom:1px solid var(--border);}
+  .painel-card-cab h3{margin:0; font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);}
+  .painel-card-cab .hint{margin:0; font-size:11px;}
+  #view-painel .card{padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(14,40,65,.06);}
+  #view-painel .painel-2col{margin-bottom:14px;}
+  #view-painel .painel-2col > .card{margin-bottom:0; min-width:0;}
+  .painel-scroll{max-height:430px; overflow:auto; padding-right:4px;}
+  /* Tabelas largas rolam dentro do próprio card no celular (a página não passa da largura da tela) */
+  #painel-pareto, #painel-tabela-uf, #painel-ranking-substituicao, #view-painel details.loja-group .conteudo{overflow-x:auto;}
+  .painel-tabela th.num, .painel-tabela td.num{text-align:right;}
+  .painel-tabela th.centro, .painel-tabela td.centro{text-align:center;}
+  .painel-pct{font-size:11px; color:var(--text-muted); font-weight:700; min-width:38px; text-align:right;}
+  .painel-saude{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.3px; text-transform:uppercase; padding:3px 10px; border-radius:12px; vertical-align:middle;}
+  .painel-legenda{display:flex; flex-wrap:wrap; gap:8px 18px; margin:10px 0; font-size:12.5px;}
+  .painel-legenda span{display:inline-flex; align-items:center; gap:6px;}
+  .painel-dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .painel-kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:14px;}
   .painel-kpi-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
   .painel-kpi-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-muted); margin-bottom:6px;}
   .painel-kpi-valor{font-size:24px; font-weight:800; color:var(--navy); line-height:1.1;}
@@ -609,7 +630,7 @@
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <div>
           <h2 style="margin:0 0 4px; font-size:19px; font-weight:800; color:var(--navy);">Painel Executivo: Preventiva 2026</h2>
-          <div class="hint" style="margin:0;">Visão consolidada de progresso, riscos e distribuição operacional da campanha</div>
+          <div class="hint" style="margin:0;">Visão consolidada de progresso, trocas de equipamento e distribuição operacional da campanha</div>
         </div>
         <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
       </div>
@@ -617,65 +638,15 @@
 
     <div class="painel-kpi-grid" id="painel-kpis-executivos"></div>
 
+    <!-- ===== 1. Andamento da campanha ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">1</span>Andamento da campanha</div>
     <div class="card" id="painel-progresso"></div>
     <div class="stats-grid" id="painel-stats"></div>
     <div class="hint" id="painel-filtro-ativo" style="margin:-10px 0 14px; display:none;"></div>
 
-    <div class="card" id="painel-card-levantamento" style="margin-bottom:14px; display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
-        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas em Levantamento (sem troca de equipamentos)</h3>
-      </div>
-      <div class="hint" style="margin:0 0 10px;">Lojas inauguradas em 2026 ou em reforma — equipamento todo novo, a preventiva aqui é só levantamento de informações, sem previsão de substituição.</div>
-      <div id="painel-lista-levantamento"></div>
-    </div>
-
-    <div class="card" style="margin-bottom:14px;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
-        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Pareto de Problemas Recorrentes</h3>
-        <span class="hint" style="margin:0;">Base histórica: Preventiva 2025 (41 lojas)</span>
-      </div>
-      <div id="painel-pareto"></div>
-    </div>
-
     <div class="painel-2col">
-      <div class="card" style="margin-bottom:0;">
-        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Concentração Territorial (Lojas por UF)</h3>
-        <div class="hint" style="margin:-4px 0 10px;">Base: range_de_ips.xlsx</div>
-        <div id="painel-tabela-uf"></div>
-      </div>
-      <div class="card" style="margin-bottom:0;">
-        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas com Maior Volume de Troca 2026</h3>
-        <div id="painel-ranking-substituicao"></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:14px; margin-bottom:0;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
-        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Top 5 Lojas com Mais Trocas: 2025 x 2026</h3>
-        <span class="hint" style="margin:0;">Equipamentos indicados em cada loja</span>
-      </div>
-      <div class="painel-2col" id="painel-top5-trocas" style="margin-bottom:0;"></div>
-    </div>
-
-    <div class="card" style="margin-top:14px; margin-bottom:0;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
-        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Comparativo de Trocas por Loja: 2025 x 2026</h3>
-        <span class="hint" style="margin:0;">2026 atualiza conforme as lojas são concluídas</span>
-      </div>
-      <div id="painel-comparativo-trocas"></div>
-    </div>
-
-    <h3 style="margin:14px 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Estrutura Operacional por Regional</h3>
-    <div class="painel-regional-grid" id="painel-estrutura-regional"></div>
-
-    <div class="painel-2col">
-      <!-- Card "Maior tempo de atendimento" escondido a pedido da usuária (para voltar, remova o display:none) -->
-      <div class="card" id="painel-card-tempo" style="margin-bottom:0; display:none;">
-        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Maior tempo de atendimento</h3>
-        <div id="painel-ranking-tempo"></div>
-      </div>
-      <div class="card" style="margin-bottom:0;">
-        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Calendário de agendamentos</h3>
+      <div class="card">
+        <div class="painel-card-cab"><h3>Calendário de agendamentos</h3><span class="hint">Nº de lojas por dia</span></div>
         <div class="cal-nav">
           <button class="btn btn-ghost btn-sm" id="cal-prev">&larr;</button>
           <b id="cal-titulo"></b>
@@ -684,16 +655,63 @@
         <div class="cal-grid" id="cal-grid"></div>
         <div id="cal-dia-lista"></div>
       </div>
+      <div class="card">
+        <div class="painel-card-cab"><h3>Alertas por loja</h3><span class="hint">Clique na loja para ver os alertas</span></div>
+        <div class="painel-scroll" id="painel-alertas"></div>
+      </div>
+    </div>
+
+    <!-- ===== 2. Trocas de equipamento ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">2</span>Trocas de equipamento</div>
+    <div class="card">
+      <div class="painel-card-cab"><h3>Top 5 Lojas com Mais Trocas: 2025 x 2026</h3><span class="hint">Equipamentos indicados em cada loja</span></div>
+      <div class="painel-2col" id="painel-top5-trocas" style="margin-bottom:0;"></div>
+    </div>
+
+    <div class="painel-2col">
+      <div class="card">
+        <div class="painel-card-cab"><h3>Lojas com Maior Volume de Troca 2026</h3><span class="hint">Barra = comparação com a 1ª colocada</span></div>
+        <div id="painel-ranking-substituicao"></div>
+      </div>
+      <div class="card">
+        <div class="painel-card-cab"><h3>Equipamentos para substituição por loja</h3><span class="hint">Clique na loja para ver os itens</span></div>
+        <div class="painel-scroll" id="painel-substituicoes"></div>
+      </div>
     </div>
 
     <div class="card">
-      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Alertas por loja</h3>
-      <div id="painel-alertas"></div>
+      <div class="painel-card-cab"><h3>Comparativo de Trocas por Loja: 2025 x 2026</h3><span class="hint">2026 atualiza conforme as lojas são concluídas</span></div>
+      <div id="painel-comparativo-trocas"></div>
     </div>
 
+    <!-- ===== 3. Histórico 2025 ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">3</span>Histórico: Preventiva 2025</div>
     <div class="card">
-      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Equipamentos para substituição por loja</h3>
-      <div id="painel-substituicoes"></div>
+      <div class="painel-card-cab"><h3>Pareto de Problemas Recorrentes</h3><span class="hint">Base histórica: Preventiva 2025 (41 lojas)</span></div>
+      <div id="painel-pareto"></div>
+    </div>
+
+    <!-- ===== 4. Estrutura das lojas ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">4</span>Estrutura das lojas</div>
+    <div class="painel-2col">
+      <div class="card">
+        <div class="painel-card-cab"><h3>Concentração Territorial (Lojas por UF)</h3><span class="hint">Base: range_de_ips.xlsx</span></div>
+        <div id="painel-tabela-uf"></div>
+      </div>
+      <div class="card" id="painel-card-levantamento" style="display:none;">
+        <div class="painel-card-cab"><h3>Lojas em Levantamento</h3><span class="hint">Sem troca de equipamentos</span></div>
+        <div class="hint" style="margin:0 0 10px;">Lojas inauguradas em 2026 ou em reforma: equipamento todo novo, a preventiva aqui é só levantamento de informações, sem previsão de substituição.</div>
+        <div id="painel-lista-levantamento"></div>
+      </div>
+    </div>
+
+    <div class="painel-subtitulo">Estrutura Operacional por Regional</div>
+    <div class="painel-regional-grid" id="painel-estrutura-regional"></div>
+
+    <!-- Card "Maior tempo de atendimento" escondido a pedido da usuária (para voltar, remova o display:none) -->
+    <div class="card" id="painel-card-tempo" style="display:none;">
+      <div class="painel-card-cab"><h3>Maior tempo de atendimento</h3></div>
+      <div id="painel-ranking-tempo"></div>
     </div>
 
     <!-- Card "Lojas" escondido por enquanto a pedido da usuária (para voltar, remova o display:none e mude PAINEL_MOSTRAR_TABELA_LOJAS para true) -->
@@ -727,6 +745,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     "3142": "Inaugurada em 2026",
     "2868": "Loja em reforma (Leblon)"
   };
+  // Lojas de teste (não entram nos rankings e comparativos de troca)
+  const LOJAS_TESTE = ["9999","9998"];
+  function ehLojaTeste(l){ return LOJAS_TESTE.indexOf(codigoDaLoja(l)) !== -1; }
   function ehLojaLevantamento(l){ return !!LOJAS_LEVANTAMENTO[codigoDaLoja(l)]; }
   // Preventiva 2025 (41 lojas, planilha PREVENTIVA 2025 - SEPHORA): indicações de troca/problema por loja.
   // Critério: nobreaks com autonomia ruim (rack, mini PDV e estoque; lojas EATON sem mini nobreak), teclado/mouse/monitor
@@ -3875,7 +3896,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas Cadastradas</div><div class="painel-kpi-valor">'+total+'</div><div class="painel-kpi-sub">'+estadosDistintos.size+' Estados'+(temDF?' + DF':'')+'</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Concentração SP</div><div class="painel-kpi-valor">'+spPct+'%</div><div class="painel-kpi-sub">'+spCount+' Unidades (Cap. + Int.)</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Regionais Mapeadas</div><div class="painel-kpi-valor">'+regionaisDistintos.size+(pendentesAlocacao>0?' + Pend.':'')+'</div><div class="painel-kpi-sub">'+pendentesAlocacao+' loja(s) pendente(s) alocação</div></div>' +
-      '<div class="painel-kpi-card"><div class="painel-kpi-label">Top Solicitação Troca</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Loja com Mais Trocas 2026</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas em Levantamento</div><div class="painel-kpi-valor">'+qtdLevantamento+'</div><div class="painel-kpi-sub">Novas 2026 + reforma — sem troca de equipamento</div></div>';
 
     renderPainelLevantamento();
@@ -3904,7 +3925,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       linhasTabela.push('<tr><td>Não mapeada</td><td class="num">'+naoMapeadas[1]+'</td><td class="num">'+pct+'%</td><td>—</td></tr>');
     }
     document.getElementById("painel-tabela-uf").innerHTML = !linhasTabela.length ? '<div class="hint">Sem dados suficientes ainda.</div>' :
-      '<table class="painel-tabela"><thead><tr><th>Estado / UF</th><th>Qtd</th><th>Distribuição (%)</th><th>Regional Predom.</th></tr></thead><tbody>'+linhasTabela.join("")+'</tbody></table>';
+      '<table class="painel-tabela"><thead><tr><th>Estado / UF</th><th class="num">Qtd</th><th class="num">Distribuição (%)</th><th>Regional Predom.</th></tr></thead><tbody>'+linhasTabela.join("")+'</tbody></table>';
 
     const porRegionalDetalhe = {};
     lojasCache.forEach(function(l){
@@ -3939,11 +3960,11 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       return r==="—" ? "—" : "Regional "+r;
     }
     document.getElementById("painel-ranking-substituicao").innerHTML =
-      '<table class="painel-tabela"><thead><tr><th>Loja</th><th>Regional</th><th>Trocas</th><th>Índice</th></tr></thead><tbody>' +
+      '<table class="painel-tabela"><thead><tr><th>Loja</th><th>Regional</th><th class="num">Trocas</th><th>vs. 1ª colocada</th></tr></thead><tbody>' +
       entries.map(function(e){
         const pct = max ? Math.round(e[1]/max*100) : 0;
         return '<tr><td>'+escapeHtml(e[0])+'</td><td>'+regionalPorNomeLoja(e[0])+'</td><td class="num">'+e[1]+'</td>' +
-          '<td style="min-width:100px;"><div class="painel-barra-track" style="height:8px;"><div class="painel-barra-fill" style="width:'+pct+'%;"></div></div></td></tr>';
+          '<td style="min-width:120px;"><div style="display:flex; align-items:center; gap:8px;"><div class="painel-barra-track" style="height:8px; flex:1;"><div class="painel-barra-fill" style="width:'+pct+'%;"></div></div><span class="painel-pct">'+pct+'%</span></div></td></tr>';
       }).join("") + '</tbody></table>';
   }
   function duracaoEmMinutos(inicio, fim){
@@ -3988,7 +4009,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     const el = document.getElementById("painel-comparativo-trocas");
     const porCodigo = {};
     lojasCache.forEach(function(l){ porCodigo[codigoDaLoja(l)] = l; });
-    const codigos = Object.keys(Object.assign({}, TROCAS_2025, porCodigo)).filter(function(c){ return c !== "9999"; });
+    const codigos = Object.keys(Object.assign({}, TROCAS_2025, porCodigo)).filter(function(c){ return LOJAS_TESTE.indexOf(c) === -1; });
     const linhas = codigos.map(function(cod){
       const l = porCodigo[cod] || null;
       const t25 = TROCAS_2025[cod] || null;
@@ -4044,18 +4065,18 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     }
     el.innerHTML =
       '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:6px 0 8px; font-size:12.5px;">' +
-        '<span>📁 <b>2025:</b> '+total25+' indicações em '+lojas25+' lojas</span>' +
-        '<span>📋 <b>2026 (até agora):</b> '+total26+' em '+concluidas26.length+' loja(s) concluída(s)</span>' +
+        '<span><i class="painel-dot" style="background:var(--muted);"></i><b>2025:</b> '+total25+' indicações em '+lojas25+' lojas</span>' +
+        '<span><i class="painel-dot" style="background:var(--teal);"></i><b>2026 (até agora):</b> '+total26+' em '+concluidas26.length+' loja(s) concluída(s)</span>' +
       '</div>' +
       '<div class="hint" style="margin:0 0 10px;">'+resumoBase+'</div>' +
-      '<div style="max-height:440px; overflow:auto;">' +
-      '<table class="painel-tabela"><thead><tr><th>Loja</th><th>2025</th><th>2026</th><th>Variação</th><th>Situação 2026</th></tr></thead><tbody>' +
+      '<div class="painel-scroll">' +
+      '<table class="painel-tabela"><thead><tr><th>Loja</th><th class="num">2025</th><th class="num">2026</th><th class="centro">Variação</th><th>Situação 2026</th></tr></thead><tbody>' +
       linhas.map(function(x){
         return '<tr>' +
           '<td>'+escapeHtml(x.nome)+(x.levantamento?' <span class="hint" style="margin:0; font-weight:400;">(levantamento)</span>':'')+'</td>' +
           '<td class="num" title="'+escapeHtml(x.d25||"Sem indicações")+'">'+(x.v25===null?'—':x.v25)+'</td>' +
           '<td class="num" title="'+escapeHtml(x.d26||"Sem indicações")+'">'+(x.v26===null?'—':x.v26+(x.parcial?'*':''))+'</td>' +
-          '<td class="num">'+celVariacao(x)+'</td>' +
+          '<td class="centro">'+celVariacao(x)+'</td>' +
           '<td>'+celSituacao(x)+'</td>' +
         '</tr>';
       }).join("") + '</tbody></table></div>' +
@@ -4087,7 +4108,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       });
     // 2026
     const top26 = lojasCache
-      .filter(function(l){ return l.status==="concluido" || l.status==="em_andamento" || l.status==="reaberto"; })
+      .filter(function(l){ return !ehLojaTeste(l) && (l.status==="concluido" || l.status==="em_andamento" || l.status==="reaberto"); })
       .map(function(l){
         const cont = {};
         substituicoesDaLoja(l).forEach(function(i){ const t = tipoEquip2026(i); cont[t] = (cont[t]||0) + 1; });
@@ -4114,7 +4135,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   function renderPainelPareto(){
     const max = PARETO_2025[0].qtd;
     document.getElementById("painel-pareto").innerHTML =
-      '<table class="painel-tabela"><thead><tr><th>Categoria (Preventiva 2025)</th><th>Lojas afetadas</th><th>% das lojas</th><th style="min-width:140px;">Índice</th><th>% acumulado</th></tr></thead><tbody>' +
+      '<table class="painel-tabela"><thead><tr><th>Categoria (Preventiva 2025)</th><th class="num">Lojas afetadas</th><th class="num">% das lojas</th><th style="min-width:140px;">Proporção</th><th class="num">% acumulado</th></tr></thead><tbody>' +
       PARETO_2025.map(function(p, i){
         let acum = 0;
         for(let j=0;j<=i;j++) acum += PARETO_2025[j].qtd;
@@ -4129,7 +4150,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
           '<td class="num">'+pctAcum+'%</td>' +
         '</tr>';
       }).join("") + '</tbody></table>' +
-      '<div class="hint" style="margin-top:10px;">🟡 Linhas destacadas concentram ~80% de todas as ocorrências registradas na Preventiva 2025 — os pontos prioritários de atenção para 2026.</div>';
+      '<div class="hint" style="margin-top:10px;"><i class="painel-dot" style="background:var(--warn-bg); border:1px solid var(--warn); border-radius:2px;"></i> Linhas destacadas concentram ~80% de todas as ocorrências registradas na Preventiva 2025 — os pontos prioritários de atenção para 2026.</div>';
   }
         function renderPainel(){
     const total = lojasCache.length;
@@ -4141,11 +4162,13 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     const atrasadas = lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
 
     const substituicoesPorLoja = {};
+    const rankingPorLoja = {};
     lojasCache.forEach(function(l){
       const itens = substituicoesDaLoja(l);
       if(itens.length) substituicoesPorLoja[l.nome] = itens;
+      if(itens.length && !ehLojaTeste(l)) rankingPorLoja[l.nome] = itens;
     });
-    renderPainelRankingSubstituicao(substituicoesPorLoja);
+    renderPainelRankingSubstituicao(rankingPorLoja);
     renderPainelUfRegional();
     renderPainelRankingTempo();
     renderPainelPareto();
@@ -4161,31 +4184,31 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     else if(diasRestantes>0) ritmoTxt = "Ritmo necessário: " + (pendentes/diasRestantes).toFixed(1) + " lojas/dia para concluir até o prazo.";
     else if(diasRestantes===0) ritmoTxt = "O prazo é hoje e restam " + pendentes + " loja(s) pendente(s).";
     else ritmoTxt = "Prazo vencido há " + Math.abs(diasRestantes) + " dia(s) — " + pendentes + " loja(s) ainda pendente(s).";
+    // Situação da campanha: etiqueta colorida (verde = no ritmo, amarelo = atenção, vermelho = crítico)
     let satisfacao;
-    if(pendentes===0) satisfacao = {emoji:"🎉", texto:"Tudo concluído!"};
-    else if(diasRestantes<0) satisfacao = {emoji:"😟", texto:"Prazo vencido — atenção redobrada."};
-    else if(pctConcluido>=80) satisfacao = {emoji:"😄", texto:"Excelente ritmo, quase lá."};
-    else if(pctConcluido>=50) satisfacao = {emoji:"🙂", texto:"Bom progresso."};
-    else if(pctConcluido>=20) satisfacao = {emoji:"😐", texto:"Ritmo moderado, fique de olho no prazo."};
-    else satisfacao = {emoji:"😕", texto:"Ritmo baixo — requer atenção."};
+    if(pendentes===0) satisfacao = {etiqueta:"Concluída", cor:"ok", texto:"Tudo concluído."};
+    else if(diasRestantes<0) satisfacao = {etiqueta:"Crítico", cor:"bad", texto:"Prazo vencido: atenção redobrada."};
+    else if(pctConcluido>=80) satisfacao = {etiqueta:"No ritmo", cor:"ok", texto:"Excelente ritmo, quase lá."};
+    else if(pctConcluido>=50) satisfacao = {etiqueta:"No ritmo", cor:"ok", texto:"Bom progresso."};
+    else if(pctConcluido>=20) satisfacao = {etiqueta:"Atenção", cor:"warn", texto:"Ritmo moderado, fique de olho no prazo."};
+    else satisfacao = {etiqueta:"Atenção", cor:"bad", texto:"Ritmo baixo: requer atenção."};
 
     document.getElementById("painel-progresso").innerHTML =
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:2px;">' +
         '<div><h3 style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Resumo Executivo</h3>' +
-        '<div style="font-size:26px; font-weight:700; line-height:1.2;">'+satisfacao.emoji+' '+pctConcluido+'% concluído</div></div>' +
+        '<div style="font-size:26px; font-weight:800; line-height:1.2; color:var(--navy);">'+pctConcluido+'% concluído <span class="painel-saude" style="background:var(--'+satisfacao.cor+'-bg); color:var(--'+satisfacao.cor+');">'+satisfacao.etiqueta+'</span></div></div>' +
         '<div style="text-align:right; font-size:12px; color:var(--text-muted);">Previsão de término<br><b style="font-size:15px; color:var(--navy);">'+fmtDateBR(DEADLINE)+'</b></div></div>' +
       '<div class="progress-track"><div class="progress-fill" style="width:'+pctConcluido+'%;"></div></div>' +
-      '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:10px 0; font-size:12.5px;">' +
-        '<span>✅ <b>'+concluidas+'</b> concluídas</span>' +
-        '<span>🕓 <b>'+andamento+'</b> em andamento</span>' +
-        '<span>📅 <b>'+agendadas+'</b> confirmadas</span>' +
-        '<span>⬜ <b>'+naoIniciadas+'</b> não iniciadas</span>' +
-        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';">⚠️ <b>'+atrasadas+'</b> atrasada(s)</span>' +
+      '<div class="painel-legenda">' +
+        '<span><i class="painel-dot" style="background:var(--ok);"></i><b>'+concluidas+'</b> concluídas</span>' +
+        '<span><i class="painel-dot" style="background:var(--warn);"></i><b>'+andamento+'</b> em andamento</span>' +
+        '<span><i class="painel-dot" style="background:#2E7D32;"></i><b>'+agendadas+'</b> confirmadas</span>' +
+        '<span><i class="painel-dot" style="background:var(--muted);"></i><b>'+naoIniciadas+'</b> não iniciadas</span>' +
+        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';"><i class="painel-dot" style="background:var(--bad);"></i><b>'+atrasadas+'</b> atrasada(s)</span>' +
       '</div><div class="hint">'+satisfacao.texto+' '+ritmoTxt+' '+(diasRestantes>=0 ? '('+diasRestantes+' dia(s) até o prazo)' : '(prazo vencido há '+Math.abs(diasRestantes)+' dia(s))')+'</div>';
 
     const barColor = {concluido:"var(--ok)", em_andamento:"var(--warn)", nao_iniciado:"var(--muted)", liberado:"#2E7D32", atrasada:"var(--bad)"};
     const cardsDef = [
-      {label:"Lojas cadastradas", value:total, filter:null, bar:null},
       {label:"Não Iniciado", value:naoIniciadas, filter:"nao_iniciado", bar: total?(naoIniciadas/total*100):0},
       {label:"Confirmado", value:agendadas, filter:"liberado", bar: total?(agendadas/total*100):0},
       {label:"Andamento", value:andamento, filter:"em_andamento", bar: total?(andamento/total*100):0},

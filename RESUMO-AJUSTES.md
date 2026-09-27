@@ -135,7 +135,17 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Correção: a regra ficou numa função só, `lojaAtrasada`: atrasada = data de agendamento já passou **e** status diferente de "Concluído" e "Reaberto". É usada no selo "Atrasado" da tela Agendamento, no filtro/contador "Atrasado" e no Painel (cartão "Atrasado" e "atrasada(s)" do Resumo Executivo).
 - Não foi possível conferir os dados reais, porque a sessão na nuvem não acessa o Supabase. Se ainda aparecer alguma loja concluída como atrasada, verificar qual status ela tem gravado.
 
-### 4.12 Fotos de exemplo
+### 4.12 Painel reorganizado e mais profissional (só na `develop`, ainda não publicado)
+- **Seções numeradas:** 1. Andamento da campanha (Resumo Executivo, cartões de status, Calendário + Alertas lado a lado) · 2. Trocas de equipamento (Top 5, Ranking 2026 + Equipamentos para substituição lado a lado, Comparativo 2025 x 2026) · 3. Histórico: Preventiva 2025 (Pareto) · 4. Estrutura das lojas (UF + Lojas em Levantamento, Regionais).
+- Cabeçalho padrão em todos os cards (título + explicação curta à direita). Listas longas (Alertas, Substituições, Comparativo) com rolagem dentro do card.
+- Emojis trocados por etiquetas/bolinhas de cor. O Resumo Executivo mostra a situação como etiqueta: "No ritmo" (verde), "Atenção" (amarelo/vermelho), "Crítico" (prazo vencido), "Concluída".
+- "Lojas cadastradas" saiu da fileira de status (já aparece nos indicadores do topo).
+- Ranking 2026: a coluna "Índice" virou **"vs. 1ª colocada"**, com o percentual escrito. No Pareto, a coluna de barras virou "Proporção". Títulos de colunas numéricas alinhados com os números.
+- Indicador do topo "Top Solicitação Troca" renomeado para **"Loja com Mais Trocas 2026"**.
+- **Lojas de teste (9999 e 9998)** não entram mais no ranking 2026, no Top 5 2026 nem no Comparativo (`LOJAS_TESTE`). Continuam contando nos totais de lojas cadastradas.
+- No celular: indicadores 2 por linha e tabelas largas rolando dentro do card. A página não passa mais da largura da tela.
+
+### 4.13 Fotos de exemplo
 - Todas foram enviadas pela usuária, reduzidas (240×360 ou 300px de altura) e **guardadas dentro do próprio `index.html`** (não dependem de sites externos): PINPAD Rede (PDV e reserva), POS Mercado Pago, POS Rede e POS Cielo. Não entram no PDF.
 
 ---
@@ -190,4 +200,4 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Na `develop` (detalhes na seção 4.9). Publicar junto com o Painel Executivo, depois do teste da usuária.
 - Junto: correção do "Atrasado" em lojas concluídas/reabertas (seção 4.11).
 - Junto: Painel mais enxuto (card "Lojas" escondido e calendário compacto, seção 4.10).
-- Observação: no celular, o Painel já tinha rolagem lateral por causa de outras tabelas (existia antes deste ajuste).
+- Junto: Painel reorganizado (seção 4.12). A rolagem lateral no celular foi corrigida.
