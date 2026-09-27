@@ -635,6 +635,14 @@
       </div>
     </div>
 
+    <div class="card" style="margin-top:14px; margin-bottom:0;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+        <h3 style="margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Comparativo de Trocas por Loja: 2025 x 2026</h3>
+        <span class="hint" style="margin:0;">2026 atualiza conforme as lojas são concluídas</span>
+      </div>
+      <div id="painel-comparativo-trocas"></div>
+    </div>
+
     <h3 style="margin:14px 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Estrutura Operacional por Regional</h3>
     <div class="painel-regional-grid" id="painel-estrutura-regional"></div>
 
@@ -695,6 +703,54 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     "2868": "Loja em reforma (Leblon)"
   };
   function ehLojaLevantamento(l){ return !!LOJAS_LEVANTAMENTO[codigoDaLoja(l)]; }
+  // Preventiva 2025 (41 lojas, planilha PREVENTIVA 2025 - SEPHORA): indicações de troca/problema por loja.
+  // Critério: nobreaks com autonomia ruim (rack, mini PDV e estoque; lojas EATON sem mini nobreak), teclado/mouse/monitor
+  // "precisa trocar", PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada,
+  // computador com queixa grave ("impossível usar" ou "gostaria de trocar") e PDA Zebra sem funcionar.
+  // Formato: "código": [total, "detalhe", "nome da loja em 2025"]. Total geral: 109.
+  const TROCAS_2025 = {
+    "2311": [4, "Mini Nobreak PDV 2, Nobreak de Rack 1, PINPAD de PDV 1", "2311 - RIBEIRAO PRETO"],
+    "2309": [8, "Mini Nobreak PDV 3, PDV lento/desligando 2, Computador (queixa grave) 2, Leitor com mau contato 1", "2309 - PAULISTA"],
+    "2924": [0, "", "2924 - PARK SHOPPING MACEIO"],
+    "2992": [2, "Mini Nobreak PDV 1, Mouse 1", "2992 - BELÉM"],
+    "2868": [2, "Mini Nobreak PDV 1, Tela do cliente apagada 1", "2868 - LEBLON"],
+    "2308": [4, "Mouse 2, Mini Nobreak PDV 1, PDV lento/desligando 1", "2308 - NITEROI"],
+    "1960": [1, "Computador (queixa grave) 1", "1960 - JK IGUATEMI"],
+    "2312": [3, "Mini Nobreak Estoque 1, PINPAD de PDV 1, Computador (queixa grave) 1", "2312 - CIDADE JARDIM"],
+    "2314": [5, "Mini Nobreak PDV 3, Nobreak de Rack 1, Computador (queixa grave) 1", "2314 - IGUATEMI BRASILIA"],
+    "2909": [1, "PDV lento/desligando 1", "2909 - PRAIAMAR SHOPPING"],
+    "2766": [2, "PDV lento/desligando 2", "2766 - CJ SHOPS"],
+    "3044": [1, "Nobreak de Rack 1", "3044 - SOROCABA"],
+    "2317": [3, "Mini Nobreak PDV 2, PDV lento/desligando 1", "2317 - HIGIENOPOLIS"],
+    "2496": [4, "Mini Nobreak PDV 3, Mini Nobreak Estoque 1", "2496 - SALVADOR"],
+    "2875": [3, "Leitor com mau contato 2, Mini Nobreak PDV 1", "2875 - BOULEVARD BH"],
+    "2451": [2, "Mini Nobreak Estoque 1, Teclado 1", "2451 - RIOMAR RECIFE"],
+    "3010": [0, "", "3010 - SÃO CAETANO"],
+    "2454": [5, "Leitor com mau contato 3, Mini Nobreak Estoque 1, PINPAD de PDV 1", "2454 - FLAMBOYANT GOIANIA"],
+    "2315": [1, "Mini Nobreak PDV 1", "2315 - IGUATEMI CAMPINAS"],
+    "2918": [10, "Mini Nobreak PDV 3, PINPAD de PDV 2, Mini Nobreak Estoque 1, Mouse 1, Teclado 1, Computador (queixa grave) 1, PDA Zebra 1", "2918 - RIOMAR FORTALEZA"],
+    "2765": [5, "Mini Nobreak PDV 2, Teclado 2, Computador (queixa grave) 1", "2765 - RIO DESIGN BARRA (RDB BARRA)"],
+    "2944": [1, "Nobreak de Rack 1", "2944 - CENTER NORTE"],
+    "2976": [1, "Mini Nobreak PDV 1", "2976 - SÃO JOSÉ RIO PRETO"],
+    "1932": [7, "Teclado 2, Leitor com mau contato 2, PINPAD de PDV 1, PDV lento/desligando 1, Tela do cliente apagada 1", "1932 - RIO SUL"],
+    "2906": [0, "", "2906 - BALNEARIO CAMBORIU"],
+    "2994": [0, "", "2994 - UBERLANDIA"],
+    "2746": [2, "Mini Nobreak PDV 1, Monitor 1", "2746 - OUTLET CATARINA"],
+    "2346": [6, "Computador (queixa grave) 2, Nobreak de Rack 1, Mini Nobreak PDV 1, Mini Nobreak Estoque 1, PDV lento/desligando 1", "2346 - BARIGUI"],
+    "2320": [1, "Mini Nobreak PDV 1", "2320 - PORTO ALEGRE"],
+    "2953": [1, "Monitor 1", "2953 - FLORIANOPOLIS"],
+    "3040": [0, "", "3040 - FARIA LIMA"],
+    "2313": [5, "Mini Nobreak PDV 2, Nobreak de Rack 1, Leitor com mau contato 1, Computador (queixa grave) 1", "2313 - BARRA SHOPPING"],
+    "2305": [1, "Nobreak de Rack 1", "2305 - ELDORADO"],
+    "2455": [5, "Nobreak de Rack 1, Mini Nobreak PDV 1, PINPAD de PDV 1, PDV lento/desligando 1, PDA Zebra 1", "2455 - PARK BRASILIA"],
+    "2318": [2, "Nobreak de Rack 1, Mini Nobreak Estoque 1", "2318 - ANALIA FRANCO"],
+    "2971": [0, "", "2971 - IBIRAPUERA"],
+    "2310": [2, "Nobreak de Rack 1, Mini Nobreak Estoque 1", "2310 - ALPHAVILLE"],
+    "2993": [1, "PDA Zebra 1", "2993 - LONDRINA"],
+    "2303": [0, "", "2303 - MORUMBI"],
+    "2307": [7, "PDV lento/desligando 4, Leitor com mau contato 2, Mouse 1", "2307 - BATEL"],
+    "2306": [1, "Mini Nobreak Estoque 1", "2306 - JUNDIAI"]
+  };
   const PARETO_2025 = [
     {categoria:"Mini Nobreak PDV (autonomia ruim)", qtd:30, pctLojas:73.2},
     {categoria:"Queixa de computador (Estoque)", qtd:18, pctLojas:43.9},
@@ -3874,6 +3930,89 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
         '<span class="painel-lista-valor" style="color:'+(concluida?'var(--ok)':'var(--text-muted)')+';">'+(concluida?'✓ Levantamento feito':STATUS_LABEL[l.status]||'Não iniciado')+'</span></div>';
     }).join("");
   }
+  // Comparativo 2025 x 2026 por loja.
+  // 2025 = números fixos (TROCAS_2025). 2026 = "Equipamentos para substituição" (substituicoesDaLoja),
+  // contado como final só nas lojas concluídas; em andamento aparece como parcial; sem checklist aparece como aguardando.
+  function renderPainelComparativoTrocas(){
+    const el = document.getElementById("painel-comparativo-trocas");
+    const porCodigo = {};
+    lojasCache.forEach(function(l){ porCodigo[codigoDaLoja(l)] = l; });
+    const codigos = Object.keys(Object.assign({}, TROCAS_2025, porCodigo)).filter(function(c){ return c !== "9999"; });
+    const linhas = codigos.map(function(cod){
+      const l = porCodigo[cod] || null;
+      const t25 = TROCAS_2025[cod] || null;
+      const itens26 = l ? substituicoesDaLoja(l) : [];
+      const concluida = !!(l && l.status === "concluido");
+      const iniciada = !!(l && (concluida || l.status === "em_andamento" || l.status === "reaberto"));
+      return {
+        cod: cod,
+        nome: l ? l.nome : (t25 ? t25[2] : cod),
+        v25: t25 ? t25[0] : null,
+        d25: t25 ? t25[1] : "",
+        v26: iniciada ? itens26.length : null,
+        d26: itens26.map(function(i){ return i.equip; }).join(", "),
+        concluida: concluida,
+        parcial: iniciada && !concluida,
+        levantamento: l ? ehLojaLevantamento(l) : false
+      };
+    });
+    // Ordena pela maior quantidade entre os dois anos (quem mais trocou aparece primeiro)
+    linhas.sort(function(a,b){
+      const ma = Math.max(a.v25||0, a.v26||0), mb = Math.max(b.v25||0, b.v26||0);
+      return (mb-ma) || ((b.v25||0)-(a.v25||0)) || a.nome.localeCompare(b.nome);
+    });
+    // Resumo: compara só as lojas concluídas em 2026 que também foram atendidas em 2025 (mesma base)
+    const mesmaBase = linhas.filter(function(x){ return x.concluida && x.v25 !== null; });
+    const soma25 = mesmaBase.reduce(function(a,x){ return a+x.v25; }, 0);
+    const soma26 = mesmaBase.reduce(function(a,x){ return a+x.v26; }, 0);
+    const total25 = linhas.reduce(function(a,x){ return a+(x.v25||0); }, 0);
+    const lojas25 = linhas.filter(function(x){ return x.v25 !== null; }).length;
+    const concluidas26 = linhas.filter(function(x){ return x.concluida; });
+    const total26 = concluidas26.reduce(function(a,x){ return a+x.v26; }, 0);
+    let resumoBase;
+    if(!mesmaBase.length) resumoBase = 'Ainda não há loja concluída em 2026 que também tenha sido atendida em 2025.';
+    else {
+      const dif = soma26 - soma25;
+      const cor = dif>0 ? 'var(--bad)' : (dif<0 ? 'var(--ok)' : 'inherit');
+      resumoBase = 'Nas <b>'+mesmaBase.length+'</b> loja(s) já concluídas em 2026 que também foram atendidas em 2025: ' +
+        '<b>'+soma25+'</b> em 2025 x <b>'+soma26+'</b> em 2026 ' +
+        '(<b style="color:'+cor+';">'+(dif>0?'+':'')+dif+'</b>).';
+    }
+    function celVariacao(x){
+      if(!x.concluida || x.v25 === null) return '<span class="hint" style="margin:0;">—</span>';
+      const d = x.v26 - x.v25;
+      if(d > 0) return '<b style="color:var(--bad);">▲ +'+d+'</b>';
+      if(d < 0) return '<b style="color:var(--ok);">▼ '+d+'</b>';
+      return '<b>= 0</b>';
+    }
+    function celSituacao(x){
+      if(!porCodigo[x.cod]) return '<span class="hint" style="margin:0;">Não cadastrada em 2026</span>';
+      if(x.concluida) return '<span style="color:var(--ok); font-weight:700;">✓ Concluída</span>';
+      if(x.parcial) return '<span style="color:var(--warn); font-weight:700;">Em andamento (parcial)</span>';
+      return '<span class="hint" style="margin:0;">Aguardando atendimento</span>';
+    }
+    el.innerHTML =
+      '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:6px 0 8px; font-size:12.5px;">' +
+        '<span>📁 <b>2025:</b> '+total25+' indicações em '+lojas25+' lojas</span>' +
+        '<span>📋 <b>2026 (até agora):</b> '+total26+' em '+concluidas26.length+' loja(s) concluída(s)</span>' +
+      '</div>' +
+      '<div class="hint" style="margin:0 0 10px;">'+resumoBase+'</div>' +
+      '<div style="max-height:440px; overflow:auto;">' +
+      '<table class="painel-tabela"><thead><tr><th>Loja</th><th>2025</th><th>2026</th><th>Variação</th><th>Situação 2026</th></tr></thead><tbody>' +
+      linhas.map(function(x){
+        return '<tr>' +
+          '<td>'+escapeHtml(x.nome)+(x.levantamento?' <span class="hint" style="margin:0; font-weight:400;">(levantamento)</span>':'')+'</td>' +
+          '<td class="num" title="'+escapeHtml(x.d25||"Sem indicações")+'">'+(x.v25===null?'—':x.v25)+'</td>' +
+          '<td class="num" title="'+escapeHtml(x.d26||"Sem indicações")+'">'+(x.v26===null?'—':x.v26+(x.parcial?'*':''))+'</td>' +
+          '<td class="num">'+celVariacao(x)+'</td>' +
+          '<td>'+celSituacao(x)+'</td>' +
+        '</tr>';
+      }).join("") + '</tbody></table></div>' +
+      '<div class="hint" style="margin-top:10px;">Passe o mouse sobre o número para ver os itens. * = checklist ainda em andamento (número parcial). ' +
+      'A variação só é calculada para lojas concluídas em 2026. ' +
+      'Critério 2025: nobreaks com autonomia ruim, teclado/mouse/monitor para troca, PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada, computador com queixa grave e PDA Zebra. ' +
+      'Critério 2026: "Equipamentos para substituição" do checklist. Como 2025 inclui mais tipos de problema, tende a ter números maiores.</div>';
+  }
   function renderPainelPareto(){
     const max = PARETO_2025[0].qtd;
     document.getElementById("painel-pareto").innerHTML =
@@ -3912,6 +4051,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     renderPainelUfRegional();
     renderPainelRankingTempo();
     renderPainelPareto();
+    renderPainelComparativoTrocas();
     const totalSubstituicoes = Object.values(substituicoesPorLoja).reduce(function(a,b){ return a+b.length; }, 0);
 
     const diasRestantes = diasEntre(hoje, DEADLINE);

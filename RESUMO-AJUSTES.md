@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `adf6366` (equivale à `develop` `c06eb2c`, aviso de pendências resolvidas). A `develop` está à frente com o Painel Executivo (`55c05b4`), aguardando publicação |
+| Última publicação | `main` = commit `adf6366` (equivale à `develop` `c06eb2c`, aviso de pendências resolvidas). A `develop` está à frente com o Painel Executivo (`55c05b4`) e o Comparativo de Trocas 2025 x 2026, aguardando publicação |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -116,7 +116,15 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Também: Concentração Territorial (lojas por UF), Lojas com Maior Volume de Troca, Estrutura Operacional por Regional e Maior tempo de atendimento.
 - Commit na `develop`: `55c05b4`. Nenhuma alteração de banco.
 
-### 4.9 Fotos de exemplo
+### 4.9 Comparativo de Trocas por Loja: 2025 x 2026 (só na `develop`, ainda não publicado)
+- Cartão novo no **Painel**, abaixo de "Lojas com Maior Volume de Troca". Colunas: Loja, 2025, 2026, Variação e Situação 2026. As lojas que mais trocaram aparecem primeiro. Passando o mouse sobre o número, aparecem os itens.
+- **2025:** números fixos no código (`TROCAS_2025`), tirados da planilha "PREVENTIVA 2025 - SEPHORA" (41 lojas, 109 indicações). Entram só o código, o nome da loja e as contagens, sem nomes de pessoas, IPs ou números de série.
+- **Critério 2025 escolhido pela usuária (critério 2):** nobreaks com autonomia ruim (rack, mini PDV e estoque; lojas EATON sem mini nobreak), teclado/mouse/monitor "precisa trocar", PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada, computador com queixa grave ("impossível usar" ou "gostaria de trocar") e PDA Zebra sem funcionar. Por incluir mais tipos de problema que 2026, 2025 tende a ter números maiores (o aviso aparece no próprio cartão).
+- **2026:** "Equipamentos para substituição" (`substituicoesDaLoja`), atualizado sozinho. Loja concluída = número final; em andamento = número parcial (com *); sem checklist = "Aguardando atendimento". A variação só é calculada para lojas concluídas.
+- Resumo no topo do cartão compara 2025 x 2026 **só nas lojas já concluídas em 2026 que também foram atendidas em 2025** (mesma base).
+- Nenhuma alteração de banco.
+
+### 4.10 Fotos de exemplo
 - Todas foram enviadas pela usuária, reduzidas (240×360 ou 300px de altura) e **guardadas dentro do próprio `index.html`** (não dependem de sites externos): PINPAD Rede (PDV e reserva), POS Mercado Pago, POS Rede e POS Cielo. Não entram no PDF.
 
 ---
@@ -166,3 +174,7 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 ### 8.2 Painel Executivo: PENDENTE DE PUBLICAÇÃO
 - Commit `55c05b4` na `develop` (detalhes na seção 4.8).
 - Antes de publicar: testar localmente e seguir o procedimento seguro (seção 3), com autorização da usuária.
+
+### 8.3 Comparativo de Trocas 2025 x 2026: PENDENTE DE PUBLICAÇÃO
+- Na `develop` (detalhes na seção 4.9). Publicar junto com o Painel Executivo, depois do teste da usuária.
+- Observação: no celular, o Painel já tinha rolagem lateral por causa de outras tabelas (existia antes deste ajuste).
