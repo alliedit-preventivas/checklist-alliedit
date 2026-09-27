@@ -26,6 +26,8 @@
 
 3\. NUNCA executar `git push`, `git merge`, `git rebase` ou publicação/deploy sem autorização explícita.
 
+&#x20;  - **Exceção autorizada pela usuária (27/09/2026):** o `git push` de commits para a branch `develop` pode ser feito automaticamente, sem pedir confirmação. Continua proibido sem autorização explícita: qualquer envio para a `main`/produção, `git merge`, `git rebase`, force-push e publicação/deploy em produção.
+
 4\. Antes de modificar arquivos, confirmar que a branch atual é `develop`.
 
 5\. NUNCA substituir a URL ou chave do Supabase de testes pelas credenciais do Supabase de produção.
