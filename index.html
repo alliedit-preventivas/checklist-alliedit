@@ -274,10 +274,17 @@
   .modal-box p{font-size:13.5px; margin:0 0 14px;}
   .cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px;}
   .cal-dow{font-size:10px; text-align:center; color:var(--text-muted); font-weight:700; text-transform:uppercase; padding-bottom:4px;}
-  .cal-day{min-height:64px; min-width:0; border:1px solid var(--border); border-radius:6px; padding:4px; font-size:10.5px; background:var(--bg);}
+  .cal-day{min-height:34px; min-width:0; border:1px solid var(--border); border-radius:6px; padding:3px 2px; font-size:10.5px; background:var(--bg); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;}
+  .cal-day.tem-loja{cursor:pointer; border-color:var(--teal-lt);}
+  .cal-day.tem-loja:hover, .cal-day.selecionado{background:var(--teal); color:#fff;}
+  .cal-day.selecionado .cal-qtd, .cal-day.tem-loja:hover .cal-qtd{background:#fff; color:var(--teal);}
+  .cal-day.hoje .num{text-decoration:underline;}
+  .cal-qtd{display:inline-block; min-width:16px; padding:0 4px; border-radius:8px; background:var(--teal); color:#fff; font-size:9.5px; font-weight:700; line-height:14px;}
+  #cal-dia-lista{margin-top:10px;}
+  #cal-dia-lista .loja-chip{padding:3px 8px; margin-bottom:4px; font-size:11px;}
   .cal-day.outro-mes{opacity:.35;}
-  .cal-day .num{font-weight:700; font-size:11px; margin-bottom:2px;}
-  .cal-day .loja-chip{display:block; background:var(--teal); color:#fff; border-radius:4px; padding:1px 4px; margin-bottom:2px; font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;}
+  .cal-day .num{font-weight:700; font-size:11px;}
+  .cal-day .loja-chip, #cal-dia-lista .loja-chip{display:block; background:var(--teal); color:#fff; border-radius:4px; padding:1px 4px; margin-bottom:2px; font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;}
   .cal-nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
   .cal-nav b{font-size:13.5px;}
 </style>
@@ -651,15 +658,16 @@
         <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Maior tempo de atendimento</h3>
         <div id="painel-ranking-tempo"></div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="cal-nav">
-        <button class="btn btn-ghost btn-sm" id="cal-prev">&larr;</button>
-        <b id="cal-titulo"></b>
-        <button class="btn btn-ghost btn-sm" id="cal-next">&rarr;</button>
+      <div class="card" style="margin-bottom:0;">
+        <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Calendário de agendamentos</h3>
+        <div class="cal-nav">
+          <button class="btn btn-ghost btn-sm" id="cal-prev">&larr;</button>
+          <b id="cal-titulo"></b>
+          <button class="btn btn-ghost btn-sm" id="cal-next">&rarr;</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div id="cal-dia-lista"></div>
       </div>
-      <div class="cal-grid" id="cal-grid"></div>
     </div>
 
     <div class="card">
@@ -672,7 +680,8 @@
       <div id="painel-substituicoes"></div>
     </div>
 
-    <div class="card">
+    <!-- Card "Lojas" escondido por enquanto a pedido da usuária (para voltar, remova o display:none e mude PAINEL_MOSTRAR_TABELA_LOJAS para true) -->
+    <div class="card" id="painel-card-lojas" style="display:none;">
       <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas</h3>
       <div style="display:flex; gap:8px; margin-bottom:8px;">
         <input type="text" id="painel-busca-loja" placeholder="Buscar loja..." style="flex:1;">
@@ -3371,6 +3380,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("cal-prev").addEventListener("click", function(){ calRef.setMonth(calRef.getMonth()-1); renderCalendario(); });
     document.getElementById("cal-next").addEventListener("click", function(){ calRef.setMonth(calRef.getMonth()+1); renderCalendario(); });
   }
+  let calDiaSelecionado = null;
+  // Calendário compacto: cada dia mostra só a quantidade de lojas agendadas.
+  // Clicando no dia, a lista das lojas aparece abaixo (clicar na loja abre o checklist, como antes).
   function renderCalendario(){
     const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
     const DOW = ["D","S","T","Q","Q","S","S"];
@@ -3380,19 +3392,34 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     lojasCache.forEach(function(l){ if(l.agendamento){ if(!porData[l.agendamento]) porData[l.agendamento]=[]; porData[l.agendamento].push(l); } });
     const primeiroDia = new Date(ano, mes, 1);
     const inicioGrid = new Date(ano, mes, 1 - primeiroDia.getDay());
+    const hoje = todayStr();
+    // Mostra só as semanas necessárias (5 ou 6), sem linha extra vazia
+    const totalCelulas = Math.ceil((primeiroDia.getDay() + new Date(ano, mes+1, 0).getDate()) / 7) * 7;
     const grid = document.getElementById("cal-grid");
     let html = DOW.map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join("");
-    for(let i=0;i<42;i++){
+    for(let i=0;i<totalCelulas;i++){
       const d = new Date(inicioGrid); d.setDate(inicioGrid.getDate()+i);
       const iso = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
       const outroMes = d.getMonth() !== mes;
       const lojasDia = porData[iso] || [];
-      html += '<div class="cal-day'+(outroMes?' outro-mes':'')+'"><div class="num">'+d.getDate()+'</div>' +
-        lojasDia.slice(0,3).map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="'+escapeHtml(l.nome)+'">'+escapeHtml(l.nome)+'</span>'; }).join("") +
-        (lojasDia.length>3 ? '<div class="hint">+'+(lojasDia.length-3)+'</div>' : '') + '</div>';
+      const classes = 'cal-day'+(outroMes?' outro-mes':'')+(lojasDia.length?' tem-loja':'')+(iso===hoje?' hoje':'')+(iso===calDiaSelecionado?' selecionado':'');
+      const titulo = lojasDia.map(function(l){ return l.nome; }).join("\n");
+      html += '<div class="'+classes+'"'+(lojasDia.length?' data-dia="'+iso+'" title="'+escapeHtml(titulo)+'"':'')+'><div class="num">'+d.getDate()+'</div>' +
+        (lojasDia.length ? '<span class="cal-qtd">'+lojasDia.length+'</span>' : '') + '</div>';
     }
     grid.innerHTML = html;
-    grid.querySelectorAll("[data-loja-id]").forEach(function(chip){
+    grid.querySelectorAll("[data-dia]").forEach(function(cel){
+      cel.addEventListener("click", function(){
+        calDiaSelecionado = (calDiaSelecionado === cel.dataset.dia) ? null : cel.dataset.dia;
+        renderCalendario();
+      });
+    });
+    const lista = document.getElementById("cal-dia-lista");
+    const lojasSel = calDiaSelecionado ? (porData[calDiaSelecionado] || []) : [];
+    if(!lojasSel.length){ lista.innerHTML = '<div class="hint" style="margin:0;">Clique em um dia com número para ver as lojas agendadas.</div>'; return; }
+    lista.innerHTML = '<div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:6px;">'+fmtDateBR(calDiaSelecionado)+' — '+lojasSel.length+' loja(s)</div>' +
+      lojasSel.map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="Abrir checklist">'+escapeHtml(l.nome)+'</span>'; }).join("");
+    lista.querySelectorAll("[data-loja-id]").forEach(function(chip){
       chip.addEventListener("click", function(){
         const l = lojasCache.find(function(x){ return x.id === chip.dataset.lojaId; });
         if(l) tentarAbrirLoja(l.id, l);
@@ -3402,6 +3429,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
 
   // ---------------- painel ----------------
   const DEADLINE = "2026-10-26";
+  // Card "Lojas" do Painel escondido por enquanto; os cartões de status só filtravam essa tabela.
+  const PAINEL_MOSTRAR_TABELA_LOJAS = false;
   let painelFiltro = null;
   let painelFiltroTecnicos = [], painelFiltroLojas = [];
   let painelSortField = "nome", painelSortDir = "asc";
@@ -4103,6 +4132,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       card.addEventListener("click", function(){
         const f = card.dataset.filter;
         if(f==="substituicao"){ document.getElementById("painel-substituicoes").closest(".card").scrollIntoView({behavior:"smooth", block:"start"}); return; }
+        if(!PAINEL_MOSTRAR_TABELA_LOJAS) return;
         if(!f){ painelFiltro=null; } else { painelFiltro = (painelFiltro===f)?null:f; }
         renderPainel();
       });

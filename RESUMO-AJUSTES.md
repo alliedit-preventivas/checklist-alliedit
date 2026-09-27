@@ -124,7 +124,11 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Resumo no topo do cartão compara 2025 x 2026 **só nas lojas já concluídas em 2026 que também foram atendidas em 2025** (mesma base).
 - Nenhuma alteração de banco.
 
-### 4.10 Fotos de exemplo
+### 4.10 Painel mais enxuto (só na `develop`, ainda não publicado)
+- **Card "Lojas"** (tabela com busca e filtros) **escondido por enquanto**, a pedido da usuária. O código foi mantido: para voltar, remover o `display:none` do card `painel-card-lojas` e mudar `PAINEL_MOSTRAR_TABELA_LOJAS` para `true`. Enquanto estiver escondido, clicar nos cartões de status (Concluídos, Andamento etc.) não filtra nada; o cartão "Equip. p/ substituir" continua levando à lista de substituições.
+- **Calendário compacto:** agora fica ao lado de "Maior tempo de atendimento", com o título "Calendário de agendamentos". Cada dia mostra só o **número de lojas agendadas**. Clicando no dia, a lista das lojas aparece abaixo, e clicar na loja abre o checklist, como antes. Mostra só as semanas do mês (5 ou 6 linhas) e sublinha o dia de hoje.
+
+### 4.11 Fotos de exemplo
 - Todas foram enviadas pela usuária, reduzidas (240×360 ou 300px de altura) e **guardadas dentro do próprio `index.html`** (não dependem de sites externos): PINPAD Rede (PDV e reserva), POS Mercado Pago, POS Rede e POS Cielo. Não entram no PDF.
 
 ---
@@ -177,4 +181,5 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 
 ### 8.3 Comparativo de Trocas 2025 x 2026: PENDENTE DE PUBLICAÇÃO
 - Na `develop` (detalhes na seção 4.9). Publicar junto com o Painel Executivo, depois do teste da usuária.
+- Junto: Painel mais enxuto (card "Lojas" escondido e calendário compacto, seção 4.10).
 - Observação: no celular, o Painel já tinha rolagem lateral por causa de outras tabelas (existia antes deste ajuste).
