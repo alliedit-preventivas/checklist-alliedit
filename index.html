@@ -850,7 +850,16 @@
   function blankPinpadReserva(){ return { situacao:"", serie:"", rede:"", modelo:"", defeito:"", motivo:"", chamado:"", obs:"" }; }
   // POS Rede/Cielo do Stage de Vendas (seção "Máquinas POS", junto do Mercado Pago / POS PIX).
   // O técnico escolhe a máquina clicando na foto: operadora "Rede" | "Cielo"; depois preenche modelo e nº série.
-  function blankPosRedeCielo(){ return { operadora:"", modelo:"", serie:"" }; }
+  function blankPosRedeCielo(){ return { id:uid(), operadora:"", modelo:"", serie:"" }; }
+  const MAX_POS_REDE_CIELO = 5;
+  function migrarPosRedeCielos(data){
+    let lista = Array.isArray(data.posRedeCielos) ? data.posRedeCielos
+      : [Object.assign({operadora:"", modelo:"", serie:""}, data.posRedeCielo || {})];
+    lista = lista.map(function(p){ return Object.assign(blankPosRedeCielo(), p); });
+    if(lista.length === 0) lista.push(blankPosRedeCielo());
+    return lista;
+  }
+  function nomePosRedeCielo(i){ return "POS REDE / CIELO " + String(i+1).padStart(2,"0"); }
   // Autonomia do Nobreak de Rack conforme a marca (EATON usa campo próprio, NHS usa autonomiaNhs).
   // Também cobre dados antigos do EATON que só têm os minutos digitados (mesma conversão de migrarRack),
   // sem alterar o objeto original (o Painel lê os dados brutos do lojasCache).
@@ -1092,13 +1101,15 @@
       if(!mp.modelo) add(nomeMercadoPago(i)+" - modelo", bMp+'[data-mp="modelo"]');
       if(!mp.serie) add(nomeMercadoPago(i)+" - Nº Série", bMp+'[data-mp="serie"]');
     });
-    if(!l.posRedeCielo) l.posRedeCielo = blankPosRedeCielo();
-    const pos = l.posRedeCielo, bPos = '#pos-rede-cielo-stage ';
-    if(!pos.operadora) add("POS REDE / CIELO: selecione a máquina (REDE ou CIELO)", bPos+'[data-pos-op]');
-    else{
-      if(!pos.modelo) add("POS REDE / CIELO - Modelo", bPos+'[data-pos="modelo"]');
-      if(!pos.serie) add("POS REDE / CIELO - Nº Série", bPos+'[data-pos="serie"]');
-    }
+    if(!Array.isArray(l.posRedeCielos) || l.posRedeCielos.length===0) l.posRedeCielos = migrarPosRedeCielos(l);
+    l.posRedeCielos.forEach(function(pos, i){
+      const bPos = '#pos-rede-cielo-stage [data-idx="'+i+'"] ';
+      if(!pos.operadora) add(nomePosRedeCielo(i)+": selecione a máquina (REDE ou CIELO)", bPos+'[data-pos-op]');
+      else{
+        if(!pos.modelo) add(nomePosRedeCielo(i)+" - Modelo", bPos+'[data-pos="modelo"]');
+        if(!pos.serie) add(nomePosRedeCielo(i)+" - Nº Série", bPos+'[data-pos="serie"]');
+      }
+    });
     if(!l.telefoneStage) l.telefoneStage = {possui:null, numero:"", ip:"", obs:""};
     if(l.telefoneStage.possui===null) add("Stage de Vendas: possui telefone?", '#telefone-stage [data-tel-possui]');
     else if(l.telefoneStage.possui===true && (!l.telefoneStage.numero || !l.telefoneStage.ip)) add("Stage de Vendas: telefone número/IP", '#telefone-stage [data-tel="numero"]');
@@ -2081,7 +2092,7 @@
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       mercadoPagos: migrarMercadoPagos(data),
       telefoneStage: Object.assign({possui:null, numero:"", ip:"", obs:""}, data.telefoneStage||{}),
-      posRedeCielo: Object.assign(blankPosRedeCielo(), data.posRedeCielo||{}),
+      posRedeCielos: migrarPosRedeCielos(data),
       pinpadReserva: Object.assign(blankPinpadReserva(), data.pinpadReserva||{}),
       rack: migrarRack(data.rack),
       gerencia: migrarSetor(data.gerencia),
@@ -2234,7 +2245,7 @@
       currentLoja.ocorrencia = {tem:null, descricao:""};
       currentLoja.mercadoPagos = [blankMercadoPago()];
       currentLoja.telefoneStage = {possui:null, numero:"", ip:"", obs:""};
-      currentLoja.posRedeCielo = blankPosRedeCielo();
+      currentLoja.posRedeCielos = [blankPosRedeCielo()];
       currentLoja.pinpadReserva = blankPinpadReserva();
       currentLoja.horarioInicio = ""; currentLoja.horarioFim = "";
       document.getElementById("cl-horario-inicio").value = "";
@@ -2427,7 +2438,7 @@
     if(nome === "rack"){ copia.rack = blankRack(); copia.dvrs = [blankDvr(1)]; }
     else if(nome === "gerencia"){ copia.gerencia = blankSetorEquip(); copia.pinpadReserva = blankPinpadReserva(); copia.notebooks = Object.assign({}, copia.notebooks, {gerencia: blankNotebook(), adm: Object.assign({possui:null}, blankNotebook())}); }
     else if(nome === "estoque"){ copia.estoque = blankSetorEquip(); }
-    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; copia.telefoneStage = {possui:null, numero:"", ip:"", obs:""}; copia.posRedeCielo = blankPosRedeCielo(); copia.mercadoPagos = [blankMercadoPago()]; }
+    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; copia.telefoneStage = {possui:null, numero:"", ip:"", obs:""}; copia.posRedeCielos = [blankPosRedeCielo()]; copia.mercadoPagos = [blankMercadoPago()]; }
     return copia;
   }
   function atualizarIndicadoresBlocos(){
@@ -2986,34 +2997,40 @@
   // ---- POS Rede/Cielo (seção "Máquinas POS" do Stage de Vendas) ----
   function renderPosRedeCielo(){
     const wrap = document.getElementById("pos-rede-cielo-stage");
-    const pos = currentLoja.posRedeCielo, escolhido = !!pos.operadora;
-    // Cada opção é a foto da máquina com o nome acima; clicar seleciona e libera Modelo e Nº Série
-    function opcao(valor, nome, foto){
+    const lista = currentLoja.posRedeCielos;
+    function opcao(idx, pos, valor, nome, foto){
       const sel = pos.operadora===valor;
-      return '<button type="button" class="pos-opcao'+(sel?' selecionada':'')+'" data-pos-op="'+valor+'" aria-pressed="'+sel+'">' +
+      return '<button type="button" class="pos-opcao'+(sel?' selecionada':'')+'" data-pos-op="'+valor+'" data-idx="'+idx+'" aria-pressed="'+sel+'">' +
         '<span class="pos-opcao-nome">'+nome+'</span><img src="'+foto+'" alt="POS '+nome+'">' +
         '<span class="pos-opcao-marca">'+(sel ? "✓ Selecionado" : "Selecionar")+'</span></button>';
     }
-    function campo(chave, rotulo){
-      return '<div class="field"><label>'+rotulo+'</label><input type="text" data-pos="'+chave+'" value="'+escapeHtml(pos[chave])+'"' +
+    function campo(idx, pos, chave, rotulo, escolhido){
+      return '<div class="field"><label>'+rotulo+'</label><input type="text" data-pos="'+chave+'" data-idx="'+idx+'" value="'+escapeHtml(pos[chave])+'"' +
         (escolhido ? '' : ' disabled placeholder="Selecione REDE ou CIELO"')+'></div>';
     }
-    wrap.innerHTML =
-      '<div class="item-card">' +
-        '<div class="item-title"><span>POS REDE / CIELO</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-pos-rede-cielo">Limpar</button></div>' +
-        '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Clique na máquina encontrada na loja.</div>' +
-        '<div class="pos-opcoes">' + opcao("Rede", "REDE", FOTO_POS_REDE) + opcao("Cielo", "CIELO", FOTO_POS_CIELO) + '</div>' +
-        '<div class="field-row">' + campo("modelo", "Modelo") + campo("serie", "Nº Série") + '</div>' +
+    wrap.innerHTML = lista.map(function(pos, idx){
+      const escolhido = !!pos.operadora;
+      return '<div class="item-card" data-idx="'+idx+'">' +
+        '<div class="item-title"><span>'+nomePosRedeCielo(idx)+'</span>' +
+          (idx>0 ? '<button type="button" class="remove-x" data-remove-pos="'+idx+'" title="Remover">&times;</button>' : '') + '</div>' +
+        (idx===0 ? '<div class="hint" style="margin-top:-4px; margin-bottom:8px;">Até '+MAX_POS_REDE_CIELO+' por loja. Clique na máquina encontrada na loja.</div>' : '') +
+        '<div class="pos-opcoes">' + opcao(idx, pos, "Rede", "REDE", FOTO_POS_REDE) + opcao(idx, pos, "Cielo", "CIELO", FOTO_POS_CIELO) + '</div>' +
+        '<div class="field-row">' + campo(idx, pos, "modelo", "Modelo", escolhido) + campo(idx, pos, "serie", "Nº Série", escolhido) + '</div>' +
       '</div>';
+    }).join("") +
+    '<button type="button" class="add-row" id="btn-add-pos"'+(lista.length>=MAX_POS_REDE_CIELO?' disabled':'')+'>+ Adicionar POS REDE / CIELO</button>';
     wrap.querySelectorAll("[data-pos-op]").forEach(function(b){
-      b.onclick = function(){ currentLoja.posRedeCielo.operadora = b.dataset.posOp; renderPosRedeCielo(); scheduleSave(); };
+      b.onclick = function(){ currentLoja.posRedeCielos[+b.dataset.idx].operadora = b.dataset.posOp; renderPosRedeCielo(); scheduleSave(); };
     });
     wrap.querySelectorAll("[data-pos]").forEach(function(el){
-      el.addEventListener("input", function(){ currentLoja.posRedeCielo[el.dataset.pos] = el.value; scheduleSave(); });
+      el.addEventListener("input", function(){ currentLoja.posRedeCielos[+el.dataset.idx][el.dataset.pos] = el.value; scheduleSave(); });
     });
-    document.getElementById("btn-clear-pos-rede-cielo").onclick = function(){
-      currentLoja.posRedeCielo = blankPosRedeCielo(); renderPosRedeCielo(); scheduleSave();
-    };
+    wrap.querySelectorAll("[data-remove-pos]").forEach(function(el){
+      el.addEventListener("click", function(){ currentLoja.posRedeCielos.splice(+el.dataset.removePos, 1); renderPosRedeCielo(); scheduleSave(); });
+    });
+    document.getElementById("btn-add-pos").addEventListener("click", function(){
+      if(currentLoja.posRedeCielos.length < MAX_POS_REDE_CIELO){ currentLoja.posRedeCielos.push(blankPosRedeCielo()); renderPosRedeCielo(); scheduleSave(); }
+    });
   }
 
   // ---- Telefone do Stage de Vendas (mesmo modelo do Telefone VoIP da Gerência/Estoque) ----
@@ -3140,7 +3157,9 @@
         wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
         ocorrencia: currentLoja.ocorrencia, mercadoPagos: currentLoja.mercadoPagos,
         mercadoPago: { modelo: (currentLoja.mercadoPagos[0]||{}).modelo||"", serie: (currentLoja.mercadoPagos[0]||{}).serie||"" }, // compatibilidade com versões anteriores
-        telefoneStage: currentLoja.telefoneStage, posRedeCielo: currentLoja.posRedeCielo, pinpadReserva: currentLoja.pinpadReserva,
+        telefoneStage: currentLoja.telefoneStage, posRedeCielos: currentLoja.posRedeCielos,
+        posRedeCielo: currentLoja.posRedeCielos[0] || blankPosRedeCielo(), // compatibilidade com versões anteriores
+        pinpadReserva: currentLoja.pinpadReserva,
         horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
         atualizadoEm: now()
       });
@@ -3333,7 +3352,7 @@
       ocorrencia:Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       mercadoPagos:migrarMercadoPagos(data),
       telefoneStage:Object.assign({possui:null, numero:"", ip:"", obs:""}, data.telefoneStage||{}),
-      posRedeCielo:Object.assign(blankPosRedeCielo(), data.posRedeCielo||{}),
+      posRedeCielos:migrarPosRedeCielos(data),
       pinpadReserva:Object.assign(blankPinpadReserva(), data.pinpadReserva||{}),
       rack:migrarRack(data.rack), gerencia:migrarSetor(data.gerencia), estoque:migrarSetor(data.estoque),
       notebooks:migrarNotebooks(data.notebooks),
@@ -3505,9 +3524,9 @@
     }).join("") +
       // Seção "Máquinas POS": Mercado Pago / POS PIX e POS Rede/Cielo (mesma ordem do formulário)
       (function(){
-        const pos = l.posRedeCielo;
-        const cards = l.mercadoPagos.map(function(mp, i){ return card(nomeMercadoPago(i), [lin("Modelo", mp.modelo), lin("Nº Série", mp.serie)]); }).join("") +
-          card("POS REDE / CIELO", [lin("Máquina", pos.operadora ? pos.operadora.toUpperCase() : ""), lin("Modelo", pos.modelo), lin("Nº Série", pos.serie)]);
+        const cardsMp = l.mercadoPagos.map(function(mp, i){ return card(nomeMercadoPago(i), [lin("Modelo", mp.modelo), lin("Nº Série", mp.serie)]); }).join("");
+        const cardsPos = l.posRedeCielos.map(function(pos, i){ return card(nomePosRedeCielo(i), [lin("Máquina", pos.operadora ? pos.operadora.toUpperCase() : ""), lin("Modelo", pos.modelo), lin("Nº Série", pos.serie)]); }).join("");
+        const cards = cardsMp + cardsPos;
         return cards ? '<div class="grupo"><h3>Máquinas POS</h3>' + cards + '</div>' : "";
       })() +
       card("Telefone", [lin("Possui telefone", sn(l.telefoneStage.possui))].concat(l.telefoneStage.possui===true
