@@ -927,6 +927,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     elFim.innerHTML = html;
   }
   function fmtDateBR(iso){ if(!iso) return ""; const p=iso.split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : iso; }
+  // Loja atrasada = data de agendamento já passou e o atendimento ainda não foi feito.
+  // Lojas concluídas ou reabertas (concluídas e abertas de novo só para ajuste) nunca contam como atrasadas.
+  function lojaAtrasada(l, hoje){
+    if(!l.agendamento || l.status === "concluido" || l.status === "reaberto") return false;
+    return l.agendamento < (hoje || todayStr());
+  }
   function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
@@ -1613,7 +1619,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function renderFiltroChipsHome(){
     const hoje = todayStr();
     function count(key){
-      if(key==="atrasada") return lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
+      if(key==="atrasada") return lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
       return lojasCache.filter(function(l){ return l.status===key; }).length;
     }
     function countFalta(key){
@@ -1678,7 +1684,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function matchesFiltroHome(l, hoje){
     if(!filtroHome) return true;
-    if(filtroHome==="atrasada") return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+    if(filtroHome==="atrasada") return lojaAtrasada(l, hoje);
     if(filtroHome==="falta_chamado") return l.status==="aguardando" && !(l.chamado&&l.chamado.trim());
     if(filtroHome==="falta_protocolo") return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim());
     if(filtroHome==="falta_tecnico") return l.status==="aguardando" && (!(l.tecnico&&l.tecnico.trim()) || !(l.dadosTecnico&&l.dadosTecnico.trim()));
@@ -1717,7 +1723,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
     if(filtered.length===0){ list.innerHTML = '<div class="empty">Nenhuma loja encontrada.</div>'; return; }
     list.innerHTML = filtered.map(function(l){
-      const atrasada = l.agendamento && l.agendamento < hoje && l.status !== "concluido";
+      const atrasada = lojaAtrasada(l, hoje);
       const bloq = l.status === "concluido";
       return '<div class="loja-row" data-id="'+l.id+'">' +
         '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">' +
@@ -3484,7 +3490,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       case "concluido": return l.status==="concluido";
       case "em_andamento": return l.status==="em_andamento";
       case "nao_iniciado": return l.status==="nao_iniciado";
-      case "atrasada": return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+      case "atrasada": return lojaAtrasada(l, hoje);
       case "liberado": return l.status==="liberado";
       default: return true;
     }
@@ -4069,7 +4075,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     const agendadas = lojasCache.filter(function(l){ return l.status==="liberado"; }).length;
     const naoIniciadas = lojasCache.filter(function(l){ return l.status==="nao_iniciado"; }).length;
     const hoje = todayStr();
-    const atrasadas = lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
+    const atrasadas = lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
 
     const substituicoesPorLoja = {};
     lojasCache.forEach(function(l){

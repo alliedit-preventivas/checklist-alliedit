@@ -128,7 +128,12 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Card "Lojas"** (tabela com busca e filtros) **escondido por enquanto**, a pedido da usuária. O código foi mantido: para voltar, remover o `display:none` do card `painel-card-lojas` e mudar `PAINEL_MOSTRAR_TABELA_LOJAS` para `true`. Enquanto estiver escondido, clicar nos cartões de status (Concluídos, Andamento etc.) não filtra nada; o cartão "Equip. p/ substituir" continua levando à lista de substituições.
 - **Calendário compacto:** agora fica ao lado de "Maior tempo de atendimento", com o título "Calendário de agendamentos". Cada dia mostra só o **número de lojas agendadas**. Clicando no dia, a lista das lojas aparece abaixo, e clicar na loja abre o checklist, como antes. Mostra só as semanas do mês (5 ou 6 linhas) e sublinha o dia de hoje.
 
-### 4.11 Fotos de exemplo
+### 4.11 Lojas concluídas não aparecem mais como "Atrasado" (só na `develop`, ainda não publicado)
+- Problema: loja concluída e depois aberta para ajuste ("Solicitar edição") passa a ter o status **"Reaberto"**, e a regra de atraso só tirava da conta o status "Concluído". Por isso ela voltava a aparecer como "Atrasado".
+- Correção: a regra ficou numa função só, `lojaAtrasada`: atrasada = data de agendamento já passou **e** status diferente de "Concluído" e "Reaberto". É usada no selo "Atrasado" da tela Agendamento, no filtro/contador "Atrasado" e no Painel (cartão "Atrasado" e "atrasada(s)" do Resumo Executivo).
+- Não foi possível conferir os dados reais, porque a sessão na nuvem não acessa o Supabase. Se ainda aparecer alguma loja concluída como atrasada, verificar qual status ela tem gravado.
+
+### 4.12 Fotos de exemplo
 - Todas foram enviadas pela usuária, reduzidas (240×360 ou 300px de altura) e **guardadas dentro do próprio `index.html`** (não dependem de sites externos): PINPAD Rede (PDV e reserva), POS Mercado Pago, POS Rede e POS Cielo. Não entram no PDF.
 
 ---
@@ -181,5 +186,6 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 
 ### 8.3 Comparativo de Trocas 2025 x 2026: PENDENTE DE PUBLICAÇÃO
 - Na `develop` (detalhes na seção 4.9). Publicar junto com o Painel Executivo, depois do teste da usuária.
+- Junto: correção do "Atrasado" em lojas concluídas/reabertas (seção 4.11).
 - Junto: Painel mais enxuto (card "Lojas" escondido e calendário compacto, seção 4.10).
 - Observação: no celular, o Painel já tinha rolagem lateral por causa de outras tabelas (existia antes deste ajuste).
