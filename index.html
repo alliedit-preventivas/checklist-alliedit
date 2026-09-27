@@ -1188,14 +1188,14 @@
   }
 
   // ---------------- modal genérico ----------------
-  function mostrarConfirmacao(mensagem, textoConfirmar, textoCancelar, aoConfirmar){
+  function mostrarConfirmacao(mensagem, textoConfirmar, textoCancelar, aoConfirmar, aoCancelar){
     const c = document.getElementById("modal-container");
     c.innerHTML = '<div class="modal-overlay" id="modal-overlay"><div class="modal-box"><p>'+mensagem+'</p>' +
       '<div style="display:flex; gap:8px; justify-content:flex-end;">' +
       '<button class="btn btn-ghost btn-sm" id="modal-cancelar">'+textoCancelar+'</button>' +
       '<button class="btn btn-primary btn-sm" id="modal-confirmar">'+textoConfirmar+'</button></div></div></div>';
-    document.getElementById("modal-cancelar").addEventListener("click", function(){ c.innerHTML=""; });
-    document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay") c.innerHTML=""; });
+    document.getElementById("modal-cancelar").addEventListener("click", function(){ c.innerHTML=""; if(aoCancelar) aoCancelar(); });
+    document.getElementById("modal-overlay").addEventListener("click", function(e){ if(e.target.id==="modal-overlay"){ c.innerHTML=""; if(aoCancelar) aoCancelar(); } });
     document.getElementById("modal-confirmar").addEventListener("click", function(){ c.innerHTML=""; aoConfirmar(); });
   }
 
@@ -1360,9 +1360,34 @@
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
     window.scrollTo({top:0});
   }
+  function mostrarTravaFinalizacao(){
+    const c = document.getElementById("modal-container");
+    c.innerHTML = '<div class="modal-overlay" id="modal-overlay-trava"><div class="modal-box" style="text-align:center; max-width:380px;">' +
+      '<div style="font-size:32px; margin-bottom:6px;">📎</div>' +
+      '<p style="font-weight:700; color:var(--navy); margin:0 0 8px;">Foto do RAT anexada!</p>' +
+      '<p style="font-size:13.5px; color:var(--text-muted); margin:0 0 18px;">Se o atendimento já terminou, finalize o checklist agora para o status ficar correto.</p>' +
+      '<button class="btn btn-primary" id="btn-trava-finalizar" style="width:100%;">Finalizar Atendimento Agora</button>' +
+      '</div></div>';
+    document.getElementById("btn-trava-finalizar").addEventListener("click", function(){
+      c.innerHTML = "";
+      tentarFinalizarChecklist();
+    });
+  }
   function voltarDaChecklist(concluidoAgora){
+    if(!concluidoAgora && currentLoja && currentLoja.ratFoto && currentLoja.ratFoto.id && currentLoja.status !== "concluido"){
+      mostrarConfirmacao(
+        "📎 Você já anexou a foto do RAT, mas o atendimento ainda não foi finalizado. Deseja finalizar agora?",
+        "Finalizar agora", "Continuar depois",
+        function(){ tentarFinalizarChecklist(); },
+        function(){ executarSaidaChecklist(concluidoAgora); }
+      );
+      return;
+    }
+    executarSaidaChecklist(concluidoAgora);
+  }
+  function executarSaidaChecklist(concluidoAgora){
     if(concluidoAgora && modoTecnicoId){
-      mostrarAgradecimentoTecnico(function(){ voltarDaChecklist(false); });
+      mostrarAgradecimentoTecnico(function(){ executarSaidaChecklist(false); });
       return;
     }
     currentLojaId=null; currentLoja=null;
@@ -2302,41 +2327,42 @@
     document.getElementById("btn-add-pdv").addEventListener("click", function(){ if(currentLoja.pdvs.length>=5) return; currentLoja.pdvs.push(blankPdv(currentLoja.pdvs.length+1)); renderPdvs(); scheduleSave(); });
     document.getElementById("btn-add-mobile").addEventListener("click", function(){ if(currentLoja.mobiles.length>=6) return; currentLoja.mobiles.push(blankMobile(currentLoja.mobiles.length+1)); renderMobiles(); scheduleSave(); });
 
-    document.getElementById("btn-finalizar").addEventListener("click", async function(){
-      const banner = document.getElementById("banner-validacao");
-      const btnFin = this;
-      try{
-        const faltando = validarObrigatorios(currentLoja);
-        if(faltando.length){
-          filaPendencias = faltando;
-          renderBannerPendencias();
-          banner.scrollIntoView({behavior:"smooth", block:"start"});
-          return;
-        }
-        filaPendencias = [];
-        banner.classList.add("hidden");
-        currentLoja.status = "concluido"; updateFinalizeUi();
-        btnFin.disabled = true;
-        const salvo = await persistNow();
-        btnFin.disabled = false;
-        if(!salvo){
-          currentLoja.status = statusAutomatico(currentLoja); updateFinalizeUi();
-          banner.classList.remove("hidden");
-          banner.style.background = ""; banner.style.color = "";
-          banner.innerHTML = "<b>❌ Não foi possível salvar a conclusão do checklist.</b><br>Verifique sua conexão e tente novamente. Os dados preenchidos continuam neste formulário.";
-          banner.scrollIntoView({behavior:"smooth", block:"start"});
-          return;
-        }
-        voltarDaChecklist(true);
-      }catch(e){
-        btnFin.disabled = false;
+    document.getElementById("btn-finalizar").addEventListener("click", tentarFinalizarChecklist);
+    document.getElementById("btn-reabrir").addEventListener("click", solicitarReabertura);
+  }
+  async function tentarFinalizarChecklist(){
+    const banner = document.getElementById("banner-validacao");
+    const btnFin = document.getElementById("btn-finalizar");
+    try{
+      const faltando = validarObrigatorios(currentLoja);
+      if(faltando.length){
+        filaPendencias = faltando;
+        renderBannerPendencias();
+        banner.scrollIntoView({behavior:"smooth", block:"start"});
+        return;
+      }
+      filaPendencias = [];
+      banner.classList.add("hidden");
+      currentLoja.status = "concluido"; updateFinalizeUi();
+      btnFin.disabled = true;
+      const salvo = await persistNow();
+      btnFin.disabled = false;
+      if(!salvo){
+        currentLoja.status = statusAutomatico(currentLoja); updateFinalizeUi();
         banner.classList.remove("hidden");
         banner.style.background = ""; banner.style.color = "";
-        banner.innerHTML = "<b>❌ Não foi possível finalizar o checklist.</b><br>Verifique as informações preenchidas e tente novamente. Se o problema continuar, informe a coordenação.";
-        console.error("Falha ao validar/finalizar o checklist:", e);
+        banner.innerHTML = "<b>❌ Não foi possível salvar a conclusão do checklist.</b><br>Verifique sua conexão e tente novamente. Os dados preenchidos continuam neste formulário.";
+        banner.scrollIntoView({behavior:"smooth", block:"start"});
+        return;
       }
-    });
-    document.getElementById("btn-reabrir").addEventListener("click", solicitarReabertura);
+      voltarDaChecklist(true);
+    }catch(e){
+      btnFin.disabled = false;
+      banner.classList.remove("hidden");
+      banner.style.background = ""; banner.style.color = "";
+      banner.innerHTML = "<b>❌ Não foi possível finalizar o checklist.</b><br>Verifique as informações preenchidas e tente novamente. Se o problema continuar, informe a coordenação.";
+      console.error("Falha ao validar/finalizar o checklist:", e);
+    }
   }
 
   function updateFinalizeUi(){
@@ -3096,7 +3122,7 @@
       const file = e.target.files && e.target.files[0];
       if(!file || !assetsApi) return;
       const input = e.target; input.disabled = true;
-      try{ const result = await assetsApi.upload(file); currentLoja.ratFoto = {id: result.id}; renderRatFoto(); scheduleSave(); }catch(err){}
+      try{ const result = await assetsApi.upload(file); currentLoja.ratFoto = {id: result.id}; renderRatFoto(); scheduleSave(); if(currentLoja.status !== "concluido") mostrarTravaFinalizacao(); }catch(err){}
       input.disabled = false;
     });
   }
