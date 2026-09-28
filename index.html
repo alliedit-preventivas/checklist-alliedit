@@ -199,6 +199,18 @@
   .pn-legenda{display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:10px; font-size:11.5px; color:var(--text-muted);}
   .pn-legenda span{display:inline-flex; align-items:center; gap:6px;}
   .pn-legenda i{width:12px; height:12px; border-radius:3px; border-left-width:4px; border-left-style:solid; display:inline-block;}
+  /* Regionais x solicitações de troca: uma linha por regional, com barra comparando a quantidade de equipamentos */
+  .pn-reg{display:block; width:100%; text-align:left; background:none; border:none; border-bottom:1px solid var(--border); padding:8px 2px; cursor:pointer; font-family:inherit; color:var(--navy);}
+  .pn-reg:last-child{border-bottom:none;}
+  .pn-reg:hover .pn-reg-nome, .pn-reg:focus-visible .pn-reg-nome{text-decoration:underline;}
+  .pn-reg-topo{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .pn-reg-nome{font-size:13.5px; font-weight:800;}
+  .pn-reg-qtd{font-size:20px; font-weight:800; white-space:nowrap;}
+  .pn-reg-qtd small{font-size:11px; font-weight:600; color:var(--text-muted); margin-left:3px;}
+  .pn-reg-sub{font-size:11.5px; color:var(--text-muted); margin:1px 0 6px;}
+  .pn-reg-barra{height:8px; border-radius:6px; background:var(--bg); overflow:hidden;}
+  .pn-reg-barra i{display:block; height:100%; border-radius:6px; background:var(--teal);}
+  .pn-regionais-total{margin:10px 0 0; padding-top:8px; border-top:1px solid var(--border);}
   @media(max-width:1180px){ .pn-topo{grid-template-columns:1fr;} .pn-linha{grid-template-columns:1fr;} }
   @media(max-width:760px){
     .pn-agenda{grid-template-columns:1fr;}
@@ -776,6 +788,16 @@
             <span><i class="pn-ev-concluida"></i>Concluída</span>
             <span><i class="pn-ev-atrasada"></i>Atrasada</span>
           </div>
+        </div>
+        <div class="card pn-card">
+          <div class="pn-card-cab">
+            <div class="pn-card-titulo">
+              <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/></svg></span>
+              <div><h3>Regionais x Solicitações de troca</h3><div class="pn-card-sub">Equipamentos indicados para substituição em 2026</div></div>
+            </div>
+          </div>
+          <div id="pn-regionais"></div>
+          <div class="hint pn-regionais-total" id="pn-regionais-total"></div>
         </div>
       </div>
     </div>
@@ -4379,8 +4401,10 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   }
   // Janela com as lojas de um cartão de status do Painel (Não iniciado, Concluídos etc.)
   const POPUP_STATUS_TITULO = {nao_iniciado:"Não iniciado", liberado:"Confirmado", em_andamento:"Em andamento", concluido:"Concluídos", substituicao:"Equipamentos para substituição", atrasada:"Atrasado", semana:"Agendamentos desta semana", pendentes:"Pendentes na campanha", todas:"Total de lojas"};
-  function abrirPopupStatus(filtro, substituicoesPorLoja){
+  // opcoes.regional (opcional): mostra só as lojas daquela regional (usado no card "Regionais x Solicitações de troca")
+  function abrirPopupStatus(filtro, substituicoesPorLoja, opcoes){
     const hoje = todayStr();
+    const regional = opcoes && opcoes.regional;
     function porNome(a,b){ return String(a.nome||"").localeCompare(String(b.nome||""), "pt-BR", {numeric:true}); }
     // agendamentoPrevisto é a "Hora Prevista" do Agendamento (ex.: 08:30), não uma data
     function dataDaLoja(l){
@@ -4391,7 +4415,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     }
     let lojas, resumo, detalhe;
     if(filtro==="substituicao"){
-      lojas = lojasCache.filter(function(l){ return substituicoesPorLoja[l.nome]; }).sort(porNome);
+      lojas = lojasCache.filter(function(l){ return substituicoesPorLoja[l.nome] && (!regional || String(regionalDaLoja(l))===regional); }).sort(porNome);
       const totalItens = lojas.reduce(function(a,l){ return a + substituicoesPorLoja[l.nome].length; }, 0);
       resumo = totalItens + " equipamento(s) em " + lojas.length + " loja(s)";
       detalhe = function(l){ const itens = substituicoesPorLoja[l.nome]; return itens.length + " item(ns): " + itens.map(function(x){ return x.equip + " (" + x.setor + ")"; }).join(", "); };
@@ -4412,7 +4436,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     function aoTeclar(e){ if(e.key === "Escape") fechar(); }
     c.innerHTML = '<div class="modal-overlay" id="modal-overlay-status"><div class="modal-box" style="max-width:520px;">' +
       '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px;">' +
-        '<b style="font-size:15px; color:var(--navy);">' + escapeHtml(POPUP_STATUS_TITULO[filtro]) + '</b>' +
+        '<b style="font-size:15px; color:var(--navy);">' + (regional ? escapeHtml(regional==="—" ? "Não alocada" : "Regional " + regional) + ' · ' : '') + escapeHtml(POPUP_STATUS_TITULO[filtro]) + '</b>' +
         '<span style="font-size:12px; font-weight:700; color:var(--teal);">' + resumo + '</span></div>' +
       (clicavel && lojas.length ? '<div class="hint" style="margin:0 0 8px;">Clique na loja para abrir o checklist.</div>' : '') +
       '<div class="painel-modal-lista">' +
@@ -4484,6 +4508,39 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       c.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); abrir(); } });
     });
     renderPainelAgenda();
+    renderPainelRegionais();
+  }
+  // Regionais x solicitações de troca: por regional, quantos equipamentos estão indicados para substituição
+  // e em quantas lojas (lojas de teste não entram). Clicando na regional, abre a lista das lojas com os itens.
+  function renderPainelRegionais(){
+    const regs = {}, subst = {};
+    ["1","2","3","4"].forEach(function(r){ regs[r] = {lojas:0, comTroca:0, itens:0, concluidas:0}; });
+    lojasCache.forEach(function(l){
+      if(ehLojaTeste(l)) return;
+      const r = String(regionalDaLoja(l));
+      if(!regs[r]) regs[r] = {lojas:0, comTroca:0, itens:0, concluidas:0};
+      const g = regs[r];
+      g.lojas++;
+      if(l.status==="concluido") g.concluidas++;
+      const itens = substituicoesDaLoja(l);
+      if(itens.length){ g.comTroca++; g.itens += itens.length; subst[l.nome] = itens; }
+    });
+    const chaves = Object.keys(regs).sort(function(a,b){ if(a==="—") return 1; if(b==="—") return -1; return Number(a)-Number(b); });
+    const max = Math.max.apply(null, chaves.map(function(k){ return regs[k].itens; }).concat([1]));
+    const el = document.getElementById("pn-regionais");
+    el.innerHTML = chaves.map(function(k){
+      const g = regs[k];
+      return '<button type="button" class="pn-reg" data-regional="'+escapeHtml(k)+'" title="Clique para ver as lojas com troca">' +
+        '<div class="pn-reg-topo"><span class="pn-reg-nome">'+(k==="—" ? "Não alocada" : "Regional "+k)+'</span><span class="pn-reg-qtd">'+g.itens+'<small>equip.</small></span></div>' +
+        '<div class="pn-reg-sub">'+g.lojas+' loja(s) · '+g.comTroca+' com troca · '+g.concluidas+' concluída(s)</div>' +
+        '<div class="pn-reg-barra"><i style="width:'+(g.itens/max*100)+'%;"></i></div></button>';
+    }).join("");
+    el.querySelectorAll(".pn-reg").forEach(function(b){
+      b.addEventListener("click", function(){ abrirPopupStatus("substituicao", subst, {regional: b.dataset.regional}); });
+    });
+    const totalItens = chaves.reduce(function(a,k){ return a + regs[k].itens; }, 0);
+    const totalLojas = chaves.reduce(function(a,k){ return a + regs[k].comTroca; }, 0);
+    document.getElementById("pn-regionais-total").textContent = "Total: " + totalItens + " equipamento(s) em " + totalLojas + " loja(s). Lojas de teste não entram.";
   }
   // Agenda semanal do Painel novo: segunda a sexta (sábado e domingo só aparecem se houver loja agendada).
   // Cada loja mostra a Hora Prevista do Agendamento (campo agendamentoPrevisto) e a cor da situação.
