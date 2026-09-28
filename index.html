@@ -226,6 +226,10 @@
   .pn-trilha{height:10px; background:var(--bg); border-radius:3px; overflow:hidden;}
   .pn-trilha i{display:block; height:100%; background:var(--teal); border-radius:3px;}
   .pn-valor{font-weight:800; font-size:12px; min-width:30px; text-align:right; white-space:nowrap;}
+  /* Itens do Ranking Incidentes: clique duplo abre as lojas */
+  .pn-incidente{cursor:pointer; border-radius:6px; padding:2px 4px; margin:0 -4px; user-select:none; -webkit-user-select:none;}
+  .pn-incidente:hover{background:var(--bg);}
+  .pn-incidente:focus-visible{outline:2px solid var(--teal-lt); outline-offset:1px;}
   /* Mapa por UF: tons conforme a quantidade de lojas */
   :root{ --pn-c0:#EEF1F3; --pn-c1:#BFDCE5; --pn-c2:#7FB6C8; --pn-c3:#2F8AA6; --pn-c4:#026E8C; }
   :root[data-tema="sephora"]{ --pn-c0:#EFEFEF; --pn-c1:#CFCFCF; --pn-c2:#9E9E9E; --pn-c3:#5C5C5C; --pn-c4:#111111; }
@@ -890,7 +894,7 @@
         <div class="card pn-card">
           <div class="pn-card-cab"><div class="pn-card-titulo">
             <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M9.5 12h6M9.5 15h6M9.5 18h4"/></svg></span>
-            <div><h3>Ranking Incidentes</h3><div class="pn-card-sub">2026 · lojas já atendidas</div></div>
+            <div><h3>Ranking Incidentes</h3><div class="pn-card-sub">2026 · lojas já atendidas · clique duas vezes no item para ver as lojas</div></div>
           </div></div>
           <div id="pn-pareto26"></div>
         </div>
@@ -4603,14 +4607,20 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
         return dataDaLoja(l);
       };
     }
+    const titulo = (regional ? (regional==="—" ? "Não alocada" : "Regional " + regional) + " · " : "") + POPUP_STATUS_TITULO[filtro];
+    mostrarJanelaLojas(titulo, resumo, lojas, detalhe);
+  }
+  // Janela com uma lista de lojas (título, resumo e um detalhe por loja). Com login, clicar na loja abre o checklist;
+  // no link da gestão é só consulta. Fecha no botão, clicando fora ou com Esc.
+  function mostrarJanelaLojas(titulo, resumo, lojas, detalhe){
     const clicavel = !modoGestao; // link da gestão é só visualização
     const c = document.getElementById("modal-container");
     function fechar(){ c.innerHTML = ""; document.removeEventListener("keydown", aoTeclar); }
     function aoTeclar(e){ if(e.key === "Escape") fechar(); }
     c.innerHTML = '<div class="modal-overlay" id="modal-overlay-status"><div class="modal-box" style="max-width:520px;">' +
       '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px;">' +
-        '<b style="font-size:15px; color:var(--navy);">' + (regional ? escapeHtml(regional==="—" ? "Não alocada" : "Regional " + regional) + ' · ' : '') + escapeHtml(POPUP_STATUS_TITULO[filtro]) + '</b>' +
-        '<span style="font-size:12px; font-weight:700; color:var(--teal);">' + resumo + '</span></div>' +
+        '<b style="font-size:15px; color:var(--navy);">' + escapeHtml(titulo) + '</b>' +
+        '<span style="font-size:12px; font-weight:700; color:var(--teal);">' + escapeHtml(resumo) + '</span></div>' +
       (clicavel && lojas.length ? '<div class="hint" style="margin:0 0 8px;">Clique na loja para abrir o checklist.</div>' : '') +
       '<div class="painel-modal-lista">' +
         (lojas.length ? lojas.map(function(l){
@@ -4759,8 +4769,34 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     const max = Math.max.apply(null, linhas.map(function(e){ return e[1]; }));
     el.innerHTML = '<div class="pn-barras">' + linhas.map(function(e, i){
       const cor = e[0]==="Outros" ? 'var(--pn-destaque)' : (i===0 ? 'var(--teal)' : 'color-mix(in srgb, var(--teal) '+Math.max(30, 85-i*12)+'%, var(--surface))');
-      return pnLinhaBarra(null, e[0], e[1]/max*100, pnPct(e[1]/total*100), e[0]+": "+e[1]+" loja(s)", cor);
+      return pnLinhaBarra(null, e[0], e[1]/max*100, pnPct(e[1]/total*100), e[0]+": "+e[1]+" loja(s) · clique duas vezes para ver as lojas", cor);
     }).join("") + '</div>';
+    // Clique duplo (ou Enter) no item abre a lista das lojas daquele incidente; "Outros" junta os incidentes agrupados
+    const outras = ordem.slice(6).map(function(e){ return e[0]; });
+    el.querySelectorAll(".pn-barra-linha").forEach(function(linha, i){
+      const nome = linhas[i][0];
+      const categorias = nome==="Outros" ? outras : [nome];
+      linha.classList.add("pn-incidente");
+      linha.setAttribute("tabindex", "0");
+      linha.setAttribute("role", "button");
+      linha.addEventListener("dblclick", function(){ abrirPopupIncidente(nome, categorias); });
+      linha.addEventListener("keydown", function(ev){ if(ev.key==="Enter"){ ev.preventDefault(); abrirPopupIncidente(nome, categorias); } });
+    });
+  }
+  // Lojas de um incidente do Ranking Incidentes, com o detalhe (equipamento e setor, ou o alerta do checklist)
+  function abrirPopupIncidente(titulo, categorias){
+    const lojas = [], detalhes = {};
+    pnLojasAtendidas().forEach(function(l){
+      const det = [];
+      substituicoesDaLoja(l).forEach(function(item){
+        if(categorias.indexOf(pnCategoriaTroca(item)) === -1) return;
+        det.push(item.equip + " (" + item.setor + ")" + (item.obs && item.obs!=="Ruim - substituir" ? ": " + item.obs : ""));
+      });
+      alertasDaLoja(l).forEach(function(m){ if(categorias.indexOf(pnCategoriaAlerta(m)) !== -1) det.push(m); });
+      if(det.length){ lojas.push(l); detalhes[l.id] = det; }
+    });
+    lojas.sort(function(a,b){ return String(a.nome||"").localeCompare(String(b.nome||""), "pt-BR", {numeric:true}); });
+    mostrarJanelaLojas(titulo === "Outros" ? "Outros incidentes" : titulo, lojas.length + " loja(s)", lojas, function(l){ return detalhes[l.id].join(" · "); });
   }
   // Mapa por UF: estados pintados conforme a quantidade de lojas reais; lista com as porcentagens (Top 6 + Outros)
   function renderPainelMapaUf(){
