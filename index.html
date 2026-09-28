@@ -119,13 +119,16 @@
   .status-filter-confirmado{background:#D8ECD9; color:#2E7D32;}
   .status-filter-confirmado.active{background:linear-gradient(90deg, #2E7D32, #5CB85C); color:#fff; box-shadow:0 2px 8px rgba(46,125,50,.3);}
   .painel-exec-header{margin-bottom:14px;}
-  .tema-cores{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
-  .tema-cores-rotulo{font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.4px;}
-  .tema-cores-btn{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:20px; padding:5px 11px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;}
-  .tema-cores-btn:hover{border-color:var(--teal-lt);}
-  .tema-cores-btn.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+  /* Botões "Cores do site" no cabeçalho: claros e transparentes; o escolhido fica branco */
+  .header-direita{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+  .tema-cores{display:flex; align-items:center; gap:6px;}
+  .tema-cores-btn{display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.12); color:#fff; border-radius:20px; padding:5px 11px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;}
+  .tema-cores-btn:hover{border-color:#fff;}
+  .tema-cores-btn.active{background:#fff; border-color:#fff; color:var(--teal);}
   .tema-cores-amostra{width:12px; height:12px; border-radius:50%; flex-shrink:0;}
-  .tema-cores-btn.active .tema-cores-amostra{box-shadow:0 0 0 1.5px #fff;}
+  @media(max-width:480px){ .header-direita{justify-content:center;} }
+  /* Painel com login: botões de cores + menus não cabem junto com o título do centro em telas médias */
+  @media(min-width:481px) and (max-width:1360px){ header.com-cores-e-menus .header-titulo{display:none;} }
   .amostra-alliedit{background:linear-gradient(135deg, #026E8C 50%, #F7D51C 50%);}
   .amostra-sephora{background:linear-gradient(135deg, #000 50%, #fff 50%); border:1px solid #000;}
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
@@ -361,7 +364,14 @@
       <div class="brand"><span class="dot"></span><div><h1>Checklist de Preventivas</h1><div class="sub">Sephora 2026 · AlliedIT</div><div class="sub2">Teste Local</div></div></div>
     </div>
     <div class="header-titulo" id="header-titulo">Painel de Agendamento</div>
-    <nav><button id="nav-lojas" class="active">Agendamento</button><button id="nav-painel">Painel</button><button id="nav-tecnico">Técnico</button><button id="btn-logout" class="hidden">Sair</button></nav>
+    <div class="header-direita">
+      <!-- Cores do site (só aparece com o Painel aberto) -->
+      <div class="tema-cores hidden" id="tema-cores" role="group" aria-label="Cores do site">
+        <button type="button" class="tema-cores-btn active" data-cores="alliedit" aria-pressed="true" title="Cores AlliedIT"><i class="tema-cores-amostra amostra-alliedit"></i>AlliedIT</button>
+        <button type="button" class="tema-cores-btn" data-cores="sephora" aria-pressed="false" title="Cores Sephora"><i class="tema-cores-amostra amostra-sephora"></i>Sephora</button>
+      </div>
+      <nav><button id="nav-lojas" class="active">Agendamento</button><button id="nav-painel">Painel</button><button id="nav-tecnico">Técnico</button><button id="btn-logout" class="hidden">Sair</button></nav>
+    </div>
   </div>
 </header>
 
@@ -668,11 +678,6 @@
           <div class="hint" style="margin:0;">Visão consolidada de progresso, trocas de equipamento e distribuição operacional da campanha</div>
         </div>
         <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-          <div class="tema-cores" role="group" aria-label="Cores do site">
-            <span class="tema-cores-rotulo">Cores do site</span>
-            <button type="button" class="tema-cores-btn active" data-cores="alliedit" aria-pressed="true"><i class="tema-cores-amostra amostra-alliedit"></i>AlliedIT</button>
-            <button type="button" class="tema-cores-btn" data-cores="sephora" aria-pressed="false"><i class="tema-cores-amostra amostra-sephora"></i>Sephora</button>
-          </div>
           <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
           <span class="hint hidden" id="painel-modo-gestao" style="margin:0;">Modo visualização · atualiza automaticamente</span>
         </div>
@@ -1645,6 +1650,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
+    document.getElementById("tema-cores").classList.toggle("hidden", name!=="painel");
+    document.querySelector("header").classList.toggle("com-cores-e-menus", name==="painel" && !modoTecnico && !modoGestao);
     window.scrollTo({top:0});
   }
   function mostrarTravaFinalizacao(){
