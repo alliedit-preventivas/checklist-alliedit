@@ -98,7 +98,53 @@
   .status-filter-item.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);}
   .status-filter-confirmado{background:#D8ECD9; color:#2E7D32;}
   .status-filter-confirmado.active{background:linear-gradient(90deg, #2E7D32, #5CB85C); color:#fff; box-shadow:0 2px 8px rgba(46,125,50,.3);}
-  .agenda-dia-item{display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--surface); box-shadow:0 1px 3px rgba(14,40,65,.08); border-radius:8px; padding:8px 12px; font-size:10.7px; margin-bottom:6px;}
+  .painel-exec-header{margin-bottom:14px;}
+  .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
+  /* Painel: seções numeradas, cabeçalho padrão dos cards e listas com rolagem própria */
+  .painel-secao{display:flex; align-items:center; gap:10px; margin:28px 0 12px; font-size:15px; font-weight:800; color:var(--navy);}
+  .painel-secao:after{content:""; flex:1; height:1px; background:var(--border);}
+  .painel-secao-num{width:26px; height:26px; border-radius:50%; background:var(--teal); color:#fff; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .painel-subtitulo{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:var(--teal); margin:4px 0 10px;}
+  .painel-card-cab{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:4px 10px; margin:0 0 12px; padding-bottom:10px; border-bottom:1px solid var(--border);}
+  .painel-card-cab h3{margin:0; font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);}
+  .painel-card-cab .hint{margin:0; font-size:11px;}
+  #view-painel .card{padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(14,40,65,.06);}
+  #view-painel .painel-2col{margin-bottom:14px;}
+  #view-painel .painel-2col > .card{margin-bottom:0; min-width:0;}
+  .painel-scroll{max-height:430px; overflow:auto; padding-right:4px;}
+  /* Tabelas largas rolam dentro do próprio card no celular (a página não passa da largura da tela) */
+  #painel-pareto, #painel-tabela-uf, #painel-ranking-substituicao, #view-painel details.loja-group .conteudo{overflow-x:auto;}
+  .painel-tabela th.num, .painel-tabela td.num{text-align:right;}
+  .painel-tabela th.centro, .painel-tabela td.centro{text-align:center;}
+  .painel-pct{font-size:11px; color:var(--text-muted); font-weight:700; min-width:38px; text-align:right;}
+  .painel-saude{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.3px; text-transform:uppercase; padding:3px 10px; border-radius:12px; vertical-align:middle;}
+  .painel-legenda{display:flex; flex-wrap:wrap; gap:8px 18px; margin:10px 0; font-size:12.5px;}
+  .painel-legenda span{display:inline-flex; align-items:center; gap:6px;}
+  .painel-dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .painel-kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:14px;}
+  .painel-kpi-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
+  .painel-kpi-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-muted); margin-bottom:6px;}
+  .painel-kpi-valor{font-size:24px; font-weight:800; color:var(--navy); line-height:1.1;}
+  .painel-kpi-sub{font-size:11.5px; color:var(--text-muted); margin-top:4px;}
+  .painel-tabela{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .painel-tabela th{text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.3px; color:var(--text-muted); font-weight:700; padding:6px 8px; border-bottom:2px solid var(--border);}
+  .painel-tabela td{padding:7px 8px; border-bottom:1px solid var(--border);}
+  .painel-tabela tr:last-child td{border-bottom:none;}
+  .painel-tabela .num{text-align:right; font-weight:700; color:var(--navy);}
+  .painel-regional-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin-bottom:14px;}
+  .painel-regional-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
+  .painel-regional-titulo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .painel-regional-titulo b{font-size:13px; color:var(--teal);}
+  .painel-regional-titulo span{font-size:12px; font-weight:700; color:var(--navy);}
+  .painel-regional-lojas{font-size:12px; color:var(--text-muted); line-height:1.5;}
+  .painel-2col{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  @media (max-width:640px){ .painel-2col{grid-template-columns:1fr;} }
+  .painel-barra-track{background:var(--bg); border-radius:6px; height:10px; overflow:hidden;}
+  .painel-barra-fill{background:var(--grad); height:100%; border-radius:6px;}
+  .painel-lista-item{display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .painel-lista-item:last-child{border-bottom:none;}
+  .painel-lista-item .painel-lista-nome{font-weight:600;}
+  .painel-lista-item .painel-lista-valor{color:var(--teal); font-weight:700;}  .agenda-dia-item{display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--surface); box-shadow:0 1px 3px rgba(14,40,65,.08); border-radius:8px; padding:8px 12px; font-size:10.7px; margin-bottom:6px;}
   .agenda-dia-item.alerta{background:var(--warn-bg); box-shadow:0 1px 3px rgba(138,109,0,.15);}
   .agenda-dia-data{font-weight:700; color:var(--navy);}
   .agenda-dia-item.alerta .agenda-dia-data{color:var(--warn);}
@@ -249,10 +295,24 @@
   .modal-box p{font-size:13.5px; margin:0 0 14px;}
   .cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px;}
   .cal-dow{font-size:10px; text-align:center; color:var(--text-muted); font-weight:700; text-transform:uppercase; padding-bottom:4px;}
-  .cal-day{min-height:64px; min-width:0; border:1px solid var(--border); border-radius:6px; padding:4px; font-size:10.5px; background:var(--bg);}
+  .cal-day{min-height:34px; min-width:0; border:1px solid var(--border); border-radius:6px; padding:3px 2px; font-size:10.5px; background:var(--bg); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;}
+  .cal-day.tem-loja{cursor:pointer; border-color:var(--teal-lt);}
+  .cal-day.tem-loja:hover, .cal-day.selecionado{background:var(--teal); color:#fff;}
+  .cal-day.selecionado .cal-qtd, .cal-day.tem-loja:hover .cal-qtd{background:#fff; color:var(--teal);}
+  .cal-day.hoje .num{text-decoration:underline;}
+  .cal-qtd{display:inline-block; min-width:16px; padding:0 4px; border-radius:8px; background:var(--teal); color:#fff; font-size:9.5px; font-weight:700; line-height:14px;}
+  #cal-dia-lista{margin-top:10px;}
+  #cal-dia-lista .loja-chip{padding:3px 8px; margin-bottom:4px; font-size:11px;}
   .cal-day.outro-mes{opacity:.35;}
-  .cal-day .num{font-weight:700; font-size:11px; margin-bottom:2px;}
-  .cal-day .loja-chip{display:block; background:var(--teal); color:#fff; border-radius:4px; padding:1px 4px; margin-bottom:2px; font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;}
+  .cal-day .num{font-weight:700; font-size:11px;}
+  .cal-day .loja-chip, #cal-dia-lista .loja-chip{display:block; background:var(--teal); color:#fff; border-radius:4px; padding:1px 4px; margin-bottom:2px; font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;}
+  .top5-item{display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);}
+  .top5-item:last-child{border-bottom:none;}
+  .top5-pos{flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--teal); color:#fff; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center;}
+  .top5-corpo{flex:1; min-width:0;}
+  .top5-topo{display:flex; justify-content:space-between; gap:8px; font-weight:700; font-size:12.5px; color:var(--navy);}
+  .top5-equips{display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;}
+  .top5-equip{font-size:10.5px; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:1px 7px; color:var(--text);}
   .cal-nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
   .cal-nav b{font-size:13.5px;}
 </style>
@@ -565,31 +625,97 @@
   </div>
 
 
-  <div id="view-painel" class="view">
+  <div id="view-painel" class="view" style="max-width:1240px; margin:0 auto;">
+    <div class="card painel-exec-header">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="margin:0 0 4px; font-size:19px; font-weight:800; color:var(--navy);">Painel Executivo: Preventiva 2026</h2>
+          <div class="hint" style="margin:0;">Visão consolidada de progresso, trocas de equipamento e distribuição operacional da campanha</div>
+        </div>
+        <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
+      </div>
+    </div>
+
+    <div class="painel-kpi-grid" id="painel-kpis-executivos"></div>
+
+    <!-- ===== 1. Andamento da campanha ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">1</span>Andamento da campanha</div>
     <div class="card" id="painel-progresso"></div>
     <div class="stats-grid" id="painel-stats"></div>
     <div class="hint" id="painel-filtro-ativo" style="margin:-10px 0 14px; display:none;"></div>
 
-    <div class="card">
-      <div class="cal-nav">
-        <button class="btn btn-ghost btn-sm" id="cal-prev">&larr;</button>
-        <b id="cal-titulo"></b>
-        <button class="btn btn-ghost btn-sm" id="cal-next">&rarr;</button>
+    <div class="painel-2col">
+      <div class="card">
+        <div class="painel-card-cab"><h3>Calendário de agendamentos</h3><span class="hint">Nº de lojas por dia</span></div>
+        <div class="cal-nav">
+          <button class="btn btn-ghost btn-sm" id="cal-prev">&larr;</button>
+          <b id="cal-titulo"></b>
+          <button class="btn btn-ghost btn-sm" id="cal-next">&rarr;</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div id="cal-dia-lista"></div>
       </div>
-      <div class="cal-grid" id="cal-grid"></div>
+      <div class="card">
+        <div class="painel-card-cab"><h3>Alertas por loja</h3><span class="hint">Clique na loja para ver os alertas</span></div>
+        <div class="painel-scroll" id="painel-alertas"></div>
+      </div>
+    </div>
+
+    <!-- ===== 2. Trocas de equipamento ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">2</span>Trocas de equipamento</div>
+    <div class="card">
+      <div class="painel-card-cab"><h3>Top 5 Lojas com Mais Trocas: 2025 x 2026</h3><span class="hint">Equipamentos indicados em cada loja</span></div>
+      <div class="painel-2col" id="painel-top5-trocas" style="margin-bottom:0;"></div>
+    </div>
+
+    <div class="painel-2col">
+      <div class="card">
+        <div class="painel-card-cab"><h3>Lojas com Maior Volume de Troca 2026</h3><span class="hint">Barra = comparação com a 1ª colocada</span></div>
+        <div id="painel-ranking-substituicao"></div>
+      </div>
+      <div class="card">
+        <div class="painel-card-cab"><h3>Equipamentos para substituição por loja</h3><span class="hint">Clique na loja para ver os itens</span></div>
+        <div class="painel-scroll" id="painel-substituicoes"></div>
+      </div>
     </div>
 
     <div class="card">
-      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Alertas por loja</h3>
-      <div id="painel-alertas"></div>
+      <div class="painel-card-cab"><h3>Comparativo de Trocas por Loja: 2025 x 2026</h3><span class="hint">2026 atualiza conforme as lojas são concluídas</span></div>
+      <div id="painel-comparativo-trocas"></div>
     </div>
 
+    <!-- ===== 3. Histórico 2025 ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">3</span>Histórico: Preventiva 2025</div>
     <div class="card">
-      <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Equipamentos para substituição por loja</h3>
-      <div id="painel-substituicoes"></div>
+      <div class="painel-card-cab"><h3>Pareto de Problemas Recorrentes</h3><span class="hint">Base histórica: Preventiva 2025 (41 lojas)</span></div>
+      <div id="painel-pareto"></div>
     </div>
 
-    <div class="card">
+    <!-- ===== 4. Estrutura das lojas ===== -->
+    <div class="painel-secao"><span class="painel-secao-num">4</span>Estrutura das lojas</div>
+    <div class="painel-2col">
+      <div class="card">
+        <div class="painel-card-cab"><h3>Concentração Territorial (Lojas por UF)</h3><span class="hint">Base: range_de_ips.xlsx</span></div>
+        <div id="painel-tabela-uf"></div>
+      </div>
+      <div class="card" id="painel-card-levantamento" style="display:none;">
+        <div class="painel-card-cab"><h3>Lojas em Levantamento</h3><span class="hint">Sem troca de equipamentos</span></div>
+        <div class="hint" style="margin:0 0 10px;">Lojas inauguradas em 2026 ou em reforma: equipamento todo novo, a preventiva aqui é só levantamento de informações, sem previsão de substituição.</div>
+        <div id="painel-lista-levantamento"></div>
+      </div>
+    </div>
+
+    <div class="painel-subtitulo">Estrutura Operacional por Regional</div>
+    <div class="painel-regional-grid" id="painel-estrutura-regional"></div>
+
+    <!-- Card "Maior tempo de atendimento" escondido a pedido da usuária (para voltar, remova o display:none) -->
+    <div class="card" id="painel-card-tempo" style="display:none;">
+      <div class="painel-card-cab"><h3>Maior tempo de atendimento</h3></div>
+      <div id="painel-ranking-tempo"></div>
+    </div>
+
+    <!-- Card "Lojas" escondido por enquanto a pedido da usuária (para voltar, remova o display:none e mude PAINEL_MOSTRAR_TABELA_LOJAS para true) -->
+    <div class="card" id="painel-card-lojas" style="display:none;">
       <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Lojas</h3>
       <div style="display:flex; gap:8px; margin-bottom:8px;">
         <input type="text" id="painel-busca-loja" placeholder="Buscar loja..." style="flex:1;">
@@ -610,6 +736,80 @@
 <script>
 (function(){
   const ESTADOS = ["Bom","Regular","Ruim - substituir"];
+const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":["SP",1],"2305":["SP",1],"2306":["SP - Interior",4],"2307":["PR",2],"2308":["RJ",2],"2309":["SP",1],"2310":["SP",1],"2311":["SP - Interior",4],"2312":["SP",1],"2313":["RJ",2],"2314":["DF",3],"2315":["SP - Interior",4],"2317":["SP",1],"2318":["SP",4],"2320":["RS",2],"2346":["PR",2],"2451":["PE",3],"2454":["GO",3],"2455":["DF",3],"2496":["BA",3],"2746":["SP - Interior",1],"2765":["RJ",2],"2766":["SP",1],"2868":["RJ",2],"2875":["MG",3],"2906":["SC",2],"2909":["SP - Litoral",4],"2918":["CE",3],"2924":["AL",3],"2944":["SP",4],"2953":["SC",2],"2971":["SP",1],"2976":["SP - Interior",4],"2992":["PA",3],"2993":["PR",2],"2994":["MG",3],"3010":["SP",4],"3040":["SP",1],"3044":["SP - Interior",4],"3067":["SP",4],"3071":["MS",4],"3075":["SP - Interior",4],"3096":["ES",2],"3130":["SP","Confirmar"],"3135":["MG","Confirmar"],"3142":["SP","Confirmar"],"3114":["RS","Confirmar"]};
+  const LOJAS_LEVANTAMENTO = {
+    "3096": "Inaugurada em 2026",
+    "3130": "Inaugurada em 2026",
+    "3135": "Inaugurada em 2026",
+    "3114": "Inaugurada em 2026",
+    "3142": "Inaugurada em 2026",
+    "2868": "Loja em reforma (Leblon)"
+  };
+  // Lojas de teste (não entram nos rankings e comparativos de troca)
+  const LOJAS_TESTE = ["9999","9998"];
+  function ehLojaTeste(l){ return LOJAS_TESTE.indexOf(codigoDaLoja(l)) !== -1; }
+  function ehLojaLevantamento(l){ return !!LOJAS_LEVANTAMENTO[codigoDaLoja(l)]; }
+  // Preventiva 2025 (41 lojas, planilha PREVENTIVA 2025 - SEPHORA): indicações de troca/problema por loja.
+  // Critério: nobreaks com autonomia ruim (rack, mini PDV e estoque; lojas EATON sem mini nobreak), teclado/mouse/monitor
+  // "precisa trocar", PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada,
+  // computador com queixa grave ("impossível usar" ou "gostaria de trocar") e PDA Zebra sem funcionar.
+  // Formato: "código": [total, "detalhe", "nome da loja em 2025"]. Total geral: 109.
+  const TROCAS_2025 = {
+    "2311": [4, "Mini Nobreak PDV 2, Nobreak de Rack 1, PINPAD de PDV 1", "2311 - RIBEIRAO PRETO"],
+    "2309": [8, "Mini Nobreak PDV 3, PDV lento/desligando 2, Computador (queixa grave) 2, Leitor com mau contato 1", "2309 - PAULISTA"],
+    "2924": [0, "", "2924 - PARK SHOPPING MACEIO"],
+    "2992": [2, "Mini Nobreak PDV 1, Mouse 1", "2992 - BELÉM"],
+    "2868": [2, "Mini Nobreak PDV 1, Tela do cliente apagada 1", "2868 - LEBLON"],
+    "2308": [4, "Mouse 2, Mini Nobreak PDV 1, PDV lento/desligando 1", "2308 - NITEROI"],
+    "1960": [1, "Computador (queixa grave) 1", "1960 - JK IGUATEMI"],
+    "2312": [3, "Mini Nobreak Estoque 1, PINPAD de PDV 1, Computador (queixa grave) 1", "2312 - CIDADE JARDIM"],
+    "2314": [5, "Mini Nobreak PDV 3, Nobreak de Rack 1, Computador (queixa grave) 1", "2314 - IGUATEMI BRASILIA"],
+    "2909": [1, "PDV lento/desligando 1", "2909 - PRAIAMAR SHOPPING"],
+    "2766": [2, "PDV lento/desligando 2", "2766 - CJ SHOPS"],
+    "3044": [1, "Nobreak de Rack 1", "3044 - SOROCABA"],
+    "2317": [3, "Mini Nobreak PDV 2, PDV lento/desligando 1", "2317 - HIGIENOPOLIS"],
+    "2496": [4, "Mini Nobreak PDV 3, Mini Nobreak Estoque 1", "2496 - SALVADOR"],
+    "2875": [3, "Leitor com mau contato 2, Mini Nobreak PDV 1", "2875 - BOULEVARD BH"],
+    "2451": [2, "Mini Nobreak Estoque 1, Teclado 1", "2451 - RIOMAR RECIFE"],
+    "3010": [0, "", "3010 - SÃO CAETANO"],
+    "2454": [5, "Leitor com mau contato 3, Mini Nobreak Estoque 1, PINPAD de PDV 1", "2454 - FLAMBOYANT GOIANIA"],
+    "2315": [1, "Mini Nobreak PDV 1", "2315 - IGUATEMI CAMPINAS"],
+    "2918": [10, "Mini Nobreak PDV 3, PINPAD de PDV 2, Mini Nobreak Estoque 1, Mouse 1, Teclado 1, Computador (queixa grave) 1, PDA Zebra 1", "2918 - RIOMAR FORTALEZA"],
+    "2765": [5, "Mini Nobreak PDV 2, Teclado 2, Computador (queixa grave) 1", "2765 - RIO DESIGN BARRA (RDB BARRA)"],
+    "2944": [1, "Nobreak de Rack 1", "2944 - CENTER NORTE"],
+    "2976": [1, "Mini Nobreak PDV 1", "2976 - SÃO JOSÉ RIO PRETO"],
+    "1932": [7, "Teclado 2, Leitor com mau contato 2, PINPAD de PDV 1, PDV lento/desligando 1, Tela do cliente apagada 1", "1932 - RIO SUL"],
+    "2906": [0, "", "2906 - BALNEARIO CAMBORIU"],
+    "2994": [0, "", "2994 - UBERLANDIA"],
+    "2746": [2, "Mini Nobreak PDV 1, Monitor 1", "2746 - OUTLET CATARINA"],
+    "2346": [6, "Computador (queixa grave) 2, Nobreak de Rack 1, Mini Nobreak PDV 1, Mini Nobreak Estoque 1, PDV lento/desligando 1", "2346 - BARIGUI"],
+    "2320": [1, "Mini Nobreak PDV 1", "2320 - PORTO ALEGRE"],
+    "2953": [1, "Monitor 1", "2953 - FLORIANOPOLIS"],
+    "3040": [0, "", "3040 - FARIA LIMA"],
+    "2313": [5, "Mini Nobreak PDV 2, Nobreak de Rack 1, Leitor com mau contato 1, Computador (queixa grave) 1", "2313 - BARRA SHOPPING"],
+    "2305": [1, "Nobreak de Rack 1", "2305 - ELDORADO"],
+    "2455": [5, "Nobreak de Rack 1, Mini Nobreak PDV 1, PINPAD de PDV 1, PDV lento/desligando 1, PDA Zebra 1", "2455 - PARK BRASILIA"],
+    "2318": [2, "Nobreak de Rack 1, Mini Nobreak Estoque 1", "2318 - ANALIA FRANCO"],
+    "2971": [0, "", "2971 - IBIRAPUERA"],
+    "2310": [2, "Nobreak de Rack 1, Mini Nobreak Estoque 1", "2310 - ALPHAVILLE"],
+    "2993": [1, "PDA Zebra 1", "2993 - LONDRINA"],
+    "2303": [0, "", "2303 - MORUMBI"],
+    "2307": [7, "PDV lento/desligando 4, Leitor com mau contato 2, Mouse 1", "2307 - BATEL"],
+    "2306": [1, "Mini Nobreak Estoque 1", "2306 - JUNDIAI"]
+  };
+  const PARETO_2025 = [
+    {categoria:"Mini Nobreak PDV (autonomia ruim)", qtd:30, pctLojas:73.2},
+    {categoria:"Queixa de computador (Estoque)", qtd:18, pctLojas:43.9},
+    {categoria:"Queixa de computador (Gerência)", qtd:16, pctLojas:39.0},
+    {categoria:"Escada sem alcançar o teto ou ausente", qtd:11, pctLojas:26.8},
+    {categoria:"Nobreak de Rack (autonomia ruim)", qtd:10, pctLojas:24.4},
+    {categoria:"Câmeras de CFTV sem funcionar", qtd:9, pctLojas:22.0},
+    {categoria:"Mini Nobreak Estoque (autonomia ruim)", qtd:9, pctLojas:22.0},
+    {categoria:"Rack extremamente sujo", qtd:6, pctLojas:14.6},
+    {categoria:"Rack desorganizado", qtd:4, pctLojas:9.8},
+    {categoria:"Som com baixa qualidade", qtd:2, pctLojas:4.9},
+    {categoria:"Monitor com falha (Estoque + Gerência)", qtd:2, pctLojas:4.9}
+  ];
   const WIFI_OPCOES = [
     {v:"1", label:"▮▯▯▯  1 barra — Ruim"}, {v:"2", label:"▮▮▯▯  2 barras — Médio"},
     {v:"3", label:"▮▮▮▯  3 barras — Médio"}, {v:"4", label:"▮▮▮▮  4 barras — Bom"}
@@ -764,6 +964,12 @@
     elFim.innerHTML = html;
   }
   function fmtDateBR(iso){ if(!iso) return ""; const p=iso.split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : iso; }
+  // Loja atrasada = data de agendamento já passou e o atendimento ainda não foi feito.
+  // Lojas concluídas ou reabertas (concluídas e abertas de novo só para ajuste) nunca contam como atrasadas.
+  function lojaAtrasada(l, hoje){
+    if(!l.agendamento || l.status === "concluido" || l.status === "reaberto") return false;
+    return l.agendamento < (hoje || todayStr());
+  }
   function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
@@ -1369,6 +1575,7 @@
       '<p style="font-size:13.5px; color:var(--text-muted); margin:0 0 18px;">Se o atendimento já terminou, finalize o checklist agora para o status ficar correto.</p>' +
       '<button class="btn btn-primary" id="btn-trava-finalizar" style="width:100%;">Finalizar Atendimento Agora</button>' +
       '</div></div>';
+    // Sem clique no fundo escuro para fechar (é uma trava proposital: só sai clicando no botão)
     document.getElementById("btn-trava-finalizar").addEventListener("click", function(){
       c.innerHTML = "";
       tentarFinalizarChecklist();
@@ -1388,6 +1595,7 @@
     });
   }
   function voltarDaChecklist(concluidoAgora){
+    // Trava: RAT já anexado mas checklist ainda não finalizado — confirma antes de deixar sair.
     if(!concluidoAgora && currentLoja && currentLoja.ratFoto && currentLoja.ratFoto.id && currentLoja.status !== "concluido"){
       mostrarConfirmacao(
         "📎 Você já anexou a foto do RAT, mas o atendimento ainda não foi finalizado. Deseja finalizar agora?",
@@ -1448,7 +1656,7 @@
   function renderFiltroChipsHome(){
     const hoje = todayStr();
     function count(key){
-      if(key==="atrasada") return lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
+      if(key==="atrasada") return lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
       return lojasCache.filter(function(l){ return l.status===key; }).length;
     }
     function countFalta(key){
@@ -1513,7 +1721,7 @@
   }
   function matchesFiltroHome(l, hoje){
     if(!filtroHome) return true;
-    if(filtroHome==="atrasada") return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+    if(filtroHome==="atrasada") return lojaAtrasada(l, hoje);
     if(filtroHome==="falta_chamado") return l.status==="aguardando" && !(l.chamado&&l.chamado.trim());
     if(filtroHome==="falta_protocolo") return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim());
     if(filtroHome==="falta_tecnico") return l.status==="aguardando" && (!(l.tecnico&&l.tecnico.trim()) || !(l.dadosTecnico&&l.dadosTecnico.trim()));
@@ -1552,7 +1760,7 @@
     });
     if(filtered.length===0){ list.innerHTML = '<div class="empty">Nenhuma loja encontrada.</div>'; return; }
     list.innerHTML = filtered.map(function(l){
-      const atrasada = l.agendamento && l.agendamento < hoje && l.status !== "concluido";
+      const atrasada = lojaAtrasada(l, hoje);
       const bloq = l.status === "concluido";
       return '<div class="loja-row" data-id="'+l.id+'">' +
         '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">' +
@@ -3215,6 +3423,9 @@
     document.getElementById("cal-prev").addEventListener("click", function(){ calRef.setMonth(calRef.getMonth()-1); renderCalendario(); });
     document.getElementById("cal-next").addEventListener("click", function(){ calRef.setMonth(calRef.getMonth()+1); renderCalendario(); });
   }
+  let calDiaSelecionado = null;
+  // Calendário compacto: cada dia mostra só a quantidade de lojas agendadas.
+  // Clicando no dia, a lista das lojas aparece abaixo (clicar na loja abre o checklist, como antes).
   function renderCalendario(){
     const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
     const DOW = ["D","S","T","Q","Q","S","S"];
@@ -3224,19 +3435,34 @@
     lojasCache.forEach(function(l){ if(l.agendamento){ if(!porData[l.agendamento]) porData[l.agendamento]=[]; porData[l.agendamento].push(l); } });
     const primeiroDia = new Date(ano, mes, 1);
     const inicioGrid = new Date(ano, mes, 1 - primeiroDia.getDay());
+    const hoje = todayStr();
+    // Mostra só as semanas necessárias (5 ou 6), sem linha extra vazia
+    const totalCelulas = Math.ceil((primeiroDia.getDay() + new Date(ano, mes+1, 0).getDate()) / 7) * 7;
     const grid = document.getElementById("cal-grid");
     let html = DOW.map(function(d){ return '<div class="cal-dow">'+d+'</div>'; }).join("");
-    for(let i=0;i<42;i++){
+    for(let i=0;i<totalCelulas;i++){
       const d = new Date(inicioGrid); d.setDate(inicioGrid.getDate()+i);
       const iso = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
       const outroMes = d.getMonth() !== mes;
       const lojasDia = porData[iso] || [];
-      html += '<div class="cal-day'+(outroMes?' outro-mes':'')+'"><div class="num">'+d.getDate()+'</div>' +
-        lojasDia.slice(0,3).map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="'+escapeHtml(l.nome)+'">'+escapeHtml(l.nome)+'</span>'; }).join("") +
-        (lojasDia.length>3 ? '<div class="hint">+'+(lojasDia.length-3)+'</div>' : '') + '</div>';
+      const classes = 'cal-day'+(outroMes?' outro-mes':'')+(lojasDia.length?' tem-loja':'')+(iso===hoje?' hoje':'')+(iso===calDiaSelecionado?' selecionado':'');
+      const titulo = lojasDia.map(function(l){ return l.nome; }).join("\n");
+      html += '<div class="'+classes+'"'+(lojasDia.length?' data-dia="'+iso+'" title="'+escapeHtml(titulo)+'"':'')+'><div class="num">'+d.getDate()+'</div>' +
+        (lojasDia.length ? '<span class="cal-qtd">'+lojasDia.length+'</span>' : '') + '</div>';
     }
     grid.innerHTML = html;
-    grid.querySelectorAll("[data-loja-id]").forEach(function(chip){
+    grid.querySelectorAll("[data-dia]").forEach(function(cel){
+      cel.addEventListener("click", function(){
+        calDiaSelecionado = (calDiaSelecionado === cel.dataset.dia) ? null : cel.dataset.dia;
+        renderCalendario();
+      });
+    });
+    const lista = document.getElementById("cal-dia-lista");
+    const lojasSel = calDiaSelecionado ? (porData[calDiaSelecionado] || []) : [];
+    if(!lojasSel.length){ lista.innerHTML = '<div class="hint" style="margin:0;">Clique em um dia com número para ver as lojas agendadas.</div>'; return; }
+    lista.innerHTML = '<div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:6px;">'+fmtDateBR(calDiaSelecionado)+' — '+lojasSel.length+' loja(s)</div>' +
+      lojasSel.map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="Abrir checklist">'+escapeHtml(l.nome)+'</span>'; }).join("");
+    lista.querySelectorAll("[data-loja-id]").forEach(function(chip){
       chip.addEventListener("click", function(){
         const l = lojasCache.find(function(x){ return x.id === chip.dataset.lojaId; });
         if(l) tentarAbrirLoja(l.id, l);
@@ -3246,6 +3472,8 @@
 
   // ---------------- painel ----------------
   const DEADLINE = "2026-10-26";
+  // Card "Lojas" do Painel escondido por enquanto; os cartões de status só filtravam essa tabela.
+  const PAINEL_MOSTRAR_TABELA_LOJAS = false;
   let painelFiltro = null;
   let painelFiltroTecnicos = [], painelFiltroLojas = [];
   let painelSortField = "nome", painelSortDir = "asc";
@@ -3299,7 +3527,7 @@
       case "concluido": return l.status==="concluido";
       case "em_andamento": return l.status==="em_andamento";
       case "nao_iniciado": return l.status==="nao_iniciado";
-      case "atrasada": return !!(l.agendamento && l.agendamento<hoje && l.status!=="concluido");
+      case "atrasada": return lojaAtrasada(l, hoje);
       case "liberado": return l.status==="liberado";
       default: return true;
     }
@@ -3644,20 +3872,308 @@
     }
   }
 
-  function renderPainel(){
+function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
+  function ufDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; const uf = info ? info[0] : "Não mapeada"; return uf.split(" - ")[0].trim(); }
+  function regionalDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; return info ? info[1] : "—"; }
+  function renderPainelListaVazia(containerId){ document.getElementById(containerId).innerHTML = '<div class="hint">Sem dados suficientes ainda.</div>'; }
+  function ufBrutaDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; return info ? info[0] : "Não mapeada"; }
+  function renderPainelUfRegional(){
+    const total = lojasCache.length;
+    const porUfBruta = {};
+    lojasCache.forEach(function(l){ const uf = ufBrutaDaLoja(l); porUfBruta[uf] = (porUfBruta[uf]||0) + 1; });
+
+    const estadosDistintos = new Set(Object.keys(porUfBruta).map(function(u){ return u.split(" - ")[0].trim(); }).filter(function(u){ return u!=="Não mapeada" && u!=="DF"; }));
+    const temDF = Object.keys(porUfBruta).some(function(u){ return u.split(" - ")[0].trim()==="DF"; });
+    const spCount = lojasCache.filter(function(l){ return ufDaLoja(l)==="SP"; }).length;
+    const spPct = total ? (spCount/total*100).toFixed(1).replace(".", ",") : "0,0";
+    const regionaisDistintos = new Set(lojasCache.map(function(l){ return regionalDaLoja(l); }).filter(function(r){ return r!=="—"; }));
+    const pendentesAlocacao = lojasCache.filter(function(l){ return regionalDaLoja(l)==="—"; }).length;
+    const topTroca = (window.__ultimoRankingSubstituicao||[])[0];
+    const qtdLevantamento = lojasCache.filter(ehLojaLevantamento).length;
+
+    document.getElementById("painel-status-ativo").textContent = "STATUS ATIVO • " + total + " LOJAS";
+    document.getElementById("painel-kpis-executivos").innerHTML =
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas Cadastradas</div><div class="painel-kpi-valor">'+total+'</div><div class="painel-kpi-sub">'+estadosDistintos.size+' Estados'+(temDF?' + DF':'')+'</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Concentração SP</div><div class="painel-kpi-valor">'+spPct+'%</div><div class="painel-kpi-sub">'+spCount+' Unidades (Cap. + Int.)</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Regionais Mapeadas</div><div class="painel-kpi-valor">'+regionaisDistintos.size+(pendentesAlocacao>0?' + Pend.':'')+'</div><div class="painel-kpi-sub">'+pendentesAlocacao+' loja(s) pendente(s) alocação</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Loja com Mais Trocas 2026</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>' +
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas em Levantamento</div><div class="painel-kpi-valor">'+qtdLevantamento+'</div><div class="painel-kpi-sub">Novas 2026 + reforma — sem troca de equipamento</div></div>';
+
+    renderPainelLevantamento();
+
+    function regionalPredominante(nomesUf){
+      const contagem = {};
+      lojasCache.forEach(function(l){ if(ufBrutaDaLoja(l)===nomesUf){ const r = regionalDaLoja(l); if(r!=="—") contagem[r] = (contagem[r]||0)+1; } });
+      const entries = Object.entries(contagem).sort(function(a,b){ return b[1]-a[1]; });
+      return entries.length ? "Regional "+entries[0][0] : "—";
+    }
+    const ufEntries = Object.entries(porUfBruta).sort(function(a,b){ return b[1]-a[1]; });
+    const principais = ufEntries.filter(function(e){ return e[1] >= 2 && e[0]!=="Não mapeada"; });
+    const demais = ufEntries.filter(function(e){ return e[1] < 2 && e[0]!=="Não mapeada"; });
+    const naoMapeadas = ufEntries.find(function(e){ return e[0]==="Não mapeada"; });
+    let linhasTabela = principais.map(function(e){
+      const pct = total ? (e[1]/total*100).toFixed(1).replace(".", ",") : "0,0";
+      return '<tr><td>'+escapeHtml(e[0])+'</td><td class="num">'+e[1]+'</td><td class="num">'+pct+'%</td><td>'+regionalPredominante(e[0])+'</td></tr>';
+    });
+    if(demais.length){
+      const totalDemais = demais.reduce(function(a,e){ return a+e[1]; }, 0);
+      const pct = total ? (totalDemais/total*100).toFixed(1).replace(".", ",") : "0,0";
+      linhasTabela.push('<tr><td>Demais Estados ('+demais.length+' UFs)</td><td class="num">'+totalDemais+'</td><td class="num">'+pct+'%</td><td>Mistas (1 un./UF)</td></tr>');
+    }
+    if(naoMapeadas){
+      const pct = total ? (naoMapeadas[1]/total*100).toFixed(1).replace(".", ",") : "0,0";
+      linhasTabela.push('<tr><td>Não mapeada</td><td class="num">'+naoMapeadas[1]+'</td><td class="num">'+pct+'%</td><td>—</td></tr>');
+    }
+    document.getElementById("painel-tabela-uf").innerHTML = !linhasTabela.length ? '<div class="hint">Sem dados suficientes ainda.</div>' :
+      '<table class="painel-tabela"><thead><tr><th>Estado / UF</th><th class="num">Qtd</th><th class="num">Distribuição (%)</th><th>Regional Predom.</th></tr></thead><tbody>'+linhasTabela.join("")+'</tbody></table>';
+
+    const porRegionalDetalhe = {};
+    lojasCache.forEach(function(l){
+      const r = regionalDaLoja(l);
+      const chave = r==="—" ? "Não alocada" : "Regional "+r;
+      if(!porRegionalDetalhe[chave]) porRegionalDetalhe[chave] = [];
+      porRegionalDetalhe[chave].push(l.nome.split(" - ").slice(1).join(" - ") || l.nome);
+    });
+    const regionaisOrdenadas = Object.keys(porRegionalDetalhe).sort(function(a,b){
+      const na = parseInt(a.replace(/\D/g,""),10), nb = parseInt(b.replace(/\D/g,""),10);
+      if(isNaN(na)) return 1; if(isNaN(nb)) return -1;
+      return na-nb;
+    });
+    document.getElementById("painel-estrutura-regional").innerHTML = !regionaisOrdenadas.length ? '<div class="hint">Sem dados suficientes ainda.</div>' :
+      regionaisOrdenadas.map(function(chave){
+        const lojas = porRegionalDetalhe[chave].sort();
+        return '<div class="painel-regional-card">' +
+          '<div class="painel-regional-titulo"><b>'+chave.toUpperCase()+'</b><span>'+lojas.length+' Loja'+(lojas.length===1?'':'s')+'</span></div>' +
+          '<div class="painel-regional-lojas">'+lojas.map(escapeHtml).join(", ")+'</div>' +
+        '</div>';
+      }).join("");
+  }
+  function renderPainelRankingSubstituicao(substituicoesPorLoja){
+    const entries = Object.entries(substituicoesPorLoja).map(function(e){ return [e[0], e[1].length]; }).sort(function(a,b){ return b[1]-a[1]; }).slice(0, 8);
+    window.__ultimoRankingSubstituicao = entries;
+    if(!entries.length){ renderPainelListaVazia("painel-ranking-substituicao"); return; }
+    const max = entries[0][1];
+    function regionalPorNomeLoja(nome){
+      const l = lojasCache.find(function(x){ return x.nome===nome; });
+      if(!l) return "—";
+      const r = regionalDaLoja(l);
+      return r==="—" ? "—" : "Regional "+r;
+    }
+    document.getElementById("painel-ranking-substituicao").innerHTML =
+      '<table class="painel-tabela"><thead><tr><th>Loja</th><th>Regional</th><th class="num">Trocas</th><th>vs. 1ª colocada</th></tr></thead><tbody>' +
+      entries.map(function(e){
+        const pct = max ? Math.round(e[1]/max*100) : 0;
+        return '<tr><td>'+escapeHtml(e[0])+'</td><td>'+regionalPorNomeLoja(e[0])+'</td><td class="num">'+e[1]+'</td>' +
+          '<td style="min-width:120px;"><div style="display:flex; align-items:center; gap:8px;"><div class="painel-barra-track" style="height:8px; flex:1;"><div class="painel-barra-fill" style="width:'+pct+'%;"></div></div><span class="painel-pct">'+pct+'%</span></div></td></tr>';
+      }).join("") + '</tbody></table>';
+  }
+  function duracaoEmMinutos(inicio, fim){
+    if(!inicio || !fim) return null;
+    const pi = String(inicio).split(":"), pf = String(fim).split(":");
+    if(pi.length < 2 || pf.length < 2) return null;
+    const mi = (+pi[0])*60 + (+pi[1]); let mf = (+pf[0])*60 + (+pf[1]);
+    if(isNaN(mi) || isNaN(mf)) return null;
+    if(mf < mi) mf += 24*60;
+    return mf - mi;
+  }
+  function renderPainelRankingTempo(){
+    const entries = lojasCache
+      .map(function(l){ return { nome:l.nome, min: duracaoEmMinutos(l.horarioInicio, l.horarioFim) }; })
+      .filter(function(e){ return e.min !== null; })
+      .sort(function(a,b){ return b.min-a.min; })
+      .slice(0, 8);
+    if(!entries.length){ renderPainelListaVazia("painel-ranking-tempo"); return; }
+    document.getElementById("painel-ranking-tempo").innerHTML = entries.map(function(e){
+      const h = Math.floor(e.min/60), m = e.min%60;
+      const txt = (h>0 ? h+"h " : "") + m + "min";
+      return '<div class="painel-lista-item"><span class="painel-lista-nome">'+escapeHtml(e.nome)+'</span><span class="painel-lista-valor">'+txt+'</span></div>';
+    }).join("");
+  }
+  function renderPainelLevantamento(){
+    const lojasLevantamento = lojasCache.filter(ehLojaLevantamento);
+    const card = document.getElementById("painel-card-levantamento");
+    if(lojasLevantamento.length === 0){ card.style.display = "none"; return; }
+    card.style.display = "block";
+    document.getElementById("painel-lista-levantamento").innerHTML = lojasLevantamento.map(function(l){
+      const motivo = LOJAS_LEVANTAMENTO[codigoDaLoja(l)];
+      const concluida = l.status === "concluido";
+      return '<div class="painel-lista-item"><span class="painel-lista-nome">'+escapeHtml(l.nome)+
+        ' <span class="hint" style="font-weight:400;">— '+motivo+'</span></span>' +
+        '<span class="painel-lista-valor" style="color:'+(concluida?'var(--ok)':'var(--text-muted)')+';">'+(concluida?'✓ Levantamento feito':STATUS_LABEL[l.status]||'Não iniciado')+'</span></div>';
+    }).join("");
+  }
+  // Comparativo 2025 x 2026 por loja.
+  // 2025 = números fixos (TROCAS_2025). 2026 = "Equipamentos para substituição" (substituicoesDaLoja),
+  // contado como final só nas lojas concluídas; em andamento aparece como parcial; sem checklist aparece como aguardando.
+  function renderPainelComparativoTrocas(){
+    const el = document.getElementById("painel-comparativo-trocas");
+    const porCodigo = {};
+    lojasCache.forEach(function(l){ porCodigo[codigoDaLoja(l)] = l; });
+    const codigos = Object.keys(Object.assign({}, TROCAS_2025, porCodigo)).filter(function(c){ return LOJAS_TESTE.indexOf(c) === -1; });
+    const linhas = codigos.map(function(cod){
+      const l = porCodigo[cod] || null;
+      const t25 = TROCAS_2025[cod] || null;
+      const itens26 = l ? substituicoesDaLoja(l) : [];
+      const concluida = !!(l && l.status === "concluido");
+      const iniciada = !!(l && (concluida || l.status === "em_andamento" || l.status === "reaberto"));
+      return {
+        cod: cod,
+        nome: l ? l.nome : (t25 ? t25[2] : cod),
+        v25: t25 ? t25[0] : null,
+        d25: t25 ? t25[1] : "",
+        v26: iniciada ? itens26.length : null,
+        d26: itens26.map(function(i){ return i.equip; }).join(", "),
+        concluida: concluida,
+        parcial: iniciada && !concluida,
+        levantamento: l ? ehLojaLevantamento(l) : false
+      };
+    });
+    // Ordena pela maior quantidade entre os dois anos (quem mais trocou aparece primeiro)
+    linhas.sort(function(a,b){
+      const ma = Math.max(a.v25||0, a.v26||0), mb = Math.max(b.v25||0, b.v26||0);
+      return (mb-ma) || ((b.v25||0)-(a.v25||0)) || a.nome.localeCompare(b.nome);
+    });
+    // Resumo: compara só as lojas concluídas em 2026 que também foram atendidas em 2025 (mesma base)
+    const mesmaBase = linhas.filter(function(x){ return x.concluida && x.v25 !== null; });
+    const soma25 = mesmaBase.reduce(function(a,x){ return a+x.v25; }, 0);
+    const soma26 = mesmaBase.reduce(function(a,x){ return a+x.v26; }, 0);
+    const total25 = linhas.reduce(function(a,x){ return a+(x.v25||0); }, 0);
+    const lojas25 = linhas.filter(function(x){ return x.v25 !== null; }).length;
+    const concluidas26 = linhas.filter(function(x){ return x.concluida; });
+    const total26 = concluidas26.reduce(function(a,x){ return a+x.v26; }, 0);
+    let resumoBase;
+    if(!mesmaBase.length) resumoBase = 'Ainda não há loja concluída em 2026 que também tenha sido atendida em 2025.';
+    else {
+      const dif = soma26 - soma25;
+      const cor = dif>0 ? 'var(--bad)' : (dif<0 ? 'var(--ok)' : 'inherit');
+      resumoBase = 'Nas <b>'+mesmaBase.length+'</b> loja(s) já concluídas em 2026 que também foram atendidas em 2025: ' +
+        '<b>'+soma25+'</b> em 2025 x <b>'+soma26+'</b> em 2026 ' +
+        '(<b style="color:'+cor+';">'+(dif>0?'+':'')+dif+'</b>).';
+    }
+    function celVariacao(x){
+      if(!x.concluida || x.v25 === null) return '<span class="hint" style="margin:0;">—</span>';
+      const d = x.v26 - x.v25;
+      if(d > 0) return '<b style="color:var(--bad);">▲ +'+d+'</b>';
+      if(d < 0) return '<b style="color:var(--ok);">▼ '+d+'</b>';
+      return '<b>= 0</b>';
+    }
+    function celSituacao(x){
+      if(!porCodigo[x.cod]) return '<span class="hint" style="margin:0;">Não cadastrada em 2026</span>';
+      if(x.concluida) return '<span style="color:var(--ok); font-weight:700;">✓ Concluída</span>';
+      if(x.parcial) return '<span style="color:var(--warn); font-weight:700;">Em andamento (parcial)</span>';
+      return '<span class="hint" style="margin:0;">Aguardando atendimento</span>';
+    }
+    el.innerHTML =
+      '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:6px 0 8px; font-size:12.5px;">' +
+        '<span><i class="painel-dot" style="background:var(--muted);"></i><b>2025:</b> '+total25+' indicações em '+lojas25+' lojas</span>' +
+        '<span><i class="painel-dot" style="background:var(--teal);"></i><b>2026 (até agora):</b> '+total26+' em '+concluidas26.length+' loja(s) concluída(s)</span>' +
+      '</div>' +
+      '<div class="hint" style="margin:0 0 10px;">'+resumoBase+'</div>' +
+      '<div class="painel-scroll">' +
+      '<table class="painel-tabela"><thead><tr><th>Loja</th><th class="num">2025</th><th class="num">2026</th><th class="centro">Variação</th><th>Situação 2026</th></tr></thead><tbody>' +
+      linhas.map(function(x){
+        return '<tr>' +
+          '<td>'+escapeHtml(x.nome)+(x.levantamento?' <span class="hint" style="margin:0; font-weight:400;">(levantamento)</span>':'')+'</td>' +
+          '<td class="num" title="'+escapeHtml(x.d25||"Sem indicações")+'">'+(x.v25===null?'—':x.v25)+'</td>' +
+          '<td class="num" title="'+escapeHtml(x.d26||"Sem indicações")+'">'+(x.v26===null?'—':x.v26+(x.parcial?'*':''))+'</td>' +
+          '<td class="centro">'+celVariacao(x)+'</td>' +
+          '<td>'+celSituacao(x)+'</td>' +
+        '</tr>';
+      }).join("") + '</tbody></table></div>' +
+      '<div class="hint" style="margin-top:10px;">Passe o mouse sobre o número para ver os itens. * = checklist ainda em andamento (número parcial). ' +
+      'A variação só é calculada para lojas concluídas em 2026. ' +
+      'Critério 2025: nobreaks com autonomia ruim, teclado/mouse/monitor para troca, PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada, computador com queixa grave e PDA Zebra. ' +
+      'Critério 2026: "Equipamentos para substituição" do checklist. Como 2025 inclui mais tipos de problema, tende a ter números maiores.</div>';
+  }
+  // Top 5 lojas com mais trocas: 2025 (dados fixos) x 2026 (checklists concluídos ou em andamento).
+  // 2026 agrupa os itens de "Equipamentos para substituição" por tipo (ex.: "PDV 01: Mini Nobreak" vira "Mini Nobreak PDV").
+  function tipoEquip2026(item){
+    const eq = String(item.equip||"");
+    if(eq.indexOf(":") !== -1) return eq.split(":").slice(1).join(":").trim() + " PDV";
+    if(item.setor==="Gerência" || item.setor==="Estoque"){
+      if(eq==="PINPAD reserva") return eq;
+      return eq + " " + item.setor;
+    }
+    return eq;
+  }
+  function renderPainelTop5Trocas(){
+    const el = document.getElementById("painel-top5-trocas");
+    // 2025
+    const top25 = Object.keys(TROCAS_2025).map(function(cod){ return {nome:TROCAS_2025[cod][2], total:TROCAS_2025[cod][0], detalhe:TROCAS_2025[cod][1]}; })
+      .filter(function(x){ return x.total > 0; })
+      .sort(function(a,b){ return (b.total-a.total) || a.nome.localeCompare(b.nome); })
+      .slice(0, 5)
+      .map(function(x){
+        return {nome:x.nome, total:x.total, parcial:false, equips: x.detalhe.split(", ").map(function(p){ const m = p.match(/^(.*) (\d+)$/); return m ? [m[1], +m[2]] : [p, 1]; })};
+      });
+    // 2026
+    const top26 = lojasCache
+      .filter(function(l){ return !ehLojaTeste(l) && (l.status==="concluido" || l.status==="em_andamento" || l.status==="reaberto"); })
+      .map(function(l){
+        const cont = {};
+        substituicoesDaLoja(l).forEach(function(i){ const t = tipoEquip2026(i); cont[t] = (cont[t]||0) + 1; });
+        const equips = Object.keys(cont).map(function(k){ return [k, cont[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+        return {nome:l.nome, total:equips.reduce(function(a,e){ return a+e[1]; }, 0), parcial: l.status!=="concluido", equips:equips};
+      })
+      .filter(function(x){ return x.total > 0; })
+      .sort(function(a,b){ return (b.total-a.total) || a.nome.localeCompare(b.nome); })
+      .slice(0, 5);
+    function coluna(titulo, sub, lista, vazio){
+      return '<div><div style="font-weight:800; font-size:14px; color:var(--navy);">'+titulo+'</div>' +
+        '<div class="hint" style="margin:0 0 6px;">'+sub+'</div>' +
+        (lista.length ? lista.map(function(x, i){
+          return '<div class="top5-item"><div class="top5-pos">'+(i+1)+'</div><div class="top5-corpo">' +
+            '<div class="top5-topo"><span>'+escapeHtml(x.nome)+'</span><span style="white-space:nowrap;">'+x.total+(x.parcial?'*':'')+' item(ns)</span></div>' +
+            '<div class="top5-equips">'+x.equips.map(function(e){ return '<span class="top5-equip">'+escapeHtml(e[0])+(e[1]>1?' ×'+e[1]:'')+'</span>'; }).join("")+'</div>' +
+          '</div></div>';
+        }).join("") : '<div class="hint">'+vazio+'</div>') + '</div>';
+    }
+    el.innerHTML =
+      coluna("2025", "Preventiva 2025 (41 lojas) — critério completo", top25, "Sem dados.") +
+      coluna("2026", "Atualiza conforme as lojas são atendidas — * = checklist em andamento", top26, "Nenhuma loja atendida com equipamento para troca até agora.");
+  }
+  function renderPainelPareto(){
+    const max = PARETO_2025[0].qtd;
+    document.getElementById("painel-pareto").innerHTML =
+      '<table class="painel-tabela"><thead><tr><th>Categoria (Preventiva 2025)</th><th class="num">Lojas afetadas</th><th class="num">% das lojas</th><th style="min-width:140px;">Proporção</th><th class="num">% acumulado</th></tr></thead><tbody>' +
+      PARETO_2025.map(function(p, i){
+        let acum = 0;
+        for(let j=0;j<=i;j++) acum += PARETO_2025[j].qtd;
+        const totalOc = PARETO_2025.reduce(function(a,b){ return a+b.qtd; }, 0);
+        const pctAcum = (acum/totalOc*100).toFixed(1).replace(".", ",");
+        const destaque80 = (acum/totalOc*100) <= 80.5;
+        return '<tr'+(destaque80?' style="background:var(--warn-bg);"':'')+'>' +
+          '<td>'+escapeHtml(p.categoria)+'</td>' +
+          '<td class="num">'+p.qtd+'</td>' +
+          '<td class="num">'+p.pctLojas.toFixed(1).replace(".",",")+'%</td>' +
+          '<td><div class="painel-barra-track" style="height:8px;"><div class="painel-barra-fill" style="width:'+(p.qtd/max*100)+'%;"></div></div></td>' +
+          '<td class="num">'+pctAcum+'%</td>' +
+        '</tr>';
+      }).join("") + '</tbody></table>' +
+      '<div class="hint" style="margin-top:10px;"><i class="painel-dot" style="background:var(--warn-bg); border:1px solid var(--warn); border-radius:2px;"></i> Linhas destacadas concentram ~80% de todas as ocorrências registradas na Preventiva 2025 — os pontos prioritários de atenção para 2026.</div>';
+  }
+        function renderPainel(){
     const total = lojasCache.length;
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
     const andamento = lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length;
     const agendadas = lojasCache.filter(function(l){ return l.status==="liberado"; }).length;
     const naoIniciadas = lojasCache.filter(function(l){ return l.status==="nao_iniciado"; }).length;
     const hoje = todayStr();
-    const atrasadas = lojasCache.filter(function(l){ return l.agendamento && l.agendamento<hoje && l.status!=="concluido"; }).length;
+    const atrasadas = lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
 
     const substituicoesPorLoja = {};
+    const rankingPorLoja = {};
     lojasCache.forEach(function(l){
       const itens = substituicoesDaLoja(l);
       if(itens.length) substituicoesPorLoja[l.nome] = itens;
+      if(itens.length && !ehLojaTeste(l)) rankingPorLoja[l.nome] = itens;
     });
+    renderPainelRankingSubstituicao(rankingPorLoja);
+    renderPainelUfRegional();
+    renderPainelRankingTempo();
+    renderPainelPareto();
+    renderPainelComparativoTrocas();
+    renderPainelTop5Trocas();
     const totalSubstituicoes = Object.values(substituicoesPorLoja).reduce(function(a,b){ return a+b.length; }, 0);
 
     const diasRestantes = diasEntre(hoje, DEADLINE);
@@ -3668,31 +4184,31 @@
     else if(diasRestantes>0) ritmoTxt = "Ritmo necessário: " + (pendentes/diasRestantes).toFixed(1) + " lojas/dia para concluir até o prazo.";
     else if(diasRestantes===0) ritmoTxt = "O prazo é hoje e restam " + pendentes + " loja(s) pendente(s).";
     else ritmoTxt = "Prazo vencido há " + Math.abs(diasRestantes) + " dia(s) — " + pendentes + " loja(s) ainda pendente(s).";
+    // Situação da campanha: etiqueta colorida (verde = no ritmo, amarelo = atenção, vermelho = crítico)
     let satisfacao;
-    if(pendentes===0) satisfacao = {emoji:"🎉", texto:"Tudo concluído!"};
-    else if(diasRestantes<0) satisfacao = {emoji:"😟", texto:"Prazo vencido — atenção redobrada."};
-    else if(pctConcluido>=80) satisfacao = {emoji:"😄", texto:"Excelente ritmo, quase lá."};
-    else if(pctConcluido>=50) satisfacao = {emoji:"🙂", texto:"Bom progresso."};
-    else if(pctConcluido>=20) satisfacao = {emoji:"😐", texto:"Ritmo moderado, fique de olho no prazo."};
-    else satisfacao = {emoji:"😕", texto:"Ritmo baixo — requer atenção."};
+    if(pendentes===0) satisfacao = {etiqueta:"Concluída", cor:"ok", texto:"Tudo concluído."};
+    else if(diasRestantes<0) satisfacao = {etiqueta:"Crítico", cor:"bad", texto:"Prazo vencido: atenção redobrada."};
+    else if(pctConcluido>=80) satisfacao = {etiqueta:"No ritmo", cor:"ok", texto:"Excelente ritmo, quase lá."};
+    else if(pctConcluido>=50) satisfacao = {etiqueta:"No ritmo", cor:"ok", texto:"Bom progresso."};
+    else if(pctConcluido>=20) satisfacao = {etiqueta:"Atenção", cor:"warn", texto:"Ritmo moderado, fique de olho no prazo."};
+    else satisfacao = {etiqueta:"Atenção", cor:"bad", texto:"Ritmo baixo: requer atenção."};
 
     document.getElementById("painel-progresso").innerHTML =
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:2px;">' +
         '<div><h3 style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:.4px; color:var(--teal);">Resumo Executivo</h3>' +
-        '<div style="font-size:26px; font-weight:700; line-height:1.2;">'+satisfacao.emoji+' '+pctConcluido+'% concluído</div></div>' +
+        '<div style="font-size:26px; font-weight:800; line-height:1.2; color:var(--navy);">'+pctConcluido+'% concluído <span class="painel-saude" style="background:var(--'+satisfacao.cor+'-bg); color:var(--'+satisfacao.cor+');">'+satisfacao.etiqueta+'</span></div></div>' +
         '<div style="text-align:right; font-size:12px; color:var(--text-muted);">Previsão de término<br><b style="font-size:15px; color:var(--navy);">'+fmtDateBR(DEADLINE)+'</b></div></div>' +
       '<div class="progress-track"><div class="progress-fill" style="width:'+pctConcluido+'%;"></div></div>' +
-      '<div style="display:flex; flex-wrap:wrap; gap:16px; margin:10px 0; font-size:12.5px;">' +
-        '<span>✅ <b>'+concluidas+'</b> concluídas</span>' +
-        '<span>🕓 <b>'+andamento+'</b> em andamento</span>' +
-        '<span>📅 <b>'+agendadas+'</b> confirmadas</span>' +
-        '<span>⬜ <b>'+naoIniciadas+'</b> não iniciadas</span>' +
-        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';">⚠️ <b>'+atrasadas+'</b> atrasada(s)</span>' +
+      '<div class="painel-legenda">' +
+        '<span><i class="painel-dot" style="background:var(--ok);"></i><b>'+concluidas+'</b> concluídas</span>' +
+        '<span><i class="painel-dot" style="background:var(--warn);"></i><b>'+andamento+'</b> em andamento</span>' +
+        '<span><i class="painel-dot" style="background:#2E7D32;"></i><b>'+agendadas+'</b> confirmadas</span>' +
+        '<span><i class="painel-dot" style="background:var(--muted);"></i><b>'+naoIniciadas+'</b> não iniciadas</span>' +
+        '<span style="color:'+(atrasadas>0?'var(--bad)':'inherit')+';"><i class="painel-dot" style="background:var(--bad);"></i><b>'+atrasadas+'</b> atrasada(s)</span>' +
       '</div><div class="hint">'+satisfacao.texto+' '+ritmoTxt+' '+(diasRestantes>=0 ? '('+diasRestantes+' dia(s) até o prazo)' : '(prazo vencido há '+Math.abs(diasRestantes)+' dia(s))')+'</div>';
 
     const barColor = {concluido:"var(--ok)", em_andamento:"var(--warn)", nao_iniciado:"var(--muted)", liberado:"#2E7D32", atrasada:"var(--bad)"};
     const cardsDef = [
-      {label:"Lojas cadastradas", value:total, filter:null, bar:null},
       {label:"Não Iniciado", value:naoIniciadas, filter:"nao_iniciado", bar: total?(naoIniciadas/total*100):0},
       {label:"Confirmado", value:agendadas, filter:"liberado", bar: total?(agendadas/total*100):0},
       {label:"Andamento", value:andamento, filter:"em_andamento", bar: total?(andamento/total*100):0},
@@ -3709,6 +4225,7 @@
       card.addEventListener("click", function(){
         const f = card.dataset.filter;
         if(f==="substituicao"){ document.getElementById("painel-substituicoes").closest(".card").scrollIntoView({behavior:"smooth", block:"start"}); return; }
+        if(!PAINEL_MOSTRAR_TABELA_LOJAS) return;
         if(!f){ painelFiltro=null; } else { painelFiltro = (painelFiltro===f)?null:f; }
         renderPainel();
       });
