@@ -6,8 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checklist de Preventivas · Sephora 2026</title>
 <script>
-  // Cores do site escolhidas no Painel (AlliedIT = padrão, Sephora = preto e branco). Aplicado antes de desenhar a página.
-  try{ if(localStorage.getItem("temaCores") === "sephora") document.documentElement.setAttribute("data-tema", "sephora"); }catch(e){}
+  // Cores escolhidas no link da gestão (?painel=1): AlliedIT = padrão, Sephora = preto e branco.
+  // Só vale nesse link; as outras telas ficam sempre nas cores AlliedIT. Aplicado antes de desenhar a página.
+  try{
+    var buscaCores = new URLSearchParams(location.search), hashCores = (location.hash || "").replace(/^#\/?/, "").toLowerCase();
+    var linkGestaoCores = (buscaCores.get("painel") === "1" || hashCores === "painel") && buscaCores.get("tecnico") !== "1" && !buscaCores.get("loja") && (hashCores === "" || hashCores === "painel");
+    if(linkGestaoCores && localStorage.getItem("coresPainelGestao") === "sephora") document.documentElement.setAttribute("data-tema", "sephora");
+  }catch(e){}
 </script>
 <style>
 @font-face {
@@ -136,8 +141,6 @@
   .tema-cores-btn:focus-visible{outline:1.5px solid #fff; outline-offset:1px;}
   .tema-cores-amostra{width:12px; height:12px; border-radius:50%; flex-shrink:0; box-shadow:0 0 0 1px rgba(255,255,255,.7);}
   @media(max-width:480px){ .header-direita{justify-content:center;} }
-  /* Painel com login: botões de cores + menus não cabem junto com o título do centro em telas médias */
-  @media(min-width:481px) and (max-width:1080px){ header.com-cores-e-menus .header-titulo{display:none;} }
   .amostra-alliedit{background:linear-gradient(135deg, #026E8C 50%, #F7D51C 50%);}
   .amostra-sephora{background:linear-gradient(135deg, #000 50%, #fff 50%);}
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
@@ -1504,6 +1507,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     modoTecnico = acesso.tecnico || !!lojaParamId;
     modoTecnicoId = modoTecnico && !lojaParamId;
     modoGestao = !!acesso.painel && !modoTecnico;
+    if(!modoGestao) document.documentElement.removeAttribute("data-tema"); // cores Sephora só no link da gestão
     if(modoGestao){
       document.getElementById("painel-modo-gestao").classList.remove("hidden");
       document.querySelector("header nav").style.display = "none";
@@ -1584,7 +1588,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("btn-logout").addEventListener("click", sair);
     document.getElementById("btn-logout-topo").addEventListener("click", sair);
   }
-  // Cores do site: AlliedIT (padrão) ou Sephora (preto e branco). A escolha fica guardada só neste navegador.
+  // Cores do link da gestão (?painel=1): AlliedIT (padrão) ou Sephora (preto e branco).
+  // A escolha fica guardada só neste navegador e só vale nesse link; as outras telas ficam sempre nas cores AlliedIT.
   function aplicarTemaCores(tema){
     const sephora = tema === "sephora";
     if(sephora) document.documentElement.setAttribute("data-tema", "sephora");
@@ -1596,10 +1601,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
   }
   function wireTemaCores(){
+    if(!modoGestao){ aplicarTemaCores("alliedit"); return; }
     document.querySelectorAll(".tema-cores-btn").forEach(function(b){
       b.addEventListener("click", function(){
         aplicarTemaCores(b.dataset.cores);
-        try{ localStorage.setItem("temaCores", b.dataset.cores); }catch(e){}
+        try{ localStorage.setItem("coresPainelGestao", b.dataset.cores); }catch(e){}
       });
     });
     aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
@@ -1659,9 +1665,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
-    document.getElementById("tema-cores").classList.toggle("hidden", name!=="painel");
+    // Bolinhas de cores só no link da gestão (?painel=1)
+    document.getElementById("tema-cores").classList.toggle("hidden", !(modoGestao && name==="painel"));
     document.body.classList.toggle("vendo-painel", name==="painel");
-    document.querySelector("header").classList.toggle("com-cores-e-menus", name==="painel" && !modoTecnico && !modoGestao);
     window.scrollTo({top:0});
   }
   function mostrarTravaFinalizacao(){
