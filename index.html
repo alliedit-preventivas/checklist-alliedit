@@ -252,9 +252,21 @@
   .pn-comp-nome{font-weight:600;}
   .pn-comp-barras{display:flex; flex-direction:column; gap:4px;}
   .pn-comp-barra{display:grid; grid-template-columns:1fr 46px; align-items:center; gap:8px; font-size:11.5px;}
-  .pn-comp-barra .pn-trilha i.pn-comp-25{background:var(--muted);}
-  .pn-legenda i.pn-comp-25{background:var(--muted); border:none;}
-  .pn-legenda i.pn-comp-26{background:var(--teal); border:none;}
+  :root{ --pn-cinza-25:#8A949B; }
+  :root[data-tema="sephora"]{ --pn-cinza-25:#8C8C8C; }
+  .pn-comp-barra .pn-trilha i.pn-comp-25{background:var(--pn-cinza-25);}
+  /* Botões 2025 / 2026: destacam um ano e apagam o outro (clicando de novo, volta a mostrar os dois) */
+  .pn-anos{display:flex; gap:6px;}
+  .pn-ano{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:16px; padding:4px 11px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; transition:border-color .15s, box-shadow .15s;}
+  .pn-ano:hover{border-color:var(--teal-lt);}
+  .pn-ano:focus-visible{outline:2px solid var(--teal-lt); outline-offset:1px;}
+  .pn-ano[aria-pressed="true"]{border-color:var(--navy); box-shadow:inset 0 0 0 1px var(--navy);}
+  .pn-ano i{width:12px; height:12px; border-radius:3px; display:inline-block;}
+  .pn-ano i.pn-comp-25{background:var(--pn-cinza-25);}
+  .pn-ano i.pn-comp-26{background:var(--teal);}
+  #pn-pareto-comp .pn-comp-barra{transition:opacity .15s;}
+  #pn-pareto-comp[data-destaque="25"] .pn-comp-barra.a26, #pn-pareto-comp[data-destaque="26"] .pn-comp-barra.a25{opacity:.18;}
+  #pn-pareto-comp[data-destaque="25"] .pn-comp-barra.a25 b, #pn-pareto-comp[data-destaque="26"] .pn-comp-barra.a26 b{font-size:13px;}
   /* Abas do card "Trocas de equipamento" */
   .pn-abas{display:flex; gap:4px; flex-wrap:wrap; background:var(--bg); padding:3px; border-radius:20px;}
   .pn-aba{border:none; background:transparent; font-family:inherit; font-size:12px; font-weight:700; color:var(--text-muted); padding:6px 12px; border-radius:16px; cursor:pointer;}
@@ -913,7 +925,10 @@
             <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3M20 16V6"/></svg></span>
             <div><h3>Problemas recorrentes: 2025 x 2026</h3><div class="pn-card-sub">Top 7 da Preventiva 2025, em % das lojas · 2025: 41 lojas · 2026: <span id="pn-comp-base"></span></div></div>
           </div>
-          <div class="pn-legenda" style="margin:0;"><span><i class="pn-comp-25"></i>2025</span><span><i class="pn-comp-26"></i>2026</span></div>
+          <div class="pn-anos" role="group" aria-label="Destacar um ano">
+            <button type="button" class="pn-ano" data-ano="25" aria-pressed="false" title="Destacar 2025 (clique de novo para ver os dois)"><i class="pn-comp-25"></i>2025</button>
+            <button type="button" class="pn-ano" data-ano="26" aria-pressed="false" title="Destacar 2026 (clique de novo para ver os dois)"><i class="pn-comp-26"></i>2026</button>
+          </div>
         </div>
         <div id="pn-pareto-comp"></div>
       </div>
@@ -4816,8 +4831,8 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       const n26 = cats26.filter(function(cs){ return cs.indexOf(c.cat2026) !== -1; }).length;
       const p26 = concluidas.length ? n26/concluidas.length*100 : null;
       return '<div class="pn-comp-linha"><span class="pn-comp-nome">'+escapeHtml(c.rotulo)+'</span><div class="pn-comp-barras">' +
-        '<div class="pn-comp-barra" title="2025: '+pnPct(p25)+' das 41 lojas"><span class="pn-trilha"><i class="pn-comp-25" style="width:'+(p25 ? Math.max(1, p25) : 0)+'%;"></i></span><b>'+pnPct(p25)+'</b></div>' +
-        '<div class="pn-comp-barra" title="2026: '+(p26===null ? 'sem lojas concluídas' : n26+' de '+concluidas.length+' loja(s)')+'"><span class="pn-trilha"><i style="width:'+(p26 ? Math.max(1, p26) : 0)+'%;"></i></span><b>'+(p26===null ? '—' : pnPct(p26))+'</b></div>' +
+        '<div class="pn-comp-barra a25" title="2025: '+pnPct(p25)+' das 41 lojas"><span class="pn-trilha"><i class="pn-comp-25" style="width:'+(p25 ? Math.max(1, p25) : 0)+'%;"></i></span><b>'+pnPct(p25)+'</b></div>' +
+        '<div class="pn-comp-barra a26" title="2026: '+(p26===null ? 'sem lojas concluídas' : n26+' de '+concluidas.length+' loja(s)')+'"><span class="pn-trilha"><i style="width:'+(p26 ? Math.max(1, p26) : 0)+'%;"></i></span><b>'+(p26===null ? '—' : pnPct(p26))+'</b></div>' +
       '</div></div>';
     }).join("") + '</div>';
   }
@@ -4907,6 +4922,15 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       aba.addEventListener("click", function(){
         document.querySelectorAll(".pn-aba").forEach(function(a){ const ativa = a===aba; a.classList.toggle("active", ativa); a.setAttribute("aria-selected", ativa ? "true" : "false"); });
         document.querySelectorAll(".pn-aba-painel").forEach(function(p){ p.classList.toggle("hidden", p.dataset.painel!==aba.dataset.aba); });
+      });
+    });
+    // Problemas recorrentes 2025 x 2026: botões para destacar um ano
+    document.querySelectorAll(".pn-ano").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const alvo = document.getElementById("pn-pareto-comp");
+        const novo = alvo.dataset.destaque === btn.dataset.ano ? "" : btn.dataset.ano;
+        if(novo) alvo.dataset.destaque = novo; else delete alvo.dataset.destaque;
+        document.querySelectorAll(".pn-ano").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.ano === novo ? "true" : "false"); });
       });
     });
     // Lista de lojas: busca e filtros
