@@ -260,3 +260,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Escada oculta no link da gestão (pedido da usuária):** os alertas de escada móvel ("não possui" / "não alcança o teto") não entram no Ranking Incidentes nem nas janelas do clique duplo (`pnCategoriaAlerta` devolve `null` para escada), e o comparativo 2025 x 2026 trocou "Escada" pelo próximo item de 2025, **"Rack sujo"** (continua com 7). O Painel com login, o checklist e o PDF continuam mostrando a escada normalmente.
 - **Remodelação concluída na `develop` (28/09/2026), ainda não publicada.**
 - **Correção:** a janela das lojas tratava a "Hora Prevista" como data (mostrava "Previsão: 08:30"). Agora mostra "Agendada para 23/09/2026 às 08:30" (vale nos dois Painéis).
+
+### 8.8 Fonte Inter em todo o portal (só na `develop`, ainda não publicado)
+- A pedido da usuária (28/09/2026), o portal inteiro (login, Agendamento, checklist, Técnico, Painel com login e link da gestão) passou a usar a fonte **Inter**, com os pesos **400, 500, 600 e 700**, carregada do **Google Fonts** (`<link>` no `<head>`). Se o Google Fonts não carregar, o navegador usa a fonte do sistema (Segoe UI no Windows, fonte padrão no celular).
+- A fonte anterior, **Chillax** (embutida no `index.html`), deixou de ser usada e foi retirada do arquivo (74 KB a menos; continua no histórico do Git). Os 19 textos com peso 800 passaram para 700, que é o mais forte da Inter carregada.
+- O **PDF** das lojas continua com a fonte própria dele (Segoe UI/Arial), porque é montado num documento separado para impressão.
+- Ajuste junto: o comparativo 2025 x 2026 do link da gestão não passa mais da largura em telas muito estreitas (`minmax(min(300px, 100%), 1fr)`).
