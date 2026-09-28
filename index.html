@@ -35,6 +35,7 @@
   header .brand-logo{height:32px; flex-shrink:0; display:block;}
   .header-titulo{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:#fff; font-weight:700; font-size:18px; letter-spacing:.4px; text-transform:uppercase; text-align:center; white-space:nowrap;}
   .modo-tecnico-header .header-titulo{display:none;}
+  .modo-gestao-header nav{display:none !important;}
   .modo-tecnico-header .brand-logo{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);}
   @media(max-width:480px){
     .header-inner{flex-direction:column; align-items:center; gap:6px; text-align:center;}
@@ -632,7 +633,10 @@
           <h2 style="margin:0 0 4px; font-size:19px; font-weight:800; color:var(--navy);">Painel Executivo: Preventiva 2026</h2>
           <div class="hint" style="margin:0;">Visão consolidada de progresso, trocas de equipamento e distribuição operacional da campanha</div>
         </div>
-        <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
+          <span class="hint hidden" id="painel-modo-gestao" style="margin:0;">Modo visualização · atualiza automaticamente</span>
+        </div>
       </div>
     </div>
 
@@ -668,15 +672,14 @@
       <div class="painel-2col" id="painel-top5-trocas" style="margin-bottom:0;"></div>
     </div>
 
-    <div class="painel-2col">
-      <div class="card">
-        <div class="painel-card-cab"><h3>Lojas com Maior Volume de Troca 2026</h3><span class="hint">Barra = comparação com a 1ª colocada</span></div>
-        <div id="painel-ranking-substituicao"></div>
-      </div>
-      <div class="card">
-        <div class="painel-card-cab"><h3>Equipamentos para substituição por loja</h3><span class="hint">Clique na loja para ver os itens</span></div>
-        <div class="painel-scroll" id="painel-substituicoes"></div>
-      </div>
+    <div class="card">
+      <div class="painel-card-cab"><h3>Lojas com Maior Volume de Troca 2026</h3><span class="hint">Barra = comparação com a 1ª colocada</span></div>
+      <div id="painel-ranking-substituicao"></div>
+    </div>
+
+    <div class="card">
+      <div class="painel-card-cab"><h3>Equipamentos para substituição por loja</h3><span class="hint">Clique na loja para ver os itens</span></div>
+      <div class="painel-scroll" id="painel-substituicoes"></div>
     </div>
 
     <div class="card">
@@ -693,11 +696,13 @@
 
     <!-- ===== 4. Estrutura das lojas ===== -->
     <div class="painel-secao"><span class="painel-secao-num">4</span>Estrutura das lojas</div>
-    <div class="painel-2col">
-      <div class="card">
-        <div class="painel-card-cab"><h3>Concentração Territorial (Lojas por UF)</h3><span class="hint">Base: range_de_ips.xlsx</span></div>
-        <div id="painel-tabela-uf"></div>
-      </div>
+    <div class="card">
+      <div class="painel-card-cab"><h3>Concentração Territorial (Lojas por UF)</h3><span class="hint">Base: range_de_ips.xlsx</span></div>
+      <div id="painel-tabela-uf"></div>
+    </div>
+
+    <!-- Card "Lojas em Levantamento" escondido a pedido da usuária (para voltar, mude PAINEL_MOSTRAR_LEVANTAMENTO para true) -->
+    <div>
       <div class="card" id="painel-card-levantamento" style="display:none;">
         <div class="painel-card-cab"><h3>Lojas em Levantamento</h3><span class="hint">Sem troca de equipamentos</span></div>
         <div class="hint" style="margin:0 0 10px;">Lojas inauguradas em 2026 ou em reforma: equipamento todo novo, a preventiva aqui é só levantamento de informações, sem previsão de substituição.</div>
@@ -923,6 +928,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   let currentLojaId = null, currentLoja = null;
   let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
   let modoTecnico = false, modoTecnicoId = false, lojaParamId = null, autoAbriuLoja = false;
+  // Modo gestão (link ?painel=1): abre só o Painel de Indicadores, sem login e só para visualização.
+  // Não mostra Agendamento nem Técnico e não abre checklists.
+  let modoGestao = false;
   let filtroHome = null;
   let modoSelecao = false;
   let lojasSelecionadas = new Set();
@@ -1422,7 +1430,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function parseAcesso(){
     const search = new URLSearchParams(window.location.search);
     let loja = search.get("loja"); let tecnico = search.get("tecnico") === "1";
+    let painel = search.get("painel") === "1";
     let hash = (window.location.hash || "").replace(/^#\/?/, "");
+    if(hash.toLowerCase() === "painel"){ painel = true; hash = ""; }
     if(hash){
       if(hash.indexOf("=") !== -1){
         const hp = new URLSearchParams(hash);
@@ -1431,7 +1441,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       }else if(hash.toLowerCase() !== "tecnico"){ if(!loja) loja = hash; tecnico = true; }
       else{ tecnico = true; }
     }
-    return {loja:loja, tecnico:tecnico};
+    return {loja:loja, tecnico:tecnico, painel:painel};
   }
 
   let supabaseClient = null;
@@ -1440,6 +1450,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     lojaParamId = acesso.loja;
     modoTecnico = acesso.tecnico || !!lojaParamId;
     modoTecnicoId = modoTecnico && !lojaParamId;
+    modoGestao = !!acesso.painel && !modoTecnico;
+    if(modoGestao){
+      document.getElementById("painel-modo-gestao").classList.remove("hidden");
+      document.querySelector("header nav").style.display = "none";
+      document.querySelector("header").classList.add("modo-gestao-header");
+    }
     if(modoTecnico){
       document.querySelector("header nav").style.display = "none";
       document.querySelector("header").classList.add("modo-tecnico-header");
@@ -1464,7 +1480,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     downloadsApi = null; // nao aplicavel fora do claude.ai
     if(!db){ document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível conectar ao armazenamento compartilhado. Recarregue a página.</div>'; return; }
 
-    if(modoTecnico){
+    if(modoTecnico || modoGestao){
       continuarAposAcesso();
       return;
     }
@@ -1517,6 +1533,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function continuarAposAcesso(){
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario();
+    if(modoGestao){
+      showView("painel");
+      subscribeLojas();
+      return; // modo gestão: só leitura (sem cadastro inicial de lojas e sem botão Sair)
+    }
     if(!modoTecnico) showView("lojas");
     subscribeLojas();
     if(!modoTecnico) seedLojasSeNecessario();
@@ -1544,7 +1565,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       lojasCache = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
       renderFiltroChipsHome(); renderLojasList(); renderAgendaDatas();
       if(modoTecnicoId){ renderTecIdDatalist(); validarCodigoTecnico(); }
-      if(!modoTecnico) renderPainel();
+      if(!modoTecnico){ renderPainel(); if(modoGestao) renderCalendario(); }
       if(currentLojaId){
         const badge = document.getElementById("cl-badge");
         const fresh = lojasCache.find(function(l){ return l.id === currentLojaId; });
@@ -1562,7 +1583,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("nav-lojas").classList.toggle("active", name==="lojas");
     document.getElementById("nav-painel").classList.toggle("active", name==="painel");
     const headerNav = document.querySelector("header nav");
-    if(headerNav && !modoTecnico) headerNav.style.display = (name==="lojas") ? "none" : "flex";
+    if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
     window.scrollTo({top:0});
@@ -1924,6 +1945,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
 
   function tentarAbrirLoja(id, data){
+    if(modoGestao) return; // link da gestão é só visualização
     if(data.status === "concluido"){
       mostrarConfirmacao("⚠️ Esta loja está com o checklist concluído. Deseja realmente reabrir/alterar os dados?", "Sim", "Não", function(){ openLoja(id, data, true); });
     }else{ openLoja(id, data, false); }
@@ -3461,7 +3483,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const lojasSel = calDiaSelecionado ? (porData[calDiaSelecionado] || []) : [];
     if(!lojasSel.length){ lista.innerHTML = '<div class="hint" style="margin:0;">Clique em um dia com número para ver as lojas agendadas.</div>'; return; }
     lista.innerHTML = '<div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:6px;">'+fmtDateBR(calDiaSelecionado)+' — '+lojasSel.length+' loja(s)</div>' +
-      lojasSel.map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="Abrir checklist">'+escapeHtml(l.nome)+'</span>'; }).join("");
+      lojasSel.map(function(l){ return '<span class="loja-chip"'+(modoGestao?' style="cursor:default;"':' data-loja-id="'+l.id+'" title="Abrir checklist"')+'>'+escapeHtml(l.nome)+'</span>'; }).join("");
     lista.querySelectorAll("[data-loja-id]").forEach(function(chip){
       chip.addEventListener("click", function(){
         const l = lojasCache.find(function(x){ return x.id === chip.dataset.lojaId; });
@@ -3474,6 +3496,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   const DEADLINE = "2026-10-26";
   // Card "Lojas" do Painel escondido por enquanto; os cartões de status só filtravam essa tabela.
   const PAINEL_MOSTRAR_TABELA_LOJAS = false;
+  // Card "Lojas em Levantamento" e o indicador do topo escondidos a pedido da usuária (28/09/2026).
+  const PAINEL_MOSTRAR_LEVANTAMENTO = false;
   let painelFiltro = null;
   let painelFiltroTecnicos = [], painelFiltroLojas = [];
   let painelSortField = "nome", painelSortDir = "asc";
@@ -3896,8 +3920,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas Cadastradas</div><div class="painel-kpi-valor">'+total+'</div><div class="painel-kpi-sub">'+estadosDistintos.size+' Estados'+(temDF?' + DF':'')+'</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Concentração SP</div><div class="painel-kpi-valor">'+spPct+'%</div><div class="painel-kpi-sub">'+spCount+' Unidades (Cap. + Int.)</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Regionais Mapeadas</div><div class="painel-kpi-valor">'+regionaisDistintos.size+(pendentesAlocacao>0?' + Pend.':'')+'</div><div class="painel-kpi-sub">'+pendentesAlocacao+' loja(s) pendente(s) alocação</div></div>' +
-      '<div class="painel-kpi-card"><div class="painel-kpi-label">Loja com Mais Trocas 2026</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>' +
-      '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas em Levantamento</div><div class="painel-kpi-valor">'+qtdLevantamento+'</div><div class="painel-kpi-sub">Novas 2026 + reforma — sem troca de equipamento</div></div>';
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Loja com Mais Trocas 2026</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>';
 
     renderPainelLevantamento();
 
@@ -3992,7 +4015,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   function renderPainelLevantamento(){
     const lojasLevantamento = lojasCache.filter(ehLojaLevantamento);
     const card = document.getElementById("painel-card-levantamento");
-    if(lojasLevantamento.length === 0){ card.style.display = "none"; return; }
+    if(!PAINEL_MOSTRAR_LEVANTAMENTO || lojasLevantamento.length === 0){ card.style.display = "none"; return; }
     card.style.display = "block";
     document.getElementById("painel-lista-levantamento").innerHTML = lojasLevantamento.map(function(l){
       const motivo = LOJAS_LEVANTAMENTO[codigoDaLoja(l)];
