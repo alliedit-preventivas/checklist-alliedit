@@ -136,6 +136,39 @@
   @media(max-width:480px){ .header-direita{justify-content:center;} }
   .amostra-alliedit{background:linear-gradient(135deg, #026E8C 50%, #F7D51C 50%);}
   .amostra-sephora{background:linear-gradient(135deg, #000 50%, #fff 50%);}
+  /* ===== Painel novo do link da gestão (?painel=1) ===== */
+  :root{ --pn-destaque:#F7D51C; }
+  :root[data-tema="sephora"]{ --pn-destaque:#F4A7B9; }
+  .modo-gestao-header .header-titulo{display:none;}
+  .modo-gestao-header h1{font-size:17px; font-weight:700;}
+  .modo-gestao-header .sub{font-size:11px; margin-top:2px;}
+  .pn-aviso{text-align:right; margin:0 0 8px;}
+  .pn-topo{display:grid; grid-template-columns:minmax(300px, 1.3fr) 4fr; gap:12px; margin-bottom:16px;}
+  .pn-kpis{display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px;}
+  .pn-campanha{background:var(--teal); color:#fff; border-radius:14px; padding:16px 18px; display:flex; gap:16px; align-items:center; box-shadow:0 2px 10px rgba(0,0,0,.12);}
+  .pn-anel{position:relative; width:84px; height:84px; flex-shrink:0;}
+  .pn-anel svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .pn-anel b{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:21px; font-weight:800;}
+  .pn-anel b small{font-size:11px; font-weight:700; margin:4px 0 0 1px;}
+  .pn-campanha-corpo{flex:1; min-width:0;}
+  .pn-campanha h3{margin:0; font-size:16px; font-weight:800;}
+  .pn-campanha .pn-sub{font-size:12px; opacity:.85; margin:2px 0 8px;}
+  .pn-barra{height:6px; border-radius:6px; background:rgba(255,255,255,.22); overflow:hidden;}
+  .pn-barra i{display:block; height:100%; background:var(--pn-destaque); border-radius:6px;}
+  .pn-campanha-rodape{font-size:12.5px; font-weight:600; margin-top:7px;}
+  .pn-prazo{font-size:11px; opacity:.88; margin-top:6px; line-height:1.45; padding-top:6px; border-top:1px solid rgba(255,255,255,.18);}
+  .pn-kpi{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 10px; display:flex; align-items:center; gap:9px; cursor:pointer; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.05); transition:border-color .15s;}
+  .pn-kpi:hover{border-color:var(--teal-lt);}
+  .pn-kpi-icone{width:36px; height:36px; border-radius:50%; background:var(--bg); color:var(--navy); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .pn-kpi-icone svg{width:18px; height:18px;}
+  .pn-kpi-icone.ok{background:var(--ok-bg); color:var(--ok);}
+  .pn-kpi-icone.bad{background:var(--bad-bg); color:var(--bad);}
+  .pn-kpi-num{font-size:24px; font-weight:800; color:var(--navy); line-height:1.1;}
+  .pn-kpi-lbl{font-size:12px; font-weight:600; color:var(--navy); line-height:1.25;}
+  .pn-kpi-sub{font-size:11px; color:var(--text-muted);}
+  .pn-kpi-texto{min-width:0;}
+  @media(max-width:1180px){ .pn-topo{grid-template-columns:1fr;} }
+  @media(max-width:760px){ .pn-kpis{grid-template-columns:repeat(2, minmax(0, 1fr));} .pn-kpis .pn-kpi:last-child{grid-column:1 / -1;} }
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
   /* Painel: seções numeradas, cabeçalho padrão dos cards e listas com rolagem própria */
   .painel-secao{display:flex; align-items:center; gap:10px; margin:28px 0 12px; font-size:15px; font-weight:800; color:var(--navy);}
@@ -676,6 +709,16 @@
 
 
   <div id="view-painel" class="view" style="max-width:1240px; margin:0 auto;">
+    <!-- ===== Painel novo: só no link da gestão (?painel=1). O Painel com login usa o "painel-classico" abaixo. ===== -->
+    <div id="painel-novo" class="hidden">
+      <div class="hint pn-aviso">Modo visualização · atualiza automaticamente</div>
+      <div class="pn-topo">
+        <div class="pn-campanha" id="pn-campanha"></div>
+        <div class="pn-kpis" id="pn-kpis"></div>
+      </div>
+    </div>
+
+    <div id="painel-classico">
     <div class="card painel-exec-header">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <div>
@@ -779,6 +822,7 @@
       <div id="painel-filtros-tl-ativo" style="display:none; margin-bottom:10px; gap:6px; flex-wrap:wrap;"></div>
       <div style="overflow-x:auto;"><table><thead id="painel-tabela-head"></thead><tbody id="painel-tabela"></tbody></table></div>
     </div>
+    </div><!-- /painel-classico -->
   </div>
 
 </main>
@@ -1502,6 +1546,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     modoGestao = !!acesso.painel && !modoTecnico;
     if(!modoGestao) document.documentElement.removeAttribute("data-tema"); // cores Sephora só no link da gestão
     if(modoGestao){
+      // Link da gestão usa o Painel novo; o Painel com login continua com o "painel-classico"
+      document.getElementById("painel-classico").classList.add("hidden");
+      document.getElementById("painel-novo").classList.remove("hidden");
+      document.getElementById("view-painel").style.maxWidth = "1480px"; // layout novo é mais largo em monitores grandes
+      document.querySelector("header h1").textContent = "Checklist de Preventivas · Sephora 2026 · AlliedIT";
+      document.querySelector("header .sub").textContent = "Gestão de manutenções preventivas das lojas Sephora";
       document.getElementById("painel-modo-gestao").classList.remove("hidden");
       document.querySelector("header nav").style.display = "none";
       document.querySelector("header").classList.add("modo-gestao-header");
@@ -3621,8 +3671,19 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function diasEntre(a,b){ const da=new Date(a+"T00:00:00"), db_=new Date(b+"T00:00:00"); return Math.round((db_-da)/86400000); }
   function matchesFiltro(l, hoje){ return lojaNoFiltro(l, painelFiltro, hoje); }
+  // Semana atual (segunda a domingo) em datas ISO, usada no Painel do link da gestão
+  function semanaAtual(hoje){
+    const d = new Date((hoje || todayStr()) + "T00:00:00");
+    const seg = new Date(d); seg.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    const dom = new Date(seg); dom.setDate(seg.getDate() + 6);
+    function iso(x){ return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); }
+    return { inicio: iso(seg), fim: iso(dom) };
+  }
   function lojaNoFiltro(l, filtro, hoje){
     switch(filtro){
+      case "semana": { const s = semanaAtual(hoje); return !!l.agendamento && l.agendamento >= s.inicio && l.agendamento <= s.fim; }
+      case "pendentes": return l.status!=="concluido";
+      case "todas": return true;
       case "concluido": return l.status==="concluido";
       case "em_andamento": return l.status==="em_andamento";
       case "nao_iniciado": return l.status==="nao_iniciado";
@@ -4254,13 +4315,15 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       '<div class="hint" style="margin-top:10px;"><i class="painel-dot" style="background:var(--warn-bg); border:1px solid var(--warn); border-radius:2px;"></i> Linhas destacadas concentram ~80% de todas as ocorrências registradas na Preventiva 2025 — os pontos prioritários de atenção para 2026.</div>';
   }
   // Janela com as lojas de um cartão de status do Painel (Não iniciado, Concluídos etc.)
-  const POPUP_STATUS_TITULO = {nao_iniciado:"Não iniciado", liberado:"Confirmado", em_andamento:"Em andamento", concluido:"Concluídos", substituicao:"Equipamentos para substituição", atrasada:"Atrasado"};
+  const POPUP_STATUS_TITULO = {nao_iniciado:"Não iniciado", liberado:"Confirmado", em_andamento:"Em andamento", concluido:"Concluídos", substituicao:"Equipamentos para substituição", atrasada:"Atrasado", semana:"Agendamentos desta semana", pendentes:"Pendentes na campanha", todas:"Total de lojas"};
   function abrirPopupStatus(filtro, substituicoesPorLoja){
     const hoje = todayStr();
     function porNome(a,b){ return String(a.nome||"").localeCompare(String(b.nome||""), "pt-BR", {numeric:true}); }
+    // agendamentoPrevisto é a "Hora Prevista" do Agendamento (ex.: 08:30), não uma data
     function dataDaLoja(l){
-      if(l.agendamento) return "Agendada para " + fmtDateBR(l.agendamento);
-      if(l.agendamentoPrevisto) return "Previsão: " + fmtDateBR(l.agendamentoPrevisto);
+      const hora = l.agendamentoPrevisto ? " às " + l.agendamentoPrevisto : "";
+      if(l.agendamento) return "Agendada para " + fmtDateBR(l.agendamento) + hora;
+      if(l.agendamentoPrevisto) return "Hora prevista " + l.agendamentoPrevisto + " (sem data)";
       return "Sem data agendada";
     }
     let lojas, resumo, detalhe;
@@ -4271,8 +4334,9 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       detalhe = function(l){ const itens = substituicoesPorLoja[l.nome]; return itens.length + " item(ns): " + itens.map(function(x){ return x.equip + " (" + x.setor + ")"; }).join(", "); };
     }else{
       lojas = lojasCache.filter(function(l){ return lojaNoFiltro(l, filtro, hoje); });
-      // Atrasadas: a mais atrasada primeiro
-      lojas.sort(filtro==="atrasada" ? function(a,b){ return a.agendamento.localeCompare(b.agendamento) || porNome(a,b); } : porNome);
+      // Atrasadas: a mais atrasada primeiro. Semana: por data e hora prevista.
+      function porData(a,b){ return a.agendamento.localeCompare(b.agendamento) || String(a.agendamentoPrevisto||"").localeCompare(String(b.agendamentoPrevisto||"")) || porNome(a,b); }
+      lojas.sort((filtro==="atrasada" || filtro==="semana") ? porData : porNome);
       resumo = lojas.length + " loja(s)";
       detalhe = function(l){
         if(filtro==="atrasada"){ const dias = diasEntre(l.agendamento, hoje); return dataDaLoja(l) + " · " + dias + " dia(s) de atraso"; }
@@ -4307,8 +4371,59 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       });
     });
   }
+  // ---------------- Painel novo do link da gestão (?painel=1) ----------------
+  const PN_ICONES = {
+    semana:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3M7.5 13h2M11 13h2M14.5 13h2M7.5 16.5h2M11 16.5h2"/></svg>',
+    andamento:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.3 5.3L3.8 17.2a1.9 1.9 0 0 0 2.7 2.7l5.6-5.6a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.2-.5-.5-2.2z"/></svg>',
+    concluido:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    pendentes:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+    total:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5V20h15v-9.5"/><path d="M3 10.5L5.2 4.5h13.6l2.2 6z"/><path d="M9.5 20v-5h5v5"/></svg>'
+  };
+  function renderPainelNovo(){
+    const hoje = todayStr();
+    const total = lojasCache.length;
+    const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
+    const pendentes = total - concluidas;
+    const pct = total ? Math.round(concluidas/total*100) : 0;
+    const diasRestantes = diasEntre(hoje, DEADLINE);
+    let prazoTxt;
+    if(pendentes===0) prazoTxt = "campanha concluída";
+    else if(diasRestantes>0) prazoTxt = diasRestantes + " dia(s) restantes · ritmo necessário: " + (pendentes/diasRestantes).toFixed(1).replace(".", ",") + " lojas/dia";
+    else if(diasRestantes===0) prazoTxt = "o prazo é hoje · " + pendentes + " loja(s) pendente(s)";
+    else prazoTxt = "prazo vencido há " + Math.abs(diasRestantes) + " dia(s) · " + pendentes + " loja(s) pendente(s)";
+    // Cartão "Campanha 2026": círculo de progresso, barra e prazo
+    const raio = 36, circ = 2 * Math.PI * raio;
+    document.getElementById("pn-campanha").innerHTML =
+      '<div class="pn-anel"><svg viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="'+raio+'" fill="none" style="stroke:rgba(255,255,255,.18);" stroke-width="8"/>' +
+        (pct > 0 ? '<circle cx="42" cy="42" r="'+raio+'" fill="none" style="stroke:var(--pn-destaque);" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+(circ*pct/100).toFixed(1)+' '+circ.toFixed(1)+'"/>' : '') +
+      '</svg><b>'+pct+'<small>%</small></b></div>' +
+      '<div class="pn-campanha-corpo"><h3>Campanha 2026</h3><div class="pn-sub">Progresso geral</div>' +
+        '<div class="pn-barra"><i style="width:'+pct+'%;"></i></div>' +
+        '<div class="pn-campanha-rodape">'+concluidas+' de '+total+' lojas concluídas</div>' +
+        '<div class="pn-prazo">Prazo: <b>'+fmtDateBR(DEADLINE)+'</b> · '+prazoTxt+'</div></div>';
+    // Números do topo (clicando, abre a janela com a lista das lojas)
+    const kpis = [
+      {f:"semana", icone:PN_ICONES.semana, num:lojasCache.filter(function(l){ return lojaNoFiltro(l, "semana", hoje); }).length, lbl:"Agendamentos", sub:"esta semana"},
+      {f:"em_andamento", icone:PN_ICONES.andamento, num:lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length, lbl:"Em atendimento", sub:"agora"},
+      {f:"concluido", icone:PN_ICONES.concluido, cls:"ok", num:concluidas, lbl:"Lojas concluídas", sub:"na campanha"},
+      {f:"pendentes", icone:PN_ICONES.pendentes, cls:"bad", num:pendentes, lbl:"Pendentes", sub:"na campanha"},
+      {f:"todas", icone:PN_ICONES.total, num:total, lbl:"Total de lojas", sub:"Sephora 2026"}
+    ];
+    const el = document.getElementById("pn-kpis");
+    el.innerHTML = kpis.map(function(k){
+      return '<div class="pn-kpi" data-filtro="'+k.f+'" role="button" tabindex="0" title="Clique para ver as lojas">' +
+        '<div class="pn-kpi-icone'+(k.cls ? ' '+k.cls : '')+'">'+k.icone+'</div>' +
+        '<div class="pn-kpi-texto"><div class="pn-kpi-num">'+k.num+'</div><div class="pn-kpi-lbl">'+k.lbl+'</div><div class="pn-kpi-sub">'+k.sub+'</div></div></div>';
+    }).join("");
+    el.querySelectorAll(".pn-kpi").forEach(function(c){
+      function abrir(){ abrirPopupStatus(c.dataset.filtro, {}); }
+      c.addEventListener("click", abrir);
+      c.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); abrir(); } });
+    });
+  }
         function renderPainel(){
     const total = lojasCache.length;
+    if(modoGestao) renderPainelNovo();
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
     const andamento = lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length;
     const agendadas = lojasCache.filter(function(l){ return l.status==="liberado"; }).length;
