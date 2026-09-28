@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado").
+Última atualização: 28/09/2026 (publicação em produção do link do Painel para a gestão e ajustes do Painel).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `15f0165` (28/09/2026), equivale à `develop` `c221eb3` |
+| Última publicação | `main` = commit `41cce39` (28/09/2026), equivale à `develop` `90ed6a9` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -34,6 +34,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `antes-trava-encerramento` | `develop` antes da trava de encerramento |
 | branch `restauracao-producao-antes-aviso-pendencias-2026-09-27` | Produção antes do aviso "Tudo certo!" |
 | branch `restauracao-producao-antes-painel-executivo-2026-09-28` | Produção antes do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado" (commit `adf6366`) |
+| branch `restauracao-producao-antes-link-gestao-2026-09-28` | Produção antes do link da gestão, Lojas em Levantamento escondido e substituições sozinho na linha (commit `15f0165`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -200,7 +201,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Ponto de restauração: branch `restauracao-producao-antes-painel-executivo-2026-09-28` (tags continuam bloqueadas na sessão de nuvem; o envio para a `main` funcionou).
 - Pendente: a usuária conferir o site no ar com os dados reais.
 
-### 8.3 Pendente de publicação
+### 8.3 Publicação de 28/09/2026 (2ª): PUBLICADO
+- Foi para produção (`main` `41cce39`, equivale à `develop` `90ed6a9`) com as mesmas conferências da 8.2 (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes). Ponto de restauração: branch `restauracao-producao-antes-link-gestao-2026-09-28`.
+- Itens publicados:
 - **Link do Painel para a gestão (sem login, só visualização):** `https://alliedit-preventivas.github.io/checklist-alliedit/?painel=1` (também funciona com `#painel`). Abre direto no Painel de Indicadores, sem os menus Agendamento/Técnico, sem pedir login, com o aviso "Modo visualização · atualiza automaticamente". Clicar nas lojas do calendário não abre checklist, e o modo não grava nada no banco (`modoGestao`). Decisão da usuária: sem login, igual ao link dos técnicos. Risco aceito: quem tiver o link vê os indicadores. Localmente: `http://localhost:5174/?painel=1`. Só na `develop`.
 - **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)". Só na `develop`.
 - Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele). Só na `develop`.
