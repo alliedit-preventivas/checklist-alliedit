@@ -230,7 +230,7 @@
   :root{ --pn-c0:#EEF1F3; --pn-c1:#BFDCE5; --pn-c2:#7FB6C8; --pn-c3:#2F8AA6; --pn-c4:#026E8C; }
   :root[data-tema="sephora"]{ --pn-c0:#EFEFEF; --pn-c1:#CFCFCF; --pn-c2:#9E9E9E; --pn-c3:#5C5C5C; --pn-c4:#111111; }
   .pn-uf-corpo{display:flex; align-items:center; gap:12px;}
-  .pn-uf-mapa{width:55%; max-width:230px; aspect-ratio:1; height:auto; flex-shrink:0;}
+  .pn-uf-mapa{width:52%; max-width:200px; aspect-ratio:1; height:auto; flex-shrink:0;}
   .pn-uf-mapa .uf{fill:var(--pn-c0); stroke:var(--surface); stroke-width:.8; cursor:default;}
   .pn-uf-mapa .uf:hover{stroke:var(--navy); stroke-width:1.6;}
   .pn-uf-mapa .uf.pn-n1, .pn-uf-legenda .pn-n1{fill:var(--pn-c1); background:var(--pn-c1);}
@@ -238,6 +238,11 @@
   .pn-uf-mapa .uf.pn-n3, .pn-uf-legenda .pn-n3{fill:var(--pn-c3); background:var(--pn-c3);}
   .pn-uf-mapa .uf.pn-n4, .pn-uf-legenda .pn-n4{fill:var(--pn-c4); background:var(--pn-c4);}
   .pn-uf-legenda i{border:none;}
+  /* Lojas de cada regional, embaixo do mapa */
+  .pn-uf-regionais{margin-top:10px; padding-top:8px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:6px;}
+  .pn-uf-reg-titulo{display:flex; justify-content:space-between; gap:6px; font-size:10.5px; font-weight:800; color:var(--navy); text-transform:uppercase; letter-spacing:.3px;}
+  .pn-uf-reg-titulo span{font-weight:700; color:var(--text-muted); text-transform:none; letter-spacing:0; white-space:nowrap;}
+  .pn-uf-reg-lojas{font-size:10px; color:var(--text-muted); line-height:1.35; margin-top:1px;}
   .pn-uf-lista{list-style:none; margin:0; padding:0; flex:1; min-width:0;}
   .pn-uf-lista li{display:flex; justify-content:space-between; gap:6px; font-size:13px; padding:3px 0; color:var(--navy);}
   .pn-uf-lista b{font-weight:800;}
@@ -898,6 +903,7 @@
             <ul class="pn-uf-lista" id="pn-uf-lista"></ul>
           </div>
           <div class="pn-legenda pn-uf-legenda"><span><i class="pn-n1"></i>1 loja</span><span><i class="pn-n2"></i>2 a 3</span><span><i class="pn-n3"></i>4 a 9</span><span><i class="pn-n4"></i>10 ou mais</span></div>
+          <div class="pn-uf-regionais" id="pn-uf-regionais" aria-label="Lojas por regional"></div>
         </div>
       </div>
 
@@ -4761,6 +4767,18 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(resto) linhas = linhas.concat([["Outros", resto]]);
     document.getElementById("pn-uf-lista").innerHTML = linhas.map(function(e){
       return '<li title="'+e[1]+' loja(s)"><span>'+escapeHtml(e[0])+'</span><b>'+pnPct(lojas.length ? e[1]/lojas.length*100 : 0)+'</b></li>';
+    }).join("");
+    // Embaixo do mapa: as regionais com as respectivas lojas (em ordem alfabética)
+    const porRegional = {};
+    lojas.forEach(function(l){
+      const r = String(regionalDaLoja(l));
+      (porRegional[r] = porRegional[r] || []).push(String(l.nome||"").split(" - ").slice(1).join(" - ") || String(l.nome||""));
+    });
+    const chaves = Object.keys(porRegional).sort(function(a,b){ if(a==="—") return 1; if(b==="—") return -1; return Number(a)-Number(b); });
+    document.getElementById("pn-uf-regionais").innerHTML = chaves.map(function(k){
+      const nomes = porRegional[k].sort(function(a,b){ return a.localeCompare(b, "pt-BR"); });
+      return '<div><div class="pn-uf-reg-titulo">'+(k==="—" ? "Não alocada" : "Regional "+k)+'<span>'+nomes.length+' loja'+(nomes.length===1?'':'s')+'</span></div>' +
+        '<div class="pn-uf-reg-lojas">'+nomes.map(escapeHtml).join(", ")+'</div></div>';
     }).join("");
   }
   // Maior tempo de atendimento: Top 5 pela diferença entre o início e o fim do atendimento no checklist
