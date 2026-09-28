@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção das regionais atualizadas, SP numa linha só e janela das lojas por status).
+Última atualização: 28/09/2026 (publicação em produção das cores AlliedIT / Sephora no link da gestão).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `8854816` (28/09/2026), equivale à `develop` `b8d3bec` |
+| Última publicação | `main` = commit `dceefc1` (28/09/2026), equivale à `develop` `bdef41e` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -37,6 +37,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | branch `restauracao-producao-antes-painel-executivo-2026-09-28` | Produção antes do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado" (commit `adf6366`) |
 | branch `restauracao-producao-antes-link-gestao-2026-09-28` | Produção antes do link da gestão, Lojas em Levantamento escondido e substituições sozinho na linha (commit `15f0165`) |
 | `producao-antes-janela-status-2026-09-28` | Produção antes das regionais atualizadas, SP numa linha só e janela das lojas por status (commit `41cce39`) |
+| `producao-antes-cores-sephora-2026-09-28` | Produção antes das cores AlliedIT / Sephora no link da gestão (commit `8854816`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -226,7 +227,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Fecha no botão "Fechar", clicando fora da janela ou com a tecla Esc. No celular, a lista rola dentro da janela.
 - As lojas de teste (9999 e 9998) aparecem na lista, porque também entram na contagem dos cartões. Nenhuma alteração de banco.
 
-### 8.6 Cores AlliedIT x Sephora no link da gestão (só na `develop`, ainda não publicado)
+### 8.6 Cores AlliedIT x Sephora no link da gestão: PUBLICADO (28/09/2026)
+- Foi para produção na `main` `dceefc1` (equivale à `develop` `bdef41e`), com as conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-cores-sephora-2026-09-28`.
+- **Atenção para as próximas publicações:** a junção automática (`git merge-file`) deu conflito, porque a linha do logo (alterada) fica colada na linha da etiqueta "Teste Local". O arquivo com conflito foi descartado sem ir para a produção, e a versão de produção foi montada pelo método manual: cópia do `index.html` da `develop` trocando só as 3 linhas (URL, chave e tirando `<div class="sub2">Teste Local</div>`). Esse método manual é o mais seguro quando o cabeçalho muda.
 - **Exclusivo do link da gestão (`?painel=1` ou `#painel`)**, a pedido da usuária: duas bolinhas pequenas e discretas no **cabeçalho, canto direito** (12px, sem texto): azul e amarelo = AlliedIT, preto e branco = Sephora. A escolhida ganha um anel branco fino e a outra fica um pouco apagada; o nome aparece ao passar o mouse. No celular ficam abaixo do título. No Painel com login, no Agendamento, no checklist e na tela do Técnico as bolinhas **não aparecem** e as cores são **sempre AlliedIT**.
 - Verde, amarelo e vermelho de situação (Concluído, Atrasado, Atenção etc.) ficam iguais nos dois, para não perder o significado. O **PDF não muda** (continua nas cores AlliedIT).
 - **Logo do cabeçalho:** nas cores Sephora, o logo AlliedIT dá lugar ao **logo da Sephora** (enviado pela usuária). Do quadrado listrado foi usada só a palavra "SEPHORA" da faixa do meio, em branco com fundo transparente (no tamanho do cabeçalho, o quadrado inteiro ficaria com letras ilegíveis). As listras aparecem na faixa abaixo do cabeçalho. Nas cores AlliedIT continua o logo AlliedIT.
