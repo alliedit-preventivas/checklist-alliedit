@@ -138,7 +138,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Não foi possível conferir os dados reais, porque a sessão na nuvem não acessa o Supabase. Se ainda aparecer alguma loja concluída como atrasada, verificar qual status ela tem gravado.
 
 ### 4.12 Painel reorganizado e mais profissional (só na `develop`, ainda não publicado)
-- **Seções numeradas:** 1. Andamento da campanha (Resumo Executivo, cartões de status, Calendário + Alertas lado a lado) · 2. Trocas de equipamento (Top 5, Ranking 2026 + Equipamentos para substituição lado a lado, Comparativo 2025 x 2026) · 3. Histórico: Preventiva 2025 (Pareto) · 4. Estrutura das lojas (UF + Lojas em Levantamento, Regionais).
+- **Seções numeradas:** 1. Andamento da campanha (Resumo Executivo, cartões de status, Calendário + Alertas lado a lado) · 2. Trocas de equipamento (Top 5, Ranking 2026 e, abaixo, Equipamentos para substituição, cada um sozinho na linha (ajuste de 28/09), Comparativo 2025 x 2026) · 3. Histórico: Preventiva 2025 (Pareto) · 4. Estrutura das lojas (UF + Lojas em Levantamento, Regionais).
 - Cabeçalho padrão em todos os cards (título + explicação curta à direita). Listas longas (Alertas, Substituições, Comparativo) com rolagem dentro do card.
 - Emojis trocados por etiquetas/bolinhas de cor. O Resumo Executivo mostra a situação como etiqueta: "No ritmo" (verde), "Atenção" (amarelo/vermelho), "Crítico" (prazo vencido), "Concluída".
 - "Lojas cadastradas" saiu da fileira de status (já aparece nos indicadores do topo).
@@ -199,3 +199,6 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Conferido antes do envio: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado, e diferença para a `develop` de exatamente as 3 linhas obrigatórias.
 - Ponto de restauração: branch `restauracao-producao-antes-painel-executivo-2026-09-28` (tags continuam bloqueadas na sessão de nuvem; o envio para a `main` funcionou).
 - Pendente: a usuária conferir o site no ar com os dados reais.
+
+### 8.3 Pendente de publicação
+- Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele). Só na `develop`.
