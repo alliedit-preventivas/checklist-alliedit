@@ -167,7 +167,46 @@
   .pn-kpi-lbl{font-size:12px; font-weight:600; color:var(--navy); line-height:1.25;}
   .pn-kpi-sub{font-size:11px; color:var(--text-muted);}
   .pn-kpi-texto{min-width:0;}
-  @media(max-width:1180px){ .pn-topo{grid-template-columns:1fr;} }
+  /* Cards do Painel novo (cabeçalho com ícone, título e subtítulo) */
+  .pn-linha{display:grid; grid-template-columns:1.65fr 1fr; gap:14px; margin-bottom:14px;}
+  .pn-linha > :only-child{grid-column:1 / -1;}
+  .pn-linha > .card{margin-bottom:0; min-width:0;}
+  #view-painel .pn-card{border-radius:14px; padding:16px 18px;}
+  .pn-card-cab{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .pn-card-titulo{display:flex; align-items:center; gap:10px;}
+  .pn-card-icone{color:var(--navy); display:flex;}
+  .pn-card-icone svg{width:24px; height:24px;}
+  .pn-card-titulo h3{margin:0; font-size:16px; font-weight:800; color:var(--navy);}
+  .pn-card-sub{font-size:12px; color:var(--text-muted); margin-top:1px;}
+  /* Agenda semanal: uma coluna por dia, lojas em ordem de hora prevista */
+  :root{ --pn-info:#2F5E9E; --pn-info-bg:#E8F0FB; }
+  .pn-agenda-nav{display:flex; gap:6px;}
+  .pn-agenda-nav .btn{min-width:34px;}
+  .pn-agenda{display:grid; grid-template-columns:repeat(var(--pn-dias, 5), minmax(0, 1fr)); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .pn-dia{border-right:1px solid var(--border); min-height:190px; display:flex; flex-direction:column; min-width:0;}
+  .pn-dia:last-child{border-right:none;}
+  .pn-dia-cab{padding:8px 6px; text-align:center; font-size:12.5px; font-weight:600; color:var(--navy); background:var(--bg); border-bottom:1px solid var(--border);}
+  .pn-dia.hoje .pn-dia-cab{background:var(--teal); color:#fff;}
+  .pn-dia-corpo{padding:8px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .pn-dia-vazio{font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:14px;}
+  .pn-evento{border-radius:8px; padding:7px 9px; border-left:4px solid; font-size:11.5px; line-height:1.35; color:var(--navy); overflow-wrap:anywhere;}
+  .pn-evento b{display:block; font-size:12px;}
+  .pn-ev-hora{font-weight:700;}
+  .pn-ev-agendada{background:var(--pn-info-bg); border-color:var(--pn-info);}
+  .pn-ev-andamento{background:var(--warn-bg); border-color:var(--warn);}
+  .pn-ev-concluida{background:var(--ok-bg); border-color:var(--ok);}
+  .pn-ev-atrasada{background:var(--bad-bg); border-color:var(--bad);}
+  .pn-legenda{display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:10px; font-size:11.5px; color:var(--text-muted);}
+  .pn-legenda span{display:inline-flex; align-items:center; gap:6px;}
+  .pn-legenda i{width:12px; height:12px; border-radius:3px; border-left-width:4px; border-left-style:solid; display:inline-block;}
+  @media(max-width:1180px){ .pn-topo{grid-template-columns:1fr;} .pn-linha{grid-template-columns:1fr;} }
+  @media(max-width:760px){
+    .pn-agenda{grid-template-columns:1fr;}
+    .pn-dia{border-right:none; border-bottom:1px solid var(--border); min-height:0;}
+    .pn-dia:last-child{border-bottom:none;}
+    .pn-dia-cab{text-align:left; padding:8px 12px;}
+    .pn-dia-vazio{text-align:left; margin:0;}
+  }
   @media(max-width:760px){ .pn-kpis{grid-template-columns:repeat(2, minmax(0, 1fr));} .pn-kpis .pn-kpi:last-child{grid-column:1 / -1;} }
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
   /* Painel: seções numeradas, cabeçalho padrão dos cards e listas com rolagem própria */
@@ -715,6 +754,29 @@
       <div class="pn-topo">
         <div class="pn-campanha" id="pn-campanha"></div>
         <div class="pn-kpis" id="pn-kpis"></div>
+      </div>
+
+      <div class="pn-linha">
+        <div class="card pn-card">
+          <div class="pn-card-cab">
+            <div class="pn-card-titulo">
+              <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/></svg></span>
+              <div><h3>Agenda Semanal</h3><div class="pn-card-sub" id="pn-agenda-periodo"></div></div>
+            </div>
+            <div class="pn-agenda-nav">
+              <button type="button" class="btn btn-ghost btn-sm" id="pn-agenda-ant" title="Semana anterior" aria-label="Semana anterior">&lsaquo;</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="pn-agenda-prox" title="Próxima semana" aria-label="Próxima semana">&rsaquo;</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="pn-agenda-hoje">Hoje</button>
+            </div>
+          </div>
+          <div class="pn-agenda" id="pn-agenda"></div>
+          <div class="pn-legenda">
+            <span><i class="pn-ev-agendada"></i>Agendada / confirmada</span>
+            <span><i class="pn-ev-andamento"></i>Em atendimento</span>
+            <span><i class="pn-ev-concluida"></i>Concluída</span>
+            <span><i class="pn-ev-atrasada"></i>Atrasada</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1550,6 +1612,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       document.getElementById("painel-classico").classList.add("hidden");
       document.getElementById("painel-novo").classList.remove("hidden");
       document.getElementById("view-painel").style.maxWidth = "1480px"; // layout novo é mais largo em monitores grandes
+      wirePainelNovo();
       document.querySelector("header h1").textContent = "Checklist de Preventivas · Sephora 2026 · AlliedIT";
       document.querySelector("header .sub").textContent = "Gestão de manutenções preventivas das lojas Sephora";
       document.getElementById("painel-modo-gestao").classList.remove("hidden");
@@ -4420,6 +4483,54 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       c.addEventListener("click", abrir);
       c.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); abrir(); } });
     });
+    renderPainelAgenda();
+  }
+  // Agenda semanal do Painel novo: segunda a sexta (sábado e domingo só aparecem se houver loja agendada).
+  // Cada loja mostra a Hora Prevista do Agendamento (campo agendamentoPrevisto) e a cor da situação.
+  let pnSemanaOffset = 0; // 0 = semana atual; -1 = anterior; +1 = próxima
+  const PN_MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  const PN_DIAS = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+  function pnSomarDias(iso, n){ const d = new Date(iso+"T00:00:00"); d.setDate(d.getDate()+n); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function pnPeriodo(ini, fim){
+    const a = new Date(ini+"T00:00:00"), b = new Date(fim+"T00:00:00");
+    if(a.getMonth()===b.getMonth()) return a.getDate()+" a "+b.getDate()+" de "+PN_MESES[a.getMonth()]+" de "+a.getFullYear();
+    if(a.getFullYear()===b.getFullYear()) return a.getDate()+" de "+PN_MESES[a.getMonth()]+" a "+b.getDate()+" de "+PN_MESES[b.getMonth()]+" de "+b.getFullYear();
+    return fmtDateBR(ini)+" a "+fmtDateBR(fim);
+  }
+  function pnSituacaoAgenda(l, hoje){
+    if(l.status==="concluido" || l.status==="reaberto") return {cls:"pn-ev-concluida", txt:"Concluída"};
+    if(lojaAtrasada(l, hoje)) return {cls:"pn-ev-atrasada", txt:"Atrasada"};
+    if(l.status==="em_andamento") return {cls:"pn-ev-andamento", txt:"Em atendimento"};
+    if(l.status==="liberado") return {cls:"pn-ev-agendada", txt:"Confirmada"};
+    return {cls:"pn-ev-agendada", txt:"Agendada"};
+  }
+  function renderPainelAgenda(){
+    const hoje = todayStr();
+    const seg = pnSomarDias(semanaAtual(hoje).inicio, pnSemanaOffset*7);
+    const dias = []; for(let i=0;i<7;i++) dias.push(pnSomarDias(seg, i));
+    const porDia = {};
+    lojasCache.forEach(function(l){ if(l.agendamento && l.agendamento>=dias[0] && l.agendamento<=dias[6]){ (porDia[l.agendamento] = porDia[l.agendamento] || []).push(l); } });
+    const visiveis = dias.filter(function(d, i){ return i<5 || (porDia[d] && porDia[d].length); });
+    document.getElementById("pn-agenda-periodo").textContent = pnPeriodo(dias[0], dias[6]);
+    const el = document.getElementById("pn-agenda");
+    el.style.setProperty("--pn-dias", visiveis.length);
+    el.innerHTML = visiveis.map(function(d){
+      const dt = new Date(d+"T00:00:00");
+      // Em ordem de hora prevista; sem hora vai para o fim do dia
+      const lojas = (porDia[d]||[]).slice().sort(function(a,b){ return String(a.agendamentoPrevisto||"99").localeCompare(String(b.agendamentoPrevisto||"99")) || String(a.nome).localeCompare(String(b.nome), "pt-BR", {numeric:true}); });
+      return '<div class="pn-dia'+(d===hoje?' hoje':'')+'"><div class="pn-dia-cab">'+PN_DIAS[dt.getDay()]+' '+fmtDateBR(d).slice(0,5)+'</div><div class="pn-dia-corpo">' +
+        (lojas.length ? lojas.map(function(l){
+          const s = pnSituacaoAgenda(l, hoje);
+          return '<div class="pn-evento '+s.cls+'"><b>'+escapeHtml(l.nome)+'</b>'+s.txt+'<br><span class="pn-ev-hora">'+(l.agendamentoPrevisto ? escapeHtml(l.agendamentoPrevisto) : 'Horário a definir')+'</span></div>';
+        }).join("") : '<div class="pn-dia-vazio">Sem agendamentos</div>') +
+      '</div></div>';
+    }).join("");
+    document.getElementById("pn-agenda-hoje").disabled = pnSemanaOffset === 0;
+  }
+  function wirePainelNovo(){
+    document.getElementById("pn-agenda-ant").addEventListener("click", function(){ pnSemanaOffset--; renderPainelAgenda(); });
+    document.getElementById("pn-agenda-prox").addEventListener("click", function(){ pnSemanaOffset++; renderPainelAgenda(); });
+    document.getElementById("pn-agenda-hoje").addEventListener("click", function(){ pnSemanaOffset = 0; renderPainelAgenda(); });
   }
         function renderPainel(){
     const total = lojasCache.length;
