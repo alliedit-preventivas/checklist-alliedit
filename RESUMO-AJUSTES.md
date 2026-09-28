@@ -129,7 +129,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Nenhuma alteração de banco.
 
 ### 4.10 Painel mais enxuto (só na `develop`, ainda não publicado)
-- **Card "Lojas"** (tabela com busca e filtros) **escondido por enquanto**, a pedido da usuária. O código foi mantido: para voltar, remover o `display:none` do card `painel-card-lojas` e mudar `PAINEL_MOSTRAR_TABELA_LOJAS` para `true`. Enquanto estiver escondido, clicar nos cartões de status (Concluídos, Andamento etc.) não filtra nada; o cartão "Equip. p/ substituir" continua levando à lista de substituições.
+- **Card "Lojas"** (tabela com busca e filtros) **escondido por enquanto**, a pedido da usuária. O código foi mantido: para voltar, remover o `display:none` do card `painel-card-lojas` e mudar `PAINEL_MOSTRAR_TABELA_LOJAS` para `true`. Clicar nos cartões de status abre a janela com a lista das lojas (ver 8.5); com a tabela escondida, não filtra nada.
 - **Card "Maior tempo de atendimento"** escondido a pedido da usuária (código mantido; para voltar, remover o `display:none` do card `painel-card-tempo`). O calendário ficou sozinho na metade esquerda da linha.
 - **Calendário compacto:** agora fica ao lado de "Maior tempo de atendimento", com o título "Calendário de agendamentos". Cada dia mostra só o **número de lojas agendadas**. Clicando no dia, a lista das lojas aparece abaixo, e clicar na loja abre o checklist, como antes. Mostra só as semanas do mês (5 ou 6 linhas) e sublinha o dia de hoje.
 
@@ -208,3 +208,16 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Link do Painel para a gestão (sem login, só visualização):** `https://alliedit-preventivas.github.io/checklist-alliedit/?painel=1` (também funciona com `#painel`). Abre direto no Painel de Indicadores, sem os menus Agendamento/Técnico, sem pedir login, com o aviso "Modo visualização · atualiza automaticamente". Clicar nas lojas do calendário não abre checklist, e o modo não grava nada no banco (`modoGestao`). Decisão da usuária: sem login, igual ao link dos técnicos. Risco aceito: quem tiver o link vê os indicadores. Localmente: `http://localhost:5174/?painel=1`. Só na `develop`.
 - **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)". Só na `develop`.
 - Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele). Só na `develop`.
+
+### 8.4 Regionais das lojas atualizadas (só na `develop`, ainda não publicado)
+- Lista de lojas x regionais enviada pela usuária (28/09/2026, 49 lojas) conferida com `UF_REGIONAL_MAP`: 45 já estavam certas. As 4 que estavam como "Confirmar" receberam a regional: 3114 Barra Sul = 2, 3130 Bourbon = 1, 3135 BH Shopping = 3, 3142 Parque Dom Pedro = 4.
+- Resultado no card "Estrutura Operacional por Regional": Regional 1 = 12 lojas, 2 = 13, 3 = 11, 4 = 13 (sem contar as lojas de teste). O card "REGIONAL CONFIRMAR" deixou de existir e "Regionais Mapeadas" passou de 5 para 4.
+- Os nomes das lojas exibidos vêm do cadastro (tabela `lojas`), não da lista; não foram alterados. Nenhuma alteração de banco.
+- **Concentração Territorial (Lojas por UF):** "SP", "SP - Interior" e "SP - Litoral" viraram uma linha só, "SP" (25 lojas, igual ao indicador "Concentração SP"). A coluna "Regional Predom." virou **"Regional"** e mostra todas as regionais da UF (SP = "Regionais 1 e 4"). A diferença Capital/Interior/Litoral continua guardada em `UF_REGIONAL_MAP`, só não aparece mais na tabela.
+
+### 8.5 Janela com as lojas de cada cartão de status (só na `develop`, ainda não publicado)
+- No Painel, clicar em **Não iniciado, Confirmado, Andamento, Concluídos, Equip. p/ substituir ou Atrasado** abre uma janela com a quantidade e a lista das lojas daquele cartão (função `abrirPopupStatus`).
+- Cada loja mostra a data agendada (ou a previsão, ou "Sem data agendada"). Em **Atrasado**, a mais atrasada vem primeiro, com os dias de atraso. Em **Equip. p/ substituir**, cada loja mostra os equipamentos e o setor (antes esse cartão só rolava a página até a lista de substituições).
+- Com login, clicar na loja abre o checklist (igual ao calendário). No link da gestão (`?painel=1`) é só consulta: as lojas não são clicáveis.
+- Fecha no botão "Fechar", clicando fora da janela ou com a tecla Esc. No celular, a lista rola dentro da janela.
+- As lojas de teste (9999 e 9998) aparecem na lista, porque também entram na contagem dos cartões. Nenhuma alteração de banco.

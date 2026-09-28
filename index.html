@@ -294,6 +294,12 @@
   .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;}
   .modal-box{background:var(--surface); border-radius:12px; padding:18px; max-width:420px; width:100%;}
   .modal-box p{font-size:13.5px; margin:0 0 14px;}
+  .painel-modal-lista{max-height:60vh; overflow-y:auto; margin-bottom:12px; border-top:1px solid var(--border);}
+  .painel-modal-item{padding:8px 2px; border-bottom:1px solid var(--border); font-size:13px;}
+  .painel-modal-item b{display:block; color:var(--navy);}
+  .painel-modal-item span{display:block; font-size:12px; color:var(--text-muted); margin-top:2px;}
+  .painel-modal-item.clicavel{cursor:pointer;}
+  .painel-modal-item.clicavel:hover b{color:var(--teal);}
   .cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px;}
   .cal-dow{font-size:10px; text-align:center; color:var(--text-muted); font-weight:700; text-transform:uppercase; padding-bottom:4px;}
   .cal-day{min-height:34px; min-width:0; border:1px solid var(--border); border-radius:6px; padding:3px 2px; font-size:10.5px; background:var(--bg); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;}
@@ -741,7 +747,7 @@
 <script>
 (function(){
   const ESTADOS = ["Bom","Regular","Ruim - substituir"];
-const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":["SP",1],"2305":["SP",1],"2306":["SP - Interior",4],"2307":["PR",2],"2308":["RJ",2],"2309":["SP",1],"2310":["SP",1],"2311":["SP - Interior",4],"2312":["SP",1],"2313":["RJ",2],"2314":["DF",3],"2315":["SP - Interior",4],"2317":["SP",1],"2318":["SP",4],"2320":["RS",2],"2346":["PR",2],"2451":["PE",3],"2454":["GO",3],"2455":["DF",3],"2496":["BA",3],"2746":["SP - Interior",1],"2765":["RJ",2],"2766":["SP",1],"2868":["RJ",2],"2875":["MG",3],"2906":["SC",2],"2909":["SP - Litoral",4],"2918":["CE",3],"2924":["AL",3],"2944":["SP",4],"2953":["SC",2],"2971":["SP",1],"2976":["SP - Interior",4],"2992":["PA",3],"2993":["PR",2],"2994":["MG",3],"3010":["SP",4],"3040":["SP",1],"3044":["SP - Interior",4],"3067":["SP",4],"3071":["MS",4],"3075":["SP - Interior",4],"3096":["ES",2],"3130":["SP","Confirmar"],"3135":["MG","Confirmar"],"3142":["SP","Confirmar"],"3114":["RS","Confirmar"]};
+const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":["SP",1],"2305":["SP",1],"2306":["SP - Interior",4],"2307":["PR",2],"2308":["RJ",2],"2309":["SP",1],"2310":["SP",1],"2311":["SP - Interior",4],"2312":["SP",1],"2313":["RJ",2],"2314":["DF",3],"2315":["SP - Interior",4],"2317":["SP",1],"2318":["SP",4],"2320":["RS",2],"2346":["PR",2],"2451":["PE",3],"2454":["GO",3],"2455":["DF",3],"2496":["BA",3],"2746":["SP - Interior",1],"2765":["RJ",2],"2766":["SP",1],"2868":["RJ",2],"2875":["MG",3],"2906":["SC",2],"2909":["SP - Litoral",4],"2918":["CE",3],"2924":["AL",3],"2944":["SP",4],"2953":["SC",2],"2971":["SP",1],"2976":["SP - Interior",4],"2992":["PA",3],"2993":["PR",2],"2994":["MG",3],"3010":["SP",4],"3040":["SP",1],"3044":["SP - Interior",4],"3067":["SP",4],"3071":["MS",4],"3075":["SP - Interior",4],"3096":["ES",2],"3130":["SP",1],"3135":["MG",3],"3142":["SP",4],"3114":["RS",2]};
   const LOJAS_LEVANTAMENTO = {
     "3096": "Inaugurada em 2026",
     "3130": "Inaugurada em 2026",
@@ -3546,8 +3552,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
   }
   function diasEntre(a,b){ const da=new Date(a+"T00:00:00"), db_=new Date(b+"T00:00:00"); return Math.round((db_-da)/86400000); }
-  function matchesFiltro(l, hoje){
-    switch(painelFiltro){
+  function matchesFiltro(l, hoje){ return lojaNoFiltro(l, painelFiltro, hoje); }
+  function lojaNoFiltro(l, filtro, hoje){
+    switch(filtro){
       case "concluido": return l.status==="concluido";
       case "em_andamento": return l.status==="em_andamento";
       case "nao_iniciado": return l.status==="nao_iniciado";
@@ -3900,14 +3907,14 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   function ufDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; const uf = info ? info[0] : "Não mapeada"; return uf.split(" - ")[0].trim(); }
   function regionalDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; return info ? info[1] : "—"; }
   function renderPainelListaVazia(containerId){ document.getElementById(containerId).innerHTML = '<div class="hint">Sem dados suficientes ainda.</div>'; }
-  function ufBrutaDaLoja(l){ const info = UF_REGIONAL_MAP[codigoDaLoja(l)]; return info ? info[0] : "Não mapeada"; }
   function renderPainelUfRegional(){
     const total = lojasCache.length;
-    const porUfBruta = {};
-    lojasCache.forEach(function(l){ const uf = ufBrutaDaLoja(l); porUfBruta[uf] = (porUfBruta[uf]||0) + 1; });
+    // SP, SP - Interior e SP - Litoral contam juntos como SP
+    const porUf = {};
+    lojasCache.forEach(function(l){ const uf = ufDaLoja(l); porUf[uf] = (porUf[uf]||0) + 1; });
 
-    const estadosDistintos = new Set(Object.keys(porUfBruta).map(function(u){ return u.split(" - ")[0].trim(); }).filter(function(u){ return u!=="Não mapeada" && u!=="DF"; }));
-    const temDF = Object.keys(porUfBruta).some(function(u){ return u.split(" - ")[0].trim()==="DF"; });
+    const estadosDistintos = new Set(Object.keys(porUf).filter(function(u){ return u!=="Não mapeada" && u!=="DF"; }));
+    const temDF = Object.keys(porUf).some(function(u){ return u==="DF"; });
     const spCount = lojasCache.filter(function(l){ return ufDaLoja(l)==="SP"; }).length;
     const spPct = total ? (spCount/total*100).toFixed(1).replace(".", ",") : "0,0";
     const regionaisDistintos = new Set(lojasCache.map(function(l){ return regionalDaLoja(l); }).filter(function(r){ return r!=="—"; }));
@@ -3924,13 +3931,16 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
 
     renderPainelLevantamento();
 
-    function regionalPredominante(nomesUf){
+    // Uma UF pode ter lojas em mais de uma regional (ex.: SP = Regionais 1 e 4)
+    function regionalPredominante(uf){
       const contagem = {};
-      lojasCache.forEach(function(l){ if(ufBrutaDaLoja(l)===nomesUf){ const r = regionalDaLoja(l); if(r!=="—") contagem[r] = (contagem[r]||0)+1; } });
-      const entries = Object.entries(contagem).sort(function(a,b){ return b[1]-a[1]; });
-      return entries.length ? "Regional "+entries[0][0] : "—";
+      lojasCache.forEach(function(l){ if(ufDaLoja(l)===uf){ const r = regionalDaLoja(l); if(r!=="—") contagem[r] = (contagem[r]||0)+1; } });
+      const regionais = Object.keys(contagem).sort();
+      if(!regionais.length) return "—";
+      if(regionais.length===1) return "Regional "+regionais[0];
+      return "Regionais "+regionais.slice(0,-1).join(", ")+" e "+regionais[regionais.length-1];
     }
-    const ufEntries = Object.entries(porUfBruta).sort(function(a,b){ return b[1]-a[1]; });
+    const ufEntries = Object.entries(porUf).sort(function(a,b){ return b[1]-a[1]; });
     const principais = ufEntries.filter(function(e){ return e[1] >= 2 && e[0]!=="Não mapeada"; });
     const demais = ufEntries.filter(function(e){ return e[1] < 2 && e[0]!=="Não mapeada"; });
     const naoMapeadas = ufEntries.find(function(e){ return e[0]==="Não mapeada"; });
@@ -3948,7 +3958,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       linhasTabela.push('<tr><td>Não mapeada</td><td class="num">'+naoMapeadas[1]+'</td><td class="num">'+pct+'%</td><td>—</td></tr>');
     }
     document.getElementById("painel-tabela-uf").innerHTML = !linhasTabela.length ? '<div class="hint">Sem dados suficientes ainda.</div>' :
-      '<table class="painel-tabela"><thead><tr><th>Estado / UF</th><th class="num">Qtd</th><th class="num">Distribuição (%)</th><th>Regional Predom.</th></tr></thead><tbody>'+linhasTabela.join("")+'</tbody></table>';
+      '<table class="painel-tabela"><thead><tr><th>Estado / UF</th><th class="num">Qtd</th><th class="num">Distribuição (%)</th><th>Regional</th></tr></thead><tbody>'+linhasTabela.join("")+'</tbody></table>';
 
     const porRegionalDetalhe = {};
     lojasCache.forEach(function(l){
@@ -4175,6 +4185,60 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       }).join("") + '</tbody></table>' +
       '<div class="hint" style="margin-top:10px;"><i class="painel-dot" style="background:var(--warn-bg); border:1px solid var(--warn); border-radius:2px;"></i> Linhas destacadas concentram ~80% de todas as ocorrências registradas na Preventiva 2025 — os pontos prioritários de atenção para 2026.</div>';
   }
+  // Janela com as lojas de um cartão de status do Painel (Não iniciado, Concluídos etc.)
+  const POPUP_STATUS_TITULO = {nao_iniciado:"Não iniciado", liberado:"Confirmado", em_andamento:"Em andamento", concluido:"Concluídos", substituicao:"Equipamentos para substituição", atrasada:"Atrasado"};
+  function abrirPopupStatus(filtro, substituicoesPorLoja){
+    const hoje = todayStr();
+    function porNome(a,b){ return String(a.nome||"").localeCompare(String(b.nome||""), "pt-BR", {numeric:true}); }
+    function dataDaLoja(l){
+      if(l.agendamento) return "Agendada para " + fmtDateBR(l.agendamento);
+      if(l.agendamentoPrevisto) return "Previsão: " + fmtDateBR(l.agendamentoPrevisto);
+      return "Sem data agendada";
+    }
+    let lojas, resumo, detalhe;
+    if(filtro==="substituicao"){
+      lojas = lojasCache.filter(function(l){ return substituicoesPorLoja[l.nome]; }).sort(porNome);
+      const totalItens = lojas.reduce(function(a,l){ return a + substituicoesPorLoja[l.nome].length; }, 0);
+      resumo = totalItens + " equipamento(s) em " + lojas.length + " loja(s)";
+      detalhe = function(l){ const itens = substituicoesPorLoja[l.nome]; return itens.length + " item(ns): " + itens.map(function(x){ return x.equip + " (" + x.setor + ")"; }).join(", "); };
+    }else{
+      lojas = lojasCache.filter(function(l){ return lojaNoFiltro(l, filtro, hoje); });
+      // Atrasadas: a mais atrasada primeiro
+      lojas.sort(filtro==="atrasada" ? function(a,b){ return a.agendamento.localeCompare(b.agendamento) || porNome(a,b); } : porNome);
+      resumo = lojas.length + " loja(s)";
+      detalhe = function(l){
+        if(filtro==="atrasada"){ const dias = diasEntre(l.agendamento, hoje); return dataDaLoja(l) + " · " + dias + " dia(s) de atraso"; }
+        return dataDaLoja(l);
+      };
+    }
+    const clicavel = !modoGestao; // link da gestão é só visualização
+    const c = document.getElementById("modal-container");
+    function fechar(){ c.innerHTML = ""; document.removeEventListener("keydown", aoTeclar); }
+    function aoTeclar(e){ if(e.key === "Escape") fechar(); }
+    c.innerHTML = '<div class="modal-overlay" id="modal-overlay-status"><div class="modal-box" style="max-width:520px;">' +
+      '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px;">' +
+        '<b style="font-size:15px; color:var(--navy);">' + escapeHtml(POPUP_STATUS_TITULO[filtro]) + '</b>' +
+        '<span style="font-size:12px; font-weight:700; color:var(--teal);">' + resumo + '</span></div>' +
+      (clicavel && lojas.length ? '<div class="hint" style="margin:0 0 8px;">Clique na loja para abrir o checklist.</div>' : '') +
+      '<div class="painel-modal-lista">' +
+        (lojas.length ? lojas.map(function(l){
+          return '<div class="painel-modal-item' + (clicavel ? ' clicavel" data-loja-id="' + l.id + '" title="Abrir checklist' : '') + '">' +
+            '<b>' + escapeHtml(l.nome) + '</b><span>' + escapeHtml(detalhe(l)) + '</span></div>';
+        }).join("") : '<div class="hint" style="padding:12px 0;">Nenhuma loja neste cartão no momento.</div>') +
+      '</div>' +
+      '<div style="display:flex; justify-content:flex-end;"><button class="btn btn-primary btn-sm" id="modal-status-fechar">Fechar</button></div>' +
+    '</div></div>';
+    document.getElementById("modal-status-fechar").addEventListener("click", fechar);
+    document.getElementById("modal-overlay-status").addEventListener("click", function(e){ if(e.target.id === "modal-overlay-status") fechar(); });
+    document.addEventListener("keydown", aoTeclar);
+    c.querySelectorAll("[data-loja-id]").forEach(function(item){
+      item.addEventListener("click", function(){
+        const l = lojasCache.find(function(x){ return x.id === item.dataset.lojaId; });
+        fechar();
+        if(l) tentarAbrirLoja(l.id, l);
+      });
+    });
+  }
         function renderPainel(){
     const total = lojasCache.length;
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
@@ -4241,14 +4305,14 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     ];
     document.getElementById("painel-stats").innerHTML = cardsDef.map(function(s){
       const isActive = s.filter && s.filter===painelFiltro;
-      return '<div class="stat-card'+(isActive?' active':'')+'" data-filter="'+(s.filter||"")+'"><div class="num">'+s.value+'</div><div class="lbl">'+s.label+'</div>' +
+      return '<div class="stat-card'+(isActive?' active':'')+'" data-filter="'+(s.filter||"")+'" title="Clique para ver as lojas"><div class="num">'+s.value+'</div><div class="lbl">'+s.label+'</div>' +
         (s.bar!==null ? '<div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+s.bar+'%; background:'+barColor[s.filter]+';"></div></div>' : '') + '</div>';
     }).join("");
     document.querySelectorAll("#painel-stats .stat-card").forEach(function(card){
       card.addEventListener("click", function(){
         const f = card.dataset.filter;
-        if(f==="substituicao"){ document.getElementById("painel-substituicoes").closest(".card").scrollIntoView({behavior:"smooth", block:"start"}); return; }
-        if(!PAINEL_MOSTRAR_TABELA_LOJAS) return;
+        abrirPopupStatus(f, substituicoesPorLoja);
+        if(f==="substituicao" || !PAINEL_MOSTRAR_TABELA_LOJAS) return;
         if(!f){ painelFiltro=null; } else { painelFiltro = (painelFiltro===f)?null:f; }
         renderPainel();
       });
