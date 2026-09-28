@@ -32,6 +32,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-mercado-pago-lista-2026-09-24` | Produção antes da lista de Mercado Pago / POS PIX (versão anterior à atual) |
 | `producao-antes-trava-encerramento` | Produção antes da trava de encerramento (modal ao anexar RAT) |
 | `antes-trava-encerramento` | `develop` antes da trava de encerramento |
+| `antes-tema-cores` (só no computador local) | `develop` antes do botão de cores AlliedIT / Sephora (commit `3c1b575`) |
 | branch `restauracao-producao-antes-aviso-pendencias-2026-09-27` | Produção antes do aviso "Tudo certo!" |
 | branch `restauracao-producao-antes-painel-executivo-2026-09-28` | Produção antes do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado" (commit `adf6366`) |
 | branch `restauracao-producao-antes-link-gestao-2026-09-28` | Produção antes do link da gestão, Lojas em Levantamento escondido e substituições sozinho na linha (commit `15f0165`) |
@@ -224,3 +225,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Com login, clicar na loja abre o checklist (igual ao calendário). No link da gestão (`?painel=1`) é só consulta: as lojas não são clicáveis.
 - Fecha no botão "Fechar", clicando fora da janela ou com a tecla Esc. No celular, a lista rola dentro da janela.
 - As lojas de teste (9999 e 9998) aparecem na lista, porque também entram na contagem dos cartões. Nenhuma alteração de banco.
+
+### 8.6 Botão "Cores do site": AlliedIT x Sephora (só na `develop`, ainda não publicado)
+- No topo do Painel (ao lado de "Status ativo"): **Cores do site: [AlliedIT] [Sephora]**. AlliedIT é o padrão (cores de sempre); Sephora deixa o site em **preto e branco**: cabeçalho preto, botões e números em preto, fundo cinza bem claro liso e uma faixa listrada preto e branco embaixo do cabeçalho (as listras da marca).
+- Verde, amarelo e vermelho de situação (Concluído, Atrasado, Atenção etc.) ficam iguais nos dois, para não perder o significado. O logo AlliedIT continua no cabeçalho. O **PDF não muda** (continua nas cores AlliedIT).
+- A escolha vale para o site inteiro, mas **só no navegador de quem clicou** (fica guardada no navegador, chave `temaCores`); não grava nada no banco e não muda o que as outras pessoas veem. Os técnicos continuam vendo AlliedIT.
+- No código: cores da Sephora em `:root[data-tema="sephora"]`, funções `aplicarTemaCores` e `wireTemaCores`, e um script curto no `<head>` que aplica a escolha antes de desenhar a página (sem "piscar" nas cores AlliedIT). Ponto de restauração da `develop` antes deste ajuste: tag `antes-tema-cores`.

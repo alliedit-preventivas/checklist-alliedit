@@ -5,6 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checklist de Preventivas · Sephora 2026</title>
+<script>
+  // Cores do site escolhidas no Painel (AlliedIT = padrão, Sephora = preto e branco). Aplicado antes de desenhar a página.
+  try{ if(localStorage.getItem("temaCores") === "sephora") document.documentElement.setAttribute("data-tema", "sephora"); }catch(e){}
+</script>
 <style>
 @font-face {
   font-family: 'Chillax-Variable';
@@ -18,8 +22,19 @@
     --muted:#C7CDD1; --navy:#0E2841; --text-muted:#5B7280;
     --bg:#F7F9FA; --surface:#FFFFFF; --border:#E3E8EA;
     --ok:#1E7A46; --ok-bg:#E7F5EC; --warn:#8A6D00; --warn-bg:#FFF3C4; --bad:#B3261E; --bad-bg:#FCE8E6;
-    --radius:10px; --grad:linear-gradient(90deg, var(--teal), var(--teal-lt));
+    --radius:10px; --grad:linear-gradient(90deg, var(--teal), var(--teal-lt)); --sombra-marca:rgba(2,110,140,.25);
   }
+  /* Cores da Sephora (preto e branco), escolhidas no botão "Cores do site" do Painel.
+     Verde, amarelo e vermelho de situação (Concluído, Atrasado etc.) continuam iguais. */
+  :root[data-tema="sephora"]{
+    --teal:#000000; --teal-lt:#6B6B6B; --yellow:#FFFFFF;
+    --muted:#CFCFCF; --navy:#111111; --text-muted:#666666;
+    --bg:#F5F5F5; --surface:#FFFFFF; --border:#E2E2E2;
+    --grad:linear-gradient(90deg, #000000, #3A3A3A); --sombra-marca:rgba(0,0,0,.22);
+  }
+  :root[data-tema="sephora"] body{background-image:none; background-color:var(--bg);}
+  /* Listras preto e branco da marca, logo abaixo do cabeçalho */
+  :root[data-tema="sephora"] header::after{content:""; position:absolute; left:0; right:0; bottom:-4px; height:4px; background:repeating-linear-gradient(90deg, #000 0 8px, #fff 8px 16px);}
   :root{ color-scheme: light; }
   :root[data-theme="dark"]{ --bg:#0E1A22; --surface:#132530; --border:#22374290; --navy:#EAF1F4; --text-muted:#9FB3BC; --ok-bg:#123322; --warn-bg:#3A2E06; --bad-bg:#3A1512; }
   *{box-sizing:border-box;}
@@ -48,7 +63,7 @@
   nav{display:flex; gap:6px;}
   nav button{background:var(--surface); color:var(--navy); border:none; padding:9px 14px; border-radius:20px; font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer; user-select:none; -webkit-user-select:none; box-shadow:0 1px 3px rgba(14,40,65,.08); transition:filter .15s;}
   nav button:hover{filter:brightness(1.05);}
-  nav button.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);}
+  nav button.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px var(--sombra-marca);}
   main{max-width:1520px; margin:0 auto; padding:16px 14px 80px;}
   #view-checklist{max-width:620px; margin:0 auto;}
   .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
@@ -59,7 +74,7 @@
   input:focus, select:focus, textarea:focus{outline:2px solid var(--teal-lt); outline-offset:-1px;}
   .toolbar input{flex:1; min-width:160px;}
   .btn{border:none; border-radius:20px; padding:9px 14px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; user-select:none; -webkit-user-select:none;}
-  .btn-primary{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);} .btn-primary:hover{filter:brightness(1.05);} .btn-primary:disabled{opacity:.5; cursor:not-allowed; filter:none;}
+  .btn-primary{background:var(--grad); color:#fff; box-shadow:0 2px 8px var(--sombra-marca);} .btn-primary:hover{filter:brightness(1.05);} .btn-primary:disabled{opacity:.5; cursor:not-allowed; filter:none;}
   .btn-ghost{background:transparent; color:var(--teal); border:1px solid var(--teal); border-radius:20px;}
   .status-prospeccao-ativo{ background:var(--teal); color:#fff; border-color:var(--teal); }
   .btn-danger{background:transparent; color:var(--bad); border:1px solid var(--bad); border-radius:20px;}
@@ -96,10 +111,19 @@
   .status-filter-list{display:flex; flex-direction:column; gap:7px;}
   .status-filter-item{border:none; background:var(--surface); color:var(--navy); box-shadow:0 1px 3px rgba(14,40,65,.08); padding:8px 13px; border-radius:18px; font-family:inherit; font-size:10.7px; font-weight:600; cursor:pointer; user-select:none; -webkit-user-select:none; text-align:center; transition:filter .15s;}
   .status-filter-item:hover{filter:brightness(1.05);}
-  .status-filter-item.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px rgba(2,110,140,.25);}
+  .status-filter-item.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px var(--sombra-marca);}
   .status-filter-confirmado{background:#D8ECD9; color:#2E7D32;}
   .status-filter-confirmado.active{background:linear-gradient(90deg, #2E7D32, #5CB85C); color:#fff; box-shadow:0 2px 8px rgba(46,125,50,.3);}
   .painel-exec-header{margin-bottom:14px;}
+  .tema-cores{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
+  .tema-cores-rotulo{font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.4px;}
+  .tema-cores-btn{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--surface); color:var(--navy); border-radius:20px; padding:5px 11px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;}
+  .tema-cores-btn:hover{border-color:var(--teal-lt);}
+  .tema-cores-btn.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .tema-cores-amostra{width:12px; height:12px; border-radius:50%; flex-shrink:0;}
+  .tema-cores-btn.active .tema-cores-amostra{box-shadow:0 0 0 1.5px #fff;}
+  .amostra-alliedit{background:linear-gradient(135deg, #026E8C 50%, #F7D51C 50%);}
+  .amostra-sephora{background:linear-gradient(135deg, #000 50%, #fff 50%); border:1px solid #000;}
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
   /* Painel: seções numeradas, cabeçalho padrão dos cards e listas com rolagem própria */
   .painel-secao{display:flex; align-items:center; gap:10px; margin:28px 0 12px; font-size:15px; font-weight:800; color:var(--navy);}
@@ -640,6 +664,11 @@
           <div class="hint" style="margin:0;">Visão consolidada de progresso, trocas de equipamento e distribuição operacional da campanha</div>
         </div>
         <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <div class="tema-cores" role="group" aria-label="Cores do site">
+            <span class="tema-cores-rotulo">Cores do site</span>
+            <button type="button" class="tema-cores-btn active" data-cores="alliedit" aria-pressed="true"><i class="tema-cores-amostra amostra-alliedit"></i>AlliedIT</button>
+            <button type="button" class="tema-cores-btn" data-cores="sephora" aria-pressed="false"><i class="tema-cores-amostra amostra-sephora"></i>Sephora</button>
+          </div>
           <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
           <span class="hint hidden" id="painel-modo-gestao" style="margin:0;">Modo visualização · atualiza automaticamente</span>
         </div>
@@ -1537,8 +1566,28 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("btn-logout").addEventListener("click", sair);
     document.getElementById("btn-logout-topo").addEventListener("click", sair);
   }
+  // Cores do site: AlliedIT (padrão) ou Sephora (preto e branco). A escolha fica guardada só neste navegador.
+  function aplicarTemaCores(tema){
+    const sephora = tema === "sephora";
+    if(sephora) document.documentElement.setAttribute("data-tema", "sephora");
+    else document.documentElement.removeAttribute("data-tema");
+    document.querySelectorAll(".tema-cores-btn").forEach(function(b){
+      const ativo = b.dataset.cores === (sephora ? "sephora" : "alliedit");
+      b.classList.toggle("active", ativo);
+      b.setAttribute("aria-pressed", ativo ? "true" : "false");
+    });
+  }
+  function wireTemaCores(){
+    document.querySelectorAll(".tema-cores-btn").forEach(function(b){
+      b.addEventListener("click", function(){
+        aplicarTemaCores(b.dataset.cores);
+        try{ localStorage.setItem("temaCores", b.dataset.cores); }catch(e){}
+      });
+    });
+    aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
+  }
   function continuarAposAcesso(){
-    wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario();
+    wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario(); wireTemaCores();
     if(modoGestao){
       showView("painel");
       subscribeLojas();
