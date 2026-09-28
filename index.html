@@ -121,15 +121,15 @@
   .painel-exec-header{margin-bottom:14px;}
   /* Botões "Cores do site" no cabeçalho: só as bolinhas com as cores de cada marca; a escolhida ganha um anel branco */
   .header-direita{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
-  .tema-cores{display:flex; align-items:center; gap:4px;}
-  .tema-cores-btn{display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; padding:0; border:2px solid transparent; background:transparent; border-radius:50%; cursor:pointer;}
-  .tema-cores-btn:hover{border-color:rgba(255,255,255,.5);}
-  .tema-cores-btn.active{border-color:#fff;}
-  .tema-cores-btn:focus-visible{outline:2px solid #fff; outline-offset:2px;}
-  .tema-cores-amostra{width:18px; height:18px; border-radius:50%; flex-shrink:0; box-shadow:0 0 0 1px rgba(255,255,255,.85);}
+  .tema-cores{display:flex; align-items:center; gap:2px;}
+  .tema-cores-btn{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; padding:0; border:1.5px solid transparent; background:transparent; border-radius:50%; cursor:pointer; opacity:.65;}
+  .tema-cores-btn:hover{opacity:1;}
+  .tema-cores-btn.active{border-color:rgba(255,255,255,.9); opacity:1;}
+  .tema-cores-btn:focus-visible{outline:1.5px solid #fff; outline-offset:1px;}
+  .tema-cores-amostra{width:12px; height:12px; border-radius:50%; flex-shrink:0; box-shadow:0 0 0 1px rgba(255,255,255,.7);}
   @media(max-width:480px){ .header-direita{justify-content:center;} }
   /* Painel com login: botões de cores + menus não cabem junto com o título do centro em telas médias */
-  @media(min-width:481px) and (max-width:1120px){ header.com-cores-e-menus .header-titulo{display:none;} }
+  @media(min-width:481px) and (max-width:1080px){ header.com-cores-e-menus .header-titulo{display:none;} }
   .amostra-alliedit{background:linear-gradient(135deg, #026E8C 50%, #F7D51C 50%);}
   .amostra-sephora{background:linear-gradient(135deg, #000 50%, #fff 50%);}
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:800; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
