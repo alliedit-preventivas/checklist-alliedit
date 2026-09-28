@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção do link do Painel para a gestão e ajustes do Painel).
+Última atualização: 28/09/2026 (publicação em produção das regionais atualizadas, SP numa linha só e janela das lojas por status).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `41cce39` (28/09/2026), equivale à `develop` `90ed6a9` |
+| Última publicação | `main` = commit `8854816` (28/09/2026), equivale à `develop` `b8d3bec` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -35,6 +35,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | branch `restauracao-producao-antes-aviso-pendencias-2026-09-27` | Produção antes do aviso "Tudo certo!" |
 | branch `restauracao-producao-antes-painel-executivo-2026-09-28` | Produção antes do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado" (commit `adf6366`) |
 | branch `restauracao-producao-antes-link-gestao-2026-09-28` | Produção antes do link da gestão, Lojas em Levantamento escondido e substituições sozinho na linha (commit `15f0165`) |
+| `producao-antes-janela-status-2026-09-28` | Produção antes das regionais atualizadas, SP numa linha só e janela das lojas por status (commit `41cce39`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -209,13 +210,15 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)". Só na `develop`.
 - Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele). Só na `develop`.
 
-### 8.4 Regionais das lojas atualizadas (só na `develop`, ainda não publicado)
+### 8.4 Regionais das lojas atualizadas: PUBLICADO (28/09/2026, junto com a 8.5)
+- Foi para produção na `main` `8854816` (equivale à `develop` `b8d3bec`), com as mesmas conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-janela-status-2026-09-28`.
+- A versão de produção foi montada numa pasta temporária (`git merge-file`: ajustes da `develop` + as 3 linhas de produção) e gravada na `main` sem trocar de branch, então os arquivos da pasta do projeto não foram mexidos.
 - Lista de lojas x regionais enviada pela usuária (28/09/2026, 49 lojas) conferida com `UF_REGIONAL_MAP`: 45 já estavam certas. As 4 que estavam como "Confirmar" receberam a regional: 3114 Barra Sul = 2, 3130 Bourbon = 1, 3135 BH Shopping = 3, 3142 Parque Dom Pedro = 4.
 - Resultado no card "Estrutura Operacional por Regional": Regional 1 = 12 lojas, 2 = 13, 3 = 11, 4 = 13 (sem contar as lojas de teste). O card "REGIONAL CONFIRMAR" deixou de existir e "Regionais Mapeadas" passou de 5 para 4.
 - Os nomes das lojas exibidos vêm do cadastro (tabela `lojas`), não da lista; não foram alterados. Nenhuma alteração de banco.
 - **Concentração Territorial (Lojas por UF):** "SP", "SP - Interior" e "SP - Litoral" viraram uma linha só, "SP" (25 lojas, igual ao indicador "Concentração SP"). A coluna "Regional Predom." virou **"Regional"** e mostra todas as regionais da UF (SP = "Regionais 1 e 4"). A diferença Capital/Interior/Litoral continua guardada em `UF_REGIONAL_MAP`, só não aparece mais na tabela.
 
-### 8.5 Janela com as lojas de cada cartão de status (só na `develop`, ainda não publicado)
+### 8.5 Janela com as lojas de cada cartão de status: PUBLICADO (28/09/2026, ver 8.4)
 - No Painel, clicar em **Não iniciado, Confirmado, Andamento, Concluídos, Equip. p/ substituir ou Atrasado** abre uma janela com a quantidade e a lista das lojas daquele cartão (função `abrirPopupStatus`).
 - Cada loja mostra a data agendada (ou a previsão, ou "Sem data agendada"). Em **Atrasado**, a mais atrasada vem primeiro, com os dias de atraso. Em **Equip. p/ substituir**, cada loja mostra os equipamentos e o setor (antes esse cartão só rolava a página até a lista de substituições).
 - Com login, clicar na loja abre o checklist (igual ao calendário). No link da gestão (`?painel=1`) é só consulta: as lojas não são clicáveis.
