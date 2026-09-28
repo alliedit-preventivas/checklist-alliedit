@@ -35,6 +35,7 @@
   header .brand-logo{height:32px; flex-shrink:0; display:block;}
   .header-titulo{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:#fff; font-weight:700; font-size:18px; letter-spacing:.4px; text-transform:uppercase; text-align:center; white-space:nowrap;}
   .modo-tecnico-header .header-titulo{display:none;}
+  .modo-gestao-header nav{display:none !important;}
   .modo-tecnico-header .brand-logo{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);}
   @media(max-width:480px){
     .header-inner{flex-direction:column; align-items:center; gap:6px; text-align:center;}
@@ -632,7 +633,10 @@
           <h2 style="margin:0 0 4px; font-size:19px; font-weight:800; color:var(--navy);">Painel Executivo: Preventiva 2026</h2>
           <div class="hint" style="margin:0;">Visão consolidada de progresso, trocas de equipamento e distribuição operacional da campanha</div>
         </div>
-        <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span class="painel-status-pill" id="painel-status-ativo">STATUS ATIVO</span>
+          <span class="hint hidden" id="painel-modo-gestao" style="margin:0;">Modo visualização · atualiza automaticamente</span>
+        </div>
       </div>
     </div>
 
@@ -924,6 +928,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   let currentLojaId = null, currentLoja = null;
   let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
   let modoTecnico = false, modoTecnicoId = false, lojaParamId = null, autoAbriuLoja = false;
+  // Modo gestão (link ?painel=1): abre só o Painel de Indicadores, sem login e só para visualização.
+  // Não mostra Agendamento nem Técnico e não abre checklists.
+  let modoGestao = false;
   let filtroHome = null;
   let modoSelecao = false;
   let lojasSelecionadas = new Set();
@@ -1423,7 +1430,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function parseAcesso(){
     const search = new URLSearchParams(window.location.search);
     let loja = search.get("loja"); let tecnico = search.get("tecnico") === "1";
+    let painel = search.get("painel") === "1";
     let hash = (window.location.hash || "").replace(/^#\/?/, "");
+    if(hash.toLowerCase() === "painel"){ painel = true; hash = ""; }
     if(hash){
       if(hash.indexOf("=") !== -1){
         const hp = new URLSearchParams(hash);
@@ -1432,7 +1441,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       }else if(hash.toLowerCase() !== "tecnico"){ if(!loja) loja = hash; tecnico = true; }
       else{ tecnico = true; }
     }
-    return {loja:loja, tecnico:tecnico};
+    return {loja:loja, tecnico:tecnico, painel:painel};
   }
 
   let supabaseClient = null;
@@ -1441,6 +1450,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     lojaParamId = acesso.loja;
     modoTecnico = acesso.tecnico || !!lojaParamId;
     modoTecnicoId = modoTecnico && !lojaParamId;
+    modoGestao = !!acesso.painel && !modoTecnico;
+    if(modoGestao){
+      document.getElementById("painel-modo-gestao").classList.remove("hidden");
+      document.querySelector("header nav").style.display = "none";
+      document.querySelector("header").classList.add("modo-gestao-header");
+    }
     if(modoTecnico){
       document.querySelector("header nav").style.display = "none";
       document.querySelector("header").classList.add("modo-tecnico-header");
@@ -1465,7 +1480,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     downloadsApi = null; // nao aplicavel fora do claude.ai
     if(!db){ document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível conectar ao armazenamento compartilhado. Recarregue a página.</div>'; return; }
 
-    if(modoTecnico){
+    if(modoTecnico || modoGestao){
       continuarAposAcesso();
       return;
     }
@@ -1518,6 +1533,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function continuarAposAcesso(){
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario();
+    if(modoGestao){
+      showView("painel");
+      subscribeLojas();
+      return; // modo gestão: só leitura (sem cadastro inicial de lojas e sem botão Sair)
+    }
     if(!modoTecnico) showView("lojas");
     subscribeLojas();
     if(!modoTecnico) seedLojasSeNecessario();
@@ -1545,7 +1565,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       lojasCache = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
       renderFiltroChipsHome(); renderLojasList(); renderAgendaDatas();
       if(modoTecnicoId){ renderTecIdDatalist(); validarCodigoTecnico(); }
-      if(!modoTecnico) renderPainel();
+      if(!modoTecnico){ renderPainel(); if(modoGestao) renderCalendario(); }
       if(currentLojaId){
         const badge = document.getElementById("cl-badge");
         const fresh = lojasCache.find(function(l){ return l.id === currentLojaId; });
@@ -1563,7 +1583,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("nav-lojas").classList.toggle("active", name==="lojas");
     document.getElementById("nav-painel").classList.toggle("active", name==="painel");
     const headerNav = document.querySelector("header nav");
-    if(headerNav && !modoTecnico) headerNav.style.display = (name==="lojas") ? "none" : "flex";
+    if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
     window.scrollTo({top:0});
@@ -1925,6 +1945,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
 
   function tentarAbrirLoja(id, data){
+    if(modoGestao) return; // link da gestão é só visualização
     if(data.status === "concluido"){
       mostrarConfirmacao("⚠️ Esta loja está com o checklist concluído. Deseja realmente reabrir/alterar os dados?", "Sim", "Não", function(){ openLoja(id, data, true); });
     }else{ openLoja(id, data, false); }
@@ -3462,7 +3483,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const lojasSel = calDiaSelecionado ? (porData[calDiaSelecionado] || []) : [];
     if(!lojasSel.length){ lista.innerHTML = '<div class="hint" style="margin:0;">Clique em um dia com número para ver as lojas agendadas.</div>'; return; }
     lista.innerHTML = '<div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:6px;">'+fmtDateBR(calDiaSelecionado)+' — '+lojasSel.length+' loja(s)</div>' +
-      lojasSel.map(function(l){ return '<span class="loja-chip" data-loja-id="'+l.id+'" title="Abrir checklist">'+escapeHtml(l.nome)+'</span>'; }).join("");
+      lojasSel.map(function(l){ return '<span class="loja-chip"'+(modoGestao?' style="cursor:default;"':' data-loja-id="'+l.id+'" title="Abrir checklist"')+'>'+escapeHtml(l.nome)+'</span>'; }).join("");
     lista.querySelectorAll("[data-loja-id]").forEach(function(chip){
       chip.addEventListener("click", function(){
         const l = lojasCache.find(function(x){ return x.id === chip.dataset.lojaId; });
