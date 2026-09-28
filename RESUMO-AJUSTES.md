@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 27/09/2026 (aviso de pendências resolvidas já publicado; Painel Executivo na `develop`, aguardando publicação — ver seção 8).
+Última atualização: 28/09/2026 (publicação em produção do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado").
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `adf6366` (equivale à `develop` `c06eb2c`, aviso de pendências resolvidas). A `develop` está à frente com o Painel Executivo (`55c05b4`) e o Comparativo de Trocas 2025 x 2026, aguardando publicação |
+| Última publicação | `main` = commit `15f0165` (28/09/2026), equivale à `develop` `c221eb3` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -32,6 +32,8 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-mercado-pago-lista-2026-09-24` | Produção antes da lista de Mercado Pago / POS PIX (versão anterior à atual) |
 | `producao-antes-trava-encerramento` | Produção antes da trava de encerramento (modal ao anexar RAT) |
 | `antes-trava-encerramento` | `develop` antes da trava de encerramento |
+| branch `restauracao-producao-antes-aviso-pendencias-2026-09-27` | Produção antes do aviso "Tudo certo!" |
+| branch `restauracao-producao-antes-painel-executivo-2026-09-28` | Produção antes do Painel Executivo, comparativos de troca, Painel reorganizado e correção do "Atrasado" (commit `adf6366`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -192,12 +194,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Ponto de restauração da produção (antes deste ajuste): branch `restauracao-producao-antes-aviso-pendencias-2026-09-27`.
 - **Testado e validado pela usuária no site no ar (27/09/2026).**
 
-### 8.2 Painel Executivo: PENDENTE DE PUBLICAÇÃO
-- Commit `55c05b4` na `develop` (detalhes na seção 4.8).
-- Antes de publicar: testar localmente e seguir o procedimento seguro (seção 3), com autorização da usuária.
-
-### 8.3 Comparativo de Trocas 2025 x 2026: PENDENTE DE PUBLICAÇÃO
-- Na `develop` (detalhes na seção 4.9). Publicar junto com o Painel Executivo, depois do teste da usuária.
-- Junto: correção do "Atrasado" em lojas concluídas/reabertas (seção 4.11).
-- Junto: Painel mais enxuto (card "Lojas" escondido e calendário compacto, seção 4.10).
-- Junto: Painel reorganizado (seção 4.12). A rolagem lateral no celular foi corrigida.
+### 8.2 Publicação de 28/09/2026: PUBLICADO
+- Foi para produção (`main` `15f0165`, equivale à `develop` `c221eb3`): Painel Executivo (4.8), Comparativo e Top 5 de trocas 2025 x 2026 (4.9), Painel enxuto (4.10), correção do "Atrasado" (4.11) e Painel reorganizado (4.12).
+- Conferido antes do envio: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado, e diferença para a `develop` de exatamente as 3 linhas obrigatórias.
+- Ponto de restauração: branch `restauracao-producao-antes-painel-executivo-2026-09-28` (tags continuam bloqueadas na sessão de nuvem; o envio para a `main` funcionou).
+- Pendente: a usuária conferir o site no ar com os dados reais.
