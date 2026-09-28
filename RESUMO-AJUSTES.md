@@ -201,7 +201,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Ponto de restauração: branch `restauracao-producao-antes-painel-executivo-2026-09-28` (tags continuam bloqueadas na sessão de nuvem; o envio para a `main` funcionou).
 - Pendente: a usuária conferir o site no ar com os dados reais.
 
-### 8.3 Publicação de 28/09/2026 (2ª): PUBLICADO
+### 8.3 Publicação de 28/09/2026 (2ª): PUBLICADO E VALIDADO
+- **Link da gestão testado e validado pela usuária no site no ar (28/09/2026).**
 - Foi para produção (`main` `41cce39`, equivale à `develop` `90ed6a9`) com as mesmas conferências da 8.2 (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes). Ponto de restauração: branch `restauracao-producao-antes-link-gestao-2026-09-28`.
 - Itens publicados:
 - **Link do Painel para a gestão (sem login, só visualização):** `https://alliedit-preventivas.github.io/checklist-alliedit/?painel=1` (também funciona com `#painel`). Abre direto no Painel de Indicadores, sem os menus Agendamento/Técnico, sem pedir login, com o aviso "Modo visualização · atualiza automaticamente". Clicar nas lojas do calendário não abre checklist, e o modo não grava nada no banco (`modoGestao`). Decisão da usuária: sem login, igual ao link dos técnicos. Risco aceito: quem tiver o link vê os indicadores. Localmente: `http://localhost:5174/?painel=1`. Só na `develop`.
