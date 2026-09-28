@@ -201,4 +201,5 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Pendente: a usuária conferir o site no ar com os dados reais.
 
 ### 8.3 Pendente de publicação
+- **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)". Só na `develop`.
 - Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele). Só na `develop`.

@@ -692,11 +692,13 @@
 
     <!-- ===== 4. Estrutura das lojas ===== -->
     <div class="painel-secao"><span class="painel-secao-num">4</span>Estrutura das lojas</div>
-    <div class="painel-2col">
-      <div class="card">
-        <div class="painel-card-cab"><h3>Concentração Territorial (Lojas por UF)</h3><span class="hint">Base: range_de_ips.xlsx</span></div>
-        <div id="painel-tabela-uf"></div>
-      </div>
+    <div class="card">
+      <div class="painel-card-cab"><h3>Concentração Territorial (Lojas por UF)</h3><span class="hint">Base: range_de_ips.xlsx</span></div>
+      <div id="painel-tabela-uf"></div>
+    </div>
+
+    <!-- Card "Lojas em Levantamento" escondido a pedido da usuária (para voltar, mude PAINEL_MOSTRAR_LEVANTAMENTO para true) -->
+    <div>
       <div class="card" id="painel-card-levantamento" style="display:none;">
         <div class="painel-card-cab"><h3>Lojas em Levantamento</h3><span class="hint">Sem troca de equipamentos</span></div>
         <div class="hint" style="margin:0 0 10px;">Lojas inauguradas em 2026 ou em reforma: equipamento todo novo, a preventiva aqui é só levantamento de informações, sem previsão de substituição.</div>
@@ -3473,6 +3475,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   const DEADLINE = "2026-10-26";
   // Card "Lojas" do Painel escondido por enquanto; os cartões de status só filtravam essa tabela.
   const PAINEL_MOSTRAR_TABELA_LOJAS = false;
+  // Card "Lojas em Levantamento" e o indicador do topo escondidos a pedido da usuária (28/09/2026).
+  const PAINEL_MOSTRAR_LEVANTAMENTO = false;
   let painelFiltro = null;
   let painelFiltroTecnicos = [], painelFiltroLojas = [];
   let painelSortField = "nome", painelSortDir = "asc";
@@ -3895,8 +3899,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas Cadastradas</div><div class="painel-kpi-valor">'+total+'</div><div class="painel-kpi-sub">'+estadosDistintos.size+' Estados'+(temDF?' + DF':'')+'</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Concentração SP</div><div class="painel-kpi-valor">'+spPct+'%</div><div class="painel-kpi-sub">'+spCount+' Unidades (Cap. + Int.)</div></div>' +
       '<div class="painel-kpi-card"><div class="painel-kpi-label">Regionais Mapeadas</div><div class="painel-kpi-valor">'+regionaisDistintos.size+(pendentesAlocacao>0?' + Pend.':'')+'</div><div class="painel-kpi-sub">'+pendentesAlocacao+' loja(s) pendente(s) alocação</div></div>' +
-      '<div class="painel-kpi-card"><div class="painel-kpi-label">Loja com Mais Trocas 2026</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>' +
-      '<div class="painel-kpi-card"><div class="painel-kpi-label">Lojas em Levantamento</div><div class="painel-kpi-valor">'+qtdLevantamento+'</div><div class="painel-kpi-sub">Novas 2026 + reforma — sem troca de equipamento</div></div>';
+      '<div class="painel-kpi-card"><div class="painel-kpi-label">Loja com Mais Trocas 2026</div><div class="painel-kpi-valor" style="font-size:16px;">'+(topTroca?escapeHtml(topTroca[0]):"[Em Aberto]")+'</div><div class="painel-kpi-sub">'+(topTroca?(topTroca[1]+' item(ns) a substituir'):"Aguardando dados de checklist")+'</div></div>';
 
     renderPainelLevantamento();
 
@@ -3991,7 +3994,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   function renderPainelLevantamento(){
     const lojasLevantamento = lojasCache.filter(ehLojaLevantamento);
     const card = document.getElementById("painel-card-levantamento");
-    if(lojasLevantamento.length === 0){ card.style.display = "none"; return; }
+    if(!PAINEL_MOSTRAR_LEVANTAMENTO || lojasLevantamento.length === 0){ card.style.display = "none"; return; }
     card.style.display = "block";
     document.getElementById("painel-lista-levantamento").innerHTML = lojasLevantamento.map(function(l){
       const motivo = LOJAS_LEVANTAMENTO[codigoDaLoja(l)];
