@@ -4738,7 +4738,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   function pnCategoriaAlerta(m){
     if(/Rack desorganizado/.test(m)) return "Rack desorganizado";
     if(/Rack sujo/.test(m)) return "Rack sujo";
-    if(/escada/i.test(m)) return "Escada ausente ou sem alcançar o teto";
+    if(/escada/i.test(m)) return null; // escada fica oculta no link da gestão (pedido da usuária)
     if(/câmeras/i.test(m)) return "Câmeras de CFTV com defeito";
     if(/portas danificadas/.test(m)) return "DVR com portas danificadas";
     if(/Multifuncional/.test(m)) return "Impressora multifuncional com falha";
@@ -4752,7 +4752,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   function pnCategoriasDaLoja(l){
     const cats = {};
     substituicoesDaLoja(l).forEach(function(i){ cats[pnCategoriaTroca(i)] = true; });
-    alertasDaLoja(l).forEach(function(m){ cats[pnCategoriaAlerta(m)] = true; });
+    alertasDaLoja(l).forEach(function(m){ const c = pnCategoriaAlerta(m); if(c) cats[c] = true; });
     return Object.keys(cats);
   }
   // Pareto 2026: participação de cada problema no total de ocorrências (Top 6 + Outros)
@@ -4853,10 +4853,11 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     {cat2025:"Mini Nobreak PDV (autonomia ruim)", rotulo:"Mini Nobreak PDV", cat2026:"Mini Nobreak PDV"},
     {cat2025:"Queixa de computador (Estoque)", rotulo:"Computador (Estoque)", cat2026:"Computador (Estoque)"},
     {cat2025:"Queixa de computador (Gerência)", rotulo:"Computador (Gerência)", cat2026:"Computador (Gerência)"},
-    {cat2025:"Escada sem alcançar o teto ou ausente", rotulo:"Escada ausente ou baixa", cat2026:"Escada ausente ou sem alcançar o teto"},
+    // Escada fica oculta no link da gestão (pedido da usuária); no lugar dela entra o próximo de 2025, "Rack sujo"
     {cat2025:"Nobreak de Rack (autonomia ruim)", rotulo:"Nobreak de Rack", cat2026:"Nobreak de Rack"},
     {cat2025:"Câmeras de CFTV sem funcionar", rotulo:"Câmeras de CFTV", cat2026:"Câmeras de CFTV com defeito"},
-    {cat2025:"Mini Nobreak Estoque (autonomia ruim)", rotulo:"Mini Nobreak Estoque", cat2026:"Mini Nobreak Estoque"}
+    {cat2025:"Mini Nobreak Estoque (autonomia ruim)", rotulo:"Mini Nobreak Estoque", cat2026:"Mini Nobreak Estoque"},
+    {cat2025:"Rack extremamente sujo", rotulo:"Rack sujo", cat2026:"Rack sujo"}
   ];
   function renderPainelParetoComp(){
     const concluidas = pnLojasReais().filter(function(l){ return l.status==="concluido"; });
