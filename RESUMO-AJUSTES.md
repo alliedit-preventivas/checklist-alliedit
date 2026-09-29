@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção do grupo Máquinas GPOS Gertec no checklist do técnico).
+Última atualização: 28/09/2026 (publicação em produção da gaveta de dinheiro e do "PINPAD apresenta defeito?" nos PDVs).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `e9e8f56` (28/09/2026), equivale à `develop` `6f8f447` |
+| Última publicação | `main` = commit `efd5e70` (28/09/2026), equivale à `develop` `3892d78` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -41,6 +41,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-painel-gestao-novo-2026-09-28` | Produção antes do Painel novo do link da gestão, da fonte Titillium e do Parque Sephora (commit `dceefc1`) |
 | `producao-antes-sem-gpos-2026-09-28` | Produção antes de tirar o GPOS Backup do checklist do técnico (commit `e8ebe10`) |
 | `producao-antes-gpos-gertec-2026-09-28` | Produção antes do grupo Máquinas GPOS Gertec no checklist do técnico (commit `ee22b5c`) |
+| `producao-antes-gaveta-pinpad-2026-09-28` | Produção antes da gaveta de dinheiro e do "PINPAD apresenta defeito?" nos PDVs (commit `e9e8f56`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -289,7 +290,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Cada Mobile ganhou a **foto de exemplo do GPOS Gertec** à esquerda e os campos (Nº Série, IP, Estado de conservação) à direita, igual ao Mercado Pago; a Observação fica embaixo. Foto enviada pela usuária, recortada e reduzida para 240×360 (7 KB, `FOTO_GPOS_GERTEC` / `FOTOS_EXEMPLO.gpos`).
 - O PDF segue a nova ordem: grupo "Máquinas GPOS Gertec" com os Mobiles, antes de "Máquinas POS". Nenhuma alteração de banco: os dados continuam em `mobiles`.
 
-### 8.11 PDV: Gaveta de Dinheiro e "PINPAD apresenta defeito?" (só na `develop`, ainda não publicado)
+### 8.11 PDV: Gaveta de Dinheiro e "PINPAD apresenta defeito?": PUBLICADO (28/09/2026)
+- Foi para produção na `main` `efd5e70` (equivale à `develop` `3892d78`), pelo método manual e com as conferências de sempre (13 conferências, 0 falhas; site no ar idêntico à `main`). Ponto de restauração: tag `producao-antes-gaveta-pinpad-2026-09-28`.
 - A pedido da usuária (28/09/2026), em **cada PDV** do Stage de Vendas:
   - **Gaveta de dinheiro** logo abaixo do Nº Série/Marca do PDV, no mesmo bloco (sem seção própria — correção pedida pela usuária): **"Gaveta de dinheiro"** (Funcionando | Defeito ou Falha), com a observação *"Este cabo é importado, por isso é importante a sua validação."* logo abaixo do título, e **"Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (Possui trava no conector | Sem trava no conector | Cabo danificado). **Sem trava no conector = alerta** (botão amarelo); **Cabo danificado = troca de equipamento** ("PDV 01: Cabo da gaveta de dinheiro").
   - No **PINPAD REDE LARANJINHA**, a pergunta **"Apresenta defeito?"** (Sim | Não). **Sim = troca de equipamento** ("PDV 01: PINPAD") **e alerta** ("PINPAD REDE LARANJINHA com defeito"). No Ranking Incidentes do link da gestão, troca e alerta do PINPAD contam como um item só ("PINPAD PDV").
