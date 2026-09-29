@@ -199,7 +199,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ### Pendências atuais (29/09/2026)
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
-- Já validados: 8.1, 8.3, 8.10, 8.12, 8.13 e 8.16. Publicados e ainda sem validação registrada: 8.14 (Painel com login igual ao da gestão, com bolinhas de cor) e 8.15 (cabeçalho "DASHBOARD | PREVENTIVAS 2026").
+- Já validados: 8.1, 8.3, 8.10, 8.12, 8.13, 8.14, 8.15 e 8.16.
 - Ideias opcionais em aberto: ver seção 6.
 - **Nada pendente de publicação.** Última publicação: `main` `911f2e6` = `develop` `adf9ad3`.
 
@@ -323,7 +323,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Foi para produção na `main` `a40f8f8` (equivale à `develop` `7beaad4`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a publicação mudou só as 2 linhas da frase). Testado antes pela usuária na prévia de teste (seção 7). Ponto de restauração: branch `restauracao-producao-antes-dica-cabo-2026-09-29`.
 - A frase *"Este cabo é importado, por isso é importante a sua validação."* saiu de baixo de "Gaveta de dinheiro" e passou a ficar **logo abaixo da pergunta "Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (pedido da usuária). Só mudou o lugar do texto; nenhuma regra mudou.
 
-### 8.14 Painel com login igual ao Painel do link da gestão: PUBLICADO (29/09/2026)
+### 8.14 Painel com login igual ao Painel do link da gestão: PUBLICADO E VALIDADO (29/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `82f3efc` (equivale à `develop` `36b40a8`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `7beaad4`). Testado antes pela usuária no localhost. Ponto de restauração: branch `restauracao-producao-antes-painel-login-2026-09-29`.
 - Pedido da usuária: o **Painel de Indicadores** do menu "Painel" (com login) passa a mostrar o **mesmo Painel novo** do link da gestão (`?painel=1`): Campanha 2026, números do topo, Agenda Semanal, Maior tempo de atendimento, Concentração de Lojas, Regionais x Solicitações de troca, Ranking Incidentes, Paretos, Trocas de equipamento, Parque Sephora etc.
 - Diferenças que continuam: com login, **clicar numa loja (nas janelas dos números do topo) abre o checklist**; no link da gestão é só visualização. O aviso "Modo visualização · atualiza automaticamente" aparece só no link da gestão. Com login, o cabeçalho continua com os menus Agendamento / Painel / Técnico / Sair e tem também as bolinhas de cores (ver abaixo).
@@ -331,7 +332,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Bolinhas de cores AlliedIT / Sephora também no Painel com login** (pedido da usuária): aparecem só com o Painel aberto, no canto direito do cabeçalho, ao lado dos menus. Com login, a cor escolhida vale **só no Painel**; ao ir para Agendamento ou abrir um checklist, o site volta às cores AlliedIT e, ao voltar ao Painel, a cor escolhida volta. A escolha fica guardada no navegador (`coresPainelLogin`), separada da escolha do link da gestão (`coresPainelGestao`).
 - Testado com o Supabase simulado: Painel com login (sem erros, lojas abrem o checklist), link da gestão, link do técnico, tela de login e celular (sem rolagem lateral).
 
-### 8.15 Cabeçalho do Painel padronizado: "DASHBOARD | PREVENTIVAS 2026": PUBLICADO (29/09/2026)
+### 8.15 Cabeçalho do Painel padronizado: "DASHBOARD | PREVENTIVAS 2026": PUBLICADO E VALIDADO (29/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `5f04859` (equivale à `develop` `39fd7df`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `36b40a8`). Ponto de restauração: branch `restauracao-producao-antes-dashboard-2026-09-29`.
 - Pedido da usuária: o Painel com login e o link da gestão (`?painel=1`) com **o mesmo cabeçalho** (opção escolhida: título no centro). O título "Painel de Indicadores" saiu e ficou **"Dashboard | Preventivas 2026"** (aparece em maiúsculas pelo estilo do cabeçalho). Grafia usada: "DASHBOARD" (a usuária escreveu "DASHBORD"; ajustar se ela preferir).
 - À esquerda, nas duas telas: "Checklist de Preventivas" / "Sephora 2026 · AlliedIT" (o link da gestão deixou de usar "Checklist de Preventivas · Sephora 2026 · AlliedIT" / "Gestão de manutenções preventivas das lojas Sephora"). À direita: bolinhas de cores; com login, também os menus.
