@@ -4072,8 +4072,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:"Ruim - substituir"});
       if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:"Ruim - substituir"});
       if(!eatonRack && p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
-      // PINPAD REDE LARANJINHA com defeito e cabo da gaveta de dinheiro danificado entram como troca
+      // PINPAD REDE LARANJINHA com defeito, gaveta de dinheiro com defeito/falha e cabo da gaveta danificado entram como troca
       if(p.pinpad && p.pinpad.defeito===true) itens.push({setor:"Stage de Vendas", equip:p.nome+": PINPAD", serie:p.pinpad.serie||"—", obs:"PINPAD REDE LARANJINHA apresenta defeito"});
+      if(p.gaveta && p.gaveta.estado==="defeito") itens.push({setor:"Stage de Vendas", equip:p.nome+": Gaveta de dinheiro", serie:"—", obs:"Gaveta de dinheiro com defeito ou falha"});
       if(p.gaveta && p.gaveta.cabo==="danificado") itens.push({setor:"Stage de Vendas", equip:p.nome+": Cabo da gaveta de dinheiro", serie:"—", obs:"Cabo que liga a gaveta à impressora danificado"});
     });
     // Nobreak de Rack (NHS ou EATON) com autonomia baixa entra na substituição
