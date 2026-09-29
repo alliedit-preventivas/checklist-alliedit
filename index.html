@@ -3484,6 +3484,15 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           '<div class="field"><label>Nº Série do PDV</label><input type="text" data-pdv="serie" data-idx="'+idx+'" value="'+escapeHtml(p.serie)+'"></div>' +
           '<div class="field"><label>Marca</label><select data-pdv="marca" data-idx="'+idx+'"><option value="">Selecionar</option><option'+(p.marca==="Toshiba"?' selected':'')+'>Toshiba</option><option'+(p.marca==="Elgin"?' selected':'')+'>Elgin</option></select></div>' +
         '</div>' +
+        // Gaveta de dinheiro: logo abaixo dos dados do PDV, no mesmo bloco (sem seção própria).
+        // Cabo sem trava = alerta; cabo danificado = troca.
+        '<div class="field"><label>Gaveta de dinheiro</label><div class="hint" style="margin:0 0 6px;">Este cabo é importado, por isso é importante a sua validação.</div><div class="toggle-group" data-pdv-opcao="gavetaEstado" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.estado==="defeito"?' on-bad':'')+'" data-val="defeito">Defeito ou Falha</button></div></div>' +
+        '<div class="field"><label>Qual o estado de conservação do cabo que liga a gaveta à impressora?</label><div class="toggle-group" data-pdv-opcao="gavetaCabo" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="com_trava"?' on-good':'')+'" data-val="com_trava">Possui trava no conector</button>' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="sem_trava"?' on-warn':'')+'" data-val="sem_trava">Sem trava no conector</button>' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="danificado"?' on-bad':'')+'" data-val="danificado">Cabo danificado</button></div></div>' +
         (!ehElgin ? '' :
         '<div class="field"><label>Tela do cliente</label>' +
           '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
@@ -3491,16 +3500,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
             '<button type="button" class="toggle-btn on-good" style="width:100%;" disabled>Removido</button>'
             : '<button type="button" class="toggle-btn on-bad" style="width:100%;" data-pdv-removido="'+idx+'">Remover Cabo USB</button>') +
         '</div>') +
-        '<div class="divisor-secao"></div>' +
-        // Gaveta de dinheiro (logo abaixo da identificação do PDV). Cabo sem trava = alerta; cabo danificado = troca.
-        '<div class="secao-equip">GAVETA DE DINHEIRO</div>' +
-        '<div class="field"><label>Estado da gaveta</label><div class="toggle-group" data-pdv-opcao="gavetaEstado" data-idx="'+idx+'">' +
-          '<button type="button" class="toggle-btn'+(p.gaveta.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
-          '<button type="button" class="toggle-btn'+(p.gaveta.estado==="defeito"?' on-bad':'')+'" data-val="defeito">Defeito ou Falha</button></div></div>' +
-        '<div class="field"><label>Qual o estado de conservação do cabo que liga a gaveta à impressora?</label><div class="toggle-group" data-pdv-opcao="gavetaCabo" data-idx="'+idx+'">' +
-          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="com_trava"?' on-good':'')+'" data-val="com_trava">Possui trava no conector</button>' +
-          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="sem_trava"?' on-warn':'')+'" data-val="sem_trava">Sem trava no conector</button>' +
-          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="danificado"?' on-bad':'')+'" data-val="danificado">Cabo danificado</button></div></div>' +
         '<div class="divisor-secao"></div>' +
         // Mini Nobreak: sempre exibido e exigido por PDV, independente da marca do Nobreak de Rack.
         '<div class="field"><label>Mini Nobreak</label><div class="toggle-group" data-pdv-toggle="nobreakPossui" data-idx="'+idx+'">' +
@@ -4281,10 +4280,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     // ---- Página 5: Stage de Vendas ----
     const stage = l.pdvs.map(function(p){
       const ls = [lin("Nº Série do PDV", p.serie), lin("Marca", p.marca)];
-      if(p.marca==="Elgin") ls.push(lin("Tela do cliente (USB do touch)", p.telaCliente.touchDesativado===true ? "Removido" : "Não removido", p.telaCliente.touchDesativado!==true));
+      // Gaveta de dinheiro logo abaixo dos dados do PDV (mesma ordem do formulário)
       const gv = p.gaveta || {};
       ls.push(lin("Gaveta de dinheiro", {funcionando:"Funcionando", defeito:"Defeito ou Falha"}[gv.estado] || "", gv.estado==="defeito"),
         lin("Cabo da gaveta até a impressora", {com_trava:"Possui trava no conector", sem_trava:"Sem trava no conector", danificado:"Cabo danificado"}[gv.cabo] || "", gv.cabo==="sem_trava" || gv.cabo==="danificado"));
+      if(p.marca==="Elgin") ls.push(lin("Tela do cliente (USB do touch)", p.telaCliente.touchDesativado===true ? "Removido" : "Não removido", p.telaCliente.touchDesativado!==true));
       const mn = p.miniNobreak;
       ls.push(lin("Mini Nobreak", sn(mn.possui,"Possui","Não possui")));
       if(mn.possui===true){
