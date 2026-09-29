@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (publicação em produção do cabeçalho "DASHBOARD | PREVENTIVAS 2026").
+Última atualização: 29/09/2026 (card "Comentário por loja" no final do Dashboard, na `develop`).
 
 ---
 
@@ -201,7 +201,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
 - Já validados: 8.1, 8.3, 8.10, 8.12 e 8.13.
 - Ideias opcionais em aberto: ver seção 6.
-- **Nada pendente de publicação.** Última publicação: `main` `5f04859` = `develop` `39fd7df`.
+- **Pendente de publicação:** 8.16 (card "Comentário por loja"). Última publicação: `main` `5f04859` = `develop` `39fd7df`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -336,4 +336,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Pedido da usuária: o Painel com login e o link da gestão (`?painel=1`) com **o mesmo cabeçalho** (opção escolhida: título no centro). O título "Painel de Indicadores" saiu e ficou **"Dashboard | Preventivas 2026"** (aparece em maiúsculas pelo estilo do cabeçalho). Grafia usada: "DASHBOARD" (a usuária escreveu "DASHBORD"; ajustar se ela preferir).
 - À esquerda, nas duas telas: "Checklist de Preventivas" / "Sephora 2026 · AlliedIT" (o link da gestão deixou de usar "Checklist de Preventivas · Sephora 2026 · AlliedIT" / "Gestão de manutenções preventivas das lojas Sephora"). À direita: bolinhas de cores; com login, também os menus.
 - A tela de Agendamento continua com o título "Painel de Agendamento".
+
+### 8.16 Card "Comentário por loja" no final do Dashboard: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+- Pedido da usuária: no final dos dois Dashboards (Painel com login e link da gestão), card **"Comentário por loja"** com as lojas que responderam **"Sim"** em **"Ocorrências e necessidades"** no checklist, mostrando o texto escrito (campo `ocorrencia.descricao`; se veio vazio: "Ocorrência pontuada, sem descrição.").
+- Colunas: Código, Nome da loja, Regional, Status (mesma etiqueta da Lista de lojas), Data da preventiva, Técnico e Comentário (quebra de linha preservada). Busca por loja, técnico ou texto do comentário e filtro por Regional, com "Limpar filtros".
+- Entram também lojas com checklist ainda em andamento que já marcaram "Sim". Lojas de teste (`LOJAS_TESTE`) não entram. Função `renderPainelComentarios`.
 

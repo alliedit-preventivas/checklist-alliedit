@@ -301,6 +301,7 @@
   .pn-aba.active{background:var(--surface); color:var(--navy); box-shadow:0 1px 3px rgba(0,0,0,.12);}
   .pn-aba:focus-visible{outline:2px solid var(--teal-lt); outline-offset:1px;}
   /* Lista de lojas */
+  .pn-tabela-coment td:last-child{min-width:260px; white-space:pre-wrap; line-height:1.45;}
   .pn-lista-filtros{display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:12px;}
   .pn-lista-filtros input{flex:1 1 280px; min-width:0;}
   .pn-filtro{display:flex; flex-direction:column; gap:2px; font-size:10.5px; font-weight:600; color:var(--text-muted);}
@@ -1026,6 +1027,28 @@
           </table>
         </div>
         <div class="hint" id="pn-lista-rodape" style="margin:8px 0 0;"></div>
+      </div>
+
+      <!-- Comentário por loja: lojas que responderam "Sim" em "Ocorrências e necessidades" no checklist (29/09/2026) -->
+      <div class="card pn-card" id="pn-card-comentarios">
+        <div class="pn-card-cab">
+          <div class="pn-card-titulo">
+            <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20.5l1.4-4.6A7.5 7.5 0 1 1 20 12.5z"/><path d="M8.5 11h7M8.5 14h4.5"/></svg></span>
+            <div><h3>Comentário por loja</h3><div class="pn-card-sub" id="pn-coment-sub">Ocorrências e necessidades pontuadas pela loja no checklist</div></div>
+          </div>
+        </div>
+        <div class="pn-lista-filtros">
+          <input type="text" id="pn-coment-busca" placeholder="Buscar por loja, técnico ou texto do comentário..." aria-label="Buscar comentário">
+          <label class="pn-filtro"><span>Regional</span><select id="pn-coment-regional"></select></label>
+          <button type="button" class="btn btn-ghost btn-sm" id="pn-coment-limpar">Limpar filtros</button>
+        </div>
+        <div class="pn-tabela-wrap">
+          <table class="pn-tabela pn-tabela-coment">
+            <thead><tr><th>Código</th><th>Nome da loja</th><th>Regional</th><th>Status</th><th>Data da preventiva</th><th>Técnico</th><th>Comentário (Ocorrências e necessidades)</th></tr></thead>
+            <tbody id="pn-coment-corpo"></tbody>
+          </table>
+        </div>
+        <div class="hint" id="pn-coment-rodape" style="margin:8px 0 0;"></div>
       </div>
     </div>
 
@@ -4871,6 +4894,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     renderPainelParetoComp();
     renderPainelParque();
     renderPainelLista();
+    renderPainelComentarios();
   }
   // Parque Sephora: quantos equipamentos de cada tipo foram registrados nos checklists
   // (lojas reais com checklist iniciado ou concluído; lojas de teste não entram)
@@ -5238,6 +5262,14 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
         document.querySelectorAll(".pn-ano").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.ano === novo ? "true" : "false"); });
       });
     });
+    // Comentário por loja: busca e filtro por regional
+    document.getElementById("pn-coment-busca").addEventListener("input", renderPainelComentarios);
+    document.getElementById("pn-coment-regional").addEventListener("change", renderPainelComentarios);
+    document.getElementById("pn-coment-limpar").addEventListener("click", function(){
+      document.getElementById("pn-coment-busca").value = "";
+      document.getElementById("pn-coment-regional").value = "";
+      renderPainelComentarios();
+    });
     // Lista de lojas: busca e filtros
     document.getElementById("pn-lista-busca").addEventListener("input", renderPainelLista);
     document.getElementById("pn-lista-uf").addEventListener("change", renderPainelLista);
@@ -5257,6 +5289,39 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     const atual = sel.value;
     sel.innerHTML = '<option value="">Todos</option>' + valores.map(function(v){ return '<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>'; }).join("");
     sel.value = valores.indexOf(atual) !== -1 ? atual : "";
+  }
+  // Comentário por loja: só as lojas que responderam "Sim" em "Ocorrências e necessidades" (lojas de teste não entram)
+  function renderPainelComentarios(){
+    const hoje = todayStr();
+    const linhas = lojasCache.filter(function(l){ return !ehLojaTeste(l) && l.ocorrencia && l.ocorrencia.tem===true; }).map(function(l){
+      const st = pnStatusDaLoja(l, hoje), reg = regionalDaLoja(l);
+      return {
+        codigo: codigoDaLoja(l),
+        nome: String(l.nome||"").split(" - ").slice(1).join(" - ") || String(l.nome||""),
+        regional: reg==="—" ? "—" : "Regional "+reg,
+        status: st[0], cor: st[1],
+        data: l.agendamento ? fmtDateBR(l.agendamento) : "—",
+        tecnico: (l.tecnico||"").trim() || "—",
+        texto: String(l.ocorrencia.descricao||"").trim() || "Ocorrência pontuada, sem descrição."
+      };
+    }).sort(function(a,b){ return a.codigo.localeCompare(b.codigo, "pt-BR", {numeric:true}); });
+    const selReg = document.getElementById("pn-coment-regional");
+    const regs = [];
+    linhas.forEach(function(x){ if(regs.indexOf(x.regional)===-1) regs.push(x.regional); });
+    pnPreencherSelect(selReg, regs.sort());
+    const busca = pnNorm(document.getElementById("pn-coment-busca").value).trim();
+    const filtradas = linhas.filter(function(x){
+      return (!selReg.value || x.regional===selReg.value) &&
+        (!busca || pnNorm(x.codigo+" "+x.nome+" "+x.tecnico+" "+x.texto).indexOf(busca) !== -1);
+    });
+    document.getElementById("pn-coment-sub").textContent = linhas.length
+      ? linhas.length + " loja(s) com ocorrências ou necessidades pontuadas no checklist"
+      : "Ocorrências e necessidades pontuadas pela loja no checklist";
+    document.getElementById("pn-coment-corpo").innerHTML = filtradas.length ? filtradas.map(function(x){
+      return '<tr><td>'+escapeHtml(x.codigo)+'</td><td>'+escapeHtml(x.nome)+'</td><td>'+escapeHtml(x.regional)+'</td>' +
+        '<td><span class="pn-status pn-st-'+x.cor+'">'+escapeHtml(x.status)+'</span></td><td>'+escapeHtml(x.data)+'</td><td>'+escapeHtml(x.tecnico)+'</td><td>'+escapeHtml(x.texto)+'</td></tr>';
+    }).join("") : '<tr><td colspan="7" class="pn-vazio" style="text-align:center;">'+(linhas.length ? 'Nenhum comentário encontrado com esses filtros.' : 'Nenhuma loja pontuou ocorrências ou necessidades até agora.')+'</td></tr>';
+    document.getElementById("pn-coment-rodape").textContent = linhas.length ? "Mostrando " + filtradas.length + " de " + linhas.length + " loja(s)" : "";
   }
   function renderPainelLista(){
     const hoje = todayStr();
