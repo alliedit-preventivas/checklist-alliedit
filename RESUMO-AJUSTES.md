@@ -198,7 +198,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ## 8. Publicações e pendências (atualizado em 29/09/2026)
 
 ### Pendências atuais (29/09/2026)
-- **Publicações 8.1 a 8.16 validadas pela usuária** (29/09/2026). Falta validar: 8.17 (animação da Campanha 2026).
+- **Todas as publicações (8.1 a 8.17) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
 - **Nada pendente de publicação.** Última publicação: `main` `ab7c0a6` = `develop` `73aee49`.
 
@@ -353,7 +353,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Colunas: Código, Nome da loja, Regional, Status (mesma etiqueta da Lista de lojas), Data da preventiva, Técnico e Comentário (quebra de linha preservada). Busca por loja, técnico ou texto do comentário e filtro por Regional, com "Limpar filtros".
 - Entram também lojas com checklist ainda em andamento que já marcaram "Sim". Lojas de teste (`LOJAS_TESTE`) não entram. Função `renderPainelComentarios`.
 
-### 8.17 Cartão "Campanha 2026" com animação de carregamento: PUBLICADO (29/09/2026)
+### 8.17 Cartão "Campanha 2026" com animação de carregamento: PUBLICADO E VALIDADO (29/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `ab7c0a6` (equivale à `develop` `73aee49`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `adf9ad3`). Ponto de restauração: branch `restauracao-producao-antes-animacao-2026-09-29`.
 - Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
 - A animação roda **só ao abrir ou recarregar a página (F5)** (ajuste pedido pela usuária). Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), a porcentagem muda direto, sem animar. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
