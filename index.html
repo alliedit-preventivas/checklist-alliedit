@@ -504,6 +504,16 @@
   .port-chk.on{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
   .banner-erro{background:var(--bad-bg); color:var(--bad); border-radius:8px; padding:10px 12px; font-size:12.5px; margin-bottom:14px;}
   .banner-erro ul{margin:6px 0 0; padding-left:18px;}
+  /* Pendências agrupadas por setor ao "Finalizar checklist" */
+  .pend-grupos{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
+  .pend-grupo{background:rgba(255,255,255,.55); border:1px solid rgba(179,38,30,.25); border-radius:8px;}
+  .pend-grupo summary{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 10px; cursor:pointer; font-weight:700; list-style:none;}
+  .pend-grupo summary::-webkit-details-marker{display:none;}
+  .pend-grupo summary::before{content:"▸"; margin-right:6px;}
+  .pend-grupo[open] summary::before{content:"▾";}
+  .pend-grupo summary span:first-child{flex:1;}
+  .pend-qtd{font-size:11.5px; font-weight:700; background:var(--bad); color:#fff; border-radius:12px; padding:2px 9px; white-space:nowrap;}
+  .pend-grupo ul{margin:0; padding:0 12px 10px 30px;}
   .banner-lock{background:var(--ok-bg); color:var(--ok); border-radius:8px; padding:10px 12px; font-size:12.5px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
   .stats-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:18px;}
   .stat-card{cursor:pointer; transition:border-color .15s; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px;}
@@ -1833,6 +1843,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
 
   let filaPendencias = [];
+  let pendGruposAbertos = {};
   function renderBannerPendencias(){
     const banner = document.getElementById("banner-validacao");
     if(filaPendencias.length===0){
@@ -1843,8 +1854,27 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }
     banner.style.background = ""; banner.style.color = "";
     banner.classList.remove("hidden");
-    banner.innerHTML = "<b>Existem "+filaPendencias.length+" pendência(s):</b><ul>" +
-      filaPendencias.map(function(f, i){ return '<li><a href="#" data-pendencia="'+i+'" style="color:var(--bad); text-decoration:underline;">'+escapeHtml(f.texto)+'</a></li>'; }).join("") + "</ul>";
+    // Pendências agrupadas por setor (29/09/2026): Rack, Gerência, Estoque, Stage de Vendas e,
+    // por último, o que fica na tela principal (início e encerramento do atendimento).
+    // Cada setor abre/fecha com um clique; com poucas pendências (até 8) todos aparecem abertos.
+    const porBloco = pendenciasPorBloco(filaPendencias);
+    const noSetor = [];
+    Object.keys(porBloco).forEach(function(k){ porBloco[k].forEach(function(p){ noSetor.push(p); }); });
+    const grupos = ["rack","gerencia","estoque","stage"].map(function(k){ return {chave:k, nome:NOMES_BLOCOS[k], itens:porBloco[k]}; })
+      .concat([{chave:"geral", nome:"Início e encerramento do atendimento", itens:filaPendencias.filter(function(p){ return noSetor.indexOf(p)===-1; })}])
+      .filter(function(g){ return g.itens.length; });
+    const abrirTodos = filaPendencias.length <= 8;
+    banner.innerHTML = "<b>Existem "+filaPendencias.length+" pendência(s) em "+grupos.length+" setor(es):</b>" +
+      '<div class="pend-grupos">' + grupos.map(function(g, gi){
+        const aberto = abrirTodos || pendGruposAbertos[g.chave] || (pendGruposAbertos[g.chave]===undefined && gi===0);
+        return '<details class="pend-grupo" data-grupo="'+g.chave+'"'+(aberto?' open':'')+'><summary><span>'+escapeHtml(g.nome)+'</span><span class="pend-qtd">'+g.itens.length+' pendência(s)</span></summary><ul>' +
+          g.itens.map(function(f){ const i = filaPendencias.indexOf(f); return '<li><a href="#" data-pendencia="'+i+'" style="color:var(--bad); text-decoration:underline;">'+escapeHtml(f.texto)+'</a></li>'; }).join("") +
+        '</ul></details>';
+      }).join("") + '</div>';
+    // guarda quais setores estão abertos, para a lista não "fechar sozinha" quando é atualizada após salvar
+    banner.querySelectorAll(".pend-grupo").forEach(function(d){
+      d.addEventListener("toggle", function(){ pendGruposAbertos[d.dataset.grupo] = d.open; });
+    });
     banner.querySelectorAll("[data-pendencia]").forEach(function(a){
       a.addEventListener("click", function(e){
         e.preventDefault();
@@ -3088,6 +3118,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       const faltando = validarObrigatorios(currentLoja);
       if(faltando.length){
         filaPendencias = faltando;
+        pendGruposAbertos = {}; // nova tentativa de finalizar: começa com o 1º setor aberto
         renderBannerPendencias();
         banner.scrollIntoView({behavior:"smooth", block:"start"});
         return;
