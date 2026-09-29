@@ -199,10 +199,9 @@ Só com autorização explícita da usuária ("pode publicar"):
 ## 8. Publicações e pendências (atualizado em 29/09/2026)
 
 ### Pendências atuais (29/09/2026)
-- **Todas as publicações (8.1 a 8.17) estão validadas pela usuária** (29/09/2026).
+- **Todas as publicações (8.1 a 8.18) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **8.18 publicado em 29/09/2026, aguardando a validação da usuária no site no ar.**
-- Última publicação: `main` `02da3a2` = `develop` `9bfcc7a`.
+- **Nada pendente de publicação.** Última publicação: `main` `02da3a2` = `develop` `9bfcc7a`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -361,7 +360,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
 - A animação roda **só ao abrir ou recarregar a página (F5)** (ajuste pedido pela usuária). Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), a porcentagem muda direto, sem animar. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
 
-### 8.18 Alertas removidos: escada móvel e USB do touch (Elgin): PUBLICADO (29/09/2026), AGUARDANDO VALIDAÇÃO
+### 8.18 Alertas removidos: escada móvel e USB do touch (Elgin): PUBLICADO E VALIDADO (29/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Pedido da usuária: estes alertas **não devem mais aparecer** (Painel/Dashboard, link da gestão e relatório PDF):
   - "Loja não possui escada móvel";
   - "Escada móvel não alcança o teto";
