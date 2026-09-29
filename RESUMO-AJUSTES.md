@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (Painel com login passa a usar o mesmo Painel novo do link da gestão, na `develop`).
+Última atualização: 29/09/2026 (publicação em produção do Painel com login igual ao link da gestão, com as bolinhas de cores).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `a40f8f8` (29/09/2026), equivale à `develop` `7beaad4` |
+| Última publicação | `main` = commit `82f3efc` (29/09/2026), equivale à `develop` `36b40a8` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -201,7 +201,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
 - Já validados: 8.1, 8.3, 8.10, 8.12 e 8.13.
 - Ideias opcionais em aberto: ver seção 6.
-- **Pendente de publicação:** 8.14 (Painel com login igual ao link da gestão). Última publicação: `main` `a40f8f8` = `develop` `7beaad4`.
+- **Nada pendente de publicação.** Última publicação: `main` `82f3efc` = `develop` `36b40a8`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -323,7 +323,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Foi para produção na `main` `a40f8f8` (equivale à `develop` `7beaad4`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a publicação mudou só as 2 linhas da frase). Testado antes pela usuária na prévia de teste (seção 7). Ponto de restauração: branch `restauracao-producao-antes-dica-cabo-2026-09-29`.
 - A frase *"Este cabo é importado, por isso é importante a sua validação."* saiu de baixo de "Gaveta de dinheiro" e passou a ficar **logo abaixo da pergunta "Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (pedido da usuária). Só mudou o lugar do texto; nenhuma regra mudou.
 
-### 8.14 Painel com login igual ao Painel do link da gestão: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+### 8.14 Painel com login igual ao Painel do link da gestão: PUBLICADO (29/09/2026)
+- Foi para produção na `main` `82f3efc` (equivale à `develop` `36b40a8`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `7beaad4`). Testado antes pela usuária no localhost. Ponto de restauração: branch `restauracao-producao-antes-painel-login-2026-09-29`.
 - Pedido da usuária: o **Painel de Indicadores** do menu "Painel" (com login) passa a mostrar o **mesmo Painel novo** do link da gestão (`?painel=1`): Campanha 2026, números do topo, Agenda Semanal, Maior tempo de atendimento, Concentração de Lojas, Regionais x Solicitações de troca, Ranking Incidentes, Paretos, Trocas de equipamento, Parque Sephora etc.
 - Diferenças que continuam: com login, **clicar numa loja (nas janelas dos números do topo) abre o checklist**; no link da gestão é só visualização. O aviso "Modo visualização · atualiza automaticamente" aparece só no link da gestão. Com login, o cabeçalho continua com os menus Agendamento / Painel / Técnico / Sair e tem também as bolinhas de cores (ver abaixo).
 - O **Painel clássico** (seções numeradas) continua no código, escondido. Para voltar a ele: `PAINEL_LOGIN_USA_NOVO = false`.
