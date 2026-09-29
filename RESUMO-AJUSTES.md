@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (dica do cabo importado movida para baixo da pergunta do cabo da gaveta, na `develop`).
+Última atualização: 29/09/2026 (publicação em produção da dica do cabo importado no lugar novo).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `68329c2` (29/09/2026), equivale à `develop` `f5dc3d5` |
+| Última publicação | `main` = commit `a40f8f8` (29/09/2026), equivale à `develop` `7beaad4` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -201,7 +201,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist), **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")** e **8.12 (Tela do cliente e Telefone)** — prioridade para 8.11 e 8.12, que mexem no formulário do técnico.
 - Já validados: 8.1, 8.3 e 8.10.
 - Ideias opcionais em aberto: ver seção 6.
-- **Pendente de publicação:** 8.13 (dica do cabo importado). Última publicação: `main` `68329c2` = `develop` `f5dc3d5`.
+- **Nada pendente de publicação.** Última publicação: `main` `a40f8f8` = `develop` `7beaad4`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -317,6 +317,7 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - PDF da loja: "Tela do cliente" em todos os PDVs (antes da gaveta) e card "Telefone" com Tipo, Número, IP (só VoIP), Funcionamento e Observação (defeito em vermelho).
 - Testado numa cópia com o **Supabase simulado** (nada gravado em banco nenhum): ordem dos campos, aviso só no Elgin, IP desabilitado no analógico, Observação só com defeito, pendências, troca, alerta, conversão de checklist antigo, PDF e Painel sem erros.
 
-### 8.13 Dica do cabo importado no lugar certo: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+### 8.13 Dica do cabo importado no lugar certo: PUBLICADO (29/09/2026)
+- Foi para produção na `main` `a40f8f8` (equivale à `develop` `7beaad4`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a publicação mudou só as 2 linhas da frase). Testado antes pela usuária na prévia de teste (seção 7). Ponto de restauração: branch `restauracao-producao-antes-dica-cabo-2026-09-29`.
 - A frase *"Este cabo é importado, por isso é importante a sua validação."* saiu de baixo de "Gaveta de dinheiro" e passou a ficar **logo abaixo da pergunta "Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (pedido da usuária). Só mudou o lugar do texto; nenhuma regra mudou.
 
