@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção das cores AlliedIT / Sephora no link da gestão).
+Última atualização: 28/09/2026 (publicação em produção do Painel novo do link da gestão, fonte Titillium Web e Parque Sephora).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `dceefc1` (28/09/2026), equivale à `develop` `bdef41e` |
+| Última publicação | `main` = commit `e8ebe10` (28/09/2026), equivale à `develop` `c545d23` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -38,6 +38,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | branch `restauracao-producao-antes-link-gestao-2026-09-28` | Produção antes do link da gestão, Lojas em Levantamento escondido e substituições sozinho na linha (commit `15f0165`) |
 | `producao-antes-janela-status-2026-09-28` | Produção antes das regionais atualizadas, SP numa linha só e janela das lojas por status (commit `41cce39`) |
 | `producao-antes-cores-sephora-2026-09-28` | Produção antes das cores AlliedIT / Sephora no link da gestão (commit `8854816`) |
+| `producao-antes-painel-gestao-novo-2026-09-28` | Produção antes do Painel novo do link da gestão, da fonte Titillium e do Parque Sephora (commit `dceefc1`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -237,7 +238,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - A escolha fica guardada **só no navegador de quem clicou** (chave `coresPainelGestao`) e **só vale no link da gestão**: não se replica para as outras telas, mesmo no mesmo navegador. Não grava nada no banco e não muda o que as outras pessoas veem. O script do `<head>` só aplica as cores quando o endereço é o do link da gestão, e o `init` tira as cores Sephora em qualquer outro modo.
 - No código: cores da Sephora em `:root[data-tema="sephora"]`, funções `aplicarTemaCores` e `wireTemaCores`, e um script curto no `<head>` que aplica a escolha antes de desenhar a página (sem "piscar" nas cores AlliedIT). Ponto de restauração da `develop` antes deste ajuste: tag `antes-tema-cores`.
 
-### 8.7 Painel novo do link da gestão, no modelo enviado pela usuária (só na `develop`, ainda não publicado)
+### 8.7 Painel novo do link da gestão, no modelo enviado pela usuária: PUBLICADO (28/09/2026)
+- Foi para produção na `main` `e8ebe10` (equivale à `develop` `c545d23`), junto com a 8.8, montada pelo método manual (cópia do `index.html` da `develop` trocando só as 3 linhas) e com as conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-painel-gestao-novo-2026-09-28`.
 - **Só no link da gestão (`?painel=1`).** O Painel com login continua igual (conteúdo em `#painel-classico`); o novo fica em `#painel-novo` e é ligado no `init` quando `modoGestao`. Cores AlliedIT e Sephora valem nos dois. Ponto de restauração da `develop` antes da remodelação: tag `antes-painel-gestao-novo` (só no computador local).
 - Plano em 5 etapas, combinado com a usuária em 28/09/2026: **1) topo** · 2) agenda semanal (seg a sex, com a data e a **Hora Prevista** que já existe no Agendamento, campo `agendamentoPrevisto`) · 3) card "Regionais x solicitações de troca" no lugar dos alertas · 4) Ranking Top 10, Pareto 2026, Pareto 2025 x 2026 (Top 7, em % de lojas), mapa por UF e Maior tempo de atendimento · 5) Lista de lojas (Código, Nome, Regional, UF, Próximo agendamento, Status, Trocas 2026; com busca e filtros; **sem Exportar**) e um card "Trocas de equipamento" com 3 abas (Top 5 2025 x 2026, Comparativo, Equipamentos por loja).
 - Ficam escondidos no link da gestão: indicadores do topo antigos (Concentração SP, Regionais Mapeadas, Loja com mais trocas), Pareto 2025 e Estrutura Operacional por Regional. Cabeçalho sem sino, perfil e "Relatórios".
@@ -262,10 +264,10 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Cor de destaque nas cores Sephora:** o rosa (#F4A7B9) virou **vermelho (#E4002B)**, a pedido da usuária (`--pn-destaque`): anel e barra do cartão "Campanha 2026", 1ª barra do "Maior tempo de atendimento" e item "Outros" do Ranking Incidentes. Nas cores AlliedIT continua o amarelo.
 - **Final da página do link da gestão reorganizado (pedido da usuária):** o card passou a se chamar **"Trocas de equipamento 2025 x 2026"**, com 2 abas (Top 5 2025 x 2026 · Comparativo por loja). **"Equipamentos por loja"** saiu das abas e virou um card próprio, no lugar da Lista de lojas. A **Lista de lojas ficou escondida por enquanto** (`#pn-card-lista` com `display:none`; o código continua). No **Top 5**, cada ano fica no seu quadro e as lojas aparecem fechadas: um clique (ou Enter/Espaço) na loja mostra o que foi trocado, outro clique fecha; as lojas abertas continuam abertas quando os dados se atualizam. Divisão entre os cards mais clara: borda mais visível (`--pn-borda-card`), sombra suave e 16px de espaço entre as linhas.
 - **Card "Parque Sephora: equipamentos em loja" (pedido da usuária):** logo depois da linha de 4 cards. Um quadradinho para cada item do Parque Sephora (**PDVs Elgin** e **PDVs Toshiba** separados pela marca do PDV, mais "PDVs (marca não informada)" só quando houver algum; Impressoras Térmicas, Leitores de Código de Barras, PINPADs Rede/Laranjinha, PINPAD Reserva, Notebooks, Desktops, Monitores, Mouses, Teclados, Mini Nobreaks, **Nobreak de Rack NHS** e **Nobreak de Rack EATON** separados, DVRs / CFTV, HDs de DVR, Monitor de CFTV, Impressoras Multifuncionais, **Telefones VoIP** (soma os da Gerência e do Estoque com o telefone do Stage de Vendas, que é o mesmo equipamento), PDA Zebra, Mobiles, Mercado Pago, POS Rede / Cielo), com a quantidade registrada nos checklists e em quantas lojas; total geral no canto. Clicando no item, abre a janela com as lojas e a quantidade em cada uma. Base: lojas reais com checklist em andamento ou concluído. Regras: equipamento conta quando o técnico preencheu algum dado dele; "Possui" para leitor, mini nobreak, telefone VoIP e monitor de CFTV; PINPAD reserva funcionando ou quebrado; Nobreak de Rack pela marca registrada (NHS ou EATON); HDs = soma da quantidade informada; PDA Zebra = cada nº de série. No celular, 2 quadradinhos por linha. Funções `pnParqueDaLoja` (usa `lojaParaRelatorio`, que organiza os dados sem alterar nada) e `renderPainelParque`.
-- **Remodelação concluída na `develop` (28/09/2026), ainda não publicada.**
+- **Remodelação concluída e publicada em 28/09/2026** (ver o início desta seção).
 - **Correção:** a janela das lojas tratava a "Hora Prevista" como data (mostrava "Previsão: 08:30"). Agora mostra "Agendada para 23/09/2026 às 08:30" (vale nos dois Painéis).
 
-### 8.8 Fonte do portal: Inter e depois Titillium Web (só na `develop`, ainda não publicado)
+### 8.8 Fonte do portal: Inter e depois Titillium Web: PUBLICADO (28/09/2026, ver 8.7)
 - A pedido da usuária (28/09/2026), o portal inteiro (login, Agendamento, checklist, Técnico, Painel com login e link da gestão) passou a usar a fonte **Inter**, com os pesos **400, 500, 600 e 700**, carregada do **Google Fonts** (`<link>` no `<head>`). Se o Google Fonts não carregar, o navegador usa a fonte do sistema (Segoe UI no Windows, fonte padrão no celular).
 - A fonte anterior, **Chillax** (embutida no `index.html`), deixou de ser usada e foi retirada do arquivo (74 KB a menos; continua no histórico do Git). Os 19 textos com peso 800 passaram para 700, que é o mais forte da Inter carregada.
 - O **PDF** das lojas continua com a fonte própria dele (Segoe UI/Arial), porque é montado num documento separado para impressão.
