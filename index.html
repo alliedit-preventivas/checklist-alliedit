@@ -1337,6 +1337,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // Modo gestão (link ?painel=1): abre só o Painel de Indicadores, sem login e só para visualização.
   // Não mostra Agendamento nem Técnico e não abre checklists.
   let modoGestao = false;
+  // Painel com login (menu "Painel") usa o mesmo Painel novo do link da gestão (pedido da usuária, 29/09/2026).
+  // O "painel-classico" continua no código, escondido: para voltar a ele, mude para false.
+  const PAINEL_LOGIN_USA_NOVO = true;
+  let painelNovoAtivo = false;
   let filtroHome = null;
   let modoSelecao = false;
   let lojasSelecionadas = new Set();
@@ -1886,12 +1890,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     modoTecnicoId = modoTecnico && !lojaParamId;
     modoGestao = !!acesso.painel && !modoTecnico;
     if(!modoGestao) document.documentElement.removeAttribute("data-tema"); // cores Sephora só no link da gestão
-    if(modoGestao){
-      // Link da gestão usa o Painel novo; o Painel com login continua com o "painel-classico"
+    // Painel novo: no link da gestão e também no Painel com login (o "painel-classico" fica escondido)
+    painelNovoAtivo = modoGestao || (!modoTecnico && PAINEL_LOGIN_USA_NOVO);
+    if(painelNovoAtivo){
       document.getElementById("painel-classico").classList.add("hidden");
       document.getElementById("painel-novo").classList.remove("hidden");
       document.getElementById("view-painel").style.maxWidth = "1480px"; // layout novo é mais largo em monitores grandes
+      // "Modo visualização" só no link da gestão; com login as lojas abrem o checklist ao clicar
+      document.querySelector("#painel-novo .pn-aviso").classList.toggle("hidden", !modoGestao);
       wirePainelNovo();
+    }
+    if(modoGestao){
       document.querySelector("header h1").textContent = "Checklist de Preventivas · Sephora 2026 · AlliedIT";
       document.querySelector("header .sub").textContent = "Gestão de manutenções preventivas das lojas Sephora";
       document.getElementById("painel-modo-gestao").classList.remove("hidden");
@@ -1985,15 +1994,22 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       b.setAttribute("aria-pressed", ativo ? "true" : "false");
     });
   }
+  // Cores do Painel (bolinhas AlliedIT / Sephora): no link da gestão e no Painel com login (29/09/2026).
+  // Com login, a cor escolhida vale só enquanto o Painel está aberto; Agendamento e checklist ficam sempre AlliedIT.
+  let temaPainelLogin = "alliedit";
+  function temCoresNoPainel(){ return modoGestao || (!modoTecnico && painelNovoAtivo); }
   function wireTemaCores(){
-    if(!modoGestao){ aplicarTemaCores("alliedit"); return; }
+    if(!temCoresNoPainel()){ aplicarTemaCores("alliedit"); return; }
+    if(!modoGestao){ try{ if(localStorage.getItem("coresPainelLogin") === "sephora") temaPainelLogin = "sephora"; }catch(e){} }
     document.querySelectorAll(".tema-cores-btn").forEach(function(b){
       b.addEventListener("click", function(){
         aplicarTemaCores(b.dataset.cores);
-        try{ localStorage.setItem("coresPainelGestao", b.dataset.cores); }catch(e){}
+        if(modoGestao){ try{ localStorage.setItem("coresPainelGestao", b.dataset.cores); }catch(e){} }
+        else { temaPainelLogin = b.dataset.cores; try{ localStorage.setItem("coresPainelLogin", b.dataset.cores); }catch(e){} }
       });
     });
-    aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
+    if(modoGestao) aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
+    else aplicarTemaCores("alliedit");
   }
   function continuarAposAcesso(){
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario(); wireTemaCores();
@@ -2050,8 +2066,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
-    // Bolinhas de cores só no link da gestão (?painel=1)
-    document.getElementById("tema-cores").classList.toggle("hidden", !(modoGestao && name==="painel"));
+    // Bolinhas de cores com o Painel aberto (link da gestão e Painel com login)
+    document.getElementById("tema-cores").classList.toggle("hidden", !(temCoresNoPainel() && name==="painel"));
+    // Com login: cor escolhida só no Painel; nas outras telas volta para AlliedIT
+    if(!modoGestao && temCoresNoPainel()) aplicarTemaCores(name==="painel" ? temaPainelLogin : "alliedit");
     window.scrollTo({top:0});
   }
   function mostrarTravaFinalizacao(){
@@ -5276,7 +5294,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   }
         function renderPainel(){
     const total = lojasCache.length;
-    if(modoGestao) renderPainelNovo();
+    if(painelNovoAtivo) renderPainelNovo();
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
     const andamento = lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length;
     const agendadas = lojasCache.filter(function(l){ return l.status==="liberado"; }).length;
