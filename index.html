@@ -1337,6 +1337,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // Modo gestão (link ?painel=1): abre só o Painel de Indicadores, sem login e só para visualização.
   // Não mostra Agendamento nem Técnico e não abre checklists.
   let modoGestao = false;
+  // Painel com login (menu "Painel") usa o mesmo Painel novo do link da gestão (pedido da usuária, 29/09/2026).
+  // O "painel-classico" continua no código, escondido: para voltar a ele, mude para false.
+  const PAINEL_LOGIN_USA_NOVO = true;
+  let painelNovoAtivo = false;
   let filtroHome = null;
   let modoSelecao = false;
   let lojasSelecionadas = new Set();
@@ -1886,12 +1890,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     modoTecnicoId = modoTecnico && !lojaParamId;
     modoGestao = !!acesso.painel && !modoTecnico;
     if(!modoGestao) document.documentElement.removeAttribute("data-tema"); // cores Sephora só no link da gestão
-    if(modoGestao){
-      // Link da gestão usa o Painel novo; o Painel com login continua com o "painel-classico"
+    // Painel novo: no link da gestão e também no Painel com login (o "painel-classico" fica escondido)
+    painelNovoAtivo = modoGestao || (!modoTecnico && PAINEL_LOGIN_USA_NOVO);
+    if(painelNovoAtivo){
       document.getElementById("painel-classico").classList.add("hidden");
       document.getElementById("painel-novo").classList.remove("hidden");
       document.getElementById("view-painel").style.maxWidth = "1480px"; // layout novo é mais largo em monitores grandes
+      // "Modo visualização" só no link da gestão; com login as lojas abrem o checklist ao clicar
+      document.querySelector("#painel-novo .pn-aviso").classList.toggle("hidden", !modoGestao);
       wirePainelNovo();
+    }
+    if(modoGestao){
       document.querySelector("header h1").textContent = "Checklist de Preventivas · Sephora 2026 · AlliedIT";
       document.querySelector("header .sub").textContent = "Gestão de manutenções preventivas das lojas Sephora";
       document.getElementById("painel-modo-gestao").classList.remove("hidden");
@@ -5276,7 +5285,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   }
         function renderPainel(){
     const total = lojasCache.length;
-    if(modoGestao) renderPainelNovo();
+    if(painelNovoAtivo) renderPainelNovo();
     const concluidas = lojasCache.filter(function(l){ return l.status==="concluido"; }).length;
     const andamento = lojasCache.filter(function(l){ return l.status==="em_andamento"; }).length;
     const agendadas = lojasCache.filter(function(l){ return l.status==="liberado"; }).length;
