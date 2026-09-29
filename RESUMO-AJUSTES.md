@@ -199,7 +199,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ### Pendências atuais (29/09/2026)
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
-- Já validados: 8.1, 8.3, 8.10, 8.12 e 8.13.
+- Já validados: 8.1, 8.3, 8.10, 8.12, 8.13 e 8.16. Publicados e ainda sem validação registrada: 8.14 (Painel com login igual ao da gestão, com bolinhas de cor) e 8.15 (cabeçalho "DASHBOARD | PREVENTIVAS 2026").
 - Ideias opcionais em aberto: ver seção 6.
 - **Nada pendente de publicação.** Última publicação: `main` `911f2e6` = `develop` `adf9ad3`.
 
@@ -337,7 +337,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - À esquerda, nas duas telas: "Checklist de Preventivas" / "Sephora 2026 · AlliedIT" (o link da gestão deixou de usar "Checklist de Preventivas · Sephora 2026 · AlliedIT" / "Gestão de manutenções preventivas das lojas Sephora"). À direita: bolinhas de cores; com login, também os menus.
 - A tela de Agendamento continua com o título "Painel de Agendamento".
 
-### 8.16 Card "Comentário por loja" no final do Dashboard: PUBLICADO (29/09/2026)
+### 8.16 Card "Comentário por loja" no final do Dashboard: PUBLICADO E VALIDADO (29/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `911f2e6` (equivale à `develop` `adf9ad3`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `39fd7df`). Ponto de restauração: branch `restauracao-producao-antes-comentarios-2026-09-29`.
 - Pedido da usuária: no final dos dois Dashboards (Painel com login e link da gestão), card **"Comentário por loja"** com as lojas que responderam **"Sim"** em **"Ocorrências e necessidades"** no checklist, mostrando o texto escrito (campo `ocorrencia.descricao`; se veio vazio: "Ocorrência pontuada, sem descrição.").
 - Colunas: Código, Nome da loja, Regional, Status (mesma etiqueta da Lista de lojas), Data da preventiva, Técnico e Comentário (quebra de linha preservada). Busca por loja, técnico ou texto do comentário e filtro por Regional, com "Limpar filtros".
