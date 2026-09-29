@@ -1994,15 +1994,22 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       b.setAttribute("aria-pressed", ativo ? "true" : "false");
     });
   }
+  // Cores do Painel (bolinhas AlliedIT / Sephora): no link da gestão e no Painel com login (29/09/2026).
+  // Com login, a cor escolhida vale só enquanto o Painel está aberto; Agendamento e checklist ficam sempre AlliedIT.
+  let temaPainelLogin = "alliedit";
+  function temCoresNoPainel(){ return modoGestao || (!modoTecnico && painelNovoAtivo); }
   function wireTemaCores(){
-    if(!modoGestao){ aplicarTemaCores("alliedit"); return; }
+    if(!temCoresNoPainel()){ aplicarTemaCores("alliedit"); return; }
+    if(!modoGestao){ try{ if(localStorage.getItem("coresPainelLogin") === "sephora") temaPainelLogin = "sephora"; }catch(e){} }
     document.querySelectorAll(".tema-cores-btn").forEach(function(b){
       b.addEventListener("click", function(){
         aplicarTemaCores(b.dataset.cores);
-        try{ localStorage.setItem("coresPainelGestao", b.dataset.cores); }catch(e){}
+        if(modoGestao){ try{ localStorage.setItem("coresPainelGestao", b.dataset.cores); }catch(e){} }
+        else { temaPainelLogin = b.dataset.cores; try{ localStorage.setItem("coresPainelLogin", b.dataset.cores); }catch(e){} }
       });
     });
-    aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
+    if(modoGestao) aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
+    else aplicarTemaCores("alliedit");
   }
   function continuarAposAcesso(){
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario(); wireTemaCores();
@@ -2059,8 +2066,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
     if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
-    // Bolinhas de cores só no link da gestão (?painel=1)
-    document.getElementById("tema-cores").classList.toggle("hidden", !(modoGestao && name==="painel"));
+    // Bolinhas de cores com o Painel aberto (link da gestão e Painel com login)
+    document.getElementById("tema-cores").classList.toggle("hidden", !(temCoresNoPainel() && name==="painel"));
+    // Com login: cor escolhida só no Painel; nas outras telas volta para AlliedIT
+    if(!modoGestao && temCoresNoPainel()) aplicarTemaCores(name==="painel" ? temaPainelLogin : "alliedit");
     window.scrollTo({top:0});
   }
   function mostrarTravaFinalizacao(){
