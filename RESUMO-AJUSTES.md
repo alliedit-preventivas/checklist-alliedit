@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (todas as publicações validadas pela usuária; nada pendente).
+Última atualização: 29/09/2026 (animação de "carregando" no cartão Campanha 2026, na `develop`).
 
 ---
 
@@ -200,7 +200,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### Pendências atuais (29/09/2026)
 - **Todas as publicações (8.1 a 8.16) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **Nada pendente de publicação.** Última publicação: `main` `911f2e6` = `develop` `adf9ad3`.
+- **Pendente de publicação:** 8.17 (animação do cartão Campanha 2026). Última publicação: `main` `911f2e6` = `develop` `adf9ad3`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -352,4 +352,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Pedido da usuária: no final dos dois Dashboards (Painel com login e link da gestão), card **"Comentário por loja"** com as lojas que responderam **"Sim"** em **"Ocorrências e necessidades"** no checklist, mostrando o texto escrito (campo `ocorrencia.descricao`; se veio vazio: "Ocorrência pontuada, sem descrição.").
 - Colunas: Código, Nome da loja, Regional, Status (mesma etiqueta da Lista de lojas), Data da preventiva, Técnico e Comentário (quebra de linha preservada). Busca por loja, técnico ou texto do comentário e filtro por Regional, com "Limpar filtros".
 - Entram também lojas com checklist ainda em andamento que já marcaram "Sim". Lojas de teste (`LOJAS_TESTE`) não entram. Função `renderPainelComentarios`.
+
+### 8.17 Cartão "Campanha 2026" com animação de carregamento: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+- Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
+- Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), só anima se a porcentagem mudou, partindo do valor anterior. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
 
