@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (publicação em produção do card "Comentário por loja").
+Última atualização: 29/09/2026 (todas as publicações validadas pela usuária; nada pendente).
 
 ---
 
@@ -198,8 +198,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ## 8. Publicações e pendências (atualizado em 29/09/2026)
 
 ### Pendências atuais (29/09/2026)
-- **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
-- Já validados: 8.1, 8.3, 8.10, 8.12, 8.13, 8.14, 8.15 e 8.16.
+- **Todas as publicações (8.1 a 8.16) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
 - **Nada pendente de publicação.** Última publicação: `main` `911f2e6` = `develop` `adf9ad3`.
 
@@ -210,11 +209,12 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Ponto de restauração da produção (antes deste ajuste): branch `restauracao-producao-antes-aviso-pendencias-2026-09-27`.
 - **Testado e validado pela usuária no site no ar (27/09/2026).**
 
-### 8.2 Publicação de 28/09/2026: PUBLICADO
+### 8.2 Publicação de 28/09/2026: PUBLICADO E VALIDADO
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção (`main` `15f0165`, equivale à `develop` `c221eb3`): Painel Executivo (4.8), Comparativo e Top 5 de trocas 2025 x 2026 (4.9), Painel enxuto (4.10), correção do "Atrasado" (4.11) e Painel reorganizado (4.12).
 - Conferido antes do envio: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado, e diferença para a `develop` de exatamente as 3 linhas obrigatórias.
 - Ponto de restauração: branch `restauracao-producao-antes-painel-executivo-2026-09-28` (tags continuam bloqueadas na sessão de nuvem; o envio para a `main` funcionou).
-- Falta a usuária conferir no site no ar (ver "Pendências atuais" no início da seção 8).
+- Validado pela usuária (ver "Pendências atuais" no início da seção 8).
 
 ### 8.3 Publicação de 28/09/2026 (2ª): PUBLICADO E VALIDADO
 - **Link da gestão testado e validado pela usuária no site no ar (28/09/2026).**
@@ -224,7 +224,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)".
 - Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele).
 
-### 8.4 Regionais das lojas atualizadas: PUBLICADO (28/09/2026, junto com a 8.5)
+### 8.4 Regionais das lojas atualizadas: PUBLICADO E VALIDADO (28/09/2026, junto com a 8.5)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `8854816` (equivale à `develop` `b8d3bec`), com as mesmas conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-janela-status-2026-09-28`.
 - A versão de produção foi montada numa pasta temporária (`git merge-file`: ajustes da `develop` + as 3 linhas de produção) e gravada na `main` sem trocar de branch, então os arquivos da pasta do projeto não foram mexidos.
 - Lista de lojas x regionais enviada pela usuária (28/09/2026, 49 lojas) conferida com `UF_REGIONAL_MAP`: 45 já estavam certas. As 4 que estavam como "Confirmar" receberam a regional: 3114 Barra Sul = 2, 3130 Bourbon = 1, 3135 BH Shopping = 3, 3142 Parque Dom Pedro = 4.
@@ -232,14 +233,16 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Os nomes das lojas exibidos vêm do cadastro (tabela `lojas`), não da lista; não foram alterados. Nenhuma alteração de banco.
 - **Concentração Territorial (Lojas por UF):** "SP", "SP - Interior" e "SP - Litoral" viraram uma linha só, "SP" (25 lojas, igual ao indicador "Concentração SP"). A coluna "Regional Predom." virou **"Regional"** e mostra todas as regionais da UF (SP = "Regionais 1 e 4"). A diferença Capital/Interior/Litoral continua guardada em `UF_REGIONAL_MAP`, só não aparece mais na tabela.
 
-### 8.5 Janela com as lojas de cada cartão de status: PUBLICADO (28/09/2026, ver 8.4)
+### 8.5 Janela com as lojas de cada cartão de status: PUBLICADO E VALIDADO (28/09/2026, ver 8.4)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - No Painel, clicar em **Não iniciado, Confirmado, Andamento, Concluídos, Equip. p/ substituir ou Atrasado** abre uma janela com a quantidade e a lista das lojas daquele cartão (função `abrirPopupStatus`).
 - Cada loja mostra a data agendada (ou a previsão, ou "Sem data agendada"). Em **Atrasado**, a mais atrasada vem primeiro, com os dias de atraso. Em **Equip. p/ substituir**, cada loja mostra os equipamentos e o setor (antes esse cartão só rolava a página até a lista de substituições).
 - Com login, clicar na loja abre o checklist (igual ao calendário). No link da gestão (`?painel=1`) é só consulta: as lojas não são clicáveis.
 - Fecha no botão "Fechar", clicando fora da janela ou com a tecla Esc. No celular, a lista rola dentro da janela.
 - As lojas de teste (9999 e 9998) aparecem na lista, porque também entram na contagem dos cartões. Nenhuma alteração de banco.
 
-### 8.6 Cores AlliedIT x Sephora no link da gestão: PUBLICADO (28/09/2026)
+### 8.6 Cores AlliedIT x Sephora no link da gestão: PUBLICADO E VALIDADO (28/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `dceefc1` (equivale à `develop` `bdef41e`), com as conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-cores-sephora-2026-09-28`.
 - **Atenção para as próximas publicações:** a junção automática (`git merge-file`) deu conflito, porque a linha do logo (alterada) fica colada na linha da etiqueta "Teste Local". O arquivo com conflito foi descartado sem ir para a produção, e a versão de produção foi montada pelo método manual: cópia do `index.html` da `develop` trocando só as 3 linhas (URL, chave e tirando `<div class="sub2">Teste Local</div>`). Esse método manual é o mais seguro quando o cabeçalho muda.
 - **Exclusivo do link da gestão (`?painel=1` ou `#painel`)**, a pedido da usuária: duas bolinhas pequenas e discretas no **cabeçalho, canto direito** (12px, sem texto): azul e amarelo = AlliedIT, preto e branco = Sephora. A escolhida ganha um anel branco fino e a outra fica um pouco apagada; o nome aparece ao passar o mouse. No celular ficam abaixo do título. No Painel com login, no Agendamento, no checklist e na tela do Técnico as bolinhas **não aparecem** e as cores são **sempre AlliedIT**.
@@ -249,7 +252,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - A escolha fica guardada **só no navegador de quem clicou** (chave `coresPainelGestao`) e **só vale no link da gestão**: não se replica para as outras telas, mesmo no mesmo navegador. Não grava nada no banco e não muda o que as outras pessoas veem. O script do `<head>` só aplica as cores quando o endereço é o do link da gestão, e o `init` tira as cores Sephora em qualquer outro modo.
 - No código: cores da Sephora em `:root[data-tema="sephora"]`, funções `aplicarTemaCores` e `wireTemaCores`, e um script curto no `<head>` que aplica a escolha antes de desenhar a página (sem "piscar" nas cores AlliedIT). Ponto de restauração da `develop` antes deste ajuste: tag `antes-tema-cores`.
 
-### 8.7 Painel novo do link da gestão, no modelo enviado pela usuária: PUBLICADO (28/09/2026)
+### 8.7 Painel novo do link da gestão, no modelo enviado pela usuária: PUBLICADO E VALIDADO (28/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `e8ebe10` (equivale à `develop` `c545d23`), junto com a 8.8, montada pelo método manual (cópia do `index.html` da `develop` trocando só as 3 linhas) e com as conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-painel-gestao-novo-2026-09-28`.
 - **Só no link da gestão (`?painel=1`).** O Painel com login continua igual (conteúdo em `#painel-classico`); o novo fica em `#painel-novo` e é ligado no `init` quando `modoGestao`. Cores AlliedIT e Sephora valem nos dois. Ponto de restauração da `develop` antes da remodelação: tag `antes-painel-gestao-novo` (só no computador local).
 - Plano em 5 etapas, combinado com a usuária em 28/09/2026: **1) topo** · 2) agenda semanal (seg a sex, com a data e a **Hora Prevista** que já existe no Agendamento, campo `agendamentoPrevisto`) · 3) card "Regionais x solicitações de troca" no lugar dos alertas · 4) Ranking Top 10, Pareto 2026, Pareto 2025 x 2026 (Top 7, em % de lojas), mapa por UF e Maior tempo de atendimento · 5) Lista de lojas (Código, Nome, Regional, UF, Próximo agendamento, Status, Trocas 2026; com busca e filtros; **sem Exportar**) e um card "Trocas de equipamento" com 3 abas (Top 5 2025 x 2026, Comparativo, Equipamentos por loja).
@@ -278,7 +282,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Remodelação concluída e publicada em 28/09/2026** (ver o início desta seção).
 - **Correção:** a janela das lojas tratava a "Hora Prevista" como data (mostrava "Previsão: 08:30"). Agora mostra "Agendada para 23/09/2026 às 08:30" (vale nos dois Painéis).
 
-### 8.8 Fonte do portal: Inter e depois Titillium Web: PUBLICADO (28/09/2026, ver 8.7)
+### 8.8 Fonte do portal: Inter e depois Titillium Web: PUBLICADO E VALIDADO (28/09/2026, ver 8.7)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - A pedido da usuária (28/09/2026), o portal inteiro (login, Agendamento, checklist, Técnico, Painel com login e link da gestão) passou a usar a fonte **Inter**, com os pesos **400, 500, 600 e 700**, carregada do **Google Fonts** (`<link>` no `<head>`). Se o Google Fonts não carregar, o navegador usa a fonte do sistema (Segoe UI no Windows, fonte padrão no celular).
 - A fonte anterior, **Chillax** (embutida no `index.html`), deixou de ser usada e foi retirada do arquivo (74 KB a menos; continua no histórico do Git). Os 19 textos com peso 800 passaram para 700, que é o mais forte da Inter carregada.
 - O **PDF** das lojas continua com a fonte própria dele (Segoe UI/Arial), porque é montado num documento separado para impressão.
@@ -286,7 +291,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Escala única de tamanhos de letra: desfeita** a pedido da usuária (28/09/2026). A escala de 10 tamanhos (commit `6e03ce3`) foi revertida; os tamanhos voltaram a ser exatamente os de antes, com a fonte Inter. Continuam valendo as mudanças feitas depois dela (nova ordem dos 4 cards, clique único no Ranking Incidentes e o vermelho nas cores Sephora).
 - **Fonte trocada para Titillium Web** (pedido da usuária, 28/09/2026): o portal inteiro passou da Inter para a **Titillium Web** (Google Fonts), com os pesos **400, 600 e 700**. A Titillium não tem o peso 500, que não é usado em nenhum texto do site. Tamanhos de letra continuam os originais.
 
-### 8.9 GPOS Backup fora do checklist do técnico: PUBLICADO (28/09/2026)
+### 8.9 GPOS Backup fora do checklist do técnico: PUBLICADO E VALIDADO (28/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `ee22b5c` (equivale à `develop` `55055da`), pelo método manual e com as conferências de sempre. Ponto de restauração: tag `producao-antes-sem-gpos-2026-09-28`.
 - A pedido da usuária (28/09/2026): esse equipamento não existe nas lojas, então o card **GPOS Backup** saiu da Gerência no formulário do técnico. Também saiu da lista de pendências (deixou de ser obrigatório), do alerta "GPOS Backup não existe" (Alertas do Painel com login e Ranking Incidentes do link da gestão) e do PDF.
 - **Nada foi apagado do banco:** o campo `gposBackup` continua no modelo de dados (`blankSetorEquip`) e respostas antigas ficam guardadas, só não aparecem mais. O Estoque continua com o card PDA Zebra no mesmo lugar.
@@ -298,7 +304,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Cada Mobile ganhou a **foto de exemplo do GPOS Gertec** à esquerda e os campos (Nº Série, IP, Estado de conservação) à direita, igual ao Mercado Pago; a Observação fica embaixo. Foto enviada pela usuária, recortada e reduzida para 240×360 (7 KB, `FOTO_GPOS_GERTEC` / `FOTOS_EXEMPLO.gpos`).
 - O PDF segue a nova ordem: grupo "Máquinas GPOS Gertec" com os Mobiles, antes de "Máquinas POS". Nenhuma alteração de banco: os dados continuam em `mobiles`.
 
-### 8.11 PDV: Gaveta de Dinheiro e "PINPAD apresenta defeito?": PUBLICADO (28/09/2026)
+### 8.11 PDV: Gaveta de Dinheiro e "PINPAD apresenta defeito?": PUBLICADO E VALIDADO (28/09/2026)
+- **Validado pela usuária no site no ar (29/09/2026).**
 - Foi para produção na `main` `efd5e70` (equivale à `develop` `3892d78`), pelo método manual e com as conferências de sempre (13 conferências, 0 falhas; site no ar idêntico à `main`). Ponto de restauração: tag `producao-antes-gaveta-pinpad-2026-09-28`.
 - A pedido da usuária (28/09/2026), em **cada PDV** do Stage de Vendas:
   - **Gaveta de dinheiro** logo abaixo do Nº Série/Marca do PDV, no mesmo bloco (sem seção própria — correção pedida pela usuária): **"Gaveta de dinheiro"** (Funcionando | Defeito ou Falha), com a observação *"Este cabo é importado, por isso é importante a sua validação."* logo abaixo do título, e **"Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (Possui trava no conector | Sem trava no conector | Cabo danificado). **Sem trava no conector = alerta** (botão amarelo); **Cabo danificado = troca de equipamento** ("PDV 01: Cabo da gaveta de dinheiro").
