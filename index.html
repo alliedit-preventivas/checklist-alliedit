@@ -458,6 +458,7 @@
   .toggle-btn.on-good{background:var(--ok-bg); border-color:var(--ok); color:var(--ok);}
   .toggle-btn.on-bad{background:var(--bad-bg); border-color:var(--bad); color:var(--bad);}
   .toggle-btn.on-neutral{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .toggle-btn.on-warn{background:var(--warn-bg); border-color:var(--warn); color:var(--warn);}
   .hint{font-size:11px; color:var(--text-muted); margin-top:3px; font-style:italic;}
   .warn-inline{font-size:11.5px; color:var(--bad); margin-top:4px; font-weight:600;}
   .warn-destaque{font-size:15px; color:var(--bad); background:var(--bad-bg); border:1.5px solid var(--bad); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-weight:700; display:flex; align-items:center; gap:8px; line-height:1.3;}
@@ -1460,7 +1461,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     return { id:uid(), nome:"PDV "+String(n).padStart(2,"0"), serie:"", marca:"", obs:"",
       miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
       telaCliente:{touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null, falhaImpressao:null},
-      leitorCodBarras:{possui:null, serie:"", defeito:null, obs:""}, pinpad:{serieRede:"", modelo:"", serie:""}, mercadoPago:{modelo:"", serie:""},
+      leitorCodBarras:{possui:null, serie:"", defeito:null, obs:""}, pinpad:{serieRede:"", modelo:"", serie:"", defeito:null}, mercadoPago:{modelo:"", serie:""},
+      // Gaveta de dinheiro: estado "funcionando" | "defeito"; cabo até a impressora "com_trava" | "sem_trava" | "danificado"
+      gaveta:{estado:"", cabo:""},
       mouse: blankPerif(), teclado: blankPerif() };
   }
   function blankMobile(n){ return { id:uid(), nome:"Mobile "+String(n).padStart(2,"0"), serie:"", ip:"", estado:"", obs:"" }; }
@@ -1543,6 +1546,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(!p.miniNobreak) p.miniNobreak = {possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""};
     if(!Array.isArray(p.miniNobreak.leds)) p.miniNobreak.leds = [];
     if(p.impressoraTermica && p.impressoraTermica.falhaImpressao===undefined) p.impressoraTermica.falhaImpressao = null;
+    // Campos novos (28/09/2026): checklists antigos não tinham gaveta de dinheiro nem "PINPAD apresenta defeito?"
+    p.gaveta = Object.assign({estado:"", cabo:""}, p.gaveta||{});
+    if(!p.pinpad) p.pinpad = {serieRede:"", modelo:"", serie:"", defeito:null};
+    if(p.pinpad.defeito===undefined) p.pinpad.defeito = null;
     // dados antigos so tinham {serie}; preserva a serie ja preenchida e adiciona os novos campos de controle de defeito.
     // Se ja havia uma serie preenchida no dado antigo, assume possui:true automaticamente (evita ocultar um dado ja salvo
     // atras de um clique manual em "Possui"). Sem serie antiga, possui fica null (pergunta em aberto, como antes).
@@ -1698,6 +1705,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(p.impressoraTermica.limpezaFeita===null) add(p.nome+": limpeza da impressora térmica", b+'[data-pdv-toggle="impLimpeza"]');
       if(!p.pinpad.serie) add(p.nome+": PINPAD REDE LARANJINHA - Nº Série", b+'[data-pdv="pinSerie"]');
       if(!p.pinpad.modelo) add(p.nome+": PINPAD REDE LARANJINHA - Modelo", b+'[data-pdv="pinModelo"]');
+      if(p.pinpad.defeito===null || p.pinpad.defeito===undefined) add(p.nome+": PINPAD REDE LARANJINHA apresenta defeito?", b+'[data-pdv-toggle="pinDefeito"]');
+      if(!(p.gaveta||{}).estado) add(p.nome+": gaveta de dinheiro funcionando?", b+'[data-pdv-opcao="gavetaEstado"]');
+      if(!(p.gaveta||{}).cabo) add(p.nome+": estado do cabo da gaveta de dinheiro", b+'[data-pdv-opcao="gavetaCabo"]');
       if(!p.mouse.tipo) add(p.nome+": mouse com/sem fio", b+'[data-pdv-select="mouse"]');
       if(!p.mouse.estado) add(p.nome+": mouse estado", b+'[data-pdv="mouseEstado"]');
       if(!p.teclado.tipo) add(p.nome+": teclado com/sem fio", b+'[data-pdv-select="teclado"]');
@@ -3474,6 +3484,15 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           '<div class="field"><label>Nº Série do PDV</label><input type="text" data-pdv="serie" data-idx="'+idx+'" value="'+escapeHtml(p.serie)+'"></div>' +
           '<div class="field"><label>Marca</label><select data-pdv="marca" data-idx="'+idx+'"><option value="">Selecionar</option><option'+(p.marca==="Toshiba"?' selected':'')+'>Toshiba</option><option'+(p.marca==="Elgin"?' selected':'')+'>Elgin</option></select></div>' +
         '</div>' +
+        // Gaveta de dinheiro: logo abaixo dos dados do PDV, no mesmo bloco (sem seção própria).
+        // Cabo sem trava = alerta; cabo danificado = troca.
+        '<div class="field"><label>Gaveta de dinheiro</label><div class="hint" style="margin:0 0 6px;">Este cabo é importado, por isso é importante a sua validação.</div><div class="toggle-group" data-pdv-opcao="gavetaEstado" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.estado==="defeito"?' on-bad':'')+'" data-val="defeito">Defeito ou Falha</button></div></div>' +
+        '<div class="field"><label>Qual o estado de conservação do cabo que liga a gaveta à impressora?</label><div class="toggle-group" data-pdv-opcao="gavetaCabo" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="com_trava"?' on-good':'')+'" data-val="com_trava">Possui trava no conector</button>' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="sem_trava"?' on-warn':'')+'" data-val="sem_trava">Sem trava no conector</button>' +
+          '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="danificado"?' on-bad':'')+'" data-val="danificado">Cabo danificado</button></div></div>' +
         (!ehElgin ? '' :
         '<div class="field"><label>Tela do cliente</label>' +
           '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
@@ -3530,6 +3549,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           '<div class="field"><label>Nº Rede</label><input type="text" data-pdv="pinSerieRede" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serieRede)+'"></div>' +
           '<div class="field"><label>Nº Série</label><input type="text" data-pdv="pinSerie" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.serie)+'"></div>' +
           '<div class="field"><label>Modelo</label><input type="text" data-pdv="pinModelo" data-idx="'+idx+'" value="'+escapeHtml(p.pinpad.modelo)+'"></div></div></div>' +
+        // PINPAD com defeito = troca de equipamento e alerta
+        '<div class="field"><label>Apresenta defeito?</label><div class="toggle-group" data-pdv-toggle="pinDefeito" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.pinpad.defeito===true?' on-bad':'')+'" data-val="true">Sim</button>' +
+          '<button type="button" class="toggle-btn'+(p.pinpad.defeito===false?' on-good':'')+'" data-val="false">Não</button></div></div>' +
         '<div class="divisor-secao"></div>' +
         '<div class="field-row">' + perifHtmlPdv(idx,"mouse","Mouse",p.mouse) + perifHtmlPdv(idx,"teclado","Teclado",p.teclado) + '</div>' +
         '<div class="field"><label>Observação</label><textarea data-pdv="obs" data-idx="'+idx+'" rows="2" placeholder="Opcional">'+escapeHtml(p.obs)+'</textarea></div>' +
@@ -3566,6 +3589,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         else if(key==="nobreakAutonomia") p.miniNobreak.autonomiaAcima5=val;
         else if(key==="leitorPossui") p.leitorCodBarras.possui=val;
         else if(key==="leitorDefeito") p.leitorCodBarras.defeito=val;
+        else if(key==="pinDefeito") p.pinpad.defeito=val;
+        renderPdvs(); scheduleSave();
+      });
+    });
+    // Perguntas com opções em texto (gaveta de dinheiro e cabo da gaveta)
+    wrap.querySelectorAll("[data-pdv-opcao]").forEach(function(group){
+      group.addEventListener("click", function(e){
+        const b=e.target.closest(".toggle-btn"); if(!b) return;
+        const p=currentLoja.pdvs[+group.dataset.idx];
+        if(group.dataset.pdvOpcao==="gavetaEstado") p.gaveta.estado=b.dataset.val;
+        else if(group.dataset.pdvOpcao==="gavetaCabo") p.gaveta.cabo=b.dataset.val;
         renderPdvs(); scheduleSave();
       });
     });
@@ -4038,6 +4072,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(p.mouse && p.mouse.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Mouse", serie:"—", obs:"Ruim - substituir"});
       if(p.teclado && p.teclado.estado==="Ruim - substituir") itens.push({setor:"Stage de Vendas", equip:p.nome+": Teclado", serie:"—", obs:"Ruim - substituir"});
       if(!eatonRack && p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
+      // PINPAD REDE LARANJINHA com defeito, gaveta de dinheiro com defeito/falha e cabo da gaveta danificado entram como troca
+      if(p.pinpad && p.pinpad.defeito===true) itens.push({setor:"Stage de Vendas", equip:p.nome+": PINPAD", serie:p.pinpad.serie||"—", obs:"PINPAD REDE LARANJINHA apresenta defeito"});
+      if(p.gaveta && p.gaveta.estado==="defeito") itens.push({setor:"Stage de Vendas", equip:p.nome+": Gaveta de dinheiro", serie:"—", obs:"Gaveta de dinheiro com defeito ou falha"});
+      if(p.gaveta && p.gaveta.cabo==="danificado") itens.push({setor:"Stage de Vendas", equip:p.nome+": Cabo da gaveta de dinheiro", serie:"—", obs:"Cabo que liga a gaveta à impressora danificado"});
     });
     // Nobreak de Rack (NHS ou EATON) com autonomia baixa entra na substituição
     const autRack = autonomiaNobreakRack(l.rack && l.rack.nobreak);
@@ -4071,6 +4109,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     (l.pdvs||[]).forEach(function(p){
       if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) msgs.push(p.nome+": impressora térmica precisa de limpeza");
       if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) msgs.push(p.nome+": USB do touch da tela do cliente ainda conectado");
+      if(p.pinpad && p.pinpad.defeito===true) msgs.push(p.nome+": PINPAD REDE LARANJINHA com defeito");
+      if(p.gaveta && p.gaveta.cabo==="sem_trava") msgs.push(p.nome+": cabo da gaveta de dinheiro sem trava no conector");
     });
     const pr = l.pinpadReserva;
     if(pr && pr.situacao==="nao_existe"){
@@ -4241,6 +4281,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     // ---- Página 5: Stage de Vendas ----
     const stage = l.pdvs.map(function(p){
       const ls = [lin("Nº Série do PDV", p.serie), lin("Marca", p.marca)];
+      // Gaveta de dinheiro logo abaixo dos dados do PDV (mesma ordem do formulário)
+      const gv = p.gaveta || {};
+      ls.push(lin("Gaveta de dinheiro", {funcionando:"Funcionando", defeito:"Defeito ou Falha"}[gv.estado] || "", gv.estado==="defeito"),
+        lin("Cabo da gaveta até a impressora", {com_trava:"Possui trava no conector", sem_trava:"Sem trava no conector", danificado:"Cabo danificado"}[gv.cabo] || "", gv.cabo==="sem_trava" || gv.cabo==="danificado"));
       if(p.marca==="Elgin") ls.push(lin("Tela do cliente (USB do touch)", p.telaCliente.touchDesativado===true ? "Removido" : "Não removido", p.telaCliente.touchDesativado!==true));
       const mn = p.miniNobreak;
       ls.push(lin("Mini Nobreak", sn(mn.possui,"Possui","Não possui")));
@@ -4256,6 +4300,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         lin("Leitor de código de barras", sn(lc.possui,"Possui","Não possui")));
       if(lc.possui===true) ls.push(lin("Leitor — Nº Série", lc.serie), lin("Leitor — apresenta defeito", sn(lc.defeito), lc.defeito===true), lin("Leitor — descrição do defeito", lc.obs));
       ls.push(lin("PINPAD REDE LARANJINHA — Nº Rede", p.pinpad.serieRede), lin("PINPAD REDE LARANJINHA — Nº Série", p.pinpad.serie), lin("PINPAD REDE LARANJINHA — Modelo", p.pinpad.modelo),
+        lin("PINPAD REDE LARANJINHA — apresenta defeito", sn(p.pinpad.defeito), p.pinpad.defeito===true),
         perif("Mouse", p.mouse), perif("Teclado", p.teclado), lin("Observação", p.obs));
       return card(p.nome, ls);
     }).join("") +
@@ -4882,6 +4927,8 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(/WIFI/.test(m)) return "Wi-Fi abaixo de 3 barras";
     if(/impressora térmica/i.test(m)) return "Impressora térmica precisa de limpeza";
     if(/touch/i.test(m)) return "USB do touch da tela do cliente conectado";
+    if(/PINPAD REDE LARANJINHA com defeito/.test(m)) return "PINPAD PDV"; // mesmo nome da troca, para a loja contar 1 vez só
+    if(/sem trava no conector/.test(m)) return "Cabo da gaveta sem trava no conector";
     if(/PINPAD reserva/.test(m)) return "PINPAD reserva";
     return m;
   }
