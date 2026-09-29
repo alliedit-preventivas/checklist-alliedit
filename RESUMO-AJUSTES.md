@@ -188,6 +188,8 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ## 7. Dicas para testar sem mexer em nenhum banco
 
+- **Prévia de teste dentro do Claude (29/09/2026):** página privada https://claude.ai/artifact/5uFkMsah4VAvdgnWrp1rZG com o formulário do técnico da `develop`, **banco simulado em memória** (nada é gravado; recarregar volta ao início) e a loja de teste **9999**. Não leva nenhuma chave do Supabase. Para atualizar depois de novas mudanças, pedir ao Claude "atualize a prévia de teste". Limitações: não tem login (Agendamento e Painel com login não abrem), o PDF não baixa e as fotos ficam só na tela.
+
 - O formulário só abre depois do login. Para testar sem login, o Claude monta uma cópia do `index.html` numa pasta temporária com o Supabase **simulado** (nada é gravado em banco nenhum) e confere tudo por medições e simulações de clique.
 - Para imagens de prévia, o Edge instalado no Windows pode gerar capturas com `msedge --headless --screenshot`.
 
