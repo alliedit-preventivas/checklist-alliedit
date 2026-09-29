@@ -355,5 +355,5 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 
 ### 8.17 Cartão "Campanha 2026" com animação de carregamento: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
 - Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
-- Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), só anima se a porcentagem mudou, partindo do valor anterior. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
+- A animação roda **só ao abrir ou recarregar a página (F5)** (ajuste pedido pela usuária). Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), a porcentagem muda direto, sem animar. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
 

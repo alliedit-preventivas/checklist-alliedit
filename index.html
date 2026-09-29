@@ -4849,8 +4849,9 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     total:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5V20h15v-9.5"/><path d="M3 10.5L5.2 4.5h13.6l2.2 6z"/><path d="M9.5 20v-5h5v5"/></svg>'
   };
   // Animação do cartão "Campanha 2026": o número sobe, o anel e a barra enchem como um "loading"
-  // até a porcentagem real. Só anima quando o valor muda (os dados se atualizam sozinhos a cada 20 s).
-  let pnCampanhaPctMostrado = 0, pnCampanhaAnim = null;
+  // até a porcentagem real. Roda só uma vez, quando a página é aberta ou recarregada (F5);
+  // nas atualizações automáticas dos dados (a cada 20 s) o valor muda direto, sem animar (pedido da usuária).
+  let pnCampanhaPctMostrado = 0, pnCampanhaAnim = null, pnCampanhaJaAnimou = false;
   function pnAnimarCampanha(de, ate, circ){
     const arco = document.getElementById("pn-anel-arco"), num = document.getElementById("pn-anel-num");
     const barra = document.getElementById("pn-campanha-barra"), fill = document.getElementById("pn-campanha-barra-fill");
@@ -4865,7 +4866,8 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     let semAnimacao = false;
     try{ semAnimacao = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
     pnCampanhaPctMostrado = ate;
-    if(de === ate || semAnimacao){ desenhar(ate); barra.classList.remove("carregando"); return; }
+    if(pnCampanhaJaAnimou || de === ate || semAnimacao){ pnCampanhaJaAnimou = true; desenhar(ate); barra.classList.remove("carregando"); return; }
+    pnCampanhaJaAnimou = true;
     const dur = Math.min(1800, 700 + Math.abs(ate - de) * 18), t0 = performance.now();
     barra.classList.add("carregando");
     (function passo(agora){
