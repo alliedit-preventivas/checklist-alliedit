@@ -285,6 +285,18 @@
   #view-painel #painel-novo .card, #painel-novo .pn-kpi{border:1px solid var(--pn-borda-card); box-shadow:0 1px 2px rgba(16,24,40,.05), 0 4px 12px rgba(16,24,40,.06);}
   #painel-novo .pn-topo, #painel-novo .pn-linha, #painel-novo .pn-grade4{gap:16px; margin-bottom:16px;}
   #view-painel #painel-novo > .card{margin-bottom:16px;}
+  /* Parque Sephora: um quadradinho por tipo de equipamento, com a quantidade e em quantas lojas */
+  .pn-parque{display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:10px;}
+  .pn-parque-item{display:flex; flex-direction:column; gap:2px; text-align:left; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; cursor:pointer; font-family:inherit; color:var(--navy); transition:border-color .15s;}
+  .pn-parque-item:hover{border-color:var(--teal-lt);}
+  .pn-parque-item:focus-visible{outline:2px solid var(--teal-lt); outline-offset:1px;}
+  .pn-parque-num{font-size:22px; font-weight:700; line-height:1.1;}
+  .pn-parque-nome{font-size:12.5px; font-weight:600; line-height:1.25;}
+  .pn-parque-lojas{font-size:11px; color:var(--text-muted);}
+  .pn-parque-item.zero .pn-parque-num{color:var(--text-muted);}
+  .pn-parque-total{font-size:12px; color:var(--text-muted); text-align:right;}
+  .pn-parque-total b{display:block; font-size:22px; color:var(--navy); line-height:1.1;}
+  @media(max-width:760px){ .pn-parque{grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px;} .pn-parque-item{padding:9px 10px;} }
   /* Abas do card "Trocas de equipamento" */
   .pn-abas{display:flex; gap:4px; flex-wrap:wrap; background:var(--bg); padding:3px; border-radius:20px;}
   .pn-aba{border:none; background:transparent; font-family:inherit; font-size:12px; font-weight:700; color:var(--text-muted); padding:6px 12px; border-radius:16px; cursor:pointer;}
@@ -935,6 +947,18 @@
           </div></div>
           <div id="pn-pareto26"></div>
         </div>
+      </div>
+
+      <!-- Parque Sephora: contagem dos equipamentos registrados nos checklists (lojas reais com checklist iniciado ou concluído) -->
+      <div class="card pn-card">
+        <div class="pn-card-cab">
+          <div class="pn-card-titulo">
+            <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg></span>
+            <div><h3>Parque Sephora: equipamentos em loja</h3><div class="pn-card-sub" id="pn-parque-sub"></div></div>
+          </div>
+          <div class="pn-parque-total" id="pn-parque-total"></div>
+        </div>
+        <div class="pn-parque" id="pn-parque"></div>
       </div>
 
       <div class="card pn-card">
@@ -4722,7 +4746,85 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     renderPainelMapaUf();
     renderPainelTempo();
     renderPainelParetoComp();
+    renderPainelParque();
     renderPainelLista();
+  }
+  // Parque Sephora: quantos equipamentos de cada tipo foram registrados nos checklists
+  // (lojas reais com checklist iniciado ou concluído; lojas de teste não entram)
+  const PN_PARQUE = [
+    ["pdvs","PDVs"], ["termicas","Impressoras Térmicas"], ["leitores","Leitores de Código de Barras"], ["pinpads","PINPADs Rede/Laranjinha"],
+    ["pinpadReserva","PINPAD Reserva"], ["notebooks","Notebooks"], ["desktops","Desktops"], ["monitores","Monitores"], ["mouses","Mouses"],
+    ["teclados","Teclados"], ["miniNobreaks","Mini Nobreaks"], ["nobreakNhs","Nobreak de Rack NHS"], ["dvrs","DVRs / CFTV"], ["hdsDvr","HDs de DVR"],
+    ["monitorCftv","Monitor de CFTV"], ["multifuncionais","Impressoras Multifuncionais"], ["voip","Telefones VoIP"], ["telefone","Telefone"],
+    ["pdaZebra","PDA Zebra"], ["mobiles","Mobiles"], ["mercadoPago","Mercado Pago"], ["posRedeCielo","POS Rede / Cielo"]
+  ];
+  function pnParqueDaLoja(bruto){
+    const l = lojaParaRelatorio(bruto), c = {}; // lojaParaRelatorio organiza os dados (inclusive formatos antigos) sem alterar o cache
+    PN_PARQUE.forEach(function(p){ c[p[0]] = 0; });
+    function perifTem(p){ return !!(p && (p.tipo || p.estado)); }
+    l.pdvs.forEach(function(p){
+      if(hasAnyValue(p, ["id","nome"])) c.pdvs++;
+      if(hasAnyValue(p.impressoraTermica)) c.termicas++;
+      if(p.leitorCodBarras && p.leitorCodBarras.possui===true) c.leitores++;
+      if(hasAnyValue(p.pinpad)) c.pinpads++;
+      if(p.miniNobreak && p.miniNobreak.possui===true) c.miniNobreaks++;
+      if(perifTem(p.mouse)) c.mouses++;
+      if(perifTem(p.teclado)) c.teclados++;
+    });
+    if(l.pinpadReserva.situacao==="funcionando" || l.pinpadReserva.situacao==="quebrado") c.pinpadReserva++;
+    ["gerencia","estoque","educacao"].forEach(function(k){ if(hasAnyValue(l.notebooks[k])) c.notebooks++; });
+    if(l.notebooks.adm && l.notebooks.adm.possui===true) c.notebooks++;
+    ["gerencia","estoque"].forEach(function(k){
+      const s = l[k], tmm = s.tecladoMouseMonitor || {}, mf = s.multifuncional || {}, pda = s.pdaZebra || {};
+      if(hasAnyValue(s.desktop)) c.desktops++;
+      if(tmm.monitor && tmm.monitor.estado) c.monitores++;
+      if(perifTem(tmm.mouse)) c.mouses++;
+      if(perifTem(tmm.teclado)) c.teclados++;
+      if(s.miniNobreak && s.miniNobreak.possui===true) c.miniNobreaks++;
+      if(mf.tipo || mf.modelo || mf.serie) c.multifuncionais++;
+      if(s.telefoneVoip && s.telefoneVoip.possui===true) c.voip++;
+      if(pda.serie1 && String(pda.serie1).trim()) c.pdaZebra++;   // cada nº de série = 1 aparelho
+      if(pda.serie2 && String(pda.serie2).trim()) c.pdaZebra++;
+    });
+    if(l.rack.nobreak && l.rack.nobreak.marca==="NHS") c.nobreakNhs++;
+    l.dvrs.forEach(function(d){
+      if(hasAnyValue(d, ["id","nome"])) c.dvrs++;
+      c.hdsDvr += Math.max(0, parseInt(d.hd && d.hd.quantidade, 10) || 0);
+      if(d.monitorCftv && d.monitorCftv.possui===true) c.monitorCftv++;
+    });
+    if(l.telefoneStage.possui===true) c.telefone++;
+    l.mobiles.forEach(function(m){ if(hasAnyValue(m, ["id","nome"])) c.mobiles++; });
+    l.mercadoPagos.forEach(function(m){ if(m.modelo || m.serie) c.mercadoPago++; });
+    l.posRedeCielos.forEach(function(p){ if(p.operadora || p.modelo || p.serie) c.posRedeCielo++; });
+    return c;
+  }
+  function renderPainelParque(){
+    const lojas = pnLojasAtendidas();
+    const porLoja = lojas.map(function(l){ return {loja:l, c:pnParqueDaLoja(l)}; });
+    const concluidas = lojas.filter(function(l){ return l.status==="concluido"; }).length;
+    let totalGeral = 0;
+    const itens = PN_PARQUE.map(function(p){
+      const com = porLoja.filter(function(x){ return x.c[p[0]] > 0; });
+      const total = com.reduce(function(a,x){ return a + x.c[p[0]]; }, 0);
+      totalGeral += total;
+      return {chave:p[0], nome:p[1], total:total, com:com};
+    });
+    document.getElementById("pn-parque-sub").textContent = "Registrados nos checklists de " + lojas.length + " loja(s) (" + concluidas + " concluída(s)) · lojas de teste não entram · clique no item para ver as lojas";
+    document.getElementById("pn-parque-total").innerHTML = '<b>' + totalGeral.toLocaleString("pt-BR") + '</b>equipamentos';
+    const el = document.getElementById("pn-parque");
+    el.innerHTML = itens.map(function(it, i){
+      return '<button type="button" class="pn-parque-item' + (it.total ? '' : ' zero') + '" data-i="' + i + '" title="Clique para ver as lojas">' +
+        '<span class="pn-parque-num">' + it.total.toLocaleString("pt-BR") + '</span><span class="pn-parque-nome">' + escapeHtml(it.nome) + '</span>' +
+        '<span class="pn-parque-lojas">em ' + it.com.length + ' loja(s)</span></button>';
+    }).join("");
+    el.querySelectorAll(".pn-parque-item").forEach(function(b){
+      b.addEventListener("click", function(){
+        const it = itens[+b.dataset.i];
+        const lojasCom = it.com.map(function(x){ return x.loja; }).sort(function(a,b){ return String(a.nome||"").localeCompare(String(b.nome||""), "pt-BR", {numeric:true}); });
+        const qtd = {}; it.com.forEach(function(x){ qtd[x.loja.id] = x.c[it.chave]; });
+        mostrarJanelaLojas(it.nome, it.total + " equipamento(s) em " + lojasCom.length + " loja(s)", lojasCom, function(l){ return qtd[l.id] + " unidade(s)"; });
+      });
+    });
   }
   // Lojas reais (sem as lojas de teste) e as que já têm checklist iniciado ou concluído
   function pnLojasReais(){ return lojasCache.filter(function(l){ return !ehLojaTeste(l); }); }
