@@ -200,7 +200,8 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### Pendências atuais (29/09/2026)
 - **Todas as publicações (8.1 a 8.17) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **Nada pendente de publicação.** Última publicação: `main` `ab7c0a6` = `develop` `73aee49`.
+- **Aguardando teste da usuária na `develop` (não publicado):** 8.18 (alertas de escada e USB do touch removidos).
+- Última publicação: `main` `ab7c0a6` = `develop` `73aee49`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -359,3 +360,10 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
 - A animação roda **só ao abrir ou recarregar a página (F5)** (ajuste pedido pela usuária). Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), a porcentagem muda direto, sem animar. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
 
+### 8.18 Alertas removidos: escada móvel e USB do touch (Elgin): EM TESTE NA DEVELOP (29/09/2026)
+- Pedido da usuária: estes alertas **não devem mais aparecer** (Painel/Dashboard, link da gestão e relatório PDF):
+  - "Loja não possui escada móvel";
+  - "Escada móvel não alcança o teto";
+  - "PDV xx: USB do touch da tela do cliente ainda conectado" (PDV Elgin).
+- As **perguntas continuam no formulário do técnico** (escada no Rack e o aviso/botão do USB do touch no PDV Elgin), assim como a pendência "remover USB do touch" ao finalizar o checklist. Só deixaram de gerar alerta.
+- Arquivo alterado: `index.html` (função `alertasDaLoja` e categoria do touch em `pnCategoriaAlerta`). Não publicado.
