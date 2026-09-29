@@ -282,7 +282,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - A pedido da usuária (28/09/2026): esse equipamento não existe nas lojas, então o card **GPOS Backup** saiu da Gerência no formulário do técnico. Também saiu da lista de pendências (deixou de ser obrigatório), do alerta "GPOS Backup não existe" (Alertas do Painel com login e Ranking Incidentes do link da gestão) e do PDF.
 - **Nada foi apagado do banco:** o campo `gposBackup` continua no modelo de dados (`blankSetorEquip`) e respostas antigas ficam guardadas, só não aparecem mais. O Estoque continua com o card PDA Zebra no mesmo lugar.
 
-### 8.10 Mobiles viram "Máquinas GPOS Gertec" no checklist do técnico: PUBLICADO (28/09/2026)
+### 8.10 Mobiles viram "Máquinas GPOS Gertec" no checklist do técnico: PUBLICADO E VALIDADO (28/09/2026)
+- **Testado e validado pela usuária no site no ar (28/09/2026).**
 - Foi para produção na `main` `e9e8f56` (equivale à `develop` `6f8f447`), pelo método manual e com as conferências de sempre. Ponto de restauração: tag `producao-antes-gpos-gertec-2026-09-28`.
 - A pedido da usuária (28/09/2026), no Stage de Vendas os Mobiles ficam dentro de um grupo com o título **"MÁQUINAS GPOS GERTEC"** (mesma moldura e estilo de "Máquinas POS"), logo **acima** de "Máquinas POS". Os nomes "Mobile 01", "Mobile 02"... e o botão "+ Adicionar Mobile" continuam; a dica passou a "Até 6 por loja".
 - Cada Mobile ganhou a **foto de exemplo do GPOS Gertec** à esquerda e os campos (Nº Série, IP, Estado de conservação) à direita, igual ao Mercado Pago; a Observação fica embaixo. Foto enviada pela usuária, recortada e reduzida para 240×360 (7 KB, `FOTO_GPOS_GERTEC` / `FOTOS_EXEMPLO.gpos`).
