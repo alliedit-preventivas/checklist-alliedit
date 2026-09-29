@@ -1384,6 +1384,14 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(!l.agendamento || l.status === "concluido" || l.status === "reaberto") return false;
     return l.agendamento < (hoje || todayStr());
   }
+  // Telefone (Stage de Vendas, Gerência e Estoque): tipo VoIP/Analógico, Número, IP (só VoIP) e Funcionando/Defeito.
+  // Checklists antigos: o card da Gerência/Estoque era "Telefone VoIP", então quem já tinha telefone vira VoIP;
+  // no Stage, vira VoIP quando o IP estava preenchido. O resto fica em branco para o técnico responder.
+  function migrarTelefone(t, eraVoip){
+    const n = Object.assign({possui:null, tipo:"", numero:"", ip:"", estado:"", obs:""}, t||{});
+    if(n.possui===true && !n.tipo && (eraVoip || (n.ip && String(n.ip).trim()))) n.tipo = "voip";
+    return n;
+  }
   function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
@@ -1449,7 +1457,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       tecladoMouseMonitor:{teclado: blankPerif(), mouse: blankPerif(), monitor:{estado:""}, obs:""},
       miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
       multifuncional:{tipo:"", modelo:"", serie:"", falhaImpressao:null, transformador:null, obs:"", relatorioUso:null},
-      telefoneVoip:{possui:null, numero:"", ip:"", obs:""},
+      telefoneVoip:{possui:null, tipo:"", numero:"", ip:"", estado:"", obs:""},
       gposBackup:{possui:null, serie:"", obs:""},
       pdaZebra:{serie1:"", serie2:"", obs:""},
       wifi:{barras:"", obs:""}
@@ -1460,7 +1468,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function blankPdv(n){
     return { id:uid(), nome:"PDV "+String(n).padStart(2,"0"), serie:"", marca:"", obs:"",
       miniNobreak:{possui:null, serie:"", dataFabricacao:"", autonomiaAcima5:null, leds:[], obs:""},
-      telaCliente:{touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null, falhaImpressao:null},
+      telaCliente:{estado:"", touchDesativado:null}, impressoraTermica:{serie:"", limpezaFeita:null, falhaImpressao:null},
       leitorCodBarras:{possui:null, serie:"", defeito:null, obs:""}, pinpad:{serieRede:"", modelo:"", serie:"", defeito:null}, mercadoPago:{modelo:"", serie:""},
       // Gaveta de dinheiro: estado "funcionando" | "defeito"; cabo até a impressora "com_trava" | "sem_trava" | "danificado"
       gaveta:{estado:"", cabo:""},
@@ -1512,6 +1520,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       };
     }
     if(s.telefoneVoip && s.telefoneVoip.possui===undefined) s.telefoneVoip.possui = (s.telefoneVoip.numero || s.telefoneVoip.ip) ? true : null;
+    s.telefoneVoip = migrarTelefone(s.telefoneVoip, true);
     if(s.miniNobreak){
       if(s.miniNobreak.autonomiaAcima5===undefined) s.miniNobreak.autonomiaAcima5 = (s.miniNobreak.autonomiaOk===true) ? true : (s.miniNobreak.autonomiaOk===false ? false : null);
       if(!Array.isArray(s.miniNobreak.leds)) s.miniNobreak.leds = [];
@@ -1548,6 +1557,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(p.impressoraTermica && p.impressoraTermica.falhaImpressao===undefined) p.impressoraTermica.falhaImpressao = null;
     // Campos novos (28/09/2026): checklists antigos não tinham gaveta de dinheiro nem "PINPAD apresenta defeito?"
     p.gaveta = Object.assign({estado:"", cabo:""}, p.gaveta||{});
+    // Campo novo (29/09/2026): "Tela do cliente" Funcionando | Defeito ou Falha, em todos os PDVs
+    p.telaCliente = Object.assign({estado:"", touchDesativado:null}, p.telaCliente||{});
     if(!p.pinpad) p.pinpad = {serieRede:"", modelo:"", serie:"", defeito:null};
     if(p.pinpad.defeito===undefined) p.pinpad.defeito = null;
     // dados antigos so tinham {serie}; preserva a serie ja preenchida e adiciona os novos campos de controle de defeito.
@@ -1639,6 +1650,16 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function validarObrigatorios(l){
     const faltando = [];
     function add(texto, sel){ faltando.push({texto:texto, sel:sel}); }
+    // Telefone: possui? → tipo (VoIP/Analógico) → número → IP (só VoIP) → funcionando? → observação (só com defeito)
+    function pendenciasTelefone(t, label, base, selPossui, selTipo, selNumero, selIp, selEstado, selObs){
+      if(t.possui===null) return add(label+": possui telefone?", base+selPossui);
+      if(t.possui!==true) return;
+      if(!t.tipo) add(label+": telefone VoIP ou analógico?", base+selTipo);
+      if(!t.numero) add(label+": número do telefone", base+selNumero);
+      if(t.tipo==="voip" && !t.ip) add(label+": IP do telefone", base+selIp);
+      if(!t.estado) add(label+": telefone funcionando?", base+selEstado);
+      else if(t.estado==="defeito" && !String(t.obs||"").trim()) add(label+": observação do defeito do telefone", base+selObs);
+    }
     if(!l.horarioInicio) add("Início do atendimento", "#cl-horario-inicio");
     const r = l.rack;
     if(r.organizado===null) add("Rack: organizado ou desorganizado", "#rack-organizado-toggle");
@@ -1678,8 +1699,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(!s.multifuncional.tipo) add(label+": Multifuncional colorida ou P&B", b+'[data-path="multifuncional.tipo"]');
       else if(assetsApi && !s.multifuncional.relatorioUso) add(label+": Relatório de Uso da Multifuncional (anexo)", b+'[data-relatorio-input]');
       if(s.multifuncional.transformador===null) add(label+": impressora possui transformador?", b+'[data-path="multifuncional.transformador"]');
-      if(s.telefoneVoip.possui===null) add(label+": Possui telefone VOIP?", b+'[data-path="telefoneVoip.possui"]');
-      else if(s.telefoneVoip.possui===true && (!s.telefoneVoip.numero || !s.telefoneVoip.ip)) add(label+": Telefone VOIP número/IP", b+'[data-path="telefoneVoip.numero"]');
+      pendenciasTelefone(s.telefoneVoip, label, b, '[data-path="telefoneVoip.possui"]', '[data-path="telefoneVoip.tipo"]', '[data-path="telefoneVoip.numero"]', '[data-path="telefoneVoip.ip"]', '[data-path="telefoneVoip.estado"]', '[data-path="telefoneVoip.obs"]');
       if(!s.wifi.barras) add(label+": sinal do WIFI", b+'[data-path="wifi.barras"]');
     });
     [["gerencia","Notebook Gerência","#setor-gerencia-notebooks "]].forEach(function(triple){
@@ -1700,6 +1720,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }
     (l.pdvs||[]).forEach(function(p, i){
       const b = '#pdvs-list [data-idx="'+i+'"]';
+      if(!(p.telaCliente||{}).estado) add(p.nome+": tela do cliente funcionando?", b+'[data-pdv-opcao="telaEstado"]');
       if(!p.marca) add(p.nome+": marca", b+'[data-pdv="marca"]');
       if(p.marca==="Elgin" && p.telaCliente.touchDesativado!==true) add(p.nome+": remover USB do touch da tela do cliente", '#pdvs-list [data-pdv-removido="'+i+'"]');
       if(p.impressoraTermica.limpezaFeita===null) add(p.nome+": limpeza da impressora térmica", b+'[data-pdv-toggle="impLimpeza"]');
@@ -1738,9 +1759,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         if(!pos.serie) add(nomePosRedeCielo(i)+" - Nº Série", bPos+'[data-pos="serie"]');
       }
     });
-    if(!l.telefoneStage) l.telefoneStage = {possui:null, numero:"", ip:"", obs:""};
-    if(l.telefoneStage.possui===null) add("Stage de Vendas: possui telefone?", '#telefone-stage [data-tel-possui]');
-    else if(l.telefoneStage.possui===true && (!l.telefoneStage.numero || !l.telefoneStage.ip)) add("Stage de Vendas: telefone número/IP", '#telefone-stage [data-tel="numero"]');
+    if(!l.telefoneStage) l.telefoneStage = migrarTelefone(null, false);
+    pendenciasTelefone(l.telefoneStage, "Stage de Vendas", '#telefone-stage ', '[data-tel-possui]', '[data-tel-opcao="tipo"]', '[data-tel="numero"]', '[data-tel="ip"]', '[data-tel-opcao="estado"]', '[data-tel="obs"]');
     if(!l.pinpadReserva) l.pinpadReserva = blankPinpadReserva();
     // PINPAD reserva fica na Gerência (equipamento de backup)
     const pr = l.pinpadReserva, bPr = '#pinpad-reserva ';
@@ -2806,7 +2826,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       mercadoPagos: migrarMercadoPagos(data),
-      telefoneStage: Object.assign({possui:null, numero:"", ip:"", obs:""}, data.telefoneStage||{}),
+      telefoneStage: migrarTelefone(data.telefoneStage, false),
       posRedeCielos: migrarPosRedeCielos(data),
       pinpadReserva: Object.assign(blankPinpadReserva(), data.pinpadReserva||{}),
       rack: migrarRack(data.rack),
@@ -2959,7 +2979,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       currentLoja.ratFoto = null;
       currentLoja.ocorrencia = {tem:null, descricao:""};
       currentLoja.mercadoPagos = [blankMercadoPago()];
-      currentLoja.telefoneStage = {possui:null, numero:"", ip:"", obs:""};
+      currentLoja.telefoneStage = migrarTelefone(null, false);
       currentLoja.posRedeCielos = [blankPosRedeCielo()];
       currentLoja.pinpadReserva = blankPinpadReserva();
       currentLoja.horarioInicio = ""; currentLoja.horarioFim = "";
@@ -3154,7 +3174,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(nome === "rack"){ copia.rack = blankRack(); copia.dvrs = [blankDvr(1)]; }
     else if(nome === "gerencia"){ copia.gerencia = blankSetorEquip(); copia.pinpadReserva = blankPinpadReserva(); copia.notebooks = Object.assign({}, copia.notebooks, {gerencia: blankNotebook(), adm: Object.assign({possui:null}, blankNotebook())}); }
     else if(nome === "estoque"){ copia.estoque = blankSetorEquip(); }
-    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; copia.telefoneStage = {possui:null, numero:"", ip:"", obs:""}; copia.posRedeCielos = [blankPosRedeCielo()]; copia.mercadoPagos = [blankMercadoPago()]; }
+    else if(nome === "stage"){ copia.pdvs = [blankPdv(1)]; copia.mobiles = [blankMobile(1)]; copia.wifiStage = {barras:"", obs:""}; copia.telefoneStage = migrarTelefone(null, false); copia.posRedeCielos = [blankPosRedeCielo()]; copia.mercadoPagos = [blankMercadoPago()]; }
     return copia;
   }
   function atualizarIndicadoresBlocos(){
@@ -3263,15 +3283,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
             : '<input type="file" accept="image/*" data-relatorio-input="'+setorKey+'">') +
         '</div></div>' +
 
-      '<div class="item-card"><div class="item-title"><span>Telefone VoIP</span>'+clearBtn("telefoneVoip")+'</div>' +
-        '<div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="telefoneVoip.possui" style="margin-bottom:8px;">' +
-          '<button type="button" class="toggle-btn'+(s.telefoneVoip.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
-          '<button type="button" class="toggle-btn'+(s.telefoneVoip.possui===false?' on-bad':'')+'" data-val="false">Não</button></div>' +
-        (s.telefoneVoip.possui===true ?
-          '<div class="field-row">' +
-            '<div class="field"><label>Número</label><input type="text" data-setor="'+setorKey+'" data-path="telefoneVoip.numero" value="'+escapeHtml(s.telefoneVoip.numero)+'"></div>' +
-            '<div class="field"><label>IP do telefone</label><input type="text" data-setor="'+setorKey+'" data-path="telefoneVoip.ip" value="'+escapeHtml(s.telefoneVoip.ip)+'"></div></div>' +
-          '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="telefoneVoip.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.telefoneVoip.obs)+'</textarea></div>' : '') +
+      '<div class="item-card"><div class="item-title"><span>Telefone</span>'+clearBtn("telefoneVoip")+'</div>' +
+        htmlTelefone(s.telefoneVoip, {
+          possui: 'data-setor-toggle="'+setorKey+'" data-path="telefoneVoip.possui"',
+          tipo: 'data-setor-select="'+setorKey+'" data-path="telefoneVoip.tipo"',
+          estado: 'data-setor-select="'+setorKey+'" data-path="telefoneVoip.estado"',
+          inp: function(campo){ return 'data-setor="'+setorKey+'" data-path="telefoneVoip.'+campo+'"'; }
+        }) +
       '</div>' +
 
       // Gerência: o card "GPOS Backup" saiu do checklist a pedido da usuária (esse equipamento não existe). Estoque: PDA Zebra.
@@ -3470,6 +3488,30 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
   }
 
+  // ---- Telefone (modelo único para Stage de Vendas, Gerência e Estoque) ----
+  // a.possui / a.tipo / a.estado = atributos dos grupos de botões; a.inp(campo) = atributos dos campos de texto.
+  // Analógico: o IP fica desabilitado e não é obrigatório. Defeito ou Falha: abre a Observação (obrigatória).
+  function htmlTelefone(t, a){
+    const analogico = t.tipo === "analogico";
+    return '<div class="field"><label>Possui telefone?</label><div class="toggle-group" '+a.possui+'>' +
+        '<button type="button" class="toggle-btn'+(t.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
+        '<button type="button" class="toggle-btn'+(t.possui===false?' on-bad':'')+'" data-val="false">Não</button></div></div>' +
+      (t.possui!==true ? '' :
+        '<div class="field"><label>Telefone</label><div class="toggle-group" '+a.tipo+'>' +
+          '<button type="button" class="toggle-btn'+(t.tipo==="voip"?' on-good':'')+'" data-val="voip">VoIP</button>' +
+          '<button type="button" class="toggle-btn'+(t.tipo==="analogico"?' on-good':'')+'" data-val="analogico">Analógico</button></div></div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label>Número</label><input type="text" '+a.inp("numero")+' value="'+escapeHtml(t.numero)+'"></div>' +
+          '<div class="field"><label>IP do telefone'+(t.tipo==="voip"?'':' <span class="hint" style="display:inline; margin:0;">(só VoIP)</span>')+'</label>' +
+            '<input type="text" '+a.inp("ip")+' value="'+(analogico ? '' : escapeHtml(t.ip))+'"'+(analogico ? ' disabled placeholder="Não se aplica ao analógico"' : '')+'></div>' +
+        '</div>' +
+        '<div class="field"><label>Funcionamento</label><div class="toggle-group" '+a.estado+'>' +
+          '<button type="button" class="toggle-btn'+(t.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
+          '<button type="button" class="toggle-btn'+(t.estado==="defeito"?' on-bad':'')+'" data-val="defeito">Defeito ou Falha</button></div></div>' +
+        (t.estado!=="defeito" ? '' :
+          '<div class="field"><label>Observação</label><textarea '+a.inp("obs")+' rows="2" placeholder="Descreva o defeito ou a falha">'+escapeHtml(t.obs)+'</textarea></div>'));
+  }
+
   // ---- PDVs ----
   function renderPdvs(){
     const wrap = document.getElementById("pdvs-list");
@@ -3484,7 +3526,18 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           '<div class="field"><label>Nº Série do PDV</label><input type="text" data-pdv="serie" data-idx="'+idx+'" value="'+escapeHtml(p.serie)+'"></div>' +
           '<div class="field"><label>Marca</label><select data-pdv="marca" data-idx="'+idx+'"><option value="">Selecionar</option><option'+(p.marca==="Toshiba"?' selected':'')+'>Toshiba</option><option'+(p.marca==="Elgin"?' selected':'')+'>Elgin</option></select></div>' +
         '</div>' +
-        // Gaveta de dinheiro: logo abaixo dos dados do PDV, no mesmo bloco (sem seção própria).
+        // Tela do cliente (todos os PDVs): logo abaixo dos dados do PDV e acima da gaveta de dinheiro.
+        // Defeito ou Falha = troca. No Elgin, o aviso e o botão do cabo USB do touch ficam logo abaixo da pergunta.
+        '<div class="field"><label>Tela do cliente</label><div class="hint" style="margin:0 0 6px;">Se for defeito, precisa trocar o equipamento.</div><div class="toggle-group" data-pdv-opcao="telaEstado" data-idx="'+idx+'">' +
+          '<button type="button" class="toggle-btn'+(p.telaCliente.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
+          '<button type="button" class="toggle-btn'+(p.telaCliente.estado==="defeito"?' on-bad':'')+'" data-val="defeito">Defeito ou Falha</button></div>' +
+          (!ehElgin ? '' :
+            '<div class="warn-destaque" style="margin-top:10px;">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
+            (p.telaCliente.touchDesativado===true ?
+              '<button type="button" class="toggle-btn on-good" style="width:100%;" disabled>Removido</button>'
+              : '<button type="button" class="toggle-btn on-bad" style="width:100%;" data-pdv-removido="'+idx+'">Remover Cabo USB</button>')) +
+        '</div>' +
+        // Gaveta de dinheiro: logo abaixo da tela do cliente, no mesmo bloco (sem seção própria).
         // Cabo sem trava = alerta; cabo danificado = troca.
         '<div class="field"><label>Gaveta de dinheiro</label><div class="hint" style="margin:0 0 6px;">Este cabo é importado, por isso é importante a sua validação.</div><div class="toggle-group" data-pdv-opcao="gavetaEstado" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(p.gaveta.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
@@ -3493,13 +3546,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="com_trava"?' on-good':'')+'" data-val="com_trava">Possui trava no conector</button>' +
           '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="sem_trava"?' on-warn':'')+'" data-val="sem_trava">Sem trava no conector</button>' +
           '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="danificado"?' on-bad':'')+'" data-val="danificado">Cabo danificado</button></div></div>' +
-        (!ehElgin ? '' :
-        '<div class="field"><label>Tela do cliente</label>' +
-          '<div class="warn-destaque">⚠️ Remova o CABO USB que sai da TELA DO CLIENTE e é conectado na parte de trás do PDV.<br>Atenção: a TELA DO CLIENTE deve permanecer ligada após retirar o cabo.<br>Dúvidas, entrar em contato com o Suporte.</div>' +
-          (p.telaCliente.touchDesativado===true ?
-            '<button type="button" class="toggle-btn on-good" style="width:100%;" disabled>Removido</button>'
-            : '<button type="button" class="toggle-btn on-bad" style="width:100%;" data-pdv-removido="'+idx+'">Remover Cabo USB</button>') +
-        '</div>') +
         '<div class="divisor-secao"></div>' +
         // Mini Nobreak: sempre exibido e exigido por PDV, independente da marca do Nobreak de Rack.
         '<div class="field"><label>Mini Nobreak</label><div class="toggle-group" data-pdv-toggle="nobreakPossui" data-idx="'+idx+'">' +
@@ -3593,12 +3639,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         renderPdvs(); scheduleSave();
       });
     });
-    // Perguntas com opções em texto (gaveta de dinheiro e cabo da gaveta)
+    // Perguntas com opções em texto (tela do cliente, gaveta de dinheiro e cabo da gaveta)
     wrap.querySelectorAll("[data-pdv-opcao]").forEach(function(group){
       group.addEventListener("click", function(e){
         const b=e.target.closest(".toggle-btn"); if(!b) return;
         const p=currentLoja.pdvs[+group.dataset.idx];
-        if(group.dataset.pdvOpcao==="gavetaEstado") p.gaveta.estado=b.dataset.val;
+        if(group.dataset.pdvOpcao==="telaEstado") p.telaCliente.estado=b.dataset.val;
+        else if(group.dataset.pdvOpcao==="gavetaEstado") p.gaveta.estado=b.dataset.val;
         else if(group.dataset.pdvOpcao==="gavetaCabo") p.gaveta.cabo=b.dataset.val;
         renderPdvs(); scheduleSave();
       });
@@ -3779,25 +3826,23 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     wrap.innerHTML =
       '<div class="item-card">' +
         '<div class="item-title"><span>Telefone</span><button type="button" class="btn btn-ghost btn-sm" id="btn-clear-telefone-stage">Limpar</button></div>' +
-        '<div class="field"><label>Possui telefone?</label>' +
-          '<div class="toggle-group" data-tel-possui>' +
-            '<button type="button" class="toggle-btn'+(t.possui===true?' on-good':'')+'" data-val="true">Sim</button>' +
-            '<button type="button" class="toggle-btn'+(t.possui===false?' on-bad':'')+'" data-val="false">Não</button></div></div>' +
-        (t.possui===true ?
-          '<div class="field-row">' +
-            '<div class="field"><label>Número</label><input type="text" data-tel="numero" value="'+escapeHtml(t.numero)+'"></div>' +
-            '<div class="field"><label>IP do telefone</label><input type="text" data-tel="ip" value="'+escapeHtml(t.ip)+'"></div></div>' +
-          '<div class="field"><label>Observação</label><textarea data-tel="obs" rows="2" placeholder="Opcional">'+escapeHtml(t.obs)+'</textarea></div>' : '') +
+        htmlTelefone(t, {possui:'data-tel-possui', tipo:'data-tel-opcao="tipo"', estado:'data-tel-opcao="estado"', inp:function(campo){ return 'data-tel="'+campo+'"'; }}) +
       '</div>';
     wrap.querySelector('[data-tel-possui]').onclick = function(e){
       const b = e.target.closest(".toggle-btn"); if(!b) return;
       currentLoja.telefoneStage.possui = b.dataset.val==="true"; renderTelefoneStage(); scheduleSave();
     };
+    wrap.querySelectorAll('[data-tel-opcao]').forEach(function(group){
+      group.onclick = function(e){
+        const b = e.target.closest(".toggle-btn"); if(!b) return;
+        currentLoja.telefoneStage[group.dataset.telOpcao] = b.dataset.val; renderTelefoneStage(); scheduleSave();
+      };
+    });
     wrap.querySelectorAll('[data-tel]').forEach(function(el){
       el.addEventListener('input', function(){ currentLoja.telefoneStage[el.dataset.tel] = el.value; scheduleSave(); });
     });
     document.getElementById("btn-clear-telefone-stage").onclick = function(){
-      currentLoja.telefoneStage = {possui:null, numero:"", ip:"", obs:""}; renderTelefoneStage(); scheduleSave();
+      currentLoja.telefoneStage = migrarTelefone(null, false); renderTelefoneStage(); scheduleSave();
     };
   }
 
@@ -4074,6 +4119,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(!eatonRack && p.miniNobreak && p.miniNobreak.possui===true && p.miniNobreak.autonomiaAcima5===false) itens.push({setor:"Stage de Vendas", equip:p.nome+": Mini Nobreak", serie:p.miniNobreak.serie||"—", obs:"LEDs: "+(p.miniNobreak.leds||[]).join(", ")});
       // PINPAD REDE LARANJINHA com defeito, gaveta de dinheiro com defeito/falha e cabo da gaveta danificado entram como troca
       if(p.pinpad && p.pinpad.defeito===true) itens.push({setor:"Stage de Vendas", equip:p.nome+": PINPAD", serie:p.pinpad.serie||"—", obs:"PINPAD REDE LARANJINHA apresenta defeito"});
+      if(p.telaCliente && p.telaCliente.estado==="defeito") itens.push({setor:"Stage de Vendas", equip:p.nome+": Tela do cliente", serie:"—", obs:"Tela do cliente com defeito ou falha"});
       if(p.gaveta && p.gaveta.estado==="defeito") itens.push({setor:"Stage de Vendas", equip:p.nome+": Gaveta de dinheiro", serie:"—", obs:"Gaveta de dinheiro com defeito ou falha"});
       if(p.gaveta && p.gaveta.cabo==="danificado") itens.push({setor:"Stage de Vendas", equip:p.nome+": Cabo da gaveta de dinheiro", serie:"—", obs:"Cabo que liga a gaveta à impressora danificado"});
     });
@@ -4106,6 +4152,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(s.wifi && (s.wifi.barras==="1" || s.wifi.barras==="2")) msgs.push(label+": sinal de WIFI abaixo de 3 barras");
     });
     if(l.wifiStage && (l.wifiStage.barras==="1" || l.wifiStage.barras==="2")) msgs.push("Stage de Vendas: sinal de WIFI abaixo de 3 barras");
+    // Telefone com defeito ou falha vira alerta (Stage de Vendas, Gerência e Estoque)
+    [["Stage de Vendas", l.telefoneStage], ["Gerência", l.gerencia && l.gerencia.telefoneVoip], ["Estoque", l.estoque && l.estoque.telefoneVoip]].forEach(function(par){
+      const t = par[1];
+      if(t && t.possui===true && t.estado==="defeito") msgs.push(par[0]+": telefone com defeito ou falha"+(t.obs ? " ("+t.obs+")" : ""));
+    });
     (l.pdvs||[]).forEach(function(p){
       if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) msgs.push(p.nome+": impressora térmica precisa de limpeza");
       if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) msgs.push(p.nome+": USB do touch da tela do cliente ainda conectado");
@@ -4132,7 +4183,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       wifiStage:Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia:Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       mercadoPagos:migrarMercadoPagos(data),
-      telefoneStage:Object.assign({possui:null, numero:"", ip:"", obs:""}, data.telefoneStage||{}),
+      telefoneStage:migrarTelefone(data.telefoneStage, false),
       posRedeCielos:migrarPosRedeCielos(data),
       pinpadReserva:Object.assign(blankPinpadReserva(), data.pinpadReserva||{}),
       rack:migrarRack(data.rack), gerencia:migrarSetor(data.gerencia), estoque:migrarSetor(data.estoque),
@@ -4175,6 +4226,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const E = escapeHtml, RUIM = "Ruim - substituir";
     function vazio(v){ return v===null || v===undefined || String(v).trim()===""; }
     function sn(v, sim, nao){ return v===true ? (sim||"Sim") : (v===false ? (nao||"Não") : ""); }
+    // Telefone no PDF: possui, tipo, número, IP (só VoIP), funcionamento e observação
+    function linhasTelefonePdf(t){
+      t = t || {};
+      const ls = [lin("Possui telefone", sn(t.possui))];
+      if(t.possui!==true) return ls;
+      ls.push(lin("Tipo", {voip:"VoIP", analogico:"Analógico"}[t.tipo] || ""), lin("Número", t.numero));
+      if(t.tipo!=="analogico") ls.push(lin("IP do telefone", t.ip));
+      ls.push(lin("Funcionamento", {funcionando:"Funcionando", defeito:"Defeito ou Falha"}[t.estado] || "", t.estado==="defeito"));
+      if(t.obs) ls.push(lin("Observação", t.obs, t.estado==="defeito"));
+      return ls;
+    }
     function lin(rotulo, valor, ruim){ return vazio(valor) ? "" : '<tr><th>'+E(rotulo)+'</th><td'+(ruim?' class="ruim"':'')+'>'+E(String(valor))+'</td></tr>'; }
     function card(titulo, linhas){ const c = linhas.join(""); return c ? '<div class="eq"><h4>'+E(titulo)+'</h4><table>'+c+'</table></div>' : ""; }
     function estado(rotulo, e){ return lin(rotulo, e, e===RUIM); }
@@ -4207,10 +4269,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       out.push(card("Impressora Multifuncional", [lin("Modelo", mf.modelo), lin("Nº Série", mf.serie), lin("Colorida ou P&B", mf.tipo),
         lin("Possui transformador", sn(mf.transformador), mf.transformador===false), lin("Falha de impressão", sn(mf.falhaImpressao), mf.falhaImpressao===true),
         lin("Relatório de Uso", mf.relatorioUso && mf.relatorioUso.id ? "Anexado (ver fotos no final)" : ""), lin("Observação", mf.obs)]));
-      const tv = s.telefoneVoip, tvl = [lin("Possui", sn(tv.possui))];
-      if(tv.possui===true) tvl.push(lin("Número", tv.numero), lin("IP", tv.ip));
-      tvl.push(lin("Observação", tv.obs));
-      out.push(card("Telefone VoIP", tvl));
+      out.push(card("Telefone", linhasTelefonePdf(s.telefoneVoip)));
       // GPOS Backup saiu do checklist (a pedido da usuária); na Gerência não entra mais no PDF
       if(!ehGerencia){
         out.push(card("PDA Zebra", [lin("PDA 1 — Nº Série", s.pdaZebra.serie1), lin("PDA 2 — Nº Série", s.pdaZebra.serie2), lin("Observação", s.pdaZebra.obs)]));
@@ -4281,11 +4340,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     // ---- Página 5: Stage de Vendas ----
     const stage = l.pdvs.map(function(p){
       const ls = [lin("Nº Série do PDV", p.serie), lin("Marca", p.marca)];
-      // Gaveta de dinheiro logo abaixo dos dados do PDV (mesma ordem do formulário)
+      // Tela do cliente e gaveta de dinheiro logo abaixo dos dados do PDV (mesma ordem do formulário)
+      const tc = p.telaCliente || {};
+      ls.push(lin("Tela do cliente", {funcionando:"Funcionando", defeito:"Defeito ou Falha"}[tc.estado] || "", tc.estado==="defeito"));
+      if(p.marca==="Elgin") ls.push(lin("Tela do cliente (USB do touch)", tc.touchDesativado===true ? "Removido" : "Não removido", tc.touchDesativado!==true));
       const gv = p.gaveta || {};
       ls.push(lin("Gaveta de dinheiro", {funcionando:"Funcionando", defeito:"Defeito ou Falha"}[gv.estado] || "", gv.estado==="defeito"),
         lin("Cabo da gaveta até a impressora", {com_trava:"Possui trava no conector", sem_trava:"Sem trava no conector", danificado:"Cabo danificado"}[gv.cabo] || "", gv.cabo==="sem_trava" || gv.cabo==="danificado"));
-      if(p.marca==="Elgin") ls.push(lin("Tela do cliente (USB do touch)", p.telaCliente.touchDesativado===true ? "Removido" : "Não removido", p.telaCliente.touchDesativado!==true));
       const mn = p.miniNobreak;
       ls.push(lin("Mini Nobreak", sn(mn.possui,"Possui","Não possui")));
       if(mn.possui===true){
@@ -4316,8 +4377,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         const cards = cardsMp + cardsPos;
         return cards ? '<div class="grupo"><h3>Máquinas POS</h3>' + cards + '</div>' : "";
       })() +
-      card("Telefone", [lin("Possui telefone", sn(l.telefoneStage.possui))].concat(l.telefoneStage.possui===true
-        ? [lin("Número", l.telefoneStage.numero), lin("IP do telefone", l.telefoneStage.ip), lin("Observação", l.telefoneStage.obs)] : [])) +
+      card("Telefone", linhasTelefonePdf(l.telefoneStage)) +
       card("Sinal do WIFI — Stage de Vendas", [lin("Sinal", wifi(l.wifiStage.barras), wifiRuim(l.wifiStage.barras)), lin("Observação", l.wifiStage.obs)]);
 
     // ---- Última página: fotos reduzidas ----
@@ -4805,7 +4865,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     ["pdvsElgin","PDVs Elgin"], ["pdvsToshiba","PDVs Toshiba"], ["pdvsSemMarca","PDVs (marca não informada)", true], ["termicas","Impressoras Térmicas"], ["leitores","Leitores de Código de Barras"], ["pinpads","PINPADs Rede/Laranjinha"],
     ["pinpadReserva","PINPAD Reserva"], ["notebooks","Notebooks"], ["desktops","Desktops"], ["monitores","Monitores"], ["mouses","Mouses"],
     ["teclados","Teclados"], ["miniNobreaks","Mini Nobreaks"], ["nobreakNhs","Nobreak de Rack NHS"], ["nobreakEaton","Nobreak de Rack EATON"], ["dvrs","DVRs / CFTV"], ["hdsDvr","HDs de DVR"],
-    ["monitorCftv","Monitor de CFTV"], ["multifuncionais","Impressoras Multifuncionais"], ["voip","Telefones VoIP"],
+    ["monitorCftv","Monitor de CFTV"], ["multifuncionais","Impressoras Multifuncionais"], ["voip","Telefones (VoIP e analógico)"],
     ["pdaZebra","PDA Zebra"], ["mobiles","Mobiles"], ["mercadoPago","Mercado Pago"], ["posRedeCielo","POS Rede / Cielo"]
   ];
   function pnParqueDaLoja(bruto){
@@ -4929,6 +4989,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(/touch/i.test(m)) return "USB do touch da tela do cliente conectado";
     if(/PINPAD REDE LARANJINHA com defeito/.test(m)) return "PINPAD PDV"; // mesmo nome da troca, para a loja contar 1 vez só
     if(/sem trava no conector/.test(m)) return "Cabo da gaveta sem trava no conector";
+    if(/telefone com defeito/i.test(m)) return "Telefone com defeito ou falha";
     if(/PINPAD reserva/.test(m)) return "PINPAD reserva";
     return m;
   }
