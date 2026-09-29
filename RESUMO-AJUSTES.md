@@ -288,3 +288,12 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - A pedido da usuária (28/09/2026), no Stage de Vendas os Mobiles ficam dentro de um grupo com o título **"MÁQUINAS GPOS GERTEC"** (mesma moldura e estilo de "Máquinas POS"), logo **acima** de "Máquinas POS". Os nomes "Mobile 01", "Mobile 02"... e o botão "+ Adicionar Mobile" continuam; a dica passou a "Até 6 por loja".
 - Cada Mobile ganhou a **foto de exemplo do GPOS Gertec** à esquerda e os campos (Nº Série, IP, Estado de conservação) à direita, igual ao Mercado Pago; a Observação fica embaixo. Foto enviada pela usuária, recortada e reduzida para 240×360 (7 KB, `FOTO_GPOS_GERTEC` / `FOTOS_EXEMPLO.gpos`).
 - O PDF segue a nova ordem: grupo "Máquinas GPOS Gertec" com os Mobiles, antes de "Máquinas POS". Nenhuma alteração de banco: os dados continuam em `mobiles`.
+
+### 8.11 PDV: Gaveta de Dinheiro e "PINPAD apresenta defeito?" (só na `develop`, ainda não publicado)
+- A pedido da usuária (28/09/2026), em **cada PDV** do Stage de Vendas:
+  - Nova seção **GAVETA DE DINHEIRO**, logo abaixo da identificação do PDV: **Estado da gaveta** (Funcionando | Defeito ou Falha) e **"Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (Possui trava no conector | Sem trava no conector | Cabo danificado). **Sem trava no conector = alerta** (botão amarelo); **Cabo danificado = troca de equipamento** ("PDV 01: Cabo da gaveta de dinheiro").
+  - No **PINPAD REDE LARANJINHA**, a pergunta **"Apresenta defeito?"** (Sim | Não). **Sim = troca de equipamento** ("PDV 01: PINPAD") **e alerta** ("PINPAD REDE LARANJINHA com defeito"). No Ranking Incidentes do link da gestão, troca e alerta do PINPAD contam como um item só ("PINPAD PDV").
+  - As três perguntas são **obrigatórias** (entram na lista de pendências). Todas aparecem no PDF, em vermelho quando há problema.
+  - "Defeito ou Falha" da gaveta, por enquanto, não gera troca nem alerta (só fica registrado e em vermelho no PDF).
+- Dados novos no PDV: `gaveta:{estado, cabo}` e `pinpad.defeito`; checklists antigos recebem os campos vazios automaticamente (`migrarPdv`). Nada é apagado.
+- Testado numa cópia com o **Supabase simulado** (nada gravado em banco nenhum): ordem da seção, pendências, cores, gravação e Painel (trocas, alertas e Ranking Incidentes).
