@@ -4751,10 +4751,11 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
   }
   // Parque Sephora: quantos equipamentos de cada tipo foram registrados nos checklists
   // (lojas reais com checklist iniciado ou concluído; lojas de teste não entram)
+  // [chave, nome, só aparece se tiver algum]
   const PN_PARQUE = [
-    ["pdvs","PDVs"], ["termicas","Impressoras Térmicas"], ["leitores","Leitores de Código de Barras"], ["pinpads","PINPADs Rede/Laranjinha"],
+    ["pdvsElgin","PDVs Elgin"], ["pdvsToshiba","PDVs Toshiba"], ["pdvsSemMarca","PDVs (marca não informada)", true], ["termicas","Impressoras Térmicas"], ["leitores","Leitores de Código de Barras"], ["pinpads","PINPADs Rede/Laranjinha"],
     ["pinpadReserva","PINPAD Reserva"], ["notebooks","Notebooks"], ["desktops","Desktops"], ["monitores","Monitores"], ["mouses","Mouses"],
-    ["teclados","Teclados"], ["miniNobreaks","Mini Nobreaks"], ["nobreakNhs","Nobreak de Rack NHS"], ["dvrs","DVRs / CFTV"], ["hdsDvr","HDs de DVR"],
+    ["teclados","Teclados"], ["miniNobreaks","Mini Nobreaks"], ["nobreakNhs","Nobreak de Rack NHS"], ["nobreakEaton","Nobreak de Rack EATON"], ["dvrs","DVRs / CFTV"], ["hdsDvr","HDs de DVR"],
     ["monitorCftv","Monitor de CFTV"], ["multifuncionais","Impressoras Multifuncionais"], ["voip","Telefones VoIP"], ["telefone","Telefone"],
     ["pdaZebra","PDA Zebra"], ["mobiles","Mobiles"], ["mercadoPago","Mercado Pago"], ["posRedeCielo","POS Rede / Cielo"]
   ];
@@ -4763,7 +4764,11 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     PN_PARQUE.forEach(function(p){ c[p[0]] = 0; });
     function perifTem(p){ return !!(p && (p.tipo || p.estado)); }
     l.pdvs.forEach(function(p){
-      if(hasAnyValue(p, ["id","nome"])) c.pdvs++;
+      if(hasAnyValue(p, ["id","nome"])){
+        if(p.marca==="Elgin") c.pdvsElgin++;
+        else if(p.marca==="Toshiba") c.pdvsToshiba++;
+        else c.pdvsSemMarca++;
+      }
       if(hasAnyValue(p.impressoraTermica)) c.termicas++;
       if(p.leitorCodBarras && p.leitorCodBarras.possui===true) c.leitores++;
       if(hasAnyValue(p.pinpad)) c.pinpads++;
@@ -4787,6 +4792,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       if(pda.serie2 && String(pda.serie2).trim()) c.pdaZebra++;
     });
     if(l.rack.nobreak && l.rack.nobreak.marca==="NHS") c.nobreakNhs++;
+    if(l.rack.nobreak && l.rack.nobreak.marca==="EATON") c.nobreakEaton++;
     l.dvrs.forEach(function(d){
       if(hasAnyValue(d, ["id","nome"])) c.dvrs++;
       c.hdsDvr += Math.max(0, parseInt(d.hd && d.hd.quantidade, 10) || 0);
@@ -4807,8 +4813,8 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       const com = porLoja.filter(function(x){ return x.c[p[0]] > 0; });
       const total = com.reduce(function(a,x){ return a + x.c[p[0]]; }, 0);
       totalGeral += total;
-      return {chave:p[0], nome:p[1], total:total, com:com};
-    });
+      return {chave:p[0], nome:p[1], total:total, com:com, soSeTiver:!!p[2]};
+    }).filter(function(it){ return !it.soSeTiver || it.total > 0; });
     document.getElementById("pn-parque-sub").textContent = "Registrados nos checklists de " + lojas.length + " loja(s) (" + concluidas + " concluída(s)) · lojas de teste não entram · clique no item para ver as lojas";
     document.getElementById("pn-parque-total").innerHTML = '<b>' + totalGeral.toLocaleString("pt-BR") + '</b>equipamentos';
     const el = document.getElementById("pn-parque");
