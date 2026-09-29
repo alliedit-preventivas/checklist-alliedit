@@ -274,3 +274,7 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Ajuste junto: o comparativo 2025 x 2026 do link da gestão não passa mais da largura em telas muito estreitas (`minmax(min(300px, 100%), 1fr)`).
 - **Escala única de tamanhos de letra: desfeita** a pedido da usuária (28/09/2026). A escala de 10 tamanhos (commit `6e03ce3`) foi revertida; os tamanhos voltaram a ser exatamente os de antes, com a fonte Inter. Continuam valendo as mudanças feitas depois dela (nova ordem dos 4 cards, clique único no Ranking Incidentes e o vermelho nas cores Sephora).
 - **Fonte trocada para Titillium Web** (pedido da usuária, 28/09/2026): o portal inteiro passou da Inter para a **Titillium Web** (Google Fonts), com os pesos **400, 600 e 700**. A Titillium não tem o peso 500, que não é usado em nenhum texto do site. Tamanhos de letra continuam os originais.
+
+### 8.9 GPOS Backup fora do checklist do técnico (só na `develop`, ainda não publicado)
+- A pedido da usuária (28/09/2026): esse equipamento não existe nas lojas, então o card **GPOS Backup** saiu da Gerência no formulário do técnico. Também saiu da lista de pendências (deixou de ser obrigatório), do alerta "GPOS Backup não existe" (Alertas do Painel com login e Ranking Incidentes do link da gestão) e do PDF.
+- **Nada foi apagado do banco:** o campo `gposBackup` continua no modelo de dados (`blankSetorEquip`) e respostas antigas ficam guardadas, só não aparecem mais. O Estoque continua com o card PDA Zebra no mesmo lugar.
