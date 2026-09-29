@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção da retirada do GPOS Backup do checklist do técnico).
+Última atualização: 28/09/2026 (publicação em produção do grupo Máquinas GPOS Gertec no checklist do técnico).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `ee22b5c` (28/09/2026), equivale à `develop` `55055da` |
+| Última publicação | `main` = commit `e9e8f56` (28/09/2026), equivale à `develop` `6f8f447` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -40,6 +40,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-cores-sephora-2026-09-28` | Produção antes das cores AlliedIT / Sephora no link da gestão (commit `8854816`) |
 | `producao-antes-painel-gestao-novo-2026-09-28` | Produção antes do Painel novo do link da gestão, da fonte Titillium e do Parque Sephora (commit `dceefc1`) |
 | `producao-antes-sem-gpos-2026-09-28` | Produção antes de tirar o GPOS Backup do checklist do técnico (commit `e8ebe10`) |
+| `producao-antes-gpos-gertec-2026-09-28` | Produção antes do grupo Máquinas GPOS Gertec no checklist do técnico (commit `ee22b5c`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -281,7 +282,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - A pedido da usuária (28/09/2026): esse equipamento não existe nas lojas, então o card **GPOS Backup** saiu da Gerência no formulário do técnico. Também saiu da lista de pendências (deixou de ser obrigatório), do alerta "GPOS Backup não existe" (Alertas do Painel com login e Ranking Incidentes do link da gestão) e do PDF.
 - **Nada foi apagado do banco:** o campo `gposBackup` continua no modelo de dados (`blankSetorEquip`) e respostas antigas ficam guardadas, só não aparecem mais. O Estoque continua com o card PDA Zebra no mesmo lugar.
 
-### 8.10 Mobiles viram "Máquinas GPOS Gertec" no checklist do técnico (só na `develop`, ainda não publicado)
+### 8.10 Mobiles viram "Máquinas GPOS Gertec" no checklist do técnico: PUBLICADO (28/09/2026)
+- Foi para produção na `main` `e9e8f56` (equivale à `develop` `6f8f447`), pelo método manual e com as conferências de sempre. Ponto de restauração: tag `producao-antes-gpos-gertec-2026-09-28`.
 - A pedido da usuária (28/09/2026), no Stage de Vendas os Mobiles ficam dentro de um grupo com o título **"MÁQUINAS GPOS GERTEC"** (mesma moldura e estilo de "Máquinas POS"), logo **acima** de "Máquinas POS". Os nomes "Mobile 01", "Mobile 02"... e o botão "+ Adicionar Mobile" continuam; a dica passou a "Até 6 por loja".
 - Cada Mobile ganhou a **foto de exemplo do GPOS Gertec** à esquerda e os campos (Nº Série, IP, Estado de conservação) à direita, igual ao Mercado Pago; a Observação fica embaixo. Foto enviada pela usuária, recortada e reduzida para 240×360 (7 KB, `FOTO_GPOS_GERTEC` / `FOTOS_EXEMPLO.gpos`).
 - O PDF segue a nova ordem: grupo "Máquinas GPOS Gertec" com os Mobiles, antes de "Máquinas POS". Nenhuma alteração de banco: os dados continuam em `mobiles`.
