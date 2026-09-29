@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (card "Comentário por loja" no final do Dashboard, na `develop`).
+Última atualização: 29/09/2026 (publicação em produção do card "Comentário por loja").
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `5f04859` (29/09/2026), equivale à `develop` `39fd7df` |
+| Última publicação | `main` = commit `911f2e6` (29/09/2026), equivale à `develop` `adf9ad3` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -201,7 +201,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
 - Já validados: 8.1, 8.3, 8.10, 8.12 e 8.13.
 - Ideias opcionais em aberto: ver seção 6.
-- **Pendente de publicação:** 8.16 (card "Comentário por loja"). Última publicação: `main` `5f04859` = `develop` `39fd7df`.
+- **Nada pendente de publicação.** Última publicação: `main` `911f2e6` = `develop` `adf9ad3`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -337,7 +337,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - À esquerda, nas duas telas: "Checklist de Preventivas" / "Sephora 2026 · AlliedIT" (o link da gestão deixou de usar "Checklist de Preventivas · Sephora 2026 · AlliedIT" / "Gestão de manutenções preventivas das lojas Sephora"). À direita: bolinhas de cores; com login, também os menus.
 - A tela de Agendamento continua com o título "Painel de Agendamento".
 
-### 8.16 Card "Comentário por loja" no final do Dashboard: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+### 8.16 Card "Comentário por loja" no final do Dashboard: PUBLICADO (29/09/2026)
+- Foi para produção na `main` `911f2e6` (equivale à `develop` `adf9ad3`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `39fd7df`). Ponto de restauração: branch `restauracao-producao-antes-comentarios-2026-09-29`.
 - Pedido da usuária: no final dos dois Dashboards (Painel com login e link da gestão), card **"Comentário por loja"** com as lojas que responderam **"Sim"** em **"Ocorrências e necessidades"** no checklist, mostrando o texto escrito (campo `ocorrencia.descricao`; se veio vazio: "Ocorrência pontuada, sem descrição.").
 - Colunas: Código, Nome da loja, Regional, Status (mesma etiqueta da Lista de lojas), Data da preventiva, Técnico e Comentário (quebra de linha preservada). Busca por loja, técnico ou texto do comentário e filtro por Regional, com "Limpar filtros".
 - Entram também lojas com checklist ainda em andamento que já marcaram "Sim". Lojas de teste (`LOJAS_TESTE`) não entram. Função `renderPainelComentarios`.
