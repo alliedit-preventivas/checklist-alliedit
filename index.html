@@ -1669,7 +1669,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(s.multifuncional.transformador===null) add(label+": impressora possui transformador?", b+'[data-path="multifuncional.transformador"]');
       if(s.telefoneVoip.possui===null) add(label+": Possui telefone VOIP?", b+'[data-path="telefoneVoip.possui"]');
       else if(s.telefoneVoip.possui===true && (!s.telefoneVoip.numero || !s.telefoneVoip.ip)) add(label+": Telefone VOIP número/IP", b+'[data-path="telefoneVoip.numero"]');
-      if(sk==="gerencia" && s.gposBackup.possui===null) add(label+": GPOS Backup existe?", b+'[data-path="gposBackup.possui"]');
       if(!s.wifi.barras) add(label+": sinal do WIFI", b+'[data-path="wifi.barras"]');
     });
     [["gerencia","Notebook Gerência","#setor-gerencia-notebooks "]].forEach(function(triple){
@@ -3261,13 +3260,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="telefoneVoip.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.telefoneVoip.obs)+'</textarea></div>' : '') +
       '</div>' +
 
-      (temGpos ?
-        '<div class="item-card"><div class="item-title"><span>GPOS Backup</span>'+clearBtn("gposBackup")+'</div>' +
-        '<div class="toggle-group" data-setor-toggle="'+setorKey+'" data-path="gposBackup.possui" style="margin-bottom:8px;">' +
-          '<button type="button" class="toggle-btn'+(s.gposBackup.possui===true?' on-good':'')+'" data-val="true">Existe</button>' +
-          '<button type="button" class="toggle-btn'+(s.gposBackup.possui===false?' on-bad':'')+'" data-val="false">Não existe</button></div>' +
-        (s.gposBackup.possui===true ? '<div class="field"><label>Nº Série</label><input type="text" data-setor="'+setorKey+'" data-path="gposBackup.serie" value="'+escapeHtml(s.gposBackup.serie)+'"></div>' : '') +
-        '<div class="field"><label>Observação</label><textarea data-setor="'+setorKey+'" data-path="gposBackup.obs" rows="2" placeholder="Opcional">'+escapeHtml(s.gposBackup.obs)+'</textarea></div></div>'
+      // Gerência: o card "GPOS Backup" saiu do checklist a pedido da usuária (esse equipamento não existe). Estoque: PDA Zebra.
+      (temGpos ? ''
         :
         '<div class="item-card"><div class="item-title"><span>PDA Zebra</span>'+clearBtn("pdaZebra")+'</div>' +
         '<div class="field-row">' +
@@ -4060,7 +4054,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     ["gerencia","estoque"].forEach(function(setorKey){
       const s=l[setorKey]; if(!s) return; const label=setorKey==="gerencia"?"Gerência":"Estoque";
       if(s.multifuncional && s.multifuncional.falhaImpressao===true) msgs.push(label+": Impressora Multifuncional com falha de impressão");
-      if(setorKey==="gerencia" && s.gposBackup && s.gposBackup.possui===false) msgs.push("GPOS Backup não existe");
       if(s.wifi && (s.wifi.barras==="1" || s.wifi.barras==="2")) msgs.push(label+": sinal de WIFI abaixo de 3 barras");
     });
     if(l.wifiStage && (l.wifiStage.barras==="1" || l.wifiStage.barras==="2")) msgs.push("Stage de Vendas: sinal de WIFI abaixo de 3 barras");
@@ -4167,12 +4160,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(tv.possui===true) tvl.push(lin("Número", tv.numero), lin("IP", tv.ip));
       tvl.push(lin("Observação", tv.obs));
       out.push(card("Telefone VoIP", tvl));
-      if(ehGerencia){
-        const g = s.gposBackup, gl = [lin("GPOS Backup", sn(g.possui,"Existe","Não existe"), g.possui===false)];
-        if(g.possui===true) gl.push(lin("Nº Série", g.serie));
-        gl.push(lin("Observação", g.obs));
-        out.push(card("GPOS Backup", gl));
-      } else {
+      // GPOS Backup saiu do checklist (a pedido da usuária); na Gerência não entra mais no PDF
+      if(!ehGerencia){
         out.push(card("PDA Zebra", [lin("PDA 1 — Nº Série", s.pdaZebra.serie1), lin("PDA 2 — Nº Série", s.pdaZebra.serie2), lin("Observação", s.pdaZebra.obs)]));
       }
       out.push(card("Sinal do WIFI", [lin("Sinal", wifi(s.wifi.barras), wifiRuim(s.wifi.barras)), lin("Observação", s.wifi.obs)]));
@@ -4875,7 +4864,6 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(/câmeras/i.test(m)) return "Câmeras de CFTV com defeito";
     if(/portas danificadas/.test(m)) return "DVR com portas danificadas";
     if(/Multifuncional/.test(m)) return "Impressora multifuncional com falha";
-    if(/GPOS Backup/.test(m)) return "GPOS Backup ausente";
     if(/WIFI/.test(m)) return "Wi-Fi abaixo de 3 barras";
     if(/impressora térmica/i.test(m)) return "Impressora térmica precisa de limpeza";
     if(/touch/i.test(m)) return "USB do touch da tela do cliente conectado";
