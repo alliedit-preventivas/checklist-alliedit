@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (Tela do cliente em todos os PDVs e Telefone VoIP/Analógico com funcionamento, na `develop`).
+Última atualização: 29/09/2026 (publicação em produção da Tela do cliente e do Telefone VoIP/Analógico).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `efd5e70` (28/09/2026), equivale à `develop` `3892d78` |
+| Última publicação | `main` = commit `68329c2` (29/09/2026), equivale à `develop` `f5dc3d5` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -196,11 +196,10 @@ Só com autorização explícita da usuária ("pode publicar"):
 ## 8. Publicações e pendências (atualizado em 29/09/2026)
 
 ### Pendências atuais (29/09/2026)
-- Última publicação: `main` `efd5e70` = `develop` `3892d78`.
-- **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?", prioridade por mexer no formulário do técnico)**.
+- **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist), **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")** e **8.12 (Tela do cliente e Telefone)** — prioridade para 8.11 e 8.12, que mexem no formulário do técnico.
 - Já validados: 8.1, 8.3 e 8.10.
 - Ideias opcionais em aberto: ver seção 6.
-- **Pendente de publicação:** 8.12 (Tela do cliente e Telefone), só na `develop`.
+- **Nada pendente de publicação.** Última publicação: `main` `68329c2` = `develop` `f5dc3d5`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -307,7 +306,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Dados novos no PDV: `gaveta:{estado, cabo}` e `pinpad.defeito`; checklists antigos recebem os campos vazios automaticamente (`migrarPdv`). Nada é apagado.
 - Testado numa cópia com o **Supabase simulado** (nada gravado em banco nenhum): ordem dos campos, observação, pendências, cores, gravação e Painel (trocas, alertas e Ranking Incidentes).
 
-### 8.12 Tela do cliente e Telefone (VoIP ou Analógico): só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+### 8.12 Tela do cliente e Telefone (VoIP ou Analógico): PUBLICADO (29/09/2026)
+- Foi para produção na `main` `68329c2` (equivale à `develop` `f5dc3d5`), com as conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias; a produção anterior era igual à `develop` `3892d78` (nada da produção se perdeu). Ponto de restauração: branch `restauracao-producao-antes-tela-telefone-2026-09-29` (tag bloqueada nesta sessão de nuvem).
 - **Tela do cliente (todos os PDVs, Elgin e Toshiba — decisão da usuária):** logo abaixo do Nº Série/Marca e **acima da Gaveta de dinheiro**. Pergunta obrigatória **Funcionando | Defeito ou Falha**, com a dica "Se for defeito, precisa trocar o equipamento". Defeito ou Falha entra em **Equipamentos para substituição** ("PDV xx: Tela do cliente"). No **Elgin**, o aviso do cabo USB do touch e o botão "Remover Cabo USB"/"Removido" ficam logo abaixo da pergunta (continua obrigatório). Campo novo: `pdvs[].telaCliente.estado` ("funcionando" | "defeito").
 - **Telefone (os 3 cards: Stage de Vendas, Gerência e Estoque — decisão da usuária):** o card da Gerência/Estoque passou de "Telefone VoIP" para **"Telefone"**. Campos: Possui telefone? → **Telefone: VoIP | Analógico** → Número + IP do telefone (**IP desabilitado e não obrigatório no Analógico**) → **Funcionamento: Funcionando | Defeito ou Falha** → **Observação só aparece com Defeito ou Falha** (obrigatória nesse caso). Telefone com defeito vira **alerta** ("... telefone com defeito ou falha"), também no Ranking Incidentes do link da gestão. Campos novos: `tipo` ("voip" | "analogico") e `estado` em `telefoneStage` e `gerencia/estoque.telefoneVoip` (função `migrarTelefone`, modelo de tela `htmlTelefone`).
 - **Checklists antigos:** telefone já cadastrado na Gerência/Estoque vira VoIP automaticamente (o card era VoIP); no Stage, vira VoIP quando o IP estava preenchido. A tela do cliente e o funcionamento do telefone ficam em branco: se um checklist antigo for reaberto, essas perguntas aparecem como pendência. Checklists já concluídos não mudam de status.
