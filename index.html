@@ -4179,10 +4179,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function alertasDaLoja(l){
     const msgs = [];
     const rack = l.rack||{};
+    // Escada móvel e USB do touch (Elgin) não geram alerta (pedido da usuária, 29/09/2026); as perguntas continuam no formulário
     if(rack.organizado===false) msgs.push("Rack desorganizado");
     if(rack.limpo===false) msgs.push("Rack sujo");
-    if(rack.escada && rack.escada.possui===false) msgs.push("Loja não possui escada móvel");
-    if(rack.escada && rack.escada.possui===true && rack.escada.alturaSuficiente===false) msgs.push("Escada móvel não alcança o teto");
     (l.dvrs||[]).forEach(function(d){
       if(d.camerasSemFuncionar && d.camerasSemFuncionar.tem===true) msgs.push(d.nome+": câmeras com defeito ou falha"+((d.camerasSemFuncionar.quais&&d.camerasSemFuncionar.quais.length)?" (CAM "+d.camerasSemFuncionar.quais.join(", CAM ")+")":""));
       if(d.portasDanificadas && d.portasDanificadas.tem===true) msgs.push(d.nome+": portas danificadas ("+(d.portasDanificadas.portas||[]).join(", ")+")");
@@ -4200,7 +4199,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
     (l.pdvs||[]).forEach(function(p){
       if(p.impressoraTermica && p.impressoraTermica.limpezaFeita===false) msgs.push(p.nome+": impressora térmica precisa de limpeza");
-      if(p.marca==="Elgin" && p.telaCliente && p.telaCliente.touchDesativado===false) msgs.push(p.nome+": USB do touch da tela do cliente ainda conectado");
       if(p.pinpad && p.pinpad.defeito===true) msgs.push(p.nome+": PINPAD REDE LARANJINHA com defeito");
       if(p.gaveta && p.gaveta.cabo==="sem_trava") msgs.push(p.nome+": cabo da gaveta de dinheiro sem trava no conector");
     });
@@ -5060,7 +5058,6 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(/Multifuncional/.test(m)) return "Impressora multifuncional com falha";
     if(/WIFI/.test(m)) return "Wi-Fi abaixo de 3 barras";
     if(/impressora térmica/i.test(m)) return "Impressora térmica precisa de limpeza";
-    if(/touch/i.test(m)) return "USB do touch da tela do cliente conectado";
     if(/PINPAD REDE LARANJINHA com defeito/.test(m)) return "PINPAD PDV"; // mesmo nome da troca, para a loja contar 1 vez só
     if(/sem trava no conector/.test(m)) return "Cabo da gaveta sem trava no conector";
     if(/telefone com defeito/i.test(m)) return "Telefone com defeito ou falha";
