@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `ab7c0a6` (29/09/2026), equivale à `develop` `73aee49` |
+| Última publicação | `main` = commit `02da3a2` (29/09/2026), equivale à `develop` `9bfcc7a` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -42,6 +42,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-sem-gpos-2026-09-28` | Produção antes de tirar o GPOS Backup do checklist do técnico (commit `e8ebe10`) |
 | `producao-antes-gpos-gertec-2026-09-28` | Produção antes do grupo Máquinas GPOS Gertec no checklist do técnico (commit `ee22b5c`) |
 | `producao-antes-gaveta-pinpad-2026-09-28` | Produção antes da gaveta de dinheiro e do "PINPAD apresenta defeito?" nos PDVs (commit `e9e8f56`) |
+| branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29` | Produção antes de remover os alertas de escada móvel e USB do touch (commit `ab7c0a6`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -200,8 +201,8 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### Pendências atuais (29/09/2026)
 - **Todas as publicações (8.1 a 8.17) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **Aguardando teste da usuária na `develop` (não publicado):** 8.18 (alertas de escada e USB do touch removidos).
-- Última publicação: `main` `ab7c0a6` = `develop` `73aee49`.
+- **8.18 publicado em 29/09/2026, aguardando a validação da usuária no site no ar.**
+- Última publicação: `main` `02da3a2` = `develop` `9bfcc7a`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -360,10 +361,11 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
 - A animação roda **só ao abrir ou recarregar a página (F5)** (ajuste pedido pela usuária). Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), a porcentagem muda direto, sem animar. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
 
-### 8.18 Alertas removidos: escada móvel e USB do touch (Elgin): EM TESTE NA DEVELOP (29/09/2026)
+### 8.18 Alertas removidos: escada móvel e USB do touch (Elgin): PUBLICADO (29/09/2026), AGUARDANDO VALIDAÇÃO
 - Pedido da usuária: estes alertas **não devem mais aparecer** (Painel/Dashboard, link da gestão e relatório PDF):
   - "Loja não possui escada móvel";
   - "Escada móvel não alcança o teto";
   - "PDV xx: USB do touch da tela do cliente ainda conectado" (PDV Elgin).
 - As **perguntas continuam no formulário do técnico** (escada no Rack e o aviso/botão do USB do touch no PDV Elgin), assim como a pendência "remover USB do touch" ao finalizar o checklist. Só deixaram de gerar alerta.
-- Arquivo alterado: `index.html` (função `alertasDaLoja` e categoria do touch em `pnCategoriaAlerta`). Não publicado.
+- Arquivo alterado: `index.html` (função `alertasDaLoja` e categoria do touch em `pnCategoriaAlerta`).
+- Foi para produção na `main` `02da3a2` (equivale à `develop` `9bfcc7a`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `73aee49`). Ponto de restauração: branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29`.
