@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (publicação em produção do Painel com login igual ao link da gestão, com as bolinhas de cores).
+Última atualização: 29/09/2026 (cabeçalho do Painel padronizado: "DASHBOARD | PREVENTIVAS 2026", na `develop`).
 
 ---
 
@@ -201,7 +201,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")**.
 - Já validados: 8.1, 8.3, 8.10, 8.12 e 8.13.
 - Ideias opcionais em aberto: ver seção 6.
-- **Nada pendente de publicação.** Última publicação: `main` `82f3efc` = `develop` `36b40a8`.
+- **Pendente de publicação:** 8.15 (cabeçalho do Painel padronizado). Última publicação: `main` `82f3efc` = `develop` `36b40a8`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -330,4 +330,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - O **Painel clássico** (seções numeradas) continua no código, escondido. Para voltar a ele: `PAINEL_LOGIN_USA_NOVO = false`.
 - **Bolinhas de cores AlliedIT / Sephora também no Painel com login** (pedido da usuária): aparecem só com o Painel aberto, no canto direito do cabeçalho, ao lado dos menus. Com login, a cor escolhida vale **só no Painel**; ao ir para Agendamento ou abrir um checklist, o site volta às cores AlliedIT e, ao voltar ao Painel, a cor escolhida volta. A escolha fica guardada no navegador (`coresPainelLogin`), separada da escolha do link da gestão (`coresPainelGestao`).
 - Testado com o Supabase simulado: Painel com login (sem erros, lojas abrem o checklist), link da gestão, link do técnico, tela de login e celular (sem rolagem lateral).
+
+### 8.15 Cabeçalho do Painel padronizado: "DASHBOARD | PREVENTIVAS 2026": só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+- Pedido da usuária: o Painel com login e o link da gestão (`?painel=1`) com **o mesmo cabeçalho** (opção escolhida: título no centro). O título "Painel de Indicadores" saiu e ficou **"Dashboard | Preventivas 2026"** (aparece em maiúsculas pelo estilo do cabeçalho). Grafia usada: "DASHBOARD" (a usuária escreveu "DASHBORD"; ajustar se ela preferir).
+- À esquerda, nas duas telas: "Checklist de Preventivas" / "Sephora 2026 · AlliedIT" (o link da gestão deixou de usar "Checklist de Preventivas · Sephora 2026 · AlliedIT" / "Gestão de manutenções preventivas das lojas Sephora"). À direita: bolinhas de cores; com login, também os menus.
+- A tela de Agendamento continua com o título "Painel de Agendamento".
 

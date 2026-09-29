@@ -136,9 +136,7 @@
   /* ===== Painel novo do link da gestão (?painel=1) ===== */
   :root{ --pn-destaque:#F7D51C; }
   :root[data-tema="sephora"]{ --pn-destaque:#E4002B; } /* vermelho (antes rosa), a pedido da usuária */
-  .modo-gestao-header .header-titulo{display:none;}
-  .modo-gestao-header h1{font-size:17px; font-weight:700;}
-  .modo-gestao-header .sub{font-size:11px; margin-top:2px;}
+  /* Link da gestão usa o mesmo cabeçalho do Painel com login: título "Dashboard | Preventivas 2026" no centro (29/09/2026) */
   .pn-aviso{text-align:right; margin:0 0 8px;}
   .pn-topo{display:grid; grid-template-columns:minmax(300px, 1.3fr) 4fr; gap:12px; margin-bottom:16px;}
   .pn-kpis{display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px;}
@@ -1334,7 +1332,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   let currentLojaId = null, currentLoja = null;
   let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
   let modoTecnico = false, modoTecnicoId = false, lojaParamId = null, autoAbriuLoja = false;
-  // Modo gestão (link ?painel=1): abre só o Painel de Indicadores, sem login e só para visualização.
+  // Modo gestão (link ?painel=1): abre só o Painel (Dashboard | Preventivas 2026), sem login e só para visualização.
   // Não mostra Agendamento nem Técnico e não abre checklists.
   let modoGestao = false;
   // Painel com login (menu "Painel") usa o mesmo Painel novo do link da gestão (pedido da usuária, 29/09/2026).
@@ -1901,8 +1899,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       wirePainelNovo();
     }
     if(modoGestao){
-      document.querySelector("header h1").textContent = "Checklist de Preventivas · Sephora 2026 · AlliedIT";
-      document.querySelector("header .sub").textContent = "Gestão de manutenções preventivas das lojas Sephora";
       document.getElementById("painel-modo-gestao").classList.remove("hidden");
       document.querySelector("header nav").style.display = "none";
       document.querySelector("header").classList.add("modo-gestao-header");
@@ -2065,7 +2061,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const headerNav = document.querySelector("header nav");
     if(headerNav && !modoTecnico && !modoGestao) headerNav.style.display = (name==="lojas") ? "none" : "flex";
     const tituloHeader = document.getElementById("header-titulo");
-    if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Painel de Indicadores" : "Painel de Agendamento";
+    if(tituloHeader) tituloHeader.textContent = (name==="painel") ? "Dashboard | Preventivas 2026" : "Painel de Agendamento";
     // Bolinhas de cores com o Painel aberto (link da gestão e Painel com login)
     document.getElementById("tema-cores").classList.toggle("hidden", !(temCoresNoPainel() && name==="painel"));
     // Com login: cor escolhida só no Painel; nas outras telas volta para AlliedIT
