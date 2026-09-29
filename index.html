@@ -4756,7 +4756,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     ["pdvsElgin","PDVs Elgin"], ["pdvsToshiba","PDVs Toshiba"], ["pdvsSemMarca","PDVs (marca não informada)", true], ["termicas","Impressoras Térmicas"], ["leitores","Leitores de Código de Barras"], ["pinpads","PINPADs Rede/Laranjinha"],
     ["pinpadReserva","PINPAD Reserva"], ["notebooks","Notebooks"], ["desktops","Desktops"], ["monitores","Monitores"], ["mouses","Mouses"],
     ["teclados","Teclados"], ["miniNobreaks","Mini Nobreaks"], ["nobreakNhs","Nobreak de Rack NHS"], ["nobreakEaton","Nobreak de Rack EATON"], ["dvrs","DVRs / CFTV"], ["hdsDvr","HDs de DVR"],
-    ["monitorCftv","Monitor de CFTV"], ["multifuncionais","Impressoras Multifuncionais"], ["voip","Telefones VoIP"], ["telefone","Telefone"],
+    ["monitorCftv","Monitor de CFTV"], ["multifuncionais","Impressoras Multifuncionais"], ["voip","Telefones VoIP"],
     ["pdaZebra","PDA Zebra"], ["mobiles","Mobiles"], ["mercadoPago","Mercado Pago"], ["posRedeCielo","POS Rede / Cielo"]
   ];
   function pnParqueDaLoja(bruto){
@@ -4798,7 +4798,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       c.hdsDvr += Math.max(0, parseInt(d.hd && d.hd.quantidade, 10) || 0);
       if(d.monitorCftv && d.monitorCftv.possui===true) c.monitorCftv++;
     });
-    if(l.telefoneStage.possui===true) c.telefone++;
+    if(l.telefoneStage.possui===true) c.voip++; // telefone do Stage de Vendas é o mesmo VoIP: soma com Gerência e Estoque
     l.mobiles.forEach(function(m){ if(hasAnyValue(m, ["id","nome"])) c.mobiles++; });
     l.mercadoPagos.forEach(function(m){ if(m.modelo || m.serie) c.mercadoPago++; });
     l.posRedeCielos.forEach(function(p){ if(p.operadora || p.modelo || p.serie) c.posRedeCielo++; });
