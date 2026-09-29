@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (publicação em produção da Tela do cliente e do Telefone VoIP/Analógico).
+Última atualização: 29/09/2026 (dica do cabo importado movida para baixo da pergunta do cabo da gaveta, na `develop`).
 
 ---
 
@@ -199,7 +199,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 - **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist), **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?")** e **8.12 (Tela do cliente e Telefone)** — prioridade para 8.11 e 8.12, que mexem no formulário do técnico.
 - Já validados: 8.1, 8.3 e 8.10.
 - Ideias opcionais em aberto: ver seção 6.
-- **Nada pendente de publicação.** Última publicação: `main` `68329c2` = `develop` `f5dc3d5`.
+- **Pendente de publicação:** 8.13 (dica do cabo importado). Última publicação: `main` `68329c2` = `develop` `f5dc3d5`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -314,4 +314,7 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Parque Sephora: a contagem "Telefones VoIP" passou a se chamar **"Telefones (VoIP e analógico)"**.
 - PDF da loja: "Tela do cliente" em todos os PDVs (antes da gaveta) e card "Telefone" com Tipo, Número, IP (só VoIP), Funcionamento e Observação (defeito em vermelho).
 - Testado numa cópia com o **Supabase simulado** (nada gravado em banco nenhum): ordem dos campos, aviso só no Elgin, IP desabilitado no analógico, Observação só com defeito, pendências, troca, alerta, conversão de checklist antigo, PDF e Painel sem erros.
+
+### 8.13 Dica do cabo importado no lugar certo: só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
+- A frase *"Este cabo é importado, por isso é importante a sua validação."* saiu de baixo de "Gaveta de dinheiro" e passou a ficar **logo abaixo da pergunta "Qual o estado de conservação do cabo que liga a gaveta à impressora?"** (pedido da usuária). Só mudou o lugar do texto; nenhuma regra mudou.
 

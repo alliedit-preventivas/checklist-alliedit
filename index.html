@@ -3539,10 +3539,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         '</div>' +
         // Gaveta de dinheiro: logo abaixo da tela do cliente, no mesmo bloco (sem seção própria).
         // Cabo sem trava = alerta; cabo danificado = troca.
-        '<div class="field"><label>Gaveta de dinheiro</label><div class="hint" style="margin:0 0 6px;">Este cabo é importado, por isso é importante a sua validação.</div><div class="toggle-group" data-pdv-opcao="gavetaEstado" data-idx="'+idx+'">' +
+        '<div class="field"><label>Gaveta de dinheiro</label><div class="toggle-group" data-pdv-opcao="gavetaEstado" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(p.gaveta.estado==="funcionando"?' on-good':'')+'" data-val="funcionando">Funcionando</button>' +
           '<button type="button" class="toggle-btn'+(p.gaveta.estado==="defeito"?' on-bad':'')+'" data-val="defeito">Defeito ou Falha</button></div></div>' +
-        '<div class="field"><label>Qual o estado de conservação do cabo que liga a gaveta à impressora?</label><div class="toggle-group" data-pdv-opcao="gavetaCabo" data-idx="'+idx+'">' +
+        '<div class="field"><label>Qual o estado de conservação do cabo que liga a gaveta à impressora?</label><div class="hint" style="margin:0 0 6px;">Este cabo é importado, por isso é importante a sua validação.</div><div class="toggle-group" data-pdv-opcao="gavetaCabo" data-idx="'+idx+'">' +
           '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="com_trava"?' on-good':'')+'" data-val="com_trava">Possui trava no conector</button>' +
           '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="sem_trava"?' on-warn':'')+'" data-val="sem_trava">Sem trava no conector</button>' +
           '<button type="button" class="toggle-btn'+(p.gaveta.cabo==="danificado"?' on-bad':'')+'" data-val="danificado">Cabo danificado</button></div></div>' +
