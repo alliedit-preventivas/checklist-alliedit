@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (pendências agrupadas por setor ao "Finalizar checklist", na `develop`).
+Última atualização: 29/09/2026 (ideia das pendências por setor descartada; `develop` igual à produção).
 
 ---
 
@@ -179,9 +179,9 @@ Só com autorização explícita da usuária ("pode publicar"):
 | POS REDE / CIELO sem opção "Loja não possui" | **Fica como está**: toda loja sempre tem uma das duas. |
 | Título da tela de login | **"Acesso ao Painel"** (feito). |
 | Hospedagem do banco | **Continua no Supabase** por enquanto. |
+| Pendências agrupadas por setor ao "Finalizar checklist" | **Não será feito** (29/09/2026): testado na `develop` e descartado pela usuária; a lista única de hoje funciona bem. |
 
 ### Ideias ainda em aberto (opcionais)
-- ~~Ao "Finalizar checklist" com muitas pendências, resumir por setor em vez de listar todas.~~ Feito na `develop` (seção 8.18).
 - Lembrete: a área de fotos do Supabase é pública (quem tem o link abre a foto).
 
 ---
@@ -200,7 +200,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### Pendências atuais (29/09/2026)
 - **Todas as publicações (8.1 a 8.17) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **Pendente de publicação:** 8.18 (pendências agrupadas por setor). Última publicação: `main` `ab7c0a6` = `develop` `73aee49`.
+- **Nada pendente de publicação.** Última publicação: `main` `ab7c0a6` = `develop` `73aee49`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -358,9 +358,4 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Foi para produção na `main` `ab7c0a6` (equivale à `develop` `73aee49`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `adf9ad3`). Ponto de restauração: branch `restauracao-producao-antes-animacao-2026-09-29`.
 - Pedido da usuária: ao abrir o Dashboard (com login e link da gestão), o **número sobe de 0% até a porcentagem real**, e o **anel** e a **barrinha** enchem junto, como um "loading", com um brilho que passa pela barra enquanto carrega (cerca de 1 a 2 segundos, começa rápido e desacelera no final).
 - A animação roda **só ao abrir ou recarregar a página (F5)** (ajuste pedido pela usuária). Quando os dados se atualizam sozinhos (a cada 20 s ou ao voltar para a aba), a porcentagem muda direto, sem animar. Com "reduzir animações" ligado no computador/celular, os valores aparecem direto. Função `pnAnimarCampanha`.
-
-### 8.18 Pendências agrupadas por setor ao "Finalizar checklist": só na `develop`, PENDENTE DE PUBLICAÇÃO (29/09/2026)
-- Era uma das ideias opcionais da seção 6, pedida pela usuária para teste. Ao clicar em "Finalizar checklist" com campos faltando, a lista deixou de ser única e passou a vir **agrupada por setor**: **Rack, Gerência, Estoque, Stage de Vendas** e, por último, **Início e encerramento do atendimento** (o que fica na tela principal: horários, ocorrências, foto do RAT etc.). O título mostra o total ("Existem 80 pendência(s) em 5 setor(es)") e cada setor mostra a quantidade numa etiqueta vermelha.
-- Cada setor abre/fecha com um clique. Com até 8 pendências, todos aparecem abertos; com mais, só o primeiro setor com pendência abre. Os setores abertos continuam abertos quando a lista se atualiza depois de salvar. Clicar num item continua levando direto ao campo, como antes.
-- Usa a mesma regra de setor dos indicadores dos blocos (`pendenciasPorBloco`); nenhuma regra de obrigatoriedade mudou. Prévia de teste (seção 7) atualizada com este ajuste.
 
