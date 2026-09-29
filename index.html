@@ -268,6 +268,23 @@
   #pn-pareto-comp .pn-comp-barra{transition:opacity .15s;}
   #pn-pareto-comp[data-destaque="25"] .pn-comp-barra.a26, #pn-pareto-comp[data-destaque="26"] .pn-comp-barra.a25{opacity:.18;}
   #pn-pareto-comp[data-destaque="25"] .pn-comp-barra.a25 b, #pn-pareto-comp[data-destaque="26"] .pn-comp-barra.a26 b{font-size:13px;}
+  /* Top 5 2025 x 2026 no link da gestão: cada ano no seu quadro; lojas fechadas, um clique mostra o que foi trocado */
+  #pn-aba-top5 .painel-2col{gap:16px;}
+  #pn-aba-top5 .painel-2col > div{background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:12px 14px;}
+  #pn-aba-top5 .top5-item{cursor:pointer; border-radius:8px; padding:8px 6px; margin:0 -6px; border-bottom-color:var(--border);}
+  #pn-aba-top5 .top5-item:hover{background:var(--surface);}
+  #pn-aba-top5 .top5-item:focus-visible{outline:2px solid var(--teal-lt); outline-offset:1px;}
+  #pn-aba-top5 .top5-item .top5-equips{display:none;}
+  #pn-aba-top5 .top5-item.aberto .top5-equips{display:flex;}
+  #pn-aba-top5 .top5-item.aberto{background:var(--surface);}
+  #pn-aba-top5 .top5-topo > span:last-child::after{content:"›"; display:inline-block; margin-left:8px; font-size:15px; line-height:1; color:var(--text-muted); transition:transform .15s;}
+  #pn-aba-top5 .top5-item.aberto .top5-topo > span:last-child::after{transform:rotate(90deg);}
+  /* Divisão mais clara entre os cards do link da gestão: borda e sombra mais visíveis e mais espaço entre as linhas */
+  :root{ --pn-borda-card:#D3DCE0; }
+  :root[data-tema="sephora"]{ --pn-borda-card:#D4D4D4; }
+  #view-painel #painel-novo .card, #painel-novo .pn-kpi{border:1px solid var(--pn-borda-card); box-shadow:0 1px 2px rgba(16,24,40,.05), 0 4px 12px rgba(16,24,40,.06);}
+  #painel-novo .pn-topo, #painel-novo .pn-linha, #painel-novo .pn-grade4{gap:16px; margin-bottom:16px;}
+  #view-painel #painel-novo > .card{margin-bottom:16px;}
   /* Abas do card "Trocas de equipamento" */
   .pn-abas{display:flex; gap:4px; flex-wrap:wrap; background:var(--bg); padding:3px; border-radius:20px;}
   .pn-aba{border:none; background:transparent; font-family:inherit; font-size:12px; font-weight:700; color:var(--text-muted); padding:6px 12px; border-radius:16px; cursor:pointer;}
@@ -939,21 +956,30 @@
         <div class="pn-card-cab">
           <div class="pn-card-titulo">
             <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/></svg></span>
-            <div><h3>Trocas de equipamento</h3><div class="pn-card-sub">Lojas com equipamentos indicados para substituição</div></div>
+            <div><h3>Trocas de equipamento 2025 x 2026</h3><div class="pn-card-sub">Lojas com mais equipamentos indicados para substituição · no Top 5, clique na loja para ver o que foi trocado</div></div>
           </div>
-          <div class="pn-abas" role="tablist" aria-label="Trocas de equipamento">
+          <div class="pn-abas" role="tablist" aria-label="Trocas de equipamento 2025 x 2026">
             <button type="button" role="tab" class="pn-aba active" data-aba="top5" aria-selected="true">Top 5 2025 x 2026</button>
             <button type="button" role="tab" class="pn-aba" data-aba="comparativo" aria-selected="false">Comparativo por loja</button>
-            <button type="button" role="tab" class="pn-aba" data-aba="porloja" aria-selected="false">Equipamentos por loja</button>
           </div>
         </div>
         <div class="pn-aba-painel" data-painel="top5" id="pn-aba-top5" role="tabpanel"></div>
         <div class="pn-aba-painel hidden" data-painel="comparativo" id="pn-aba-comparativo" role="tabpanel"></div>
-        <div class="pn-aba-painel hidden" data-painel="porloja" id="pn-aba-porloja" role="tabpanel"></div>
       </div>
 
-      <!-- Lista de lojas (sem exportar) -->
+      <!-- Equipamentos por loja: mesmo conteúdo do Painel com login (movido para cá só no link da gestão) -->
       <div class="card pn-card">
+        <div class="pn-card-cab">
+          <div class="pn-card-titulo">
+            <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></span>
+            <div><h3>Equipamentos por loja</h3><div class="pn-card-sub">Clique na loja para ver os equipamentos indicados para substituição</div></div>
+          </div>
+        </div>
+        <div id="pn-equip-loja"></div>
+      </div>
+
+      <!-- Lista de lojas (sem exportar): escondida por enquanto, a pedido da usuária (para voltar, tire o display:none) -->
+      <div class="card pn-card" id="pn-card-lista" style="display:none;">
         <div class="pn-card-cab">
           <div class="pn-card-titulo">
             <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5V20h15v-9.5"/><path d="M3 10.5L5.2 4.5h13.6l2.2 6z"/><path d="M9.5 20v-5h5v5"/></svg></span>
@@ -4953,7 +4979,17 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     // Trocas de equipamento: os 3 conteúdos já existem no Painel com login (escondido no link da gestão); só mudam de lugar
     document.getElementById("pn-aba-top5").appendChild(document.getElementById("painel-top5-trocas"));
     document.getElementById("pn-aba-comparativo").appendChild(document.getElementById("painel-comparativo-trocas"));
-    document.getElementById("pn-aba-porloja").appendChild(document.getElementById("painel-substituicoes"));
+    document.getElementById("pn-equip-loja").appendChild(document.getElementById("painel-substituicoes"));
+    // Top 5 2025 x 2026: mostra só as lojas; um clique na loja abre (ou fecha) o que foi trocado
+    const top5 = document.getElementById("pn-aba-top5"), top5Abertas = {};
+    function chaveTop5(item){ const col = item.closest(".painel-2col > div"); return (col ? Array.prototype.indexOf.call(col.parentNode.children, col) : 0) + "|" + (item.querySelector(".top5-topo span") || {}).textContent; }
+    function alternarTop5(item){ const k = chaveTop5(item); const aberto = !item.classList.contains("aberto"); item.classList.toggle("aberto", aberto); item.setAttribute("aria-expanded", aberto ? "true" : "false"); if(aberto) top5Abertas[k] = true; else delete top5Abertas[k]; }
+    top5.addEventListener("click", function(ev){ const item = ev.target.closest(".top5-item"); if(item) alternarTop5(item); });
+    top5.addEventListener("keydown", function(ev){ const item = ev.target.closest(".top5-item"); if(item && (ev.key==="Enter" || ev.key===" ")){ ev.preventDefault(); alternarTop5(item); } });
+    // O conteúdo é refeito quando os dados mudam: deixa cada loja clicável pelo teclado e mantém abertas as que estavam abertas
+    function prepararTop5(){ top5.querySelectorAll(".top5-item").forEach(function(item){ item.setAttribute("tabindex", "0"); item.setAttribute("role", "button"); const aberto = !!top5Abertas[chaveTop5(item)]; item.classList.toggle("aberto", aberto); item.setAttribute("aria-expanded", aberto ? "true" : "false"); }); }
+    new MutationObserver(prepararTop5).observe(document.getElementById("painel-top5-trocas"), {childList:true});
+    prepararTop5();
     document.querySelectorAll(".pn-aba").forEach(function(aba){
       aba.addEventListener("click", function(){
         document.querySelectorAll(".pn-aba").forEach(function(a){ const ativa = a===aba; a.classList.toggle("active", ativa); a.setAttribute("aria-selected", ativa ? "true" : "false"); });
