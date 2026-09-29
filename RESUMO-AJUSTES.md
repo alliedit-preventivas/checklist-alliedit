@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção do Painel novo do link da gestão, fonte Titillium Web e Parque Sephora).
+Última atualização: 28/09/2026 (publicação em produção da retirada do GPOS Backup do checklist do técnico).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `e8ebe10` (28/09/2026), equivale à `develop` `c545d23` |
+| Última publicação | `main` = commit `ee22b5c` (28/09/2026), equivale à `develop` `55055da` |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
@@ -39,6 +39,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-janela-status-2026-09-28` | Produção antes das regionais atualizadas, SP numa linha só e janela das lojas por status (commit `41cce39`) |
 | `producao-antes-cores-sephora-2026-09-28` | Produção antes das cores AlliedIT / Sephora no link da gestão (commit `8854816`) |
 | `producao-antes-painel-gestao-novo-2026-09-28` | Produção antes do Painel novo do link da gestão, da fonte Titillium e do Parque Sephora (commit `dceefc1`) |
+| `producao-antes-sem-gpos-2026-09-28` | Produção antes de tirar o GPOS Backup do checklist do técnico (commit `e8ebe10`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -275,6 +276,7 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Escala única de tamanhos de letra: desfeita** a pedido da usuária (28/09/2026). A escala de 10 tamanhos (commit `6e03ce3`) foi revertida; os tamanhos voltaram a ser exatamente os de antes, com a fonte Inter. Continuam valendo as mudanças feitas depois dela (nova ordem dos 4 cards, clique único no Ranking Incidentes e o vermelho nas cores Sephora).
 - **Fonte trocada para Titillium Web** (pedido da usuária, 28/09/2026): o portal inteiro passou da Inter para a **Titillium Web** (Google Fonts), com os pesos **400, 600 e 700**. A Titillium não tem o peso 500, que não é usado em nenhum texto do site. Tamanhos de letra continuam os originais.
 
-### 8.9 GPOS Backup fora do checklist do técnico (só na `develop`, ainda não publicado)
+### 8.9 GPOS Backup fora do checklist do técnico: PUBLICADO (28/09/2026)
+- Foi para produção na `main` `ee22b5c` (equivale à `develop` `55055da`), pelo método manual e com as conferências de sempre. Ponto de restauração: tag `producao-antes-sem-gpos-2026-09-28`.
 - A pedido da usuária (28/09/2026): esse equipamento não existe nas lojas, então o card **GPOS Backup** saiu da Gerência no formulário do técnico. Também saiu da lista de pendências (deixou de ser obrigatório), do alerta "GPOS Backup não existe" (Alertas do Painel com login e Ranking Incidentes do link da gestão) e do PDF.
 - **Nada foi apagado do banco:** o campo `gposBackup` continua no modelo de dados (`blankSetorEquip`) e respostas antigas ficam guardadas, só não aparecem mais. O Estoque continua com o card PDA Zebra no mesmo lugar.
