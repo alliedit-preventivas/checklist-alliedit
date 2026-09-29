@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 28/09/2026 (publicação em produção da gaveta de dinheiro e do "PINPAD apresenta defeito?" nos PDVs).
+Última atualização: 29/09/2026 (resumo arrumado: seções 4.8 a 4.12 marcadas como publicadas e quadro de pendências atuais na seção 8).
 
 ---
 
@@ -119,14 +119,14 @@ Só com autorização explícita da usuária ("pode publicar"):
 - "Agendamento" concentra os cartões das lojas e os PDFs; "Técnico" é o acesso dos técnicos.
 - Tela de login: título **"Acesso ao Painel"** (antes "Acesso à Gestão").
 
-### 4.8 Painel Executivo (só na `develop`, ainda não publicado)
+### 4.8 Painel Executivo (publicado em 28/09/2026)
 - A tela **Painel** ganhou o bloco **"Painel Executivo: Preventiva 2026"** com cartões de indicadores: Lojas Cadastradas (e nº de estados), Concentração SP, Regionais Mapeadas (e lojas pendentes de alocação), Top Solicitação de Troca e Lojas em Levantamento.
 - **Lojas em Levantamento (sem troca de equipamentos):** lojas inauguradas em 2026 (3096, 3130, 3135, 3114, 3142) e a loja em reforma 2868 (Leblon). Equipamento todo novo: a preventiva ali é só levantamento de informações. A lista fica fixa no código (`LOJAS_LEVANTAMENTO`). Por enquanto isso aparece **só no Painel**: as regras de "Equipamentos para substituição" e o PDF não mudaram.
 - **Pareto de Problemas Recorrentes:** base histórica da Preventiva 2025 (41 lojas), com valores fixos no código (`PARETO_2025`). Não é calculado a partir dos checklists de 2026.
 - Também: Concentração Territorial (lojas por UF), Lojas com Maior Volume de Troca, Estrutura Operacional por Regional e Maior tempo de atendimento.
 - Commit na `develop`: `55c05b4`. Nenhuma alteração de banco.
 
-### 4.9 Comparativo de Trocas por Loja: 2025 x 2026 (só na `develop`, ainda não publicado)
+### 4.9 Comparativo de Trocas por Loja: 2025 x 2026 (publicado em 28/09/2026)
 - Cartão novo no **Painel**, abaixo de "Lojas com Maior Volume de Troca". Colunas: Loja, 2025, 2026, Variação e Situação 2026. As lojas que mais trocaram aparecem primeiro. Passando o mouse sobre o número, aparecem os itens.
 - **2025:** números fixos no código (`TROCAS_2025`), tirados da planilha "PREVENTIVA 2025 - SEPHORA" (41 lojas, 109 indicações). Entram só o código, o nome da loja e as contagens, sem nomes de pessoas, IPs ou números de série.
 - **Critério 2025 escolhido pela usuária (critério 2):** nobreaks com autonomia ruim (rack, mini PDV e estoque; lojas EATON sem mini nobreak), teclado/mouse/monitor "precisa trocar", PINPAD de PDV, PDV lento/desligando, leitor com mau contato, tela do cliente apagada, computador com queixa grave ("impossível usar" ou "gostaria de trocar") e PDA Zebra sem funcionar. Por incluir mais tipos de problema que 2026, 2025 tende a ter números maiores (o aviso aparece no próprio cartão).
@@ -135,17 +135,17 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Resumo no topo do cartão compara 2025 x 2026 **só nas lojas já concluídas em 2026 que também foram atendidas em 2025** (mesma base).
 - Nenhuma alteração de banco.
 
-### 4.10 Painel mais enxuto (só na `develop`, ainda não publicado)
+### 4.10 Painel mais enxuto (publicado em 28/09/2026)
 - **Card "Lojas"** (tabela com busca e filtros) **escondido por enquanto**, a pedido da usuária. O código foi mantido: para voltar, remover o `display:none` do card `painel-card-lojas` e mudar `PAINEL_MOSTRAR_TABELA_LOJAS` para `true`. Clicar nos cartões de status abre a janela com a lista das lojas (ver 8.5); com a tabela escondida, não filtra nada.
 - **Card "Maior tempo de atendimento"** escondido a pedido da usuária (código mantido; para voltar, remover o `display:none` do card `painel-card-tempo`). O calendário ficou sozinho na metade esquerda da linha.
 - **Calendário compacto:** agora fica ao lado de "Maior tempo de atendimento", com o título "Calendário de agendamentos". Cada dia mostra só o **número de lojas agendadas**. Clicando no dia, a lista das lojas aparece abaixo, e clicar na loja abre o checklist, como antes. Mostra só as semanas do mês (5 ou 6 linhas) e sublinha o dia de hoje.
 
-### 4.11 Lojas concluídas não aparecem mais como "Atrasado" (só na `develop`, ainda não publicado)
+### 4.11 Lojas concluídas não aparecem mais como "Atrasado" (publicado em 28/09/2026)
 - Problema: loja concluída e depois aberta para ajuste ("Solicitar edição") passa a ter o status **"Reaberto"**, e a regra de atraso só tirava da conta o status "Concluído". Por isso ela voltava a aparecer como "Atrasado".
 - Correção: a regra ficou numa função só, `lojaAtrasada`: atrasada = data de agendamento já passou **e** status diferente de "Concluído" e "Reaberto". É usada no selo "Atrasado" da tela Agendamento, no filtro/contador "Atrasado" e no Painel (cartão "Atrasado" e "atrasada(s)" do Resumo Executivo).
 - Não foi possível conferir os dados reais, porque a sessão na nuvem não acessa o Supabase. Se ainda aparecer alguma loja concluída como atrasada, verificar qual status ela tem gravado.
 
-### 4.12 Painel reorganizado e mais profissional (só na `develop`, ainda não publicado)
+### 4.12 Painel reorganizado e mais profissional (publicado em 28/09/2026)
 - **Seções numeradas:** 1. Andamento da campanha (Resumo Executivo, cartões de status, Calendário + Alertas lado a lado) · 2. Trocas de equipamento (Top 5, Ranking 2026 e, abaixo, Equipamentos para substituição, cada um sozinho na linha (ajuste de 28/09), Comparativo 2025 x 2026) · 3. Histórico: Preventiva 2025 (Pareto) · 4. Estrutura das lojas (UF + Lojas em Levantamento, Regionais).
 - Cabeçalho padrão em todos os cards (título + explicação curta à direita). Listas longas (Alertas, Substituições, Comparativo) com rolagem dentro do card.
 - Emojis trocados por etiquetas/bolinhas de cor. O Resumo Executivo mostra a situação como etiqueta: "No ritmo" (verde), "Atenção" (amarelo/vermelho), "Crítico" (prazo vencido), "Concluída".
@@ -193,7 +193,13 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ---
 
-## 8. Publicações e pendências (27/09/2026)
+## 8. Publicações e pendências (atualizado em 29/09/2026)
+
+### Pendências atuais (29/09/2026)
+- **Nada pendente de publicação:** a `develop` e a produção estão iguais (fora as 3 linhas obrigatórias). Última publicação: `main` `efd5e70` = `develop` `3892d78`.
+- **Falta a usuária validar no site no ar:** 8.2 (Painel Executivo, comparativos, Painel reorganizado e correção do "Atrasado"), 8.4/8.5 (regionais e janela das lojas por status), 8.6 (cores AlliedIT x Sephora), 8.7/8.8 (Painel novo do link da gestão e fonte Titillium Web), 8.9 (GPOS Backup fora do checklist) e **8.11 (gaveta de dinheiro e "PINPAD apresenta defeito?", prioridade por mexer no formulário do técnico)**.
+- Já validados: 8.1, 8.3 e 8.10.
+- Ideias opcionais em aberto: ver seção 6.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -206,15 +212,15 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Foi para produção (`main` `15f0165`, equivale à `develop` `c221eb3`): Painel Executivo (4.8), Comparativo e Top 5 de trocas 2025 x 2026 (4.9), Painel enxuto (4.10), correção do "Atrasado" (4.11) e Painel reorganizado (4.12).
 - Conferido antes do envio: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado, e diferença para a `develop` de exatamente as 3 linhas obrigatórias.
 - Ponto de restauração: branch `restauracao-producao-antes-painel-executivo-2026-09-28` (tags continuam bloqueadas na sessão de nuvem; o envio para a `main` funcionou).
-- Pendente: a usuária conferir o site no ar com os dados reais.
+- Falta a usuária conferir no site no ar (ver "Pendências atuais" no início da seção 8).
 
 ### 8.3 Publicação de 28/09/2026 (2ª): PUBLICADO E VALIDADO
 - **Link da gestão testado e validado pela usuária no site no ar (28/09/2026).**
 - Foi para produção (`main` `41cce39`, equivale à `develop` `90ed6a9`) com as mesmas conferências da 8.2 (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes). Ponto de restauração: branch `restauracao-producao-antes-link-gestao-2026-09-28`.
 - Itens publicados:
-- **Link do Painel para a gestão (sem login, só visualização):** `https://alliedit-preventivas.github.io/checklist-alliedit/?painel=1` (também funciona com `#painel`). Abre direto no Painel de Indicadores, sem os menus Agendamento/Técnico, sem pedir login, com o aviso "Modo visualização · atualiza automaticamente". Clicar nas lojas do calendário não abre checklist, e o modo não grava nada no banco (`modoGestao`). Decisão da usuária: sem login, igual ao link dos técnicos. Risco aceito: quem tiver o link vê os indicadores. Localmente: `http://localhost:5174/?painel=1`. Só na `develop`.
-- **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)". Só na `develop`.
-- Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele). Só na `develop`.
+- **Link do Painel para a gestão (sem login, só visualização):** `https://alliedit-preventivas.github.io/checklist-alliedit/?painel=1` (também funciona com `#painel`). Abre direto no Painel de Indicadores, sem os menus Agendamento/Técnico, sem pedir login, com o aviso "Modo visualização · atualiza automaticamente". Clicar nas lojas do calendário não abre checklist, e o modo não grava nada no banco (`modoGestao`). Decisão da usuária: sem login, igual ao link dos técnicos. Risco aceito: quem tiver o link vê os indicadores. Localmente: `http://localhost:5174/?painel=1`.
+- **Lojas em Levantamento** fora do Painel: o card da seção 4 e o indicador do topo não aparecem mais (`PAINEL_MOSTRAR_LEVANTAMENTO = false`; a lista `LOJAS_LEVANTAMENTO` continua no código). "Lojas por UF" passou a ocupar a linha toda. No Comparativo 2025 x 2026 as lojas continuam com a marcação "(levantamento)".
+- Equipamentos para substituição por loja sozinho na linha, com a largura toda (ranking 2026 também sozinho, acima dele).
 
 ### 8.4 Regionais das lojas atualizadas: PUBLICADO (28/09/2026, junto com a 8.5)
 - Foi para produção na `main` `8854816` (equivale à `develop` `b8d3bec`), com as mesmas conferências de sempre: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado e diferença para a `develop` de exatamente as 3 linhas obrigatórias. Ponto de restauração: tag `producao-antes-janela-status-2026-09-28`.
