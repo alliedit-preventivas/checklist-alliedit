@@ -14,6 +14,8 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
 | Última publicação | `main` = commit `02da3a2` (29/09/2026), equivale à `develop` `9bfcc7a` |
+| Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas e as pastas de backup `bkp_prod` e `bkp_teste` |
+| Cópia antiga | No outro computador, a pasta desatualizada foi **renomeada** pela usuária e guardada como backup por alguns dias (03/10/2026). Não trabalhar nela; pode ser excluída depois |
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
