@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 03/10/2026 (banco de TESTES atualizado com os dados da produção; ver seção 5).
+Última atualização: 03/10/2026 (Agenda Mensal publicada, seção 8.19; banco de TESTES atualizado com os dados da produção, seção 5).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `02da3a2` (29/09/2026), equivale à `develop` `9bfcc7a` |
+| Última publicação | `main` = commit `cc20586` (03/10/2026), equivale à `develop` `fd5c624` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -51,6 +51,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-gpos-gertec-2026-09-28` | Produção antes do grupo Máquinas GPOS Gertec no checklist do técnico (commit `ee22b5c`) |
 | `producao-antes-gaveta-pinpad-2026-09-28` | Produção antes da gaveta de dinheiro e do "PINPAD apresenta defeito?" nos PDVs (commit `e9e8f56`) |
 | branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29` | Produção antes de remover os alertas de escada móvel e USB do touch (commit `ab7c0a6`) |
+| `producao-antes-agenda-mensal-2026-10-03` | Produção antes da Agenda Mensal no Dashboard (commit `02da3a2`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -216,7 +217,7 @@ Só com autorização explícita da usuária ("pode publicar"):
 ### Pendências atuais (03/10/2026)
 - **Todas as publicações (8.1 a 8.18) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **8.19 (Agenda Mensal no Dashboard): feita na `develop`, aguardando teste da usuária no localhost e autorização para publicar.** Última publicação: `main` `02da3a2` = `develop` `9bfcc7a`.
+- **8.19 (Agenda Mensal no Dashboard): publicada em 03/10/2026, aguardando validação da usuária no site no ar.** Última publicação: `main` `cc20586` = `develop` `fd5c624`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -385,7 +386,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Arquivo alterado: `index.html` (função `alertasDaLoja` e categoria do touch em `pnCategoriaAlerta`).
 - Foi para produção na `main` `02da3a2` (equivale à `develop` `9bfcc7a`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `73aee49`). Ponto de restauração: branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29`.
 
-### 8.19 Agenda Mensal no Dashboard: NA `develop`, AGUARDANDO TESTE (03/10/2026)
+### 8.19 Agenda Mensal no Dashboard: PUBLICADO (03/10/2026), AGUARDANDO VALIDAÇÃO NO SITE NO AR
+- Foi para produção na `main` `cc20586` (equivale à `develop` `fd5c624`), publicada de uma sessão local neste computador. Método manual (cópia do `index.html` da `develop` trocando só as 3 linhas), montado numa pasta temporária sem trocar de branch. Conferências: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, sem "Teste Local", só o `index.html` alterado, diferença para a `develop` de exatamente as 3 linhas obrigatórias e mudança na produção idêntica, linha a linha, à mudança da `develop` (84 linhas a mais, 5 a menos). A produção anterior era igual à `develop` `9bfcc7a`. Ponto de restauração: tag `producao-antes-agenda-mensal-2026-10-03`. Site no ar conferido idêntico à `main` `cc20586` (~40 s após o envio).
 - Pedido da usuária: no Dashboard (link da gestão `?painel=1` e Painel com login, que é o mesmo), mostrar o **mês todo** no calendário, sem mexer muito na estrutura.
 - O card continua no mesmo lugar (ao lado de "Maior tempo de atendimento"). Ganhou o seletor **Semana | Mês** ao lado das setas. **Mês é o padrão**; a Semana continua exatamente como antes. A escolha fica guardada só no navegador de quem clicou (chave `agendaPainelVisao`), sem gravar nada no banco.
 - **Modo Mês:** título "Agenda Mensal" e subtítulo com o mês e o total (ex.: "Outubro de 2026 · 11 lojas agendadas"). Calendário de segunda a sexta (sábado e domingo só aparecem se houver loja agendada neles no mês, igual à Semana); dias de fora do mês ficam apagados e sem lojas; o dia de hoje fica destacado. Cada loja mostra a Hora Prevista e o nome, com as mesmas cores da Semana (azul agendada/confirmada, amarelo em atendimento, verde concluída, vermelho atrasada); passando o mouse aparece a situação. As setas trocam de mês e "Hoje" volta ao mês atual. Mês que começa no sábado ou domingo não mostra uma 1ª linha só com dias do mês anterior.
