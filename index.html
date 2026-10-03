@@ -179,8 +179,22 @@
   .pn-card-sub{font-size:12px; color:var(--text-muted); margin-top:1px;}
   /* Agenda semanal: uma coluna por dia, lojas em ordem de hora prevista */
   :root{ --pn-info:#2F5E9E; --pn-info-bg:#E8F0FB; }
-  .pn-agenda-nav{display:flex; gap:6px;}
+  .pn-agenda-nav{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
   .pn-agenda-nav .btn{min-width:34px;}
+  .pn-visao-btn{border:none; background:transparent; font-family:inherit; font-size:12px; font-weight:700; color:var(--text-muted); padding:5px 12px; border-radius:16px; cursor:pointer;}
+  .pn-visao-btn.active{background:var(--surface); color:var(--navy); box-shadow:0 1px 3px rgba(0,0,0,.12);}
+  .pn-visao-btn:focus-visible{outline:2px solid var(--teal-lt); outline-offset:1px;}
+  /* Agenda mensal: o mesmo quadro vira um calendário do mês (segunda a sexta; sábado e domingo só se houver loja agendada) */
+  .pn-agenda.pn-mes{gap:1px; background:var(--border);}
+  .pn-mes-cab{padding:7px 6px; text-align:center; font-size:12px; font-weight:600; color:var(--navy); background:var(--bg);}
+  .pn-mes-dia{background:var(--surface); min-height:62px; padding:5px 5px 6px; display:flex; flex-direction:column; gap:3px; min-width:0;}
+  .pn-mes-dia.fora{background:var(--bg);}
+  .pn-mes-num{font-size:11.5px; font-weight:700; color:var(--text-muted); align-self:flex-start; padding:0 6px; border-radius:10px;}
+  .pn-mes-dia.fora .pn-mes-num{opacity:.45;}
+  .pn-mes-dia.hoje .pn-mes-num{background:var(--teal); color:#fff;}
+  .pn-mes-rot, .pn-mes-semnada{display:none;}
+  .pn-mes-ev{border-radius:5px; padding:2px 6px; border-left:3px solid; font-size:11px; line-height:1.3; color:var(--navy); overflow-wrap:anywhere;}
+  .pn-mes-ev .pn-ev-hora{margin-right:4px;}
   .pn-agenda{display:grid; grid-template-columns:repeat(var(--pn-dias, 5), minmax(0, 1fr)); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
   .pn-dia{border-right:1px solid var(--border); min-height:190px; display:flex; flex-direction:column; min-width:0;}
   .pn-dia:last-child{border-right:none;}
@@ -332,6 +346,12 @@
     .pn-dia:last-child{border-bottom:none;}
     .pn-dia-cab{text-align:left; padding:8px 12px;}
     .pn-dia-vazio{text-align:left; margin:0;}
+    /* Mês no celular: só os dias com loja agendada, um embaixo do outro */
+    .pn-mes .pn-mes-cab, .pn-mes .pn-mes-dia.fora, .pn-mes .pn-mes-dia.vazio{display:none;}
+    .pn-mes-dia{min-height:0; padding:8px 12px;}
+    .pn-mes-num > span:first-child{display:none;}
+    .pn-mes-rot{display:inline;}
+    .pn-mes-semnada{display:block; background:var(--surface); padding:12px; font-size:11.5px; color:var(--text-muted);}
   }
   @media(max-width:760px){ .pn-kpis{grid-template-columns:repeat(2, minmax(0, 1fr));} .pn-kpis .pn-kpi:last-child{grid-column:1 / -1;} }
   .painel-status-pill{background:var(--ok-bg); color:var(--ok); font-size:11px; font-weight:700; letter-spacing:.4px; padding:5px 12px; border-radius:20px; white-space:nowrap;}
@@ -892,9 +912,13 @@
           <div class="pn-card-cab">
             <div class="pn-card-titulo">
               <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/></svg></span>
-              <div><h3>Agenda Semanal</h3><div class="pn-card-sub" id="pn-agenda-periodo"></div></div>
+              <div><h3 id="pn-agenda-titulo">Agenda Semanal</h3><div class="pn-card-sub" id="pn-agenda-periodo"></div></div>
             </div>
             <div class="pn-agenda-nav">
+              <div class="pn-abas" role="group" aria-label="Visualização da agenda">
+                <button type="button" class="pn-visao-btn" data-visao="semana">Semana</button>
+                <button type="button" class="pn-visao-btn" data-visao="mes">Mês</button>
+              </div>
               <button type="button" class="btn btn-ghost btn-sm" id="pn-agenda-ant" title="Semana anterior" aria-label="Semana anterior">&lsaquo;</button>
               <button type="button" class="btn btn-ghost btn-sm" id="pn-agenda-prox" title="Próxima semana" aria-label="Próxima semana">&rsaquo;</button>
               <button type="button" class="btn btn-ghost btn-sm" id="pn-agenda-hoje">Hoje</button>
@@ -5239,7 +5263,55 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(l.status==="liberado") return {cls:"pn-ev-agendada", txt:"Confirmada"};
     return {cls:"pn-ev-agendada", txt:"Agendada"};
   }
+  // Visualização da agenda: "mes" (padrão) ou "semana". A escolha fica guardada só no navegador de quem clicou.
+  let pnAgendaVisao = "mes", pnMesOffset = 0;
+  try{ if(localStorage.getItem("agendaPainelVisao")==="semana") pnAgendaVisao = "semana"; }catch(e){}
   function renderPainelAgenda(){
+    const mes = pnAgendaVisao === "mes";
+    document.getElementById("pn-agenda-titulo").textContent = mes ? "Agenda Mensal" : "Agenda Semanal";
+    document.querySelectorAll(".pn-visao-btn").forEach(function(b){ const ativa = b.dataset.visao===pnAgendaVisao; b.classList.toggle("active", ativa); b.setAttribute("aria-pressed", ativa ? "true" : "false"); });
+    [["pn-agenda-ant", mes ? "Mês anterior" : "Semana anterior"], ["pn-agenda-prox", mes ? "Próximo mês" : "Próxima semana"]].forEach(function(p){ const b = document.getElementById(p[0]); b.title = p[1]; b.setAttribute("aria-label", p[1]); });
+    document.getElementById("pn-agenda").classList.toggle("pn-mes", mes);
+    if(mes) renderPainelAgendaMes(); else renderPainelAgendaSemana();
+  }
+  // Mês inteiro: semanas de segunda a domingo; dias de fora do mês ficam apagados e sem lojas.
+  function renderPainelAgendaMes(){
+    const hoje = todayStr();
+    const ref = new Date(hoje+"T00:00:00"); ref.setDate(1); ref.setMonth(ref.getMonth()+pnMesOffset);
+    const ano = ref.getFullYear(), m = ref.getMonth();
+    const prefixo = ano+"-"+String(m+1).padStart(2,"0")+"-";
+    const primeiro = prefixo+"01";
+    const fimMes = prefixo+String(new Date(ano, m+1, 0).getDate()).padStart(2,"0"); // último dia do mês
+    const porDia = {}; let total = 0;
+    lojasCache.forEach(function(l){ if(l.agendamento && l.agendamento>=primeiro && l.agendamento<=fimMes){ (porDia[l.agendamento] = porDia[l.agendamento] || []).push(l); total++; } });
+    // Sábado e domingo só aparecem se houver loja agendada em algum deles no mês
+    const fimDeSemana = Object.keys(porDia).some(function(d){ const w = new Date(d+"T00:00:00").getDay(); return w===0 || w===6; });
+    let inicio = semanaAtual(primeiro).inicio; const fim = semanaAtual(fimMes).fim;
+    // Mês que começa no sábado ou domingo: sem fim de semana, a 1ª linha teria só dias do mês anterior
+    const dia1 = new Date(primeiro+"T00:00:00").getDay();
+    if(!fimDeSemana && (dia1===0 || dia1===6)) inicio = pnSomarDias(inicio, 7);
+    const colunas = fimDeSemana ? 7 : 5;
+    document.getElementById("pn-agenda-periodo").textContent = PN_MESES[m].charAt(0).toUpperCase()+PN_MESES[m].slice(1)+" de "+ano+" · "+(total ? total+" loja"+(total!==1?"s":"")+" agendada"+(total!==1?"s":"") : "nenhuma loja agendada");
+    const el = document.getElementById("pn-agenda");
+    el.style.setProperty("--pn-dias", colunas);
+    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].slice(0, colunas).map(function(n){ return '<div class="pn-mes-cab">'+n+'</div>'; }).join("");
+    for(let d = inicio; d <= fim; d = pnSomarDias(d, 1)){
+      const dt = new Date(d+"T00:00:00"), w = dt.getDay();
+      if(!fimDeSemana && (w===0 || w===6)) continue;
+      const doMes = d.indexOf(prefixo)===0;
+      const lojas = doMes ? (porDia[d]||[]).slice().sort(function(a,b){ return String(a.agendamentoPrevisto||"99").localeCompare(String(b.agendamentoPrevisto||"99")) || String(a.nome).localeCompare(String(b.nome), "pt-BR", {numeric:true}); }) : [];
+      html += '<div class="pn-mes-dia'+(doMes?'':' fora')+(d===hoje?' hoje':'')+(lojas.length?'':' vazio')+'"><div class="pn-mes-num"><span>'+dt.getDate()+'</span><span class="pn-mes-rot">'+PN_DIAS[w]+' '+fmtDateBR(d).slice(0,5)+'</span></div>' +
+        lojas.map(function(l){
+          const s = pnSituacaoAgenda(l, hoje);
+          const hora = l.agendamentoPrevisto ? escapeHtml(l.agendamentoPrevisto) : "";
+          return '<div class="pn-mes-ev '+s.cls+'" title="'+escapeHtml(l.nome)+' · '+s.txt+' · '+(hora || 'Horário a definir')+'">'+(hora ? '<span class="pn-ev-hora">'+hora+'</span>' : '')+escapeHtml(l.nome)+'</div>';
+        }).join("") + '</div>';
+    }
+    if(!total) html += '<div class="pn-mes-semnada">Sem agendamentos neste mês</div>';
+    el.innerHTML = html;
+    document.getElementById("pn-agenda-hoje").disabled = pnMesOffset === 0;
+  }
+  function renderPainelAgendaSemana(){
     const hoje = todayStr();
     const seg = pnSomarDias(semanaAtual(hoje).inicio, pnSemanaOffset*7);
     const dias = []; for(let i=0;i<7;i++) dias.push(pnSomarDias(seg, i));
@@ -5263,9 +5335,16 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     document.getElementById("pn-agenda-hoje").disabled = pnSemanaOffset === 0;
   }
   function wirePainelNovo(){
-    document.getElementById("pn-agenda-ant").addEventListener("click", function(){ pnSemanaOffset--; renderPainelAgenda(); });
-    document.getElementById("pn-agenda-prox").addEventListener("click", function(){ pnSemanaOffset++; renderPainelAgenda(); });
-    document.getElementById("pn-agenda-hoje").addEventListener("click", function(){ pnSemanaOffset = 0; renderPainelAgenda(); });
+    document.getElementById("pn-agenda-ant").addEventListener("click", function(){ if(pnAgendaVisao==="mes") pnMesOffset--; else pnSemanaOffset--; renderPainelAgenda(); });
+    document.getElementById("pn-agenda-prox").addEventListener("click", function(){ if(pnAgendaVisao==="mes") pnMesOffset++; else pnSemanaOffset++; renderPainelAgenda(); });
+    document.getElementById("pn-agenda-hoje").addEventListener("click", function(){ if(pnAgendaVisao==="mes") pnMesOffset = 0; else pnSemanaOffset = 0; renderPainelAgenda(); });
+    document.querySelectorAll(".pn-visao-btn").forEach(function(b){
+      b.addEventListener("click", function(){
+        pnAgendaVisao = b.dataset.visao;
+        try{ localStorage.setItem("agendaPainelVisao", pnAgendaVisao); }catch(e){}
+        renderPainelAgenda();
+      });
+    });
     // Trocas de equipamento: os 3 conteúdos já existem no Painel com login (escondido no link da gestão); só mudam de lugar
     document.getElementById("pn-aba-top5").appendChild(document.getElementById("painel-top5-trocas"));
     document.getElementById("pn-aba-comparativo").appendChild(document.getElementById("painel-comparativo-trocas"));

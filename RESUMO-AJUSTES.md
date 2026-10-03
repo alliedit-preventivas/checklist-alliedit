@@ -213,10 +213,10 @@ Só com autorização explícita da usuária ("pode publicar"):
 
 ## 8. Publicações e pendências (atualizado em 29/09/2026)
 
-### Pendências atuais (29/09/2026)
+### Pendências atuais (03/10/2026)
 - **Todas as publicações (8.1 a 8.18) estão validadas pela usuária** (29/09/2026).
 - Ideias opcionais em aberto: ver seção 6.
-- **Nada pendente de publicação.** Última publicação: `main` `02da3a2` = `develop` `9bfcc7a`.
+- **8.19 (Agenda Mensal no Dashboard): feita na `develop`, aguardando teste da usuária no localhost e autorização para publicar.** Última publicação: `main` `02da3a2` = `develop` `9bfcc7a`.
 
 ### 8.1 Aviso de pendências resolvidas: PUBLICADO E VALIDADO
 Quando o técnico corrige o último campo obrigatório que faltava, aparece a janela "✅ Tudo certo! Todos os campos obrigatórios foram preenchidos. Você já pode finalizar o checklist.", com o botão "Finalizar Atendimento Agora".
@@ -384,3 +384,11 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - As **perguntas continuam no formulário do técnico** (escada no Rack e o aviso/botão do USB do touch no PDV Elgin), assim como a pendência "remover USB do touch" ao finalizar o checklist. Só deixaram de gerar alerta.
 - Arquivo alterado: `index.html` (função `alertasDaLoja` e categoria do touch em `pnCategoriaAlerta`).
 - Foi para produção na `main` `02da3a2` (equivale à `develop` `9bfcc7a`), com as conferências de sempre (0 ocorrências do Supabase de testes, só as 3 linhas obrigatórias diferentes da `develop`; a produção anterior era igual à `develop` `73aee49`). Ponto de restauração: branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29`.
+
+### 8.19 Agenda Mensal no Dashboard: NA `develop`, AGUARDANDO TESTE (03/10/2026)
+- Pedido da usuária: no Dashboard (link da gestão `?painel=1` e Painel com login, que é o mesmo), mostrar o **mês todo** no calendário, sem mexer muito na estrutura.
+- O card continua no mesmo lugar (ao lado de "Maior tempo de atendimento"). Ganhou o seletor **Semana | Mês** ao lado das setas. **Mês é o padrão**; a Semana continua exatamente como antes. A escolha fica guardada só no navegador de quem clicou (chave `agendaPainelVisao`), sem gravar nada no banco.
+- **Modo Mês:** título "Agenda Mensal" e subtítulo com o mês e o total (ex.: "Outubro de 2026 · 11 lojas agendadas"). Calendário de segunda a sexta (sábado e domingo só aparecem se houver loja agendada neles no mês, igual à Semana); dias de fora do mês ficam apagados e sem lojas; o dia de hoje fica destacado. Cada loja mostra a Hora Prevista e o nome, com as mesmas cores da Semana (azul agendada/confirmada, amarelo em atendimento, verde concluída, vermelho atrasada); passando o mouse aparece a situação. As setas trocam de mês e "Hoje" volta ao mês atual. Mês que começa no sábado ou domingo não mostra uma 1ª linha só com dias do mês anterior.
+- **Celular:** no modo Mês aparecem só os dias com loja agendada, um embaixo do outro (ex.: "Qua 07/10").
+- Funções `renderPainelAgenda` (escolhe a visualização), `renderPainelAgendaMes` (nova) e `renderPainelAgendaSemana` (a de antes, sem mudança). Nenhuma alteração de banco.
+- Testado no localhost com o banco de testes (só leitura): outubro, setembro, agosto e novembro, setas, Hoje, troca Semana/Mês, celular sem rolagem lateral, sem erros. Fim de semana, virada do ano e meses que começam no sábado/domingo testados com dados simulados.
