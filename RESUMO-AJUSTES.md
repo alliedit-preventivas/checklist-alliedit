@@ -15,7 +15,12 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
 | Última publicação | `main` = commit `02da3a2` (29/09/2026), equivale à `develop` `9bfcc7a` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas e as pastas de backup `bkp_prod` e `bkp_teste` |
-| Cópia antiga | No outro computador, a pasta desatualizada foi **renomeada** pela usuária e guardada como backup por alguns dias (03/10/2026). Não trabalhar nela; pode ser excluída depois |
+| Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código (ver abaixo) |
+
+**Arquivos que existem só na cópia antiga** (em `#Nao-Mexer-Mais\Portal_Preventivas_NAO-MEXER-MAIS`; levar para a pasta principal antes de excluir a cópia):
+- `PREVENTIVA 2025 - SEPHORA(1-41).xlsx` de 28/09/2026, **versão mais completa** que a da pasta principal (27/09): tem 3 abas (Sheet1, Resumo, Incidentes); a da pasta principal tem 1.
+- `Rio Sul.pdf`, `Parque Sephora.txt` (lista de itens usada no card Parque Sephora) e `_imagens\` (`mobile_gertec.png`, foto original do GPOS Gertec; `sugestao.png`, `sugestao2.png` e `sugestao3.png`, os modelos do Painel novo da seção 8.7).
+
 
 **Diferença obrigatória entre `main` e `develop`** (nunca misturar):
 1. `SUPABASE_URL` (projeto de produção x projeto de testes)
