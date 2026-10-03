@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 29/09/2026 (ideia das pendências por setor descartada; `develop` igual à produção).
+Última atualização: 03/10/2026 (banco de TESTES atualizado com os dados da produção; ver seção 5).
 
 ---
 
@@ -167,6 +167,13 @@ Só com autorização explícita da usuária ("pode publicar"):
 - Campos novos dentro do JSON da loja: `rack.nobreak.autonomiaEaton`, `telefoneStage`, `pinpadReserva`, `posRedeCielo`, `mercadoPagos` (lista).
 - Mercado Pago: a lista fica em `mercadoPagos`; lojas antigas com o objeto único `mercadoPago` são convertidas automaticamente (viram o item 01). Ao salvar, o 1º item também é gravado em `mercadoPago`, para a versão anterior continuar funcionando se for preciso voltar um ponto de restauração.
 - As regras de "Alertas" e "Equipamentos para substituição" ficam nas funções `alertasDaLoja` e `substituicoesDaLoja` (usadas pelo Painel e pelo PDF).
+
+### Banco de TESTES atualizado com os dados da produção (03/10/2026)
+- A pedido da usuária, as **49 lojas da produção** foram copiadas para o banco de **testes**, por cima das versões de teste dessas mesmas lojas. As lojas de teste **9999 e 9998** (existem só no teste) **foram mantidas sem alteração**. Resultado: teste com 51 lojas, as 49 idênticas às da produção em 03/10/2026.
+- **Produção não foi alterada:** dela só houve leitura; conferido que estava igual antes e depois. Gravação só no banco de testes, apenas nas lojas que já existiam lá (nenhuma loja criada ou apagada). Nenhuma tabela, permissão (RLS) ou Storage foi alterado.
+- **Fotos:** os links das fotos copiadas continuam apontando para o Storage da **produção** (aparecem no teste). Apagar ou trocar uma foto no teste **não** apaga o arquivo da produção (o teste só remove arquivos do próprio Storage).
+- **Backups (fora do projeto, não vão para o GitHub):** `bkp_teste/DADOS-TESTE-03-10-2026.json` (teste como estava antes da cópia, 51 lojas) e `bkp_prod/DADOS-PRODUCAO-03-10-2026.json` (produção em 03/10/2026, 49 lojas), na pasta `Portal_Preventivas_v1`.
+- É uma cópia daquele dia: mudanças posteriores na produção não passam sozinhas para o teste. Para repetir, pedir ao Claude "atualize o banco de teste com os dados da produção".
 
 ---
 
