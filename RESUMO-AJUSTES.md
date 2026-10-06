@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 06/10/2026 (novo visual do Agendamento, nova tela de login e fonte Chillax PUBLICADOS, seção 8.20).
+Última atualização: 06/10/2026 (proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `64f4a8c` (06/10/2026), equivale à `develop` `afd20da` |
+| Última publicação | `main` = commit `5fb5226` (06/10/2026), equivale à `develop` `fb57f0e` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -53,6 +53,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29` | Produção antes de remover os alertas de escada móvel e USB do touch (commit `ab7c0a6`) |
 | `producao-antes-agenda-mensal-2026-10-03` | Produção antes da Agenda Mensal no Dashboard (commit `02da3a2`) |
 | `producao-antes-novo-visual-2026-10-06` | Produção antes do novo visual do Agendamento, da nova tela de login e da fonte Chillax (commit `cc20586`) |
+| `producao-antes-seguranca-item5-2026-10-06` | Produção antes das proteções do navegador e da biblioteca com versão fixa (commit `64f4a8c`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -407,7 +408,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Maquetes e recortes usados no desenho ficam em `_propostas/` (ignorada pelo Git só neste computador, via `.git/info/exclude`). O letreiro neon "FOCO #NO FOCO DO CLIENTE" foi guardado para outros projetos em `_Imagens_Arquivos/Allied_Identidade/Letreiro_Foco_no_Foco/`.
 - Testado no localhost (banco de testes): tela de login, links `?tecnico=1` e `?painel=1` (sem erros, mesmo layout), e o Agendamento com login pela usuária. **Antes de publicar:** seguir o procedimento da seção 3 (trocar só as 3 linhas) e conferir também que a etiqueta "Teste Local" não aparece no topo do Agendamento nem no cartão de login da produção.
 
-### 8.21 Proteções do navegador e biblioteca com versão fixa: SÓ NA `develop` (06/10/2026), NÃO PUBLICADO
+### 8.21 Proteções do navegador e biblioteca com versão fixa: PUBLICADO (06/10/2026)
+- Foi para produção na `main` `5fb5226` (equivale à `develop` `fb57f0e`), com autorização da usuária, pelo mesmo método da 8.20. Conferências: 0 ocorrências do Supabase de testes, URL e chave iguais às anteriores, sem a etiqueta "Teste Local", diferença para a `develop` de exatamente as 3 linhas, 5 linhas mudando na produção. Ponto de restauração: tag `producao-antes-seguranca-item5-2026-10-06` (= `64f4a8c`). Site no ar idêntico à `main` em ~45 s; tela de login no ar conferida (biblioteca com integridade aceita, regras ativas, sem bloqueios nem erros).
 - Biblioteca `supabase-js` fixada na versão **2.117.2** (a mesma que o `@2` entregava em 06/10/2026), com verificação de integridade (`integrity` sha384 + `crossorigin`). Para atualizar no futuro: trocar a versão no endereço e recalcular o `integrity`.
 - Regras do navegador (Content-Security-Policy por `<meta>`) e `referrer` colocadas **na 1ª linha do arquivo** (cabeçalho extra que existe desde 19/09/2026; é o único `<head>` que o navegador lê). Liberado só o que o sistema usa: o próprio site, `cdn.jsdelivr.net` (biblioteca), Fontshare (fonte), `*.supabase.co` (banco, tempo real e fotos), imagens `data:`/`blob:`. Qualquer serviço novo precisa ser incluído nessa regra.
 - Mensagens de erro na tela sem detalhe técnico (carregar lojas, criar e salvar cadastro); o detalhe continua no console.
