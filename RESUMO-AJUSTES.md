@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 06/10/2026 (proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
+Última atualização: 06/10/2026 (dados do técnico em tabela própria e proteção contra exibição em outro site PUBLICADOS, seção 8.22; proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `5fb5226` (06/10/2026), equivale à `develop` `fb57f0e` |
+| Última publicação | `main` = commit `353ddb2` (06/10/2026), equivale à `develop` `653b57f` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -54,6 +54,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-agenda-mensal-2026-10-03` | Produção antes da Agenda Mensal no Dashboard (commit `02da3a2`) |
 | `producao-antes-novo-visual-2026-10-06` | Produção antes do novo visual do Agendamento, da nova tela de login e da fonte Chillax (commit `cc20586`) |
 | `producao-antes-seguranca-item5-2026-10-06` | Produção antes das proteções do navegador e da biblioteca com versão fixa (commit `64f4a8c`) |
+| `producao-antes-seguranca-item3-2026-10-06` | Produção antes da tabela própria dos dados do técnico e da proteção contra exibição em outro site (commit `5fb5226`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -414,3 +415,11 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Regras do navegador (Content-Security-Policy por `<meta>`) e `referrer` colocadas **na 1ª linha do arquivo** (cabeçalho extra que existe desde 19/09/2026; é o único `<head>` que o navegador lê). Liberado só o que o sistema usa: o próprio site, `cdn.jsdelivr.net` (biblioteca), Fontshare (fonte), `*.supabase.co` (banco, tempo real e fotos), imagens `data:`/`blob:`. Qualquer serviço novo precisa ser incluído nessa regra.
 - Mensagens de erro na tela sem detalhe técnico (carregar lojas, criar e salvar cadastro); o detalhe continua no console.
 - Testado no localhost: login, `?painel=1` (dados e tempo real), `?tecnico=1` (lista de lojas), sem nenhum bloqueio indevido; conexão com site não autorizado barrada.
+
+### 8.22 Dados do técnico em tabela própria + proteção contra exibição em outro site: PUBLICADO (06/10/2026)
+- Foi para produção na `main` `353ddb2` (equivale à `develop` `653b57f`), com autorização da usuária, pelo método da seção 3 (3 linhas trocadas). Ponto de restauração: tag `producao-antes-seguranca-item3-2026-10-06` (= `5fb5226`). Site no ar idêntico à `main`; testado pela usuária no ar (Agendamento com login, Painel, `?painel=1`, `?tecnico=1`).
+- **"Dados do técnico" ficam na tabela `tecnico_dados`** (colunas `loja_id` ligado à loja e apagado junto com ela, `dados`, `atualizado_em`, `atualizado_por`), que só usuários com login leem e gravam. Existe nos dois projetos Supabase (testes e produção). Um ambiente novo precisa dessa tabela criada antes de publicar o site.
+- No registro da loja fica só o sinal `temDadosTecnico` (preenchido sim/não). A função `temDadosTecnico(l)` é usada no cálculo de status, no filtro e na Responsabilidade, então o status sai igual também no técnico e no `?painel=1`, que não leem a tabela.
+- O Agendamento (com login) carrega a tabela junto com as lojas (`carregarCofreTecnico`) e grava nela ao editar o campo (`salvarDadosTecnico`); se a gravação falhar, avisa e não altera a loja. "Duplicar loja" não copia os dados do técnico.
+- Proteção contra o site ser exibido dentro de outro site: script na 1ª linha do arquivo esconde a página quando ela está dentro de uma moldura (a usuária confirmou em 06/10/2026 que o site só é aberto direto no navegador). O PDF continua funcionando.
+- Cópia de segurança da tabela das lojas da produção (06/10/2026) guardada fora do repositório, em `_Projetos_AlliedIT/_Backups_Preventivas/`.
