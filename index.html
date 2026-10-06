@@ -233,6 +233,7 @@
   .pn-grade4 > .card{min-width:0;}
   #view-painel .pn-linha > .card, #view-painel .pn-grade4 > .card{margin-bottom:0;}
   .pn-vazio{font-size:12px; color:var(--text-muted); padding:8px 0;}
+  .pn-divisao{border-top:1px solid var(--border); margin:16px 0 14px;}
   /* Linhas com barra (ranking, pareto e tempo) */
   .pn-barras{display:flex; flex-direction:column; gap:7px;}
   .pn-barra-linha{display:grid; grid-template-columns:20px minmax(0, 1.25fr) minmax(0, 1fr) auto; align-items:center; gap:8px; font-size:12px; color:var(--navy);}
@@ -1366,6 +1367,12 @@
             <div><h3>Maior tempo de atendimento</h3><div class="pn-card-sub">Top 5 lojas · 2026</div></div>
           </div></div>
           <div id="pn-tempo"></div>
+          <div class="pn-divisao"></div>
+          <div class="pn-card-cab"><div class="pn-card-titulo">
+            <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg></span>
+            <div><h3>Reagendamento Lojas</h3><div class="pn-card-sub" id="pn-reag-sub">Quantas vezes cada loja foi reagendada · 2026</div></div>
+          </div></div>
+          <div id="pn-reag"></div>
         </div>
       </div>
 
@@ -5676,6 +5683,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     renderPainelPareto26();
     renderPainelMapaUf();
     renderPainelTempo();
+    renderPainelReagendamentos();
     renderPainelParetoComp();
     renderPainelParque();
     renderPainelLista();
@@ -5913,6 +5921,20 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       const cor = i===0 ? 'var(--pn-destaque)' : (i===1 ? 'var(--warn-bg)' : 'var(--muted)');
       return pnLinhaBarra(i+1, x.nome, x.min/max*100, txt, x.nome+": "+txt, cor, true);
     }).join("") + '</div>';
+  }
+  // Reagendamento Lojas: quantas vezes cada loja já foi reagendada (contador "reagendamentos", que sobe a cada clique em Reagendar)
+  function renderPainelReagendamentos(){
+    const todas = pnLojasReais().map(function(l){ return {nome:l.nome, n:Number(l.reagendamentos)||0}; })
+      .filter(function(x){ return x.n > 0; })
+      .sort(function(a,b){ return b.n-a.n || String(a.nome).localeCompare(String(b.nome), "pt-BR", {numeric:true}); });
+    const el = document.getElementById("pn-reag");
+    const total = todas.reduce(function(a,x){ return a + x.n; }, 0);
+    document.getElementById("pn-reag-sub").textContent = todas.length ? total+" reagendamento"+(total!==1?"s":"")+" em "+todas.length+" loja"+(todas.length!==1?"s":"")+" · 2026" : "Quantas vezes cada loja foi reagendada · 2026";
+    if(!todas.length){ el.innerHTML = '<div class="pn-vazio">Nenhuma loja reagendada até agora.</div>'; return; }
+    const lista = todas.slice(0, 8), max = lista[0].n;
+    el.innerHTML = '<div class="pn-barras">' + lista.map(function(x, i){
+      return pnLinhaBarra(i+1, x.nome, x.n/max*100, x.n+"x", x.nome+": reagendada "+x.n+(x.n!==1?" vezes":" vez"), "var(--pn-info)", true);
+    }).join("") + '</div>' + (todas.length > lista.length ? '<div class="pn-vazio">+ '+(todas.length-lista.length)+' loja(s) com reagendamento</div>' : '');
   }
   // Problemas recorrentes 2025 x 2026: Top 7 da Preventiva 2025 comparado com as lojas concluídas em 2026 (em % das lojas)
   const PN_COMP_CATEGORIAS = [
