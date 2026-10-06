@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 06/10/2026 (novo visual do Agendamento e nova tela de login, ainda só na `develop`, seção 8.20; Agenda Mensal publicada, seção 8.19).
+Última atualização: 06/10/2026 (novo visual do Agendamento, nova tela de login e fonte Chillax PUBLICADOS, seção 8.20).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `cc20586` (03/10/2026), equivale à `develop` `fd5c624` |
+| Última publicação | `main` = commit `64f4a8c` (06/10/2026), equivale à `develop` `afd20da` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -52,6 +52,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-gaveta-pinpad-2026-09-28` | Produção antes da gaveta de dinheiro e do "PINPAD apresenta defeito?" nos PDVs (commit `e9e8f56`) |
 | branch `restauracao-producao-antes-alertas-escada-touch-2026-09-29` | Produção antes de remover os alertas de escada móvel e USB do touch (commit `ab7c0a6`) |
 | `producao-antes-agenda-mensal-2026-10-03` | Produção antes da Agenda Mensal no Dashboard (commit `02da3a2`) |
+| `producao-antes-novo-visual-2026-10-06` | Produção antes do novo visual do Agendamento, da nova tela de login e da fonte Chillax (commit `cc20586`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -395,7 +396,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Funções `renderPainelAgenda` (escolhe a visualização), `renderPainelAgendaMes` (nova) e `renderPainelAgendaSemana` (a de antes, sem mudança). Nenhuma alteração de banco.
 - Testado no localhost com o banco de testes (só leitura): outubro, setembro, agosto e novembro, setas, Hoje, troca Semana/Mês, celular sem rolagem lateral, sem erros. Fim de semana, virada do ano e meses que começam no sábado/domingo testados com dados simulados.
 
-### 8.20 Novo visual do Agendamento + nova tela de login + fonte Chillax: SÓ NA `develop` (06/10/2026), NÃO PUBLICADO
+### 8.20 Novo visual do Agendamento + nova tela de login + fonte Chillax: PUBLICADO (06/10/2026), AGUARDANDO VALIDAÇÃO NO SITE NO AR
+- Foi para produção na `main` `64f4a8c` (equivale à `develop` `afd20da`), com autorização da usuária. Método: cópia do `index.html` da `develop` trocando só as 3 linhas, montada numa pasta temporária (git worktree) sem trocar de branch. Conferências: 0 ocorrências do Supabase de testes, URL e chave iguais às da produção anterior, "Teste Local" só em 2 comentários do código (não aparece na tela), só o `index.html` alterado, diferença para a `develop` de exatamente as 3 linhas e mudança na produção idêntica à da `develop` (728 linhas a mais, 50 a menos). Ponto de restauração: tag `producao-antes-novo-visual-2026-10-06` (= `cc20586`). Site no ar conferido idêntico à `main` `64f4a8c` (~45 s após o envio); tela de login no ar conferida (sem "Teste Local", fonte e imagens carregando, sem erros).
 - **Agendamento (só com login; o link do técnico `?tecnico=1` e o link da gestão `?painel=1` não mudam de layout):** menu lateral azul com textura e símbolo AlliedIT (Agendamento, Painel, Técnico, Cadastro de loja com Criar/Editar/Excluir); topo "Painel de Agendamento" com linha amarela, etiqueta "Teste Local" (copiada da `sub2` do cabeçalho, então só aparece na `develop`), iniciais + nome de quem está logado (montado do e-mail) e botão Sair; 5 cards de filtro (Não Iniciadas, Chamado, Protocolo, Reagendado, Confirmado) com as mesmas contagens dos filtros de Responsabilidade; busca + "Limpar filtros"; a tela **abre sem lojas** (mostra as lojas ao clicar num filtro/card ou digitar na busca); coluna da direita com Agenda Semanal (dia, quantidade, nomes das lojas, hoje em azul, alerta de limite mantido) e Responsabilidade (lista com contadores). Tudo controlado pela classe `agn` no `body` (`agendamentoNovoAtivo()`); sem ela a tela antiga continua igual.
 - **Card da loja (novo modelo `cardLojaAgnHtml`):** Chamado, Protocolo, Técnico, Data, Hora / Dados do técnico + **Observação** (campo novo `observacaoAgendamento`, só para a equipe de agendamento; não vai para o técnico nem para o PDF) / Atendimento / **Histórico de alterações** (campo novo `historicoAlteracoes`, automático: troca de técnico, data, hora e reagendamentos, com quem alterou e quando; guarda as 60 últimas). Os dois campos novos ficam dentro do JSON da loja: **nenhuma mudança de tabela/coluna**. "Criar novo cadastro" a partir de outra loja começa com Observação e Histórico vazios. O histórico só começa a contar a partir desta versão.
 - **Tela de login nova (só a tela com e-mail/senha):** fundo em gradiente escuro → azul; à esquerda o painel de palavras da parede AlliedIT recriado em texto (logo com o símbolo em neon com luzes correndo pelas linhas) e o título "A inteligência aliada à eficiência"; no centro "Painel de Preventivas", o cartão de login e a frase "Foco #NO Foco do Cliente"; à direita o robô mascote andando (pernas, braços e corpo animados separadamente), acenando, com balão de fala, troca de expressões e cartõezinhos flutuando. Em telas menores que 1200 px o robô some; menores que 820 px some também a coluna da esquerda. Classes `lg-…` e `body.tela-login`; funções `prepararTelaLogin` / `pararTelaLogin`. A verificação de senha não mudou.
