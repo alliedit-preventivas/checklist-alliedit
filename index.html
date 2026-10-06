@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://api.fontshare.com; font-src 'self' data: https://cdn.fontshare.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://api.fontshare.com; font-src 'self' data: https://cdn.fontshare.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><script>if(window.top!==window.self){document.documentElement.style.display="none";try{window.top.location.replace(window.self.location.href)}catch(e){}}</script><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1896,9 +1896,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // Data (confirmada), Hora Prevista, Chamado, Protocolo, Nome do Técnico, Dados do Técnico.
   // Retorna a chave de status (para filtros/cores) e, separadamente, o detalhe textual das pendências
   // (calculado sempre ao vivo a partir dos campos — nada disso é persistido além da chave de status).
+  // Dados do técnico (CPF/RG/telefone) ficam no cofre "tecnico_dados", que só quem fez login lê.
+  // No registro da loja fica só o sinal "temDadosTecnico", para o status sair igual também sem login (técnico e ?painel=1).
+  function temDadosTecnico(l){ return !!((l.dadosTecnico && l.dadosTecnico.trim()) || l.temDadosTecnico); }
   function statusAgendamentoDetalhado(l){
     const D=!!l.agendamento, HP=!!l.agendamentoPrevisto, C=!!(l.chamado&&l.chamado.trim()),
-          P=!!(l.protocolo&&l.protocolo.trim()), T=!!(l.tecnico&&l.tecnico.trim()), DT=!!(l.dadosTecnico&&l.dadosTecnico.trim());
+          P=!!(l.protocolo&&l.protocolo.trim()), T=!!(l.tecnico&&l.tecnico.trim()), DT=temDadosTecnico(l);
     if(!D && !HP && !C && !P && !T && !DT) return {status:"nao_iniciado", detalhe:""};
     if(D && HP && C && P && T && DT) return {status:"liberado", detalhe:""};
     const faltando = [];
@@ -2107,7 +2110,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       notebooks: migrarNotebooks(dados.notebooks), wifiStage: dados.wifiStage||{barras:"", obs:""},
       pdvs: (dados.pdvs||[]).map(migrarPdv), mobiles: dados.mobiles||[], dvrs: (dados.dvrs||[]).map(migrarDvr),
       agendamento: dados.agendamento||"", agendamentoPrevisto: dados.agendamentoPrevisto||"",
-      chamado: dados.chamado||"", protocolo: dados.protocolo||"", tecnico: dados.tecnico||"", dadosTecnico: dados.dadosTecnico||"",
+      chamado: dados.chamado||"", protocolo: dados.protocolo||"", tecnico: dados.tecnico||"", dadosTecnico: dados.dadosTecnico||"", temDadosTecnico: !!dados.temDadosTecnico,
       status: dados.status||"", horarioInicio: dados.horarioInicio||"", reagendamentos: dados.reagendamentos||0
     };
   }
@@ -2573,10 +2576,41 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     btn.addEventListener("click", function(){ window.scrollTo({top:0, behavior:"smooth"}); });
   }
 
+  // ---------------- cofre dos dados do técnico (só com login) ----------------
+  // Lido só no Agendamento/Painel com login. Sem linha no cofre, vale o que ainda estiver no registro da loja.
+  let cofreTecnico = null; // Map código da loja -> dados; null = ainda não carregado
+  let cofreCarregando = false;
+  function cofreTecnicoAtivo(){ return !modoTecnico && !modoGestao; }
+  function aplicarCofreTecnico(){
+    if(!cofreTecnico) return;
+    lojasCache.forEach(function(l){
+      if(cofreTecnico.has(l.id)){ l.dadosTecnico = cofreTecnico.get(l.id); l.temDadosTecnico = !!l.dadosTecnico.trim(); }
+    });
+  }
+  async function carregarCofreTecnico(){
+    if(!cofreTecnicoAtivo() || cofreCarregando) return;
+    cofreCarregando = true;
+    try{
+      const { data, error } = await supabaseClient.from("tecnico_dados").select("loja_id,dados");
+      if(error) throw error;
+      const novo = new Map((data||[]).map(function(r){ return [r.loja_id, r.dados||""]; }));
+      const mudou = !cofreTecnico || novo.size !== cofreTecnico.size || Array.from(novo).some(function(p){ return cofreTecnico.get(p[0]) !== p[1]; });
+      cofreTecnico = novo;
+      if(mudou){ aplicarCofreTecnico(); renderFiltroChipsHome(); renderLojasList(); }
+    }catch(e){ console.error("Falha ao carregar os dados do técnico:", e); }
+    finally{ cofreCarregando = false; }
+  }
+  async function salvarDadosTecnico(lojaId, valor){
+    const { error } = await supabaseClient.from("tecnico_dados").upsert({ loja_id: lojaId, dados: valor, atualizado_em: new Date().toISOString(), atualizado_por: nomeUsuarioAgn || null });
+    if(error) throw error;
+    if(cofreTecnico) cofreTecnico.set(lojaId, valor);
+  }
+
   function subscribeLojas(){
     if(unsubLojas) unsubLojas();
     unsubLojas = db.collection("lojas").orderBy("nome","asc").onSnapshot(function(snap){
       lojasCache = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      if(cofreTecnicoAtivo()){ aplicarCofreTecnico(); carregarCofreTecnico(); }
       renderFiltroChipsHome(); renderLojasList(); renderAgendaDatas();
       if(modoTecnicoId){ renderTecIdDatalist(); validarCodigoTecnico(); }
       if(!modoTecnico){ renderPainel(); if(modoGestao) renderCalendario(); }
@@ -2857,7 +2891,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(chave==="atrasada") return lojaAtrasada(l, hoje);
     if(chave==="falta_chamado") return l.status==="aguardando" && !(l.chamado&&l.chamado.trim());
     if(chave==="falta_protocolo") return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim());
-    if(chave==="falta_tecnico") return l.status==="aguardando" && (!(l.tecnico&&l.tecnico.trim()) || !(l.dadosTecnico&&l.dadosTecnico.trim()));
+    if(chave==="falta_tecnico") return l.status==="aguardando" && (!(l.tecnico&&l.tecnico.trim()) || !temDadosTecnico(l));
     return l.status === chave;
   }
   function matchesFiltroHome(l, hoje){
@@ -3134,11 +3168,19 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     list.querySelectorAll(".quick-input").forEach(function(input){
       input.addEventListener("click", function(e){ e.stopPropagation(); });
       input.addEventListener("mousedown", function(e){ e.stopPropagation(); });
-      input.addEventListener("change", function(e){
+      input.addEventListener("change", async function(e){
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
         const merged = Object.assign({}, l); merged[input.dataset.field] = input.value;
         const payload = {atualizadoEm: now()}; payload[input.dataset.field] = input.value;
+        if(input.dataset.field === "dadosTecnico"){
+          // grava no cofre (só logado); no registro da loja fica apenas o sinal "preenchido"
+          try{ await salvarDadosTecnico(input.dataset.id, input.value); }
+          catch(err){ console.error("Falha ao salvar os dados do técnico:", err); alert("Não foi possível salvar os dados do técnico. Tente novamente."); return; }
+          l.dadosTecnico = input.value; l.temDadosTecnico = !!input.value.trim();
+          merged.temDadosTecnico = l.temDadosTecnico;
+          payload.dadosTecnico = ""; payload.temDadosTecnico = l.temDadosTecnico;
+        }
         if(input.dataset.field === "tecnico" && (l.tecnico||"") !== input.value) payload.historicoAlteracoes = historicoComAlteracao(l, "tecnico", l.tecnico, input.value);
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(merged));
         db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
@@ -3224,7 +3266,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(l.status==="aguardando"){
       if(!(l.chamado&&l.chamado.trim())) return "Chamado";
       if(!(l.protocolo&&l.protocolo.trim())) return "Protocolo";
-      if(!(l.tecnico&&l.tecnico.trim()) || !(l.dadosTecnico&&l.dadosTecnico.trim())) return "Técnico";
+      if(!(l.tecnico&&l.tecnico.trim()) || !temDadosTecnico(l)) return "Técnico";
       return STATUS_LABEL.aguardando;
     }
     return STATUS_LABEL.nao_iniciado;
@@ -3420,6 +3462,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         copia.criadoEm = now(); copia.atualizadoEm = now();
         copia.status = "nao_iniciado"; copia.reagendamentos = 0;
         copia.observacaoAgendamento = ""; copia.historicoAlteracoes = [];
+        copia.dadosTecnico = ""; copia.temDadosTecnico = false; // dados pessoais do técnico não são copiados
         await db.doc("lojas/"+codigo).set(sanitizeParaJson(copia));
         c.innerHTML = "";
       }catch(e){ console.error("Falha ao criar cadastro:", e); erro.textContent = "Não foi possível criar o cadastro. Tente novamente."; }
@@ -3564,7 +3607,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     currentLoja = JSON.parse(JSON.stringify({
       nome: data.nome||"", tecnico:data.tecnico||"", chamado:data.chamado||"", protocolo:data.protocolo||"",
       responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", agendamentoPrevisto:data.agendamentoPrevisto||"",
-      dadosTecnico:data.dadosTecnico||"", status:data.status||"nao_iniciado",
+      dadosTecnico:data.dadosTecnico||"", temDadosTecnico:!!data.temDadosTecnico, status:data.status||"nao_iniciado",
       horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
