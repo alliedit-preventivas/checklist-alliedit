@@ -1362,15 +1362,18 @@
           </div>
         </div>
         <div class="card pn-card">
+          <!-- "Maior tempo de atendimento" escondido a pedido da usuária (06/10/2026); para voltar, tire o hidden -->
+          <div hidden>
           <div class="pn-card-cab"><div class="pn-card-titulo">
             <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
             <div><h3>Maior tempo de atendimento</h3><div class="pn-card-sub">Top 5 lojas · 2026</div></div>
           </div></div>
           <div id="pn-tempo"></div>
           <div class="pn-divisao"></div>
+          </div>
           <div class="pn-card-cab"><div class="pn-card-titulo">
             <span class="pn-card-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg></span>
-            <div><h3>Reagendamento Lojas</h3><div class="pn-card-sub" id="pn-reag-sub">Quantas vezes cada loja foi reagendada · 2026</div></div>
+            <div><h3>Reagendamento Lojas</h3><div class="pn-card-sub" id="pn-reag-sub">Top 10 lojas · 2026</div></div>
           </div></div>
           <div id="pn-reag"></div>
         </div>
@@ -5929,9 +5932,9 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       .sort(function(a,b){ return b.n-a.n || String(a.nome).localeCompare(String(b.nome), "pt-BR", {numeric:true}); });
     const el = document.getElementById("pn-reag");
     const total = todas.reduce(function(a,x){ return a + x.n; }, 0);
-    document.getElementById("pn-reag-sub").textContent = todas.length ? total+" reagendamento"+(total!==1?"s":"")+" em "+todas.length+" loja"+(todas.length!==1?"s":"")+" · 2026" : "Quantas vezes cada loja foi reagendada · 2026";
+    document.getElementById("pn-reag-sub").textContent = todas.length ? total+" reagendamento"+(total!==1?"s":"")+" em "+todas.length+" loja"+(todas.length!==1?"s":"")+" · Top 10 · 2026" : "Top 10 lojas · 2026";
     if(!todas.length){ el.innerHTML = '<div class="pn-vazio">Nenhuma loja reagendada até agora.</div>'; return; }
-    const lista = todas.slice(0, 8), max = lista[0].n;
+    const lista = todas.slice(0, 10), max = lista[0].n;
     el.innerHTML = '<div class="pn-barras">' + lista.map(function(x, i){
       return pnLinhaBarra(i+1, x.nome, x.n/max*100, x.n+"x", x.nome+": reagendada "+x.n+(x.n!==1?" vezes":" vez"), "var(--pn-info)", true);
     }).join("") + '</div>' + (todas.length > lista.length ? '<div class="pn-vazio">+ '+(todas.length-lista.length)+' loja(s) com reagendamento</div>' : '');
