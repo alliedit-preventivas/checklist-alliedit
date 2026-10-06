@@ -194,6 +194,11 @@
   .pn-mes-rot, .pn-mes-semnada{display:none;}
   .pn-mes-ev{border-radius:5px; padding:2px 6px; border-left:3px solid; font-size:11px; line-height:1.3; color:var(--navy); overflow-wrap:anywhere;}
   .pn-mes-ev .pn-ev-hora{margin-right:4px;}
+  /* Etiqueta "P": loja que já tem protocolo (Agenda do Painel, mês e semana) */
+  .pn-prot{display:inline-grid; place-items:center; width:15px; height:15px; border-radius:50%; background:var(--navy); color:#fff; font-size:9px; font-weight:700; line-height:1; font-style:normal; flex:none;}
+  .pn-mes-ev.tem-prot, .pn-evento.tem-prot{position:relative; padding-right:22px;}
+  .pn-mes-ev.tem-prot .pn-prot, .pn-evento.tem-prot .pn-prot{position:absolute; top:3px; right:4px;}
+  .pn-legenda .pn-prot{border:0; width:15px; height:15px; border-radius:50%;}
   .pn-agenda{display:grid; grid-template-columns:repeat(var(--pn-dias, 5), minmax(0, 1fr)); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
   .pn-dia{border-right:1px solid var(--border); min-height:190px; display:flex; flex-direction:column; min-width:0;}
   .pn-dia:last-child{border-right:none;}
@@ -1352,6 +1357,7 @@
             <span><i class="pn-ev-andamento"></i>Em atendimento</span>
             <span><i class="pn-ev-concluida"></i>Concluída</span>
             <span><i class="pn-ev-atrasada"></i>Atrasada</span>
+            <span><i class="pn-prot">P</i>Com protocolo</span>
           </div>
         </div>
         <div class="card pn-card">
@@ -5977,6 +5983,8 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
     if(a.getFullYear()===b.getFullYear()) return a.getDate()+" de "+PN_MESES[a.getMonth()]+" a "+b.getDate()+" de "+PN_MESES[b.getMonth()]+" de "+b.getFullYear();
     return fmtDateBR(ini)+" a "+fmtDateBR(fim);
   }
+  function pnTemProtocolo(l){ return !!(l.protocolo && String(l.protocolo).trim()); }
+  function pnEtiquetaProtocolo(l){ return pnTemProtocolo(l) ? '<i class="pn-prot" aria-label="Com protocolo">P</i>' : ''; }
   function pnSituacaoAgenda(l, hoje){
     if(l.status==="concluido" || l.status==="reaberto") return {cls:"pn-ev-concluida", txt:"Concluída"};
     if(lojaAtrasada(l, hoje)) return {cls:"pn-ev-atrasada", txt:"Atrasada"};
@@ -6025,7 +6033,8 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
         lojas.map(function(l){
           const s = pnSituacaoAgenda(l, hoje);
           const hora = l.agendamentoPrevisto ? escapeHtml(l.agendamentoPrevisto) : "";
-          return '<div class="pn-mes-ev '+s.cls+'" title="'+escapeHtml(l.nome)+' · '+s.txt+' · '+(hora || 'Horário a definir')+'">'+(hora ? '<span class="pn-ev-hora">'+hora+'</span>' : '')+escapeHtml(l.nome)+'</div>';
+          const prot = pnTemProtocolo(l) ? ' · Protocolo '+escapeHtml(String(l.protocolo).trim()) : ' · Sem protocolo';
+          return '<div class="pn-mes-ev '+s.cls+(pnTemProtocolo(l)?' tem-prot':'')+'" title="'+escapeHtml(l.nome)+' · '+s.txt+' · '+(hora || 'Horário a definir')+prot+'">'+(hora ? '<span class="pn-ev-hora">'+hora+'</span>' : '')+escapeHtml(l.nome)+pnEtiquetaProtocolo(l)+'</div>';
         }).join("") + '</div>';
     }
     if(!total) html += '<div class="pn-mes-semnada">Sem agendamentos neste mês</div>';
@@ -6049,7 +6058,7 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
       return '<div class="pn-dia'+(d===hoje?' hoje':'')+'"><div class="pn-dia-cab">'+PN_DIAS[dt.getDay()]+' '+fmtDateBR(d).slice(0,5)+'</div><div class="pn-dia-corpo">' +
         (lojas.length ? lojas.map(function(l){
           const s = pnSituacaoAgenda(l, hoje);
-          return '<div class="pn-evento '+s.cls+'"><b>'+escapeHtml(l.nome)+'</b>'+s.txt+'<br><span class="pn-ev-hora">'+(l.agendamentoPrevisto ? escapeHtml(l.agendamentoPrevisto) : 'Horário a definir')+'</span></div>';
+          return '<div class="pn-evento '+s.cls+(pnTemProtocolo(l)?' tem-prot':'')+'"'+(pnTemProtocolo(l)?' title="Protocolo '+escapeHtml(String(l.protocolo).trim())+'"':'')+'>'+pnEtiquetaProtocolo(l)+'<b>'+escapeHtml(l.nome)+'</b>'+s.txt+'<br><span class="pn-ev-hora">'+(l.agendamentoPrevisto ? escapeHtml(l.agendamentoPrevisto) : 'Horário a definir')+'</span></div>';
         }).join("") : '<div class="pn-dia-vazio">Sem agendamentos</div>') +
       '</div></div>';
     }).join("");
