@@ -621,6 +621,9 @@
   .agn-nav-grupo{gap:10px; padding-right:8px; white-space:nowrap;}
   .agn-nav-grupo .agn-seta{width:15px; height:15px; margin-left:auto; transition:transform .2s;}
   .agn-nav-grupo[aria-expanded="true"] .agn-seta{transform:rotate(180deg);}
+  .agn-nav-bf{white-space:nowrap; padding-right:8px;} .agn-nav-bf .agn-seta{width:15px; height:15px; margin-left:auto; transition:transform .2s;}
+  .agn-nav-bf[aria-expanded="true"] .agn-seta{transform:rotate(180deg);}
+  .agn-sub[hidden]{display:none !important;}
   @media (min-width:821px){ .agn-side .agn-sub:not(.aberto){display:none;} }
   .agn-sub{display:flex; flex-direction:column; margin:-4px 0 6px 31px; position:relative; z-index:1;}
   .agn-sub button{background:transparent; border:none; color:#fff; opacity:.85; font-family:inherit; font-size:12.8px; text-align:left; padding:5px 14px; border-radius:8px; cursor:pointer;}
@@ -1432,7 +1435,11 @@
       <div class="agn-side-tag">Checklist de<br>Preventivas</div>
       <button type="button" class="agn-nav on" id="agn-nav-lojas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Agendamento</button>
       <button type="button" class="agn-nav" id="agn-nav-painel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Painel</button>
-      <button type="button" class="agn-nav" id="agn-nav-bf" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1.2 14H4.8z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>Planejamento BF</button>
+      <button type="button" class="agn-nav agn-nav-bf" id="agn-nav-bf" aria-expanded="false" aria-controls="agn-bf-sub" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1.2 14H4.8z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>Planejamento BF<svg class="agn-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="agn-sub" id="agn-bf-sub" hidden>
+        <button type="button" data-bf-link="onepagebf" title="Abre em outra aba o link que a gestão da Sephora recebe">One Page BF</button>
+        <button type="button" data-bf-link="hotline" title="Abre em outra aba o link que as lojas recebem">Hotline</button>
+      </div>
       <button type="button" class="agn-nav" id="agn-nav-tecnico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="3.8"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>Área do Técnico</button>
       <button type="button" class="agn-nav agn-nav-grupo" id="agn-cad-grupo" aria-expanded="false" aria-controls="agn-cad-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg>Cadastro de loja<svg class="agn-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="agn-sub" id="agn-cad-sub">
@@ -3322,6 +3329,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }catch(e){ bfAutorizado = false; console.error("Falha ao verificar acesso ao Planejamento BF:", e); }
     bfAcessoVerificado = true;
     document.getElementById("agn-nav-bf").hidden = !bfAutorizado;
+    document.getElementById("agn-bf-sub").hidden = !bfAutorizado;
     if(bfAbrirAposVerificar){ bfAbrirAposVerificar = false; if(bfAutorizado) abrirPlanejamentoBF(); }
     else if(!bfAutorizado && document.getElementById("view-bf").classList.contains("active")) showView("lojas");
   }
@@ -4208,7 +4216,15 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }).catch(function(){});
     document.getElementById("agn-nav-lojas").addEventListener("click", function(){ showView("lojas"); });
     document.getElementById("agn-nav-painel").addEventListener("click", function(){ document.getElementById("topo-nav-painel").click(); });
-    document.getElementById("agn-nav-bf").addEventListener("click", function(){ abrirPlanejamentoBF(); });
+    // Planejamento BF: abre a página e mostra/esconde os links que os clientes recebem (One Page BF e Hotline)
+    document.getElementById("agn-nav-bf").addEventListener("click", function(){
+      const sub = document.getElementById("agn-bf-sub"), aberto = !sub.classList.contains("aberto");
+      sub.classList.toggle("aberto", aberto); this.setAttribute("aria-expanded", aberto ? "true" : "false");
+      abrirPlanejamentoBF();
+    });
+    document.querySelectorAll("#agn-bf-sub [data-bf-link]").forEach(function(b){
+      b.addEventListener("click", function(){ window.open(window.location.origin + window.location.pathname + "?" + b.dataset.bfLink + "=1", "_blank", "noopener"); });
+    });
     verificarAcessoBF();
     wireBF();
     document.getElementById("agn-nav-tecnico").addEventListener("click", function(){ document.getElementById("topo-nav-tecnico").click(); });
