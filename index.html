@@ -2785,7 +2785,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       pdvs: (dados.pdvs||[]).map(migrarPdv), mobiles: dados.mobiles||[], dvrs: (dados.dvrs||[]).map(migrarDvr),
       agendamento: dados.agendamento||"", agendamentoPrevisto: dados.agendamentoPrevisto||"",
       chamado: dados.chamado||"", protocolo: dados.protocolo||"", tecnico: dados.tecnico||"", dadosTecnico: dados.dadosTecnico||"", temDadosTecnico: !!dados.temDadosTecnico,
-      status: dados.status||"", horarioInicio: dados.horarioInicio||"", reagendamentos: dados.reagendamentos||0
+      status: dados.status||"", horarioInicio: dados.horarioInicio||"", checklistIniciado: !!dados.checklistIniciado, reagendamentos: dados.reagendamentos||0
     };
   }
 
