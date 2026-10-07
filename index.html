@@ -3190,6 +3190,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function bfEscreverMoeda(el, v){ v = Math.max(0, Math.round((Number(v)||0)*100)/100); el.value = v ? bfMoeda(v) : ""; el.dataset.valor = v; }
   function bfLerMoeda(el){ return Math.max(0, Number(el.dataset.valor) || 0); }
   function bfHorasTxt(min){ const h = min/60; return (Number.isInteger(h) ? h : h.toLocaleString("pt-BR", {maximumFractionDigits:2})) + " h"; }
+  // Abertura da hotline no início da operação: o horário mais cedo da semana, no formato 07:30
+  function bfAbertura(hot){ const m = Math.min.apply(null, Object.keys(hot).filter(function(d){ return hot[d]; }).map(function(d){ return bfMin(hot[d][0]); })); return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0"); }
   function bfDataBR(iso){ return iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4); }
   function bfDiasEntre(a, b){ return Math.round((bfData(b) - bfData(a)) / 86400000); }
   function bfLinkValido(){ const u = String(BF_CONFIG.hotlineTeams||"").trim(); return /^https:\/\//i.test(u) ? u : ""; }
@@ -3556,7 +3558,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     st.classList.toggle("descoberta", hotAberta && emTurno.length === 0);
     let txt;
     if(hotAberta) txt = emTurno.length ? "Hotline aberta · até "+bfHoraCurta(bfMin(hot[1])) : "Hotline aberta sem analista · hora extra";
-    else if(agora < ini) txt = "Hotline abre "+bfDataBR(BF_CONFIG.inicio).slice(0,5)+" às "+bfHoraCurta(bfMin(BF_CONFIG.hotline[ini.getDay()][0]));
+    else if(agora < ini) txt = "Hotline abre "+bfDataBR(BF_CONFIG.inicio).slice(0,5)+" às "+bfAbertura(BF_CONFIG.hotline);
     else if(!dentro) txt = "Hotline encerrada";
     else txt = "Hotline fechada · abre às "+bfHoraCurta(bfMin(hot[0]));
     st.querySelector("span").textContent = txt;
@@ -3700,7 +3702,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const hot = c.hotline[agora.getDay()], aberta = dentro && hot && minAgora >= bfMin(hot[0]) && minAgora < bfMin(hot[1]);
     let txt;
     if(aberta) txt = "Atendimento aberto agora · até " + bfHoraCurta(bfMin(hot[1]));
-    else if(agora < ini) txt = "Começa em " + bfDataBR(c.inicio) + " às " + bfHoraCurta(bfMin(c.hotline[ini.getDay()][0]));
+    else if(agora < ini) txt = "Hotline abre " + bfDataBR(c.inicio).slice(0,5) + " às " + bfAbertura(c.hotline);
     else if(!dentro) txt = "Hotline encerrada em " + bfDataBR(c.fim);
     else if(hot && minAgora < bfMin(hot[0])) txt = "Fechado agora · abre hoje às " + bfHoraCurta(bfMin(hot[0]));
     else { const am = new Date(agora.getTime() + 86400000), ha = c.hotline[am.getDay()]; txt = "Fechado agora · abre amanhã às " + bfHoraCurta(bfMin(ha[0])); }
@@ -3874,7 +3876,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const hot = c.hotline[agora.getDay()], aberta = dentro && hot && minAgora >= bfMin(hot[0]) && minAgora < bfMin(hot[1]);
     let txt;
     if(aberta) txt = "Hotline aberta agora · até " + bfHoraCurta(bfMin(hot[1]));
-    else if(agora < ini) txt = "Começa em " + bfDataBR(c.inicio) + " às " + bfHoraCurta(bfMin(c.hotline[ini.getDay()][0]));
+    else if(agora < ini) txt = "Hotline abre " + bfDataBR(c.inicio).slice(0,5) + " às " + bfAbertura(c.hotline);
     else if(!dentro) txt = "Hotline encerrada em " + bfDataBR(c.fim);
     else if(hot && minAgora < bfMin(hot[0])) txt = "Fechada agora · abre hoje às " + bfHoraCurta(bfMin(hot[0]));
     else { const am = new Date(agora.getTime() + 86400000); txt = "Fechada agora · abre amanhã às " + bfHoraCurta(bfMin(c.hotline[am.getDay()][0])); }
