@@ -5367,6 +5367,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       currentLoja.posRedeCielos = [blankPosRedeCielo()];
       currentLoja.pinpadReserva = blankPinpadReserva();
       currentLoja.horarioInicio = ""; currentLoja.horarioFim = "";
+      currentLoja.checklistIniciado = false; // formulário zerado: o atendimento volta a contar como não iniciado
       document.getElementById("cl-horario-inicio").value = "";
       document.getElementById("cl-horario-fim").value = "";
       atualizarTempoAtendimento();
