@@ -430,6 +430,7 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - O Agendamento (com login) carrega a tabela junto com as lojas (`carregarCofreTecnico`) e grava nela ao editar o campo (`salvarDadosTecnico`); se a gravação falhar, avisa e não altera a loja. "Duplicar loja" não copia os dados do técnico.
 - Proteção contra o site ser exibido dentro de outro site: script na 1ª linha do arquivo esconde a página quando ela está dentro de uma moldura (a usuária confirmou em 06/10/2026 que o site só é aberto direto no navegador). O PDF continua funcionando.
 - Cópia de segurança da tabela das lojas da produção (06/10/2026) guardada fora do repositório, em `_Projetos_AlliedIT/_Backups_Preventivas/`.
+- **Concluído em 07/10/2026:** cópia de segurança nova (`backup-producao-lojas-2026-10-07.csv`, mesma pasta), cópia final para a tabela `tecnico_dados` e retirada do campo antigo do registro das lojas na produção (resultado: 0 lojas com o campo antigo, 21 no cofre, 21 com o sinal). Comandos fora do repositório, em `_SQL_Preventivas/item3-passo1-*` e `item3-passo2-*`.
 
 ### 8.23 Painel: etiqueta "P" de protocolo na Agenda + card Reagendamento Lojas: PUBLICADO (06/10/2026)
 - Foi para produção na `main` `1c20282` (equivale à `develop` `38d16d0`), com autorização da usuária, pelo método da seção 3. Ponto de restauração: tag `producao-antes-agenda-protocolo-reagendamento-2026-10-06` (= `353ddb2`). Site no ar idêntico à `main` em ~60 s; `?painel=1` no ar conferido (sem erros).
