@@ -2593,15 +2593,48 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(modoGestao) aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
     else aplicarTemaCores("alliedit");
   }
+  // ---------------- manter a tela ao atualizar a página (F5) ----------------
+  // Guarda filtros, busca, tela aberta, agenda do Painel e rolagem só nesta aba do navegador (sessionStorage):
+  // F5 volta igual; uma aba nova começa do zero. Não vale para a tela do técnico.
+  let estadoTelaPronto = false, estadoTelaRestaurar = null;
+  function chaveEstadoTela(){ return "estadoTela:" + (modoGestao ? "gestao" : "login"); }
+  function telaAtual(){ const v = document.querySelector("#view-lojas.active, #view-painel.active, #view-checklist.active"); return v ? v.id.replace("view-","") : "lojas"; }
+  function guardarEstadoTela(){
+    if(!estadoTelaPronto || modoTecnico) return;
+    try{
+      const busca = document.getElementById("search-loja"), sub = document.getElementById("agn-cad-sub"), tela = telaAtual();
+      sessionStorage.setItem(chaveEstadoTela(), JSON.stringify({ tela: tela, filtroHome: filtroHome, busca: busca ? busca.value : "",
+        lojaAberta: tela==="checklist" ? currentLojaId : null, cadAberto: !!(sub && sub.classList.contains("aberto")),
+        pnMes: pnMesOffset, pnSemana: pnSemanaOffset, rolagem: window.scrollY }));
+    }catch(e){}
+  }
+  window.addEventListener("pagehide", guardarEstadoTela);
+  window.addEventListener("beforeunload", guardarEstadoTela);
+  function restaurarEstadoTela(){
+    let e = null;
+    try{ const t = sessionStorage.getItem(chaveEstadoTela()); e = t ? JSON.parse(t) : null; }catch(err){ e = null; }
+    estadoTelaPronto = true;
+    if(!e) return;
+    pnMesOffset = Number(e.pnMes)||0; pnSemanaOffset = Number(e.pnSemana)||0;
+    if(!modoGestao){
+      filtroHome = e.filtroHome || null;
+      const busca = document.getElementById("search-loja"); if(busca) busca.value = e.busca || "";
+      const sub = document.getElementById("agn-cad-sub"), grupo = document.getElementById("agn-cad-grupo");
+      if(e.cadAberto && sub && grupo){ sub.classList.add("aberto"); grupo.setAttribute("aria-expanded", "true"); }
+      if(e.tela === "painel") document.getElementById("topo-nav-painel").click();
+    }
+    estadoTelaRestaurar = e; // rolagem e checklist aberto: depois que as lojas chegarem
+  }
   function continuarAposAcesso(){
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario(); wireTemaCores();
     if(modoGestao){
       showView("painel");
+      restaurarEstadoTela();
       subscribeLojas();
       return; // modo gestão: só leitura (sem cadastro inicial de lojas e sem botão Sair)
     }
     if(agendamentoNovoAtivo()) wireAgendamentoNovo();
-    if(!modoTecnico) showView("lojas");
+    if(!modoTecnico){ showView("lojas"); restaurarEstadoTela(); }
     subscribeLojas();
     if(!modoTecnico) seedLojasSeNecessario();
     if(!modoTecnico){
@@ -2668,6 +2701,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(lojaParamId && !autoAbriuLoja){
         const alvo = lojasCache.find(function(l){ return l.id === lojaParamId; });
         if(alvo){ autoAbriuLoja = true; tentarAbrirLoja(alvo.id, alvo); }
+      }
+      if(estadoTelaRestaurar){
+        const e = estadoTelaRestaurar; estadoTelaRestaurar = null;
+        const alvo = (e.tela === "checklist" && e.lojaAberta) ? lojasCache.find(function(l){ return l.id === e.lojaAberta; }) : null;
+        if(alvo) tentarAbrirLoja(alvo.id, alvo);
+        else if(e.rolagem) setTimeout(function(){ window.scrollTo(0, e.rolagem); }, 80);
       }
     }, function(err){ console.error("Erro ao carregar lojas:", err); document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível carregar as lojas. Recarregue a página.</div>'; });
   }
@@ -3041,17 +3080,20 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       '</div>') +
     '</div>';
   }
-  // Histórico de alterações: troca de técnico, de data, de hora e reagendamentos (mais recente primeiro)
+  // Histórico de alterações: qualquer campo do card (mais recente primeiro).
+  // "Dados do técnico" registra só que mudou, sem o conteúdo (dados pessoais ficam no cofre, só com login).
+  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
   function historicoAgnHtml(l){
     const itens = (Array.isArray(l.historicoAlteracoes) ? l.historicoAlteracoes : []).slice().reverse();
     if(!itens.length) return '<div class="agn-hist-vazio">Nenhuma alteração registrada.</div>';
     function v(x){ return x ? '<b>'+escapeHtml(x)+'</b>' : '<i>vazio</i>'; }
     return '<ul>' + itens.map(function(h){
       let texto = "";
-      if(h.tipo === "tecnico") texto = 'Técnico: ' + v(h.de) + ' → ' + v(h.para);
+      if(h.tipo === "dadosTecnico") texto = 'Dados do técnico: <b>' + (h.para === "removidos" ? "removidos" : "atualizados") + '</b>';
       else if(h.tipo === "data") texto = 'Data: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "hora") texto = 'Hora: ' + v(h.de) + ' → ' + v(h.para);
       else if(h.tipo === "reagendamento") texto = '<b>Reagendado</b> (' + escapeHtml(h.para) + 'ª vez)' + (h.de ? ' · data anterior ' + escapeHtml(fmtDateBR(h.de)) : '');
+      else if(HIST_ROTULOS[h.tipo]) texto = HIST_ROTULOS[h.tipo] + ': ' + v(h.de) + ' → ' + v(h.para);
       else texto = escapeHtml(h.tipo || "");
       return '<li><span class="agn-hist-dot"></span><div><span>'+texto+'</span><small>'+fmtDate(h.em)+(h.por ? ' · por '+escapeHtml(h.por) : '')+'</small></div></li>';
     }).join("") + '</ul>';
@@ -3059,8 +3101,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // Monta a lista nova do histórico com mais uma alteração (só quando o valor mudou de verdade)
   function historicoComAlteracao(l, tipo, de, para){
     const lista = Array.isArray(l.historicoAlteracoes) ? l.historicoAlteracoes.slice() : [];
-    lista.push({ tipo: tipo, de: String(de||""), para: String(para||""), em: now(), por: nomeUsuarioAgn || "" });
+    const curto = function(x){ x = String(x||""); return x.length > 120 ? x.slice(0,117)+"..." : x; }; // textos longos ficam resumidos
+    lista.push({ tipo: tipo, de: curto(de), para: curto(para), em: now(), por: nomeUsuarioAgn || "" });
     return lista.slice(-60); // guarda as 60 últimas alterações
+  }
+  // Acrescenta uma alteração ao que já vai ser gravado (permite várias alterações no mesmo salvamento)
+  function adicionarHistorico(payload, l, tipo, de, para){
+    if(String(de||"") === String(para||"")) return;
+    payload.historicoAlteracoes = historicoComAlteracao({historicoAlteracoes: payload.historicoAlteracoes || l.historicoAlteracoes}, tipo, de, para);
+  }
+  function adicionarHistoricoStatus(payload, l){
+    if(payload.status && payload.status !== (l.status||"")) adicionarHistorico(payload, l, "status", STATUS_LABEL[l.status] || l.status || "", STATUS_LABEL[payload.status] || payload.status);
   }
   function renderLojasList(){
     const list = document.getElementById("lojas-list");
@@ -3167,7 +3218,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
         const n = (l.reagendamentos || 0) + 1;
-        db.doc("lojas/"+btn.dataset.id).update({ status: "reagendar", reagendamentos: n, agendamento: "", agendamentoPrevisto: "", protocolo: "", atualizadoEm: now(), historicoAlteracoes: historicoComAlteracao(l, "reagendamento", l.agendamento, n) }).catch(function(){});
+        const payload = { status: "reagendar", reagendamentos: n, agendamento: "", agendamentoPrevisto: "", protocolo: "", atualizadoEm: now(), historicoAlteracoes: historicoComAlteracao(l, "reagendamento", l.agendamento, n) };
+        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
         const card = btn.closest(".loja-row");
         if(card){
           const dataInput = card.querySelector(".agendamento-input");
@@ -3184,11 +3236,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
         if(l.status !== "em_prospeccao_tecnico"){
-          db.doc("lojas/"+btn.dataset.id).update({ status: "em_prospeccao_tecnico", atualizadoEm: now() }).catch(function(){});
+          const payload = { status: "em_prospeccao_tecnico", atualizadoEm: now() }; adicionarHistoricoStatus(payload, l);
+          db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
         }else{
           // Volta para automático — o status é recalculado a partir dos dados atuais
           const novo = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {status: ""})));
-          db.doc("lojas/"+btn.dataset.id).update({ status: novo, atualizadoEm: now() }).catch(function(){});
+          const payload = { status: novo, atualizadoEm: now() }; adicionarHistoricoStatus(payload, l);
+          db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
         }
       });
     });
@@ -3198,13 +3252,14 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
         const payload = { agendamento: input.value, atualizadoEm: now() };
-        if((l.agendamento||"") !== input.value) payload.historicoAlteracoes = historicoComAlteracao(l, "data", l.agendamento, input.value);
+        adicionarHistorico(payload, l, "data", l.agendamento, input.value);
         if(l.status !== "concluido"){
           // Definir uma nova data resolve um "Reagendar" pendente — volta ao cálculo automático normal.
           const baseStatus = l.status === "reagendar" ? "" : l.status;
           payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: input.value, status: baseStatus})));
         }
-        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
+        adicionarHistoricoStatus(payload, l);
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
       });
     });
     list.querySelectorAll(".agendamento-clear").forEach(function(btn){
@@ -3212,9 +3267,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
         const payload = { agendamento: "", atualizadoEm: now() };
-        if(l.agendamento) payload.historicoAlteracoes = historicoComAlteracao(l, "data", l.agendamento, "");
+        adicionarHistorico(payload, l, "data", l.agendamento, "");
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: ""})));
-        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){});
+        adicionarHistoricoStatus(payload, l);
+        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
       });
     });
     list.querySelectorAll(".previsto-input").forEach(function(input){
@@ -3223,12 +3279,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
         const payload = { agendamentoPrevisto: input.value, atualizadoEm: now() };
-        if((l.agendamentoPrevisto||"") !== input.value) payload.historicoAlteracoes = historicoComAlteracao(l, "hora", l.agendamentoPrevisto, input.value);
+        adicionarHistorico(payload, l, "hora", l.agendamentoPrevisto, input.value);
         if(l.status !== "concluido"){
           const baseStatus = l.status === "reagendar" ? "" : l.status;
           payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamentoPrevisto: input.value, status: baseStatus})));
         }
-        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
+        adicionarHistoricoStatus(payload, l);
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
       });
     });
     list.querySelectorAll(".previsto-clear").forEach(function(btn){
@@ -3236,9 +3293,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
         const payload = { agendamentoPrevisto: "", atualizadoEm: now() };
-        if(l.agendamentoPrevisto) payload.historicoAlteracoes = historicoComAlteracao(l, "hora", l.agendamentoPrevisto, "");
+        adicionarHistorico(payload, l, "hora", l.agendamentoPrevisto, "");
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamentoPrevisto: ""})));
-        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){});
+        adicionarHistoricoStatus(payload, l);
+        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
       });
     });
     list.querySelectorAll(".quick-input").forEach(function(input){
@@ -3249,6 +3307,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
         const merged = Object.assign({}, l); merged[input.dataset.field] = input.value;
         const payload = {atualizadoEm: now()}; payload[input.dataset.field] = input.value;
+        const antes = input.dataset.field === "dadosTecnico" ? (l.dadosTecnico||"") : l[input.dataset.field];
         if(input.dataset.field === "dadosTecnico"){
           // grava no cofre (só logado); no registro da loja fica apenas o sinal "preenchido"
           try{ await salvarDadosTecnico(input.dataset.id, input.value); }
@@ -3257,9 +3316,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           merged.temDadosTecnico = l.temDadosTecnico;
           payload.dadosTecnico = ""; payload.temDadosTecnico = l.temDadosTecnico;
         }
-        if(input.dataset.field === "tecnico" && (l.tecnico||"") !== input.value) payload.historicoAlteracoes = historicoComAlteracao(l, "tecnico", l.tecnico, input.value);
+        if(input.dataset.field === "dadosTecnico"){ if(String(antes).trim() !== input.value.trim()) adicionarHistorico(payload, l, "dadosTecnico", "", input.value.trim() ? "atualizados" : "removidos"); }
+        else adicionarHistorico(payload, l, input.dataset.field, antes, input.value);
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(merged));
-        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){});
+        adicionarHistoricoStatus(payload, l);
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        if(input.dataset.field === "dadosTecnico") l.dadosTecnico = input.value; // no banco vai vazio; na tela continua o texto (vem do cofre)
       });
     });
     list.querySelectorAll(".auto-grow").forEach(function(el){
@@ -3572,7 +3634,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       const erro = document.getElementById("edit-erro");
       if(!nome){ erro.textContent = "Informe o nome da loja."; return; }
       try{
-        await db.doc("lojas/"+id).update({ nome: nome, atualizadoEm: now() });
+        const lAtual = lojasCache.find(function(x){ return x.id === id; }) || {};
+        const payload = { nome: nome, atualizadoEm: now() }; adicionarHistorico(payload, lAtual, "nome", lAtual.nome, nome);
+        await db.doc("lojas/"+id).update(payload);
         c.innerHTML = "";
       }catch(e){ console.error("Falha ao salvar cadastro:", e); erro.textContent = "Não foi possível salvar. Tente novamente."; }
     });
