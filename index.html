@@ -825,7 +825,8 @@
   .bf-mes-linha.fer b{color:var(--pn-feriado, #6B4FA3);}
   .bf-fer-opcao{display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin-top:10px; font-size:12px; color:var(--navy); background:#F1ECFA; border-radius:10px; padding:8px 11px;}
   .bf-fer-opcao > span{flex-basis:100%; font-weight:700; color:#6B4FA3;}
-  .bf-fer-opcao label{display:inline-flex; align-items:center; gap:5px; cursor:pointer;}
+  .bf-fer-opcao label{display:flex; flex-basis:100%; align-items:center; flex-wrap:wrap; gap:2px 6px; cursor:pointer; text-transform:none; letter-spacing:0; font-size:12.5px; font-weight:400; margin:0; color:var(--navy);}
+  .bf-fer-opcao label b{font-weight:700;} .bf-fer-opcao .bf-fer-obs{color:var(--text-muted); order:3; flex-basis:100%; padding-left:20px; font-size:11.5px; margin-top:-2px;} .bf-fer-opcao label small{margin-left:auto; font-weight:700; font-size:11.5px; white-space:nowrap;}
   .bf-fer-opcao small{color:var(--text-muted);}
   .bf-regras{margin:8px 0 0; padding-left:18px; font-size:11.5px; color:var(--text-muted); line-height:1.5;}
   .bf-regras b{color:var(--navy);}
@@ -2102,7 +2103,7 @@
           <div class="bf-fer-opcao" role="group" aria-label="Feriado em dia útil: o que conta como hora extra">
           <span>Feriado em dia útil (comerciais folgam) · pode marcar mais de uma opção:</span>
           <label><input type="checkbox" name="bf-fer" value="cobertura"> <b>Só cobertura até 00h</b> <small id="bf-fer-cobertura"></small></label>
-          <label><input type="checkbox" name="bf-fer" value="tecnico"> <b>Feriados das 8h às 11h15 não é cobrada hora extra; passou deste período, é incluída a hora extra</b> <small id="bf-fer-tecnico"></small></label>
+          <label><input type="checkbox" name="bf-fer" value="tecnico"> <b>Feriados das 8h às 11h15: hora isenta</b> <span class="bf-fer-obs">passou deste período, é incluída a hora extra</span> <small id="bf-fer-tecnico"></small></label>
           <label><input type="checkbox" name="bf-fer" value="extra8"> <b>+ Extra de 8 h</b> <small id="bf-fer-extra8"></small></label>
         </div>
         <ul class="bf-regras" id="bf-regras"></ul>
