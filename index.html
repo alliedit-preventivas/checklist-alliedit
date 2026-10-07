@@ -2593,15 +2593,48 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(modoGestao) aplicarTemaCores(document.documentElement.getAttribute("data-tema"));
     else aplicarTemaCores("alliedit");
   }
+  // ---------------- manter a tela ao atualizar a página (F5) ----------------
+  // Guarda filtros, busca, tela aberta, agenda do Painel e rolagem só nesta aba do navegador (sessionStorage):
+  // F5 volta igual; uma aba nova começa do zero. Não vale para a tela do técnico.
+  let estadoTelaPronto = false, estadoTelaRestaurar = null;
+  function chaveEstadoTela(){ return "estadoTela:" + (modoGestao ? "gestao" : "login"); }
+  function telaAtual(){ const v = document.querySelector("#view-lojas.active, #view-painel.active, #view-checklist.active"); return v ? v.id.replace("view-","") : "lojas"; }
+  function guardarEstadoTela(){
+    if(!estadoTelaPronto || modoTecnico) return;
+    try{
+      const busca = document.getElementById("search-loja"), sub = document.getElementById("agn-cad-sub"), tela = telaAtual();
+      sessionStorage.setItem(chaveEstadoTela(), JSON.stringify({ tela: tela, filtroHome: filtroHome, busca: busca ? busca.value : "",
+        lojaAberta: tela==="checklist" ? currentLojaId : null, cadAberto: !!(sub && sub.classList.contains("aberto")),
+        pnMes: pnMesOffset, pnSemana: pnSemanaOffset, rolagem: window.scrollY }));
+    }catch(e){}
+  }
+  window.addEventListener("pagehide", guardarEstadoTela);
+  window.addEventListener("beforeunload", guardarEstadoTela);
+  function restaurarEstadoTela(){
+    let e = null;
+    try{ const t = sessionStorage.getItem(chaveEstadoTela()); e = t ? JSON.parse(t) : null; }catch(err){ e = null; }
+    estadoTelaPronto = true;
+    if(!e) return;
+    pnMesOffset = Number(e.pnMes)||0; pnSemanaOffset = Number(e.pnSemana)||0;
+    if(!modoGestao){
+      filtroHome = e.filtroHome || null;
+      const busca = document.getElementById("search-loja"); if(busca) busca.value = e.busca || "";
+      const sub = document.getElementById("agn-cad-sub"), grupo = document.getElementById("agn-cad-grupo");
+      if(e.cadAberto && sub && grupo){ sub.classList.add("aberto"); grupo.setAttribute("aria-expanded", "true"); }
+      if(e.tela === "painel") document.getElementById("topo-nav-painel").click();
+    }
+    estadoTelaRestaurar = e; // rolagem e checklist aberto: depois que as lojas chegarem
+  }
   function continuarAposAcesso(){
     wireNav(); wireLojasView(); wireChecklistStatic(); wireRatFoto(); wireTopo(); wireCalendario(); wireTemaCores();
     if(modoGestao){
       showView("painel");
+      restaurarEstadoTela();
       subscribeLojas();
       return; // modo gestão: só leitura (sem cadastro inicial de lojas e sem botão Sair)
     }
     if(agendamentoNovoAtivo()) wireAgendamentoNovo();
-    if(!modoTecnico) showView("lojas");
+    if(!modoTecnico){ showView("lojas"); restaurarEstadoTela(); }
     subscribeLojas();
     if(!modoTecnico) seedLojasSeNecessario();
     if(!modoTecnico){
@@ -2668,6 +2701,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(lojaParamId && !autoAbriuLoja){
         const alvo = lojasCache.find(function(l){ return l.id === lojaParamId; });
         if(alvo){ autoAbriuLoja = true; tentarAbrirLoja(alvo.id, alvo); }
+      }
+      if(estadoTelaRestaurar){
+        const e = estadoTelaRestaurar; estadoTelaRestaurar = null;
+        const alvo = (e.tela === "checklist" && e.lojaAberta) ? lojasCache.find(function(l){ return l.id === e.lojaAberta; }) : null;
+        if(alvo) tentarAbrirLoja(alvo.id, alvo);
+        else if(e.rolagem) setTimeout(function(){ window.scrollTo(0, e.rolagem); }, 80);
       }
     }, function(err){ console.error("Erro ao carregar lojas:", err); document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível carregar as lojas. Recarregue a página.</div>'; });
   }
