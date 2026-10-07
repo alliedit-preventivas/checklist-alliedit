@@ -939,7 +939,7 @@
   @media (min-width:901px) and (max-height:820px){ .bfc-hero{padding:12px 20px;} .bfc-hero h1{font-size:28px; margin:8px 0 2px;} .bfc-hero p{margin:0 0 8px;} .bfc-contagem{padding:10px 14px;} .bfc-contagem-num{margin:6px 0 4px;} .bfc-contagem-num div{padding:6px 2px;} .bfc-contagem-num b{font-size:24px;} .bfc-canal{padding:10px 14px;} .bfc-card{padding:12px 16px; line-height:1.4; font-size:13.5px;} .bfc-horarios li{padding:7px 12px;} }
   @media (max-width:1100px){ .bfc-grade{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);} .bfc-gestao{grid-column:1 / -1;} .bfc-gestao-lista{grid-template-columns:repeat(2, minmax(0,1fr));} }
   @media (max-width:900px){ .bfc-canais{grid-template-columns:repeat(2, minmax(0,1fr));} .bfc-grade{grid-template-columns:minmax(0,1fr);} }
-  /* ===== OnePage da gestão da Sephora (?planejamentobf=1&chave=..., sem login, só consulta) ===== */
+  /* ===== OnePage da gestão da Sephora (?planejamentobf=<chave>, sem login, só consulta) ===== */
   #view-bfg{padding:10px 16px; box-sizing:border-box;}
   #view-bfg.active{display:flex; flex-direction:column; min-height:100vh;}
   .bfg-conteudo:not([hidden]){flex:1; display:flex; flex-direction:column; gap:10px;}
@@ -2150,7 +2150,7 @@
     </div>
   </div>
 
-  <!-- OnePage da gestão da Sephora (link ?planejamentobf=1&chave=..., sem login, só consulta).
+  <!-- OnePage da gestão da Sephora (link ?planejamentobf=<chave>, sem login, só consulta).
        Os números vêm da função bf_onepage_gestao, que só responde com a chave certa do link. -->
   <div id="view-bfg" class="view" aria-live="polite">
     <div class="bfc-carregando" id="bfg-carregando">Carregando…</div>
@@ -2957,8 +2957,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
 
   let supabaseClient = null;
   async function init(){
-    // OnePages da Black Friday: links próprios, sem login (?hotline=1 lojas; ?planejamentobf=1&chave=... gestão da Sephora); não carregam lojas nem a área interna
-    const urlParams = new URLSearchParams(window.location.search), bfParam = urlParams.get("hotline") === "1" ? "1" : urlParams.get("planejamentobf") === "1" ? "gestao" : "";
+    // OnePages da Black Friday: links próprios, sem login (?hotline=1 lojas; ?planejamentobf=<chave> gestão da Sephora); não carregam lojas nem a área interna
+    const urlParams = new URLSearchParams(window.location.search), bfParam = urlParams.get("hotline") === "1" ? "1" : urlParams.get("planejamentobf") ? "gestao" : "";
     if(bfParam){
       try{ supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }catch(e){ supabaseClient = null; }
       if(supabaseClient){ if(bfParam === "gestao") iniciarOnePageGestao(); else iniciarOnePageCliente(); }
@@ -3594,7 +3594,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bf-comunicado-abrir").addEventListener("click", bfAbrirComunicado);
     document.getElementById("bf-link-gestao").addEventListener("click", function(){
       if(!bfPlanoDB || !bfPlanoDB.chave_cliente) return;
-      const b = this, url = window.location.origin + window.location.pathname + "?planejamentobf=1&chave=" + encodeURIComponent(bfPlanoDB.chave_cliente);
+      const b = this, url = window.location.origin + window.location.pathname + "?planejamentobf=" + encodeURIComponent(bfPlanoDB.chave_cliente);
       (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ b.textContent = "Link copiado!"; setTimeout(function(){ b.textContent = "Copiar link da gestão Sephora"; }, 1800); })
         .catch(function(){ window.prompt("Copie o link da gestão Sephora:", url); });
     });
@@ -3712,12 +3712,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bfc-cd-m").textContent = String(m).padStart(2,"0");
     document.getElementById("bfc-cd-s").textContent = String(seg).padStart(2,"0");
   }
-  // ---------------- OnePage da gestão da Sephora (?planejamentobf=1&chave=..., sem login, só consulta) ----------------
+  // ---------------- OnePage da gestão da Sephora (?planejamentobf=<chave>, sem login, só consulta) ----------------
   // Números (escala, valor da hora, plano combinado e horas a mais) vêm da função bf_onepage_gestao, que só responde
   // com a chave certa do link; hotline e contatos vêm de bf_publico. Usa os mesmos cálculos do Planejamento BF.
   let BFG = null, bfgTimer = null, bfgUltima = 0, bfgMesSel = null, bfgDiaSel = null;
   async function bfgBuscar(){
-    const { data, error } = await supabaseClient.rpc("bf_onepage_gestao", { p_chave: new URLSearchParams(window.location.search).get("chave") || "" });
+    const { data, error } = await supabaseClient.rpc("bf_onepage_gestao", { p_chave: new URLSearchParams(window.location.search).get("planejamentobf") || "" });
     if(error) throw error;
     return data && data.config ? data : null;
   }
