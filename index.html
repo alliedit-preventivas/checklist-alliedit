@@ -773,6 +773,7 @@
   .bf-sim-total > div{display:flex; justify-content:space-between; gap:8px; color:var(--text-muted); padding:2px 0;}
   .bf-sim-total b{color:var(--navy); font-variant-numeric:tabular-nums;}
   .bf-sim-total .tot{border-top:1px solid #E1E8EB; padding-top:5px; margin-top:2px;} .bf-sim-total .tot span{color:var(--navy); font-weight:700;} .bf-sim-total .tot b{color:#B3261E; font-size:14px;}
+  .bf-sim-total .real-ini{margin-top:6px;} .bf-sim-total .real{border-top:1px dashed #D5DEE3; padding-top:4px; margin-top:1px;} .bf-sim-total .real span{color:var(--navy); font-weight:700;}
   .bf-orc-bloco{margin-top:auto; background:#F3F7F7; border-radius:11px; padding:9px 11px;}
   .bf-orc-bloco .bf-excede-campo{margin-bottom:4px;}
   .bf-escala{margin-top:14px;}
@@ -1007,6 +1008,7 @@
   .bfg-orc-aprov span{display:block; font-size:11.5px; opacity:.85; line-height:1.35;}
   .bfg-orc-aprov.pendente b{font-size:17px;}
   .bfg-orc-rodape{margin-top:auto;}
+  #view-bfg .bfg-orc-aprov{padding:7px 12px; margin-bottom:8px;} #view-bfg .bfg-orc-aprov b{font-size:20px;} #view-bfg .bf-sim-total{margin-bottom:5px;} #view-bfg .bf-sim-total > div{padding:1px 0;} #view-bfg .bf-sim-total .real-ini{margin-top:4px;} #view-bfg .bfg-orc .bf-card-cab{margin-bottom:4px;}
   .bfg-cal{flex:1; display:flex; flex-direction:column; min-height:0;}
   .bfg-cal-cab{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;}
   .bfg-cal-cab .bf-card-cab{margin:0; flex:1; min-width:240px;}
@@ -3634,7 +3636,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bf-sim-stats").innerHTML = [["No período", excValor, tot.dias+" dias"], ["Por mês", exc*30*vh, "≈ 30 dias"], ["Por semana", exc*7*vh, "7 dias"]].map(function(x){
       return '<div><small>'+x[0]+'</small><b>+'+bfMoeda(x[1])+'</b><span>'+x[2]+'</span></div>';
     }).join("");
-    document.getElementById("bf-sim-total").innerHTML = '<div><span>Previsto</span><b>'+bfMoeda(tot.totalMin/60*vh)+'</b></div><div><span>+ limite</span><b>'+bfMoeda(excValor)+'</b></div><div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div><div><span>Registrado até agora</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>';
+    document.getElementById("bf-sim-total").innerHTML = '<div><span>Previsto</span><b>'+bfMoeda(tot.totalMin/60*vh)+'</b></div><div><span>+ limite</span><b>'+bfMoeda(excValor)+'</b></div><div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div>' +
+      '<div class="real-ini"><span>Cobertura já ocorrida</span><b>'+bfMoeda(tot.acumMin/60*vh)+'</b></div><div><span>Horas a mais registradas</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
+      '<div class="real"><span>Já realizado até agora</span><b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></div>';
     const orc = bfLerMoeda(document.getElementById("bf-orcamento"));
     const usado = Math.max(comExc, prevValor);
     const barra = document.getElementById("bf-orc-barra"), otxt = document.getElementById("bf-orc-txt"), acima = orc > 0 && usado > orc;
@@ -3872,8 +3876,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       : '<small>Orçamento aprovado</small><b>Aguardando aprovação</b><span>Após a aprovação, informe o valor à Allied IT.</span>';
     document.getElementById("bfg-lim-tit").textContent = "Se a equipe usar o limite combinado";
     document.getElementById("bfg-sim-total").innerHTML = '<div><span>Previsto</span><b>'+bfMoeda(tot.totalMin/60*vh)+'</b></div><div><span>+ limite combinado ('+bfHorasTxt(exc*60)+'/dia)</span><b>'+bfMoeda(excValor)+'</b></div>' +
-      '<div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div><div><span>Horas a mais registradas</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
-      '<div><span>Já realizado até agora</span><b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></div>';
+      '<div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div>' +
+      '<div class="real-ini"><span>Cobertura já ocorrida</span><b>'+bfMoeda(tot.acumMin/60*vh)+'</b></div><div><span>Horas a mais registradas</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
+      '<div class="real"><span>Já realizado até agora</span><b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></div>';
     const barra = document.getElementById("bfg-orc-barra"), otxt = document.getElementById("bfg-orc-txt"), acima = orc > 0 && usado > orc;
     barra.style.width = (orc > 0 ? Math.min(100, usado/orc*100) : 0) + "%";
     barra.classList.toggle("acima", acima); otxt.classList.toggle("acima", acima);
