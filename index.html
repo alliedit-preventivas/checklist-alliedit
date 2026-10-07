@@ -948,6 +948,24 @@
   .bfg-conteudo:not([hidden]){flex:1; display:flex; flex-direction:column; gap:10px;}
   .bfg-topo{display:flex; align-items:center; gap:16px; flex-wrap:wrap; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:16px; padding:8px 18px; box-shadow:0 10px 30px rgba(5,110,140,.18);}
   .bfg-logo{height:24px; filter:brightness(0) invert(1);}
+  .bfg-logo-sephora{display:none; height:22px;}
+  .bfg-cores .tema-cores-btn{width:24px; height:24px;} .bfg-cores .tema-cores-amostra{width:15px; height:15px;}
+  :root[data-tema="sephora"] .bfg-logo{display:none;} :root[data-tema="sephora"] .bfg-logo-sephora{display:block;}
+  :root[data-tema="sephora"] .bfg-topo{background:#000; box-shadow:0 10px 30px rgba(0,0,0,.18); position:relative;}
+  :root[data-tema="sephora"] .bfg-topo::after{content:""; position:absolute; left:18px; right:18px; bottom:0; height:4px; background:repeating-linear-gradient(90deg, #000 0 8px, #fff 8px 16px); border-radius:0 0 4px 4px;}
+  :root[data-tema="sephora"] #view-bfg .bfc-selo{background:#fff; color:#000;}
+  :root[data-tema="sephora"] .bfg-caixa{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.25);} :root[data-tema="sephora"] .bfg-caixa small{color:#fff;}
+  :root[data-tema="sephora"] #view-bfg .bf-ic{background:#F0F0F0; color:#000;} :root[data-tema="sephora"] #view-bfg .bf-ic-alerta{background:#FCE8E6; color:#B3261E;}
+  :root[data-tema="sephora"] #view-bfg .bf-bloco-tit, :root[data-tema="sephora"] #view-bfg .bf-horarios li b, :root[data-tema="sephora"] #view-bfg .bf-canais li svg, :root[data-tema="sephora"] #view-bfg .bf-gestao-pessoa a{color:#000;}
+  :root[data-tema="sephora"] #view-bfg .bf-horarios li{background:#F2F2F2;}
+  :root[data-tema="sephora"] #view-bfg .bf-mes.atual{border-color:#000; box-shadow:0 0 0 1px #000;}
+  :root[data-tema="sephora"] #view-bfg .bfg-mes-total, :root[data-tema="sephora"] .bfg-orc-aprov{background:#000; border-color:#000;}
+  :root[data-tema="sephora"] #view-bfg .bfg-mes-total .bf-mes-valor, :root[data-tema="sephora"] .bfg-orc-aprov small{color:#fff;}
+  :root[data-tema="sephora"] #view-bfg .bf-btn-sec{color:#000; border-color:#CFCFCF;} :root[data-tema="sephora"] #view-bfg .bf-btn-sec:hover{background:#F0F0F0;}
+  :root[data-tema="sephora"] #view-bfg .bf-cal-dia.hoje{border-color:#000;} :root[data-tema="sephora"] #view-bfg .bf-cal-dia.hoje .n{color:#000;}
+  :root[data-tema="sephora"] #view-bfg .bf-cal-dia.sel{border-color:#000; box-shadow:0 0 0 2px #000;}
+  :root[data-tema="sephora"] #view-bfg .bf-cal-dia .n i{background:#000; color:#fff;}
+  :root[data-tema="sephora"] #view-bfg .bf-cal-dia:hover{border-color:#9E9E9E;}
   .bfg-tit{flex:1; min-width:220px; display:flex; flex-wrap:wrap; align-items:center; gap:2px 10px;}
   .bfg-tit h1{margin:0; font-size:20px; line-height:1.15;}
   .bfg-tit p{margin:0; flex-basis:100%; font-size:12px; opacity:.88;}
@@ -2164,7 +2182,12 @@
     <div class="bfg-conteudo" id="bfg-conteudo" hidden>
       <section class="bfg-topo">
         <img class="bfg-logo" id="bfg-logo" alt="Allied IT">
+        <img class="bfg-logo bfg-logo-sephora" id="bfg-logo-sephora" alt="Sephora">
         <div class="bfg-tit"><span class="bfc-selo" id="bfg-selo"></span><h1>Acompanhamento da hotline</h1><p id="bfg-sub"></p></div>
+        <div class="tema-cores bfg-cores" role="group" aria-label="Cores da página">
+          <button type="button" class="tema-cores-btn active" data-cores="alliedit" aria-pressed="true" aria-label="Cores AlliedIT" title="Cores AlliedIT"><i class="tema-cores-amostra amostra-alliedit"></i></button>
+          <button type="button" class="tema-cores-btn" data-cores="sephora" aria-pressed="false" aria-label="Cores Sephora" title="Cores Sephora"><i class="tema-cores-amostra amostra-sephora"></i></button>
+        </div>
         <div class="bfg-agora"><div class="bfc-status" id="bfg-status"><i></i><span>—</span></div><div class="bfg-turno" id="bfg-turno"></div></div>
         <div class="bfg-caixa"><small>Período</small><b id="bfg-dia">—</b><span id="bfg-dia-sub"></span></div>
         <div class="bfg-caixa" id="bfg-cd" role="timer"><small id="bfg-cd-tit">Faltam para a Black Friday</small><b id="bfg-cd-txt">—</b><span id="bfg-cd-data"></span></div>
@@ -3742,6 +3765,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("view-bfg").classList.add("active");
     document.title = "Black Friday · Acompanhamento da hotline · Allied IT";
     const logo = document.querySelector("header .brand-logo-alliedit"); if(logo) document.getElementById("bfg-logo").src = logo.src;
+    const logoSeph = document.querySelector("header .brand-logo-sephora"); if(logoSeph) document.getElementById("bfg-logo-sephora").src = logoSeph.src;
+    // Cores AlliedIT ou Sephora (preto e branco): a escolha fica guardada só neste navegador
+    let corBfg = "alliedit"; try{ if(localStorage.getItem("coresOnePageBF") === "sephora") corBfg = "sephora"; }catch(e){}
+    aplicarTemaCores(corBfg);
+    document.querySelectorAll(".bfg-cores .tema-cores-btn").forEach(function(b){
+      b.addEventListener("click", function(){ aplicarTemaCores(b.dataset.cores); try{ localStorage.setItem("coresOnePageBF", b.dataset.cores); }catch(e){} });
+    });
     let pub = null, d = null;
     try{
       const res = await Promise.all([supabaseClient.from("bf_publico").select("dados").eq("id", "onepage").maybeSingle(), bfgBuscar()]);
@@ -3810,7 +3840,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const ap = document.getElementById("bfg-orc-aprov");
     ap.classList.toggle("pendente", !orc);
     ap.innerHTML = orc ? '<small>Orçamento aprovado</small><b>'+bfMoeda(orc)+'</b><span>Valor informado pela Sephora</span>'
-      : '<small>Orçamento aprovado</small><b>Aguardando aprovação</b><span>Quando o orçamento for aprovado, informe o valor à gestão Allied IT.</span>';
+      : '<small>Orçamento aprovado</small><b>Aguardando aprovação</b><span>Após a aprovação, informe o valor à Allied IT.</span>';
     document.getElementById("bfg-lim-tit").textContent = "Se a equipe usar o limite combinado";
     document.getElementById("bfg-sim-total").innerHTML = '<div><span>Previsto</span><b>'+bfMoeda(tot.totalMin/60*vh)+'</b></div><div><span>+ limite combinado ('+bfHorasTxt(exc*60)+'/dia)</span><b>'+bfMoeda(excValor)+'</b></div>' +
       '<div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div><div><span>Horas a mais registradas</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
