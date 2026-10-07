@@ -778,19 +778,34 @@
   .bf-escala{margin-top:14px;}
   /* calendário do mês */
   .bf-cal-corpo{display:grid; grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr); gap:14px; align-items:start;}
-  .bf-cal-grade{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:5px;}
-  .bf-cal-cab{font-size:11px; font-weight:700; color:var(--text-muted); text-align:center; text-transform:uppercase; letter-spacing:.6px; padding-bottom:2px;}
-  .bf-cal-dia{display:flex; flex-direction:column; align-items:flex-start; gap:2px; min-height:62px; border:1px solid #E1E8EB; border-radius:9px; background:#fff; padding:5px 6px; font-family:inherit; text-align:left; cursor:pointer; color:var(--navy); min-width:0;}
-  .bf-cal-dia:hover{border-color:#9CC9D6;}
-  .bf-cal-dia .n{font-size:13px; font-weight:700; display:flex; align-items:center; gap:4px;}
-  .bf-cal-dia .n i{font-style:normal; font-size:9px; background:#0E2841; color:#F7D51C; border-radius:6px; padding:0 5px;}
-  .bf-cal-dia .eq{font-size:9.5px; color:var(--text-muted); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
-  .bf-cal-dia .ex{font-size:10.5px; font-weight:700; border-radius:7px; padding:1px 6px; background:#FFF3C4; color:#8A6D00; margin-top:auto;}
-  .bf-cal-dia.alto{background:#FCE8E6; border-color:#F3C9C5;} .bf-cal-dia.alto .ex{background:#B3261E; color:#fff;}
-  .bf-cal-dia.medio{background:#FFFBEA;}
-  .bf-cal-dia.hoje{border-color:#056E8C;} .bf-cal-dia.hoje .n{color:#056E8C;}
-  .bf-cal-dia.sel{box-shadow:0 0 0 2px #056E8C; border-color:#056E8C;}
-  .bf-cal-dia.fora{background:#F7F9FA; color:#B5C0C6; cursor:default;}
+  /* Calendário (Planejamento e One Page BF): dia em cartão, hoje em círculo, analistas em etiquetas, feriado com faixa lilás */
+  .bf-cal-grade{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:6px;}
+  .bf-cal-cab{font-size:10.5px; font-weight:700; color:#8496A0; text-align:center; text-transform:uppercase; letter-spacing:.9px; padding:2px 0 6px; border-bottom:1px solid #EEF2F4;}
+  .bf-cal-cab.fds{color:#056E8C;}
+  .bf-cal-dia{position:relative; display:flex; flex-direction:column; align-items:stretch; gap:3px; min-height:66px; border:1px solid #E6ECEF; border-radius:12px; background:#fff; padding:6px 7px 6px 8px; font-family:inherit; text-align:left; cursor:pointer; color:var(--navy); min-width:0; overflow:hidden; transition:border-color .15s, box-shadow .15s, transform .15s;}
+  .bf-cal-dia:hover{border-color:#9CC9D6; box-shadow:0 4px 12px rgba(5,110,140,.10); transform:translateY(-1px);}
+  .bf-cal-dia:focus-visible{outline:2px solid #056E8C; outline-offset:2px;}
+  .bf-cal-dia.fds{background:#FAFCFD;}
+  .bf-cal-vazio{border:1px dashed #EEF2F4; border-radius:12px; min-height:30px;}
+  .bf-cal-dia .n{display:flex; align-items:center; justify-content:space-between; gap:4px;}
+  .bf-cal-dia .n b{font-size:13.5px; font-weight:700; min-width:22px; height:22px; display:inline-grid; place-items:center; border-radius:50%; margin:-2px 0 0 -3px;}
+  .bf-cal-dia .n i{font-style:normal; font-size:9px; font-weight:700; letter-spacing:.4px; background:#0E2841; color:#F7D51C; border-radius:6px; padding:1px 6px;}
+  .bf-cal-dia .eq{display:flex; flex-wrap:nowrap; gap:2px; overflow:hidden; max-width:100%;}
+  .bf-cal-dia .eq i{font-style:normal; font-size:9px; font-weight:600; color:#3E5866; background:#EEF3F5; border-radius:5px; padding:0 4px; line-height:15px; flex:none;}
+  .bf-cal-dia .tags{display:flex; align-items:center; gap:3px; min-width:0;}
+  .bf-cal-dia .ex{font-size:10px; font-weight:700; border-radius:20px; padding:1px 7px; background:#FFE9A8; color:#7A5B00; white-space:nowrap;}
+  .bf-cal-dia.medio{border-color:#F2DC8C; background:#FFFDF4;}
+  .bf-cal-dia.alto{border-color:#F0B9B3; background:#FFF6F5;} .bf-cal-dia.alto .ex{background:#B3261E; color:#fff;}
+  .bf-cal-dia.feriado{background:#F8F5FD; border-color:#E2D8F3;}
+  .bf-cal-dia.feriado::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:#8B6CC7;}
+  .bf-cal-dia .fer{font-size:9.5px; font-weight:700; color:#6B4FA3; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
+  .bf-cal-dia.black{border-color:#0E2841; box-shadow:inset 0 0 0 1px #0E2841;}
+  .bf-cal-dia.hoje .n b{background:#056E8C; color:#fff;}
+  .bf-cal-dia.sel{border-color:#056E8C; box-shadow:0 0 0 2px #056E8C, 0 6px 16px rgba(5,110,140,.16);}
+  .bf-cal-dia.fora{background:transparent; border-style:dashed; border-color:#EEF2F4; color:#C2CCD1; cursor:default; box-shadow:none; transform:none;}
+  .bf-cal-det .bf-det-tit b{font-size:15.5px;}
+  .bf-cal-leg{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:11px; color:var(--text-muted); margin-top:10px;}
+  .bf-cal-leg i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px;}
   .bf-cal-det{border:1px solid #E1E8EB; border-radius:12px; padding:11px 12px; display:flex; flex-direction:column; gap:7px; background:#FBFCFC;}
   .bf-det-tit{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
   .bf-det-tit b{font-size:14.5px; color:var(--navy);}
@@ -816,8 +831,6 @@
   .bf-fer-opcao small{color:var(--text-muted);}
   .bf-regras{margin:8px 0 0; padding-left:18px; font-size:11.5px; color:var(--text-muted); line-height:1.5;}
   .bf-regras b{color:var(--navy);}
-  .bf-cal-dia.feriado{background:#F1ECFA; border-color:#D9CCEF;}
-  .bf-cal-dia .fer{font-size:9.5px; font-weight:700; color:#6B4FA3; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
   .bf-det-fer{background:#F1ECFA; border-radius:8px; padding:6px 9px; font-size:11.5px; color:#4A3577; line-height:1.4;}
   .bf-det-fer b{display:block; color:#6B4FA3;}
   .bf-escala-fer{margin-top:10px; font-size:11.5px; color:#4A3577; background:#F1ECFA; border-radius:9px; padding:7px 10px; line-height:1.45;}
@@ -949,7 +962,8 @@
   .bfg-topo{display:flex; align-items:center; gap:16px; flex-wrap:wrap; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:16px; padding:8px 18px; box-shadow:0 10px 30px rgba(5,110,140,.18);}
   .bfg-logo{height:24px; filter:brightness(0) invert(1);}
   .bfg-logo-sephora{display:none; height:22px;}
-  .bfg-cores .tema-cores-btn{width:24px; height:24px;} .bfg-cores .tema-cores-amostra{width:15px; height:15px;}
+  .bfg-cores{flex-direction:column; gap:3px; margin-left:-6px; opacity:.35; transition:opacity .2s;} .bfg-cores:hover, .bfg-cores:focus-within{opacity:1;}
+  .bfg-cores .tema-cores-btn{width:16px; height:16px; border-width:1px;} .bfg-cores .tema-cores-amostra{width:10px; height:10px;}
   :root[data-tema="sephora"] .bfg-logo{display:none;} :root[data-tema="sephora"] .bfg-logo-sephora{display:block;}
   :root[data-tema="sephora"] .bfg-topo{background:#000; box-shadow:0 10px 30px rgba(0,0,0,.18); position:relative;}
   :root[data-tema="sephora"] .bfg-topo::after{content:""; position:absolute; left:18px; right:18px; bottom:0; height:4px; background:repeating-linear-gradient(90deg, #000 0 8px, #fff 8px 16px); border-radius:0 0 4px 4px;}
@@ -962,10 +976,10 @@
   :root[data-tema="sephora"] #view-bfg .bfg-mes-total, :root[data-tema="sephora"] .bfg-orc-aprov{background:#000; border-color:#000;}
   :root[data-tema="sephora"] #view-bfg .bfg-mes-total .bf-mes-valor, :root[data-tema="sephora"] .bfg-orc-aprov small{color:#fff;}
   :root[data-tema="sephora"] #view-bfg .bf-btn-sec{color:#000; border-color:#CFCFCF;} :root[data-tema="sephora"] #view-bfg .bf-btn-sec:hover{background:#F0F0F0;}
-  :root[data-tema="sephora"] #view-bfg .bf-cal-dia.hoje{border-color:#000;} :root[data-tema="sephora"] #view-bfg .bf-cal-dia.hoje .n{color:#000;}
+  :root[data-tema="sephora"] #view-bfg .bf-cal-dia.hoje .n b{background:#000; color:#fff;} :root[data-tema="sephora"] #view-bfg .bf-cal-cab.fds{color:#000;} :root[data-tema="sephora"] #view-bfg .bf-cal-dia.black{border-color:#000; box-shadow:inset 0 0 0 1px #000;}
   :root[data-tema="sephora"] #view-bfg .bf-cal-dia.sel{border-color:#000; box-shadow:0 0 0 2px #000;}
   :root[data-tema="sephora"] #view-bfg .bf-cal-dia .n i{background:#000; color:#fff;}
-  :root[data-tema="sephora"] #view-bfg .bf-cal-dia:hover{border-color:#9E9E9E;}
+  :root[data-tema="sephora"] #view-bfg .bf-cal-dia:hover{border-color:#9E9E9E;} :root[data-tema="sephora"] #view-bfg .bf-cal-leg i[style*="056E8C"]{background:#000 !important;}
   .bfg-tit{flex:1; min-width:220px; display:flex; flex-wrap:wrap; align-items:center; gap:2px 10px;}
   .bfg-tit h1{margin:0; font-size:20px; line-height:1.15;}
   .bfg-tit p{margin:0; flex-basis:100%; font-size:12px; opacity:.88;}
@@ -974,7 +988,7 @@
   .bfg-turno{font-size:11.5px; opacity:.92;}
   .bfg-caixa{background:rgba(14,40,65,.45); border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:4px 14px; text-align:center; min-width:118px;}
   .bfg-caixa small{display:block; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#F7D51C;}
-  .bfg-caixa b{display:block; font-size:17px; font-variant-numeric:tabular-nums; line-height:1.25;}
+  .bfg-caixa b{display:block; font-size:21px; font-variant-numeric:tabular-nums; line-height:1.25;}
   .bfg-caixa span{display:block; font-size:11px; opacity:.85;}
   .bfg-corpo{flex:1; display:grid; grid-template-columns:minmax(300px,1fr) minmax(0,3fr); gap:10px; min-height:0;}
   .bfg-esq{display:flex; flex-direction:column; gap:10px; min-width:0; min-height:0;}
@@ -1005,12 +1019,10 @@
   .bfg-cal-nav{display:flex; gap:6px;}
   .bfg-cal-corpo{flex:1; display:grid; grid-template-columns:minmax(0,2.5fr) minmax(280px,1fr); gap:12px; min-height:0;}
   .bfg-grade{grid-template-rows:auto; grid-auto-rows:minmax(50px,1fr);}
-  .bfg-grade .bf-cal-dia{min-height:0;}
+  .bfg-grade .bf-cal-dia{min-height:0; padding:4px 6px 4px 7px; gap:2px;} .bfg-grade .bf-cal-dia .n b{min-width:19px; height:19px; font-size:12.5px;}
   .bfg-cal-corpo .bf-cal-det{overflow:auto; align-self:stretch;}
   .bfg-cal-dia-prev{font-size:9.5px; color:#B3261E; line-height:1.2;}
   .bfg-extras li{padding-right:7px;}
-  .bfg-leg{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:11px; color:var(--text-muted); margin-top:8px;}
-  .bfg-leg i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; border:1px solid rgba(0,0,0,.08);}
   /* computador com tela de altura normal: tudo numa tela só (o calendário se ajusta à altura que sobra); em telas baixas, rola a página */
   @media (min-width:1251px) and (min-height:860px){ #view-bfg.active{height:100vh; min-height:640px;} .bfg-conteudo:not([hidden]){min-height:0;} .bfg-corpo{grid-template-rows:minmax(0,1fr);} .bfg-esq{overflow:auto;} .bfg-hot{flex:1;} .bfg-cal{min-height:0;} .bfg-cal-corpo{grid-template-rows:minmax(0,1fr);} .bfg-grade{grid-auto-rows:minmax(0,1fr); min-height:0;} .bfg-grade .bf-cal-dia{overflow:hidden;} }
   @media (max-width:1250px){ .bfg-corpo{grid-template-columns:minmax(0,1fr);} .bfg-esq{order:2; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
@@ -2118,6 +2130,7 @@
         <div class="bf-cal-grade" id="bf-cal-grade"></div>
         <div class="bf-cal-det" id="bf-cal-det" aria-live="polite"></div>
       </div>
+      <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#0E2841"></i>BF = Black Friday</span><span>A1 a A5 = analistas do dia</span></div>
     </section>
 
     <section class="bf-card bf-escala">
@@ -2184,13 +2197,13 @@
         <img class="bfg-logo" id="bfg-logo" alt="Allied IT">
         <img class="bfg-logo bfg-logo-sephora" id="bfg-logo-sephora" alt="Sephora">
         <div class="bfg-tit"><span class="bfc-selo" id="bfg-selo"></span><h1>Acompanhamento da hotline</h1><p id="bfg-sub"></p></div>
+        <div class="bfg-agora"><div class="bfc-status" id="bfg-status"><i></i><span>—</span></div><div class="bfg-turno" id="bfg-turno"></div></div>
+        <div class="bfg-caixa"><small>Período</small><b id="bfg-dia">—</b><span id="bfg-dia-sub"></span></div>
+        <div class="bfg-caixa" id="bfg-cd" role="timer"><small id="bfg-cd-tit">Faltam para a Black Friday</small><b id="bfg-cd-txt">—</b><span id="bfg-cd-data"></span></div>
         <div class="tema-cores bfg-cores" role="group" aria-label="Cores da página">
           <button type="button" class="tema-cores-btn active" data-cores="alliedit" aria-pressed="true" aria-label="Cores AlliedIT" title="Cores AlliedIT"><i class="tema-cores-amostra amostra-alliedit"></i></button>
           <button type="button" class="tema-cores-btn" data-cores="sephora" aria-pressed="false" aria-label="Cores Sephora" title="Cores Sephora"><i class="tema-cores-amostra amostra-sephora"></i></button>
         </div>
-        <div class="bfg-agora"><div class="bfc-status" id="bfg-status"><i></i><span>—</span></div><div class="bfg-turno" id="bfg-turno"></div></div>
-        <div class="bfg-caixa"><small>Período</small><b id="bfg-dia">—</b><span id="bfg-dia-sub"></span></div>
-        <div class="bfg-caixa" id="bfg-cd" role="timer"><small id="bfg-cd-tit">Faltam para a Black Friday</small><b id="bfg-cd-txt">—</b><span id="bfg-cd-data"></span></div>
       </section>
       <div class="bfg-corpo">
         <div class="bfg-esq">
@@ -2231,7 +2244,7 @@
               </div>
             </div>
             <div class="bfg-cal-corpo"><div class="bf-cal-grade bfg-grade" id="bfg-grade"></div><div class="bf-cal-det" id="bfg-det"></div></div>
-            <div class="bfg-leg"><span><i style="background:#FFF3C4"></i>Dia com hora a mais</span><span><i style="background:#FCE8E6"></i>Acima do limite combinado do dia</span><span><i style="background:#F1ECFA"></i>Feriado nacional</span><span><i style="background:#0E2841"></i>BF = Black Friday</span><span>A1 a A5 = analistas na escala do dia · clique no dia para ver o detalhe</span></div>
+            <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#0E2841"></i>BF = Black Friday</span><span>A1 a A5 = analistas do dia</span><span>· clique no dia para ver o detalhe</span></div>
           </section>
         </div>
       </div>
@@ -3469,18 +3482,18 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     aviso.hidden = !bfExtrasErro; aviso.textContent = bfExtrasErro;
     // grade do mês (segunda a domingo)
     const vazio = (d1.getDay()+6) % 7;
-    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(function(n){ return '<div class="bf-cal-cab">'+n+'</div>'; }).join("");
+    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(function(n, i){ return '<div class="bf-cal-cab'+(i >= 5 ? ' fds' : '')+'">'+n+'</div>'; }).join("");
     for(let k=0;k<vazio;k++) html += '<div class="bf-cal-vazio"></div>';
     dias.forEach(function(iso){
       const noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim, ex = noPeriodo ? bfExtraDiaMin(iso) : 0;
       const fer = noPeriodo ? bfFeriado(iso) : null;
-      const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '')+(iso===BF_CONFIG.blackFriday?' black':'');
+      const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '')+(iso===BF_CONFIG.blackFriday?' black':'')+([0,6].indexOf(bfData(iso).getDay()) >= 0 ? ' fds' : '');
       const equipe = noPeriodo ? bfEscalaDoDia(iso).map(function(a){ return a.nome.replace("Analista ","A"); }).join(" ") : "";
       html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(ex?' · '+bfHorasTxt(ex)+' a mais':'')+'">' +
-        '<span class="n">'+Number(iso.slice(8,10))+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+'</span>' +
+        '<span class="n"><b>'+Number(iso.slice(8,10))+'</b><span class="tags">'+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+(ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '')+'</span></span>' +
         (fer ? '<span class="fer" title="Feriado nacional">'+escapeHtml(fer.nome)+'</span>' : '') +
-        (equipe ? '<span class="eq">'+equipe+'</span>' : '') +
-        (ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '') + '</button>';
+        (equipe ? '<span class="eq">'+equipe.split(" ").map(function(c){ return '<i>'+escapeHtml(c)+'</i>'; }).join("")+'</span>' : '') +
+        '</button>';
     });
     document.getElementById("bf-cal-grade").innerHTML = html;
     renderDiaBF();
@@ -3867,17 +3880,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bfg-cal-ant").disabled = i <= 0;
     document.getElementById("bfg-cal-prox").disabled = i >= ms.length-1;
     document.getElementById("bfg-cal-hoje").disabled = bfgMesSel === bfMesPadrao();
-    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(function(n){ return '<div class="bf-cal-cab">'+n+'</div>'; }).join("");
+    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(function(n, i){ return '<div class="bf-cal-cab'+(i >= 5 ? ' fds' : '')+'">'+n+'</div>'; }).join("");
     for(let k=0;k<(d1.getDay()+6)%7;k++) html += '<div class="bf-cal-vazio"></div>';
     dias.forEach(function(iso){
       const noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim, ex = noPeriodo ? bfExtraDiaMin(iso) : 0, fer = noPeriodo ? bfFeriado(iso) : null;
-      const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfgDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '');
+      const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfgDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '')+(iso===BF_CONFIG.blackFriday?' black':'')+([0,6].indexOf(bfData(iso).getDay()) >= 0 ? ' fds' : '');
       const equipe = noPeriodo ? bfEscalaDoDia(iso).map(function(a){ return a.nome.replace("Analista ","A"); }).join(" ") : "";
       html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(ex?' · '+bfHorasTxt(ex)+' a mais':'')+'">' +
-        '<span class="n">'+Number(iso.slice(8,10))+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+'</span>' +
+        '<span class="n"><b>'+Number(iso.slice(8,10))+'</b><span class="tags">'+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+(ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '')+'</span></span>' +
         (fer ? '<span class="fer" title="Feriado nacional">'+escapeHtml(fer.nome)+'</span>' : '') +
-        (equipe ? '<span class="eq">'+escapeHtml(equipe)+'</span>' : '') +
-        (ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '') + '</button>';
+        (equipe ? '<span class="eq">'+equipe.split(" ").map(function(c){ return '<i>'+escapeHtml(c)+'</i>'; }).join("")+'</span>' : '') +
+        '</button>';
     });
     document.getElementById("bfg-grade").innerHTML = html;
     renderBfgDia();
