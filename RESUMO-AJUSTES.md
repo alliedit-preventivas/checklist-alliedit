@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `c985a5a` (08/10/2026), equivale à `develop` `1faa412` |
+| Última publicação | `main` = commit `abdbecd` (08/10/2026), equivale à `develop` `03d512a` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -66,6 +66,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-checklist-datas-2026-10-08` | Produção antes da gravação ao sair do checklist e do filtro de datas (commit `22bf06e`) |
 | `producao-antes-status-checklist-2026-10-08` | Produção antes da correção do status recalculado (commit `8c4da68`) |
 | `producao-antes-limpar-formulario-2026-10-08` | Produção antes do Limpar Formulário voltar o status (commit `510b43e`) |
+| `producao-antes-checklist-vazio-2026-10-08` | Produção antes do checklist apagado item a item voltar o status (commit `c985a5a`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -485,3 +486,4 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Agenda Semanal (Agendamento):** clicar no dia filtra as lojas agendadas naquele dia (clicar de novo tira); campos De/Até filtram por período (inclui concluídas); lista em ordem de data e hora; soma com status e busca; mantido ao atualizar (F5).
 - **Correção (08/10/2026):** a correção automática de status do Agendamento (`normalizarParaStatus`) passou a considerar `checklistIniciado`; antes devolvia a loja para "Não iniciado" ao voltar à tela inicial. Publicado na `main` `510b43e` (= `develop` `d9d927b`), tag `producao-antes-status-checklist-2026-10-08`.
 - **Correção (08/10/2026):** "Limpar Formulário" tira `checklistIniciado` e recalcula o status (volta para Não iniciado, ou para o status de chamado/protocolo/técnico se ainda preenchidos). Publicado na `main` `c985a5a` (= `develop` `1faa412`), tag `producao-antes-limpar-formulario-2026-10-08`.
+- **Ajuste (08/10/2026):** apagar os itens do checklist um por um até ficar em branco também volta a loja para Não iniciado (`checklistTemConteudo` compara com o formulário em branco do Limpar Formulário, ignorando ids e nomes automáticos). Publicado na `main` `abdbecd` (= `develop` `03d512a`), tag `producao-antes-checklist-vazio-2026-10-08`.
