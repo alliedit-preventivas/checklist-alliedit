@@ -2456,7 +2456,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function makeSupabaseAssets(sb, bucket){
     return {
       upload: async function(file){
-        const ext = (file.name && file.name.indexOf(".") !== -1) ? file.name.split(".").pop() : "bin";
+        // Só fotos (JPG, PNG, WEBP, HEIC) de até 10 MB: o banco também recusa outros tipos e arquivos maiores
+        const tiposOk = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+        if(tiposOk.indexOf(String(file.type||"").toLowerCase()) < 0){ alert("Envie uma foto (JPG, PNG, WEBP ou HEIC)."); throw new Error("tipo de arquivo não permitido"); }
+        if(file.size > 10*1024*1024){ alert("A foto tem mais de 10 MB. Tire a foto de novo com menor resolução ou envie outra."); throw new Error("arquivo grande demais"); }
+        const ext = (file.name && file.name.indexOf(".") !== -1) ? file.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "jpg" : "jpg";
         const path = (Date.now()+"_"+Math.random().toString(36).slice(2)+"."+ext);
         const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: false, contentType: file.type || "application/octet-stream" });
         if(error) throw error;
