@@ -2464,7 +2464,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   let db = null, assetsApi = null, downloadsApi = null;
   let lojasCache = [];
   let currentLojaId = null, currentLoja = null;
-  let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
+  let saveTimer = null, savePendente = false, unsubLojas = null, pendingLojasRender = false;
   let modoTecnico = false, modoTecnicoId = false, lojaParamId = null, autoAbriuLoja = false;
   // Modo gestão (link ?painel=1): abre só o Painel (Dashboard | Preventivas 2026), sem login e só para visualização.
   // Não mostra Agendamento nem Técnico e não abre checklists.
@@ -4175,6 +4175,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       mostrarAgradecimentoTecnico(function(){ executarSaidaChecklist(false); });
       return;
     }
+    salvarPendente();
     currentLojaId=null; currentLoja=null;
     if(modoTecnicoId){
       document.getElementById("view-checklist").classList.remove("active");
@@ -5155,6 +5156,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
 
   // ---------------- checklist view ----------------
   function openLoja(id, data, desbloqueado){
+    salvarPendente(); // mudança da loja anterior que ainda não tinha sido gravada
     if(modoTecnicoId) document.getElementById("view-tecnico-id").classList.add("hidden");
     currentLojaId = id;
     bloqueadoPorConclusao = (data.status === "concluido") && !desbloqueado;
@@ -6268,12 +6270,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(currentLoja.status !== "concluido") currentLoja.status = statusAutomatico(currentLoja);
     updateFinalizeUi();
     document.getElementById("save-status").textContent = "Salvando...";
-    clearTimeout(saveTimer);
+    clearTimeout(saveTimer); savePendente = true;
     saveTimer = setTimeout(persistNow, 900);
   }
+  // Antes de sair do checklist ou trocar de loja: grava na hora o que ainda estava esperando para salvar
+  // (sem isso, uma mudança feita menos de 1 s antes de sair se perdia e o status não mudava)
+  function salvarPendente(){ if(savePendente && currentLojaId && currentLoja) persistNow(); }
+  window.addEventListener("pagehide", salvarPendente);
   async function persistNow(){
     if(!currentLojaId || !currentLoja) return false;
-    clearTimeout(saveTimer);
+    clearTimeout(saveTimer); savePendente = false;
+    const idSalvo = currentLojaId; // a loja deste salvamento (mesmo que a pessoa troque de loja enquanto grava)
     const status = document.getElementById("save-status");
     try{
       const payload = sanitizeParaJson({
@@ -6290,11 +6297,19 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
         atualizadoEm: now()
       });
-      await db.doc("lojas/"+currentLojaId).update(payload);
-      status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-      reavaliarPendencias();
+      // cópia local já atualizada: a lista e a reabertura da loja mostram a mudança sem esperar a próxima leitura (20 s)
+      const naLista = lojasCache.find(function(l){ return l.id === idSalvo; }); if(naLista) Object.assign(naLista, payload);
+      await db.doc("lojas/"+idSalvo).update(payload);
+      if(currentLojaId === idSalvo){ // ainda na mesma loja: atualiza o aviso e as pendências da tela
+        status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+        reavaliarPendencias();
+      }
       return true;
-    }catch(e){ status.textContent = "Erro ao salvar — tentando novamente..."; saveTimer = setTimeout(persistNow, 2000); return false; }
+    }catch(e){
+      if(currentLojaId === idSalvo){ status.textContent = "Erro ao salvar — tentando novamente..."; savePendente = true; saveTimer = setTimeout(persistNow, 2000); }
+      else alert("Não foi possível salvar a última alteração da loja anterior. Abra a loja de novo e confira.");
+      return false;
+    }
   }
 
   // ---------------- calendário (cronograma) ----------------
