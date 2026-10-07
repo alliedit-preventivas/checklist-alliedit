@@ -1030,6 +1030,8 @@
   .bfg-pop-lista li.ex{background:#FFFBEA; border-color:#F2DC8C;} .bfg-pop-lista li.ref{background:#F8F5FD; border-color:#E2D8F3;} .bfg-pop-lista li.info{background:transparent; border-style:dashed;}
   .bfg-pop-lista .t{display:flex; justify-content:space-between; gap:8px; align-items:baseline;} .bfg-pop-lista .t span{font-weight:700; white-space:nowrap; font-variant-numeric:tabular-nums;}
   .bfg-pop-lista p{margin:3px 0 0; font-size:11.5px; color:var(--text-muted);}
+  .bfg-pop-lista li.fer{background:#F1ECFA; border-color:#D9CCEF; color:#4A3577;} .bfg-pop-lista li.fer .t b{color:#6B4FA3;}
+  .bfg-pop-regras{margin:4px 0 0; padding-left:16px; font-size:11.5px; line-height:1.45;} .bfg-pop-regras b{color:#4A3577;} .bfg-pop-lista .bfg-pop-regras li{border:none; background:none; padding:0; margin:2px 0; border-radius:0;}
   .bfg-pop-total{display:flex; justify-content:space-between; gap:8px; align-items:center; background:#0E2841; color:#fff; border-radius:10px; padding:8px 11px; margin-top:8px;}
   .bfg-pop-total b{font-size:15px; color:#F7D51C; font-variant-numeric:tabular-nums;}
   .bfg-pop-alerta{margin-top:6px; font-size:11.5px; font-weight:700; color:#B3261E; background:#FCE8E6; border-radius:8px; padding:6px 9px;}
@@ -3411,8 +3413,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function bfRegrasHtml(cfg){
     return '<li><b>Comercial ('+cfg.cargaDia.comercial+' h/dia):</b> o que passar de '+cfg.cargaDia.comercial+' h no dia é hora extra.</li>' +
       '<li><b>12x36 ('+cfg.cargaDia["12x36"]+' h/dia):</b> o que passar de '+cfg.cargaDia["12x36"]+' h no dia é hora extra.</li>' +
-      '<li><b>Domingo ou feriado:</b> quem entrar para ajudar conta só o período trabalhado, sem arredondar.</li>' +
-      '<li>Paga só o tempo trabalhado a mais, sem arredondar. Valores para 1 pessoa cobrindo.</li>';
+      '<li><b>Domingo ou feriado:</b> quem entrar para ajudar conta só o período trabalhado.</li>';
   }
   function bfListaFeriadosHtml(){
     const lista = []; for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){ const iso = bfIso(d), f = bfFeriado(iso); if(f) lista.push(BF_DIAS_CURTO[d.getDay()]+' '+iso.slice(8,10)+'/'+iso.slice(5,7)+' · '+escapeHtml(f.nome)); }
@@ -3549,7 +3550,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       const nomes = bfEscalaDoDia(iso).map(function(a){ return a.nome; });
       html += '<div class="bf-form" data-bf-form="'+iso+'">' +
         '<select data-campo="analista" aria-label="Analista">'+nomes.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'<option value="Outro">Outro analista</option></select>' +
-        '<select data-campo="minutos" aria-label="Tempo a mais"><option value="15">+15 min</option><option value="30" selected>+30 min</option><option value="45">+45 min</option><option value="60">+1 h</option><option value="90">+1h30</option><option value="120">+2 h</option><option value="180">+3 h</option><option value="240">+4 h</option></select>' +
+        '<input type="text" data-campo="horas" inputmode="decimal" maxlength="6" placeholder="Horas a mais (ex.: 1:30 ou 1,5)" aria-label="Horas a mais (ex.: 1:30 ou 1,5)">' +
         '<input type="text" data-campo="motivo" maxlength="120" placeholder="Motivo (ex.: chamado crítico)" aria-label="Motivo">' +
         '<div class="bf-form-acoes"><button type="button" data-bf-cancelar>Cancelar</button><button type="button" class="ok" data-bf-salvar>Salvar</button></div></div>';
     }else if(!bfExtrasErro){
@@ -3558,9 +3559,19 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     html += '<div class="bf-dia-total">'+(ex ? 'Total do dia: +'+bfHorasTxt(ex)+' · '+bfMoeda(ex/60*vh) : '')+'</div>';
     det.innerHTML = html;
   }
+  // Horas digitadas: "1:30", "1h30", "1,5", "2" ou "45min" viram minutos (0 se não entender)
+  function bfLerHorasDigitadas(txt){
+    const t = String(txt || "").trim().toLowerCase().replace(/\s+/g, "");
+    let m = t.match(/^(\d{1,2})(?::|h)(\d{1,2})?$/); if(m) return Number(m[1])*60 + Number(m[2] || 0);
+    m = t.match(/^(\d{1,3})min$/); if(m) return Number(m[1]);
+    m = t.match(/^(\d{1,2})(?:[.,](\d{1,2}))?h?$/); if(m) return Math.round(Number(m[1] + "." + (m[2] || "0")) * 60);
+    return 0;
+  }
   async function bfSalvarExtra(form){
-    const iso = form.dataset.bfForm, btn = form.querySelector("[data-bf-salvar]");
-    const reg = { data: iso, analista: form.querySelector('[data-campo="analista"]').value, minutos: Number(form.querySelector('[data-campo="minutos"]').value),
+    const iso = form.dataset.bfForm, btn = form.querySelector("[data-bf-salvar]"), campoHoras = form.querySelector('[data-campo="horas"]');
+    const minutos = bfLerHorasDigitadas(campoHoras.value);
+    if(!(minutos > 0 && minutos <= 720)){ alert("Digite as horas a mais, por exemplo 1:30 (1 hora e 30 minutos) ou 1,5. Máximo de 12 horas."); campoHoras.focus(); return; }
+    const reg = { data: iso, analista: form.querySelector('[data-campo="analista"]').value, minutos: minutos,
       motivo: form.querySelector('[data-campo="motivo"]').value.trim(), criado_por: nomeUsuarioAgn || null };
     btn.disabled = true; btn.textContent = "Salvando...";
     try{
@@ -3703,7 +3714,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
     document.getElementById("bf-cal-det").addEventListener("click", function(e){
       const add = e.target.closest("[data-bf-add]"), apagar = e.target.closest("[data-bf-apagar]");
-      if(add){ bfFormDia = add.dataset.bfAdd; renderDiaBF(); const m = document.querySelector('[data-bf-form] [data-campo="motivo"]'); if(m) m.focus(); return; }
+      if(add){ bfFormDia = add.dataset.bfAdd; renderDiaBF(); const m = document.querySelector('[data-bf-form] [data-campo="horas"]'); if(m) m.focus(); return; }
       if(e.target.closest("[data-bf-cancelar]")){ bfFormDia = null; renderDiaBF(); return; }
       if(e.target.closest("[data-bf-salvar]")){ bfSalvarExtra(e.target.closest("[data-bf-form]")); return; }
       if(apagar) bfApagarExtra(apagar.dataset.bfApagar);
@@ -3944,9 +3955,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       '<button type="button" class="bfg-pop-x" aria-label="Fechar">×</button></div>';
     html += '<div class="bfg-pop-sub">'+(futuro ? 'Cobrança prevista do dia' : 'Cobrança do dia')+'</div><ul class="bfg-pop-lista">';
     if(lacMin) html += item("", "Cobertura sem analista na escala", lacMin, 'Das '+lac.map(function(l){ return bfHoraCurta(l[0])+' às '+bfHoraCurta(l[1]); }).join(' e das ')+' a hotline está aberta, mas nenhum analista da escala está em turno. Uma pessoa cobre esse horário como hora extra.');
-    if(ferUtil) html += refMin
-      ? item("ref", "Reforço do feriado", refMin, 'No feriado os analistas comerciais folgam. Foi combinado '+(bfCenarioFer === "tecnico" ? 'um técnico das 08h às 11h15' : 'um extra de 8 h de trabalho')+' para reforçar o atendimento.')
-      : '<li class="info"><p>Feriado: os analistas comerciais folgam. Sem reforço combinado; conta só a cobertura até 00h.</p></li>';
+    if(fer) html += '<li class="fer"><div class="t"><b>Feriado: '+e(fer.nome)+'</b></div><ul class="bfg-pop-regras">'+bfRegrasHtml(BF_CONFIG)+'</ul></li>';
+    if(ferUtil && refMin) html += item("ref", "Reforço do feriado", refMin, 'Foi combinado '+(bfCenarioFer === "tecnico" ? 'um técnico das 08h às 11h15' : 'um extra de 8 h de trabalho')+' para reforçar o atendimento.');
     extras.forEach(function(x){
       html += item("ex", "Hora a mais registrada", Number(x.minutos)||0, (x.motivo ? '<b>Motivo:</b> '+e(x.motivo)+'. ' : '')+'Tempo além do horário da escala (comercial acima de 8 h, 12x36 acima de 11 h) ou acionamento no domingo/feriado.');
     });
