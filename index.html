@@ -637,6 +637,21 @@
   .agn-sair{display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-size:13px; font-weight:600; color:var(--agn-azul); background:#fff; border:1px solid #CFE0E6; border-radius:18px; padding:6px 12px; cursor:pointer;}
   .agn-sair:hover{background:#E6F1F5;}
   .agn-sair svg{width:15px; height:15px;}
+  /* Painel com login no mesmo padrão do Agendamento (body.agn-painel): menu lateral fixo + topo. O link da gestão (?painel=1) não usa. */
+  body.agn-painel{padding-left:224px;}
+  body.agn-painel .agn-side{position:fixed; left:0; top:0; bottom:0; width:224px; height:auto; z-index:20;}
+  body.agn-painel #view-painel{max-width:1500px !important; padding:16px 22px 24px;}
+  body.agn-painel .agn-topo .tema-cores-btn.active{border-color:var(--navy);}
+  body.agn-painel .agn-topo .tema-cores-amostra{box-shadow:0 0 0 1px rgba(14,40,65,.35);}
+  :root[data-tema="sephora"] body.agn-painel{background:var(--bg);}
+  :root[data-tema="sephora"] body.agn-painel .agn-side{background:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-nav.on{background:#fff; color:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-side-tag{color:#fff;}
+  :root[data-tema="sephora"] body.agn-painel .agn-topo{border-bottom-color:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-topo-txt b{color:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-av{background:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-sair{color:#000; border-color:#CFCFCF;}
+  @media (max-width:820px){ body.agn-painel{padding-left:0;} body.agn-painel .agn-side{position:static; width:auto;} body.agn-painel #view-painel{padding:12px 14px;} }
 
   /* duas colunas: lojas à esquerda, agenda + responsabilidade à direita */
   body.agn .lojas-layout{display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:14px; align-items:start; padding:14px 22px 16px;}
@@ -2656,7 +2671,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function showView(name){
     ["lojas","checklist","painel"].forEach(function(v){ document.getElementById("view-"+v).classList.toggle("active", v===name); });
     // Agendamento novo: menu lateral e topo próprios só no Agendamento com login (fora do técnico e da gestão)
-    document.body.classList.toggle("agn", name==="lojas" && agendamentoNovoAtivo());
+    // Painel com login segue o mesmo padrão (menu lateral + topo); o link da gestão continua com o cabeçalho antigo
+    const agnPainel = name==="painel" && agendamentoNovoAtivo();
+    document.body.classList.toggle("agn", (name==="lojas" || name==="painel") && agendamentoNovoAtivo());
+    document.body.classList.toggle("agn-painel", agnPainel);
+    if(agendamentoNovoAtivo()) posicionarMenuAgn(agnPainel);
     atualizarTituloAba(name);
     document.getElementById("nav-lojas").classList.toggle("active", name==="lojas");
     document.getElementById("nav-painel").classList.toggle("active", name==="painel");
@@ -2853,13 +2872,35 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("agn-nav-tecnico").addEventListener("click", function(){ document.getElementById("topo-nav-tecnico").click(); });
     document.getElementById("agn-cad-criar").addEventListener("click", function(){ document.getElementById("btn-duplicar-loja-central").click(); });
     document.getElementById("agn-cad-editar").addEventListener("click", function(){ document.getElementById("btn-editar-loja-central").click(); });
-    document.getElementById("agn-cad-excluir").addEventListener("click", function(e){ e.stopPropagation(); document.getElementById("btn-modo-selecao").click(); atualizarBotaoExcluirAgn(); });
+    document.getElementById("agn-cad-excluir").addEventListener("click", function(e){ e.stopPropagation(); if(document.getElementById("view-painel").classList.contains("active")) showView("lojas"); document.getElementById("btn-modo-selecao").click(); atualizarBotaoExcluirAgn(); });
     document.getElementById("btn-cancelar-selecao").addEventListener("click", atualizarBotaoExcluirAgn);
     document.getElementById("agn-sair").addEventListener("click", function(){
       supabaseClient.auth.signOut().catch(function(){}).then(function(){ window.location.reload(); });
     });
     document.getElementById("agn-limpar").addEventListener("click", limparFiltrosAgendamento);
     document.getElementById("agn-limpar2").addEventListener("click", limparFiltrosAgendamento);
+  }
+  // Menu lateral e topo são as mesmas peças no Agendamento e no Painel: só mudam de lugar (sem duplicar botões nem eventos)
+  let agnTopoTextos = null;
+  function posicionarMenuAgn(painel){
+    const side = document.getElementById("agn-side"), topo = document.getElementById("agn-topo");
+    const vp = document.getElementById("view-painel"), vl = document.getElementById("view-lojas");
+    if(!side || !topo || !vp || !vl) return;
+    const tb = topo.querySelector(".agn-topo-txt b"), ts = topo.querySelector(".agn-topo-txt span"), dir = topo.querySelector(".agn-topo-dir");
+    if(!agnTopoTextos) agnTopoTextos = {b: tb.textContent, s: ts.textContent};
+    const cores = document.getElementById("tema-cores");
+    if(painel){
+      if(topo.nextElementSibling !== vp){ vp.parentNode.insertBefore(side, vp); vp.parentNode.insertBefore(topo, vp); }
+      tb.textContent = "Dashboard | Preventivas 2026"; ts.textContent = "Indicadores da campanha Sephora 2026.";
+      if(cores && cores.parentNode !== dir) dir.insertBefore(cores, dir.firstChild);
+    }else{
+      if(side.parentNode !== vl){ vl.insertBefore(topo, vl.firstChild); vl.insertBefore(side, vl.firstChild); }
+      tb.textContent = agnTopoTextos.b; ts.textContent = agnTopoTextos.s;
+      const hd = document.querySelector("header .header-direita");
+      if(cores && hd && cores.parentNode !== hd) hd.insertBefore(cores, hd.firstChild);
+    }
+    document.getElementById("agn-nav-lojas").classList.toggle("on", !painel);
+    document.getElementById("agn-nav-painel").classList.toggle("on", painel);
   }
   function atualizarBotaoExcluirAgn(){
     const b = document.getElementById("agn-cad-excluir");
