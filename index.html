@@ -610,7 +610,7 @@
   /* menu lateral */
   body.agn .agn-side{display:block; grid-row:1 / span 2; position:sticky; top:0; height:100vh; overflow:hidden auto; box-sizing:border-box; padding:22px 12px;
     background:#056E8C var(--img-bg-azul) center/cover; color:#fff;}
-  body.agn .agn-side::after{content:""; position:absolute; left:-70px; bottom:-40px; width:300px; height:270px; background:var(--img-logo-branco) center/contain no-repeat; opacity:.07; pointer-events:none;}
+  body.agn .agn-side::after{content:""; position:absolute; left:-70px; bottom:0; width:300px; height:270px; background:var(--img-logo-branco) center/contain no-repeat; opacity:.07; pointer-events:none;}
   .agn-side-logo{height:32px; margin:0 8px 4px; display:block;}
   .agn-side-tag{color:var(--agn-amarelo); font-size:10.5px; font-weight:700; letter-spacing:1.6px; margin:0 10px 26px; line-height:1.25; text-transform:uppercase;}
   .agn-nav{display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; background:transparent; border:none; color:#fff; font-family:inherit; font-size:14.5px; text-align:left; padding:12px 14px; border-radius:10px; margin-bottom:4px; cursor:pointer; position:relative; z-index:1;}
@@ -730,7 +730,62 @@
   .bf-he-sub{text-align:right; font-weight:700; font-variant-numeric:tabular-nums;}
   .bf-he-tit span:last-child{text-align:right;}
   .bf-he-rodape{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:12px; font-size:12px; color:var(--text-muted);}
-  @media (max-width:1100px){ .bf-hero, .bf-grade{grid-template-columns:minmax(0,1fr);} }
+  /* Versão compacta: a One Page cabe inteira na tela (sem rolagem) */
+  body.agn-painel #view-bf{padding:12px 20px 14px;}
+  .bf-hero{padding:16px 22px; gap:16px; border-radius:16px;}
+  .bf-hero h2{font-size:30px; margin:8px 0 2px;}
+  .bf-hero-sub{font-size:14px; margin:0 0 10px;}
+  .bf-contagem{padding:10px 14px; flex-direction:row; align-items:center; gap:14px; text-align:left;}
+  .bf-contagem-tit{font-size:11px; line-height:1.3;}
+  .bf-contagem-data{font-size:11.5px; opacity:.85; margin-top:3px;}
+  .bf-contagem > div:first-child{flex:none; max-width:130px;}
+  .bf-contagem-num{margin:0; flex:1; gap:6px;}
+  .bf-contagem-num div{padding:7px 2px; text-align:center;}
+  .bf-contagem-num b{font-size:26px;}
+  .bf-contagem-num span{font-size:10px; margin-top:2px;}
+  .bf-grade{gap:12px; margin:12px 0;}
+  .bf-card{padding:14px 16px; border-radius:14px;}
+  .bf-card-cab{margin-bottom:10px; gap:10px;}
+  .bf-card-cab h3{font-size:15.5px;}
+  .bf-card-sub{font-size:12px;}
+  .bf-ic{width:34px; height:34px; border-radius:10px;}
+  .bf-ic svg{width:18px; height:18px;}
+  .bf-hot-status{margin-bottom:10px; padding:5px 11px; font-size:12.5px;}
+  .bf-hot-end{padding:9px 12px; margin-bottom:10px;}
+  .bf-btn{padding:8px 14px; font-size:13px;}
+  .bf-btn-peq{padding:6px 12px; font-size:12px;}
+  .bf-fases{gap:7px;}
+  .bf-fase{padding:7px 12px; gap:12px;}
+  .bf-fase-data{padding:5px 6px; min-width:86px;}
+  .bf-fase-data b{font-size:14px;}
+  .bf-fase-txt b{font-size:13.5px;}
+  .bf-fase-hora small{display:none;}
+  .bf-he-topo{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
+  .bf-he-topo .bf-card-cab{margin:0;}
+  .bf-he-grade{display:grid; grid-template-columns:minmax(0,1fr) 200px; gap:12px; align-items:stretch;}
+  .bf-he-itens{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;}
+  .bf-he-item{border:1px solid #E1E8EB; border-radius:12px; padding:9px 11px; display:flex; flex-direction:column; gap:2px; min-width:0;}
+  .bf-he-item > b{font-size:13.5px; color:var(--navy);}
+  .bf-he-item > small{font-size:11.5px; color:var(--text-muted);}
+  .bf-he-campos{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0 4px;}
+  .bf-he-campos label{display:flex; flex-direction:column; gap:2px; font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.4px;}
+  .bf-he-campos input{width:100%; box-sizing:border-box; font-family:inherit; font-size:14px; padding:5px 8px; border:1px solid #CFE0E6; border-radius:8px; color:var(--navy); background:#fff;}
+  .bf-he-campos input:focus{outline:2px solid #9CC9D6; outline-offset:0;}
+  .bf-he-item .bf-he-sub{text-align:left; font-size:15px; color:#056E8C;}
+  .bf-he-total{display:flex; flex-direction:column; justify-content:center; text-align:center;}
+  @media (max-width:1250px){ .bf-he-itens{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media (max-width:1100px){ .bf-hero, .bf-grade{grid-template-columns:minmax(0,1fr);} .bf-he-grade{grid-template-columns:minmax(0,1fr);} }
+  /* Telas baixas (notebook 1366x768): ainda mais justo para não rolar */
+  @media (max-height:860px) and (min-width:1101px){
+    body.agn-painel #view-bf{padding-top:8px; padding-bottom:8px;}
+    .bf-hero{padding:12px 20px;} .bf-hero h2{font-size:26px; margin:6px 0 0;} .bf-selo{font-size:10px; padding:3px 10px;} .bf-hero-sub{margin-bottom:8px;}
+    .bf-grade{margin:10px 0; gap:10px;} .bf-card{padding:11px 14px;}
+    .bf-card-cab{margin-bottom:8px;} .bf-card-cab .bf-card-sub{display:none;}
+    .bf-fases{gap:5px;} .bf-fase{padding:5px 12px;} .bf-fase-txt span{display:none;}
+    .bf-hot-status{margin-bottom:8px;} .bf-hot-end{margin-bottom:8px; padding:7px 12px;}
+    .bf-he-topo{margin-bottom:8px;} .bf-he-item{padding:7px 10px;} .bf-he-campos{margin:4px 0 2px;}
+  }
+  @media (max-width:560px){ .bf-he-itens{grid-template-columns:minmax(0,1fr);} .bf-contagem{flex-direction:column; text-align:center;} .bf-contagem > div:first-child{max-width:none;} }
   @media (max-width:760px){
     body.agn-painel #view-bf{padding:12px 14px;}
     .bf-hero{padding:20px 18px;} .bf-hero h2{font-size:30px;}
@@ -1753,14 +1808,13 @@
         <div class="bf-progresso-leg"><span>01/11 · início do esquenta</span><span>27/11 · Black Friday</span><span>30/11 · fim</span></div>
       </div>
       <div class="bf-contagem" role="timer" aria-label="Contagem regressiva para a Black Friday">
-        <div class="bf-contagem-tit" id="bf-contagem-tit">Faltam para a Black Friday</div>
+        <div><div class="bf-contagem-tit" id="bf-contagem-tit">Faltam para a Black Friday</div><div class="bf-contagem-data">Sexta-feira, 27/11/2026</div></div>
         <div class="bf-contagem-num">
           <div><b id="bf-cd-d">--</b><span>dias</span></div>
           <div><b id="bf-cd-h">--</b><span>horas</span></div>
           <div><b id="bf-cd-m">--</b><span>min</span></div>
           <div><b id="bf-cd-s">--</b><span>seg</span></div>
         </div>
-        <div class="bf-contagem-data">Sexta-feira, 27 de novembro de 2026</div>
       </div>
     </section>
 
@@ -1777,7 +1831,6 @@
           <a class="bf-btn bf-btn-pri" id="bf-hot-entrar" target="_blank" rel="noopener noreferrer">Entrar na hotline</a>
           <button type="button" class="bf-btn bf-btn-sec" id="bf-hot-copiar">Copiar link</button>
         </div>
-        <p class="bf-nota" id="bf-hot-nota">O link da sala no Teams será publicado aqui antes do início do esquenta.</p>
       </section>
 
       <section class="bf-card bf-agenda">
@@ -1788,18 +1841,14 @@
     </div>
 
     <section class="bf-card bf-he">
-      <div class="bf-card-cab bf-he-cab">
+      <div class="bf-he-topo">
         <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-          <div><h3>Previsão de hora extra</h3><div class="bf-card-sub">R$ 95,00 por pessoa, por hora · ajuste pessoas e horas para simular</div></div></div>
+          <div><h3>Previsão de hora extra</h3><div class="bf-card-sub">R$ 95,00 por pessoa/hora · pessoas × horas por dia × dias</div></div></div>
+        <button type="button" class="bf-btn bf-btn-sec bf-btn-peq" id="bf-he-padrao" title="A simulação fica guardada só neste navegador">Voltar aos valores sugeridos</button>
+      </div>
+      <div class="bf-he-grade">
+        <div class="bf-he-itens" id="bf-he-linhas"></div>
         <div class="bf-he-total"><small>Total previsto</small><b id="bf-he-total">R$ 0,00</b><span id="bf-he-horas">0 horas extras</span></div>
-      </div>
-      <div class="bf-he-tabela" role="table" aria-label="Previsão de hora extra por período">
-        <div class="bf-he-linha bf-he-tit" role="row"><span role="columnheader">Período</span><span role="columnheader">Dias</span><span role="columnheader">Pessoas</span><span role="columnheader">Horas extras por pessoa/dia</span><span role="columnheader">Subtotal</span></div>
-        <div id="bf-he-linhas"></div>
-      </div>
-      <div class="bf-he-rodape">
-        <span>Cálculo: pessoas × horas por dia × dias × R$ 95,00. Valores de simulação, guardados só neste navegador.</span>
-        <button type="button" class="bf-btn bf-btn-sec" id="bf-he-padrao">Voltar aos valores sugeridos</button>
       </div>
     </section>
   </div>
@@ -2784,18 +2833,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     elLink.classList.toggle("vazio", !link);
     if(link){ entrar.href = link; entrar.removeAttribute("aria-disabled"); } else { entrar.removeAttribute("href"); entrar.setAttribute("aria-disabled", "true"); }
     copiar.disabled = !link;
-    document.getElementById("bf-hot-nota").textContent = link ? "Entre pelo Teams no horário da hotline. Dúvidas fora do horário: registre no chamado." : "O link da sala no Teams será publicado aqui antes do início do esquenta.";
     // Previsão de hora extra
     const sim = bfLerSimulacao();
     document.getElementById("bf-he-linhas").innerHTML = BF_CONFIG.fases.map(function(f){
       const s = sim[f.id] || {};
       const p = s.p !== undefined ? s.p : f.pessoas, h = s.h !== undefined ? s.h : f.horas;
-      return '<div class="bf-he-linha" role="row" data-fase="'+f.id+'">' +
-        '<span role="cell"><b>'+escapeHtml(f.nome)+'</b><small>'+bfPeriodo(f)+' · '+bfHorario(f)+'</small></span>' +
-        '<span role="cell" data-rot="Dias">'+bfDias(f)+'</span>' +
-        '<span role="cell" data-rot="Pessoas"><input type="number" min="0" max="99" step="1" inputmode="numeric" data-campo="p" value="'+p+'" aria-label="Pessoas — '+escapeHtml(f.nome)+'"></span>' +
-        '<span role="cell" data-rot="Horas por pessoa/dia"><input type="number" min="0" max="24" step="0.5" inputmode="decimal" data-campo="h" value="'+h+'" aria-label="Horas extras por pessoa por dia — '+escapeHtml(f.nome)+'"></span>' +
-        '<span role="cell" class="bf-he-sub" data-rot="Subtotal">—</span></div>';
+      const dias = bfDias(f);
+      return '<div class="bf-he-item" data-fase="'+f.id+'">' +
+        '<b>'+escapeHtml(f.nome)+'</b><small>'+bfPeriodo(f)+' · '+dias+' dia'+(dias===1?"":"s")+'</small>' +
+        '<div class="bf-he-campos"><label>Pessoas<input type="number" min="0" max="99" step="1" inputmode="numeric" data-campo="p" value="'+p+'" aria-label="Pessoas — '+escapeHtml(f.nome)+'"></label>' +
+        '<label>Horas/dia<input type="number" min="0" max="24" step="0.5" inputmode="decimal" data-campo="h" value="'+h+'" aria-label="Horas extras por pessoa por dia — '+escapeHtml(f.nome)+'"></label></div>' +
+        '<div class="bf-he-sub">—</div></div>';
     }).join("");
     document.querySelectorAll("#bf-he-linhas input").forEach(function(inp){
       inp.addEventListener("input", function(){
