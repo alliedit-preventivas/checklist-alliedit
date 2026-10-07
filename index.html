@@ -2230,8 +2230,7 @@
             <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
               <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bfg-valor-hora"></div></div></div>
             <div class="bf-meses-grade" id="bfg-meses"></div>
-              <div class="bfg-cenario" id="bfg-cenario"></div>
-            <ul class="bf-regras" id="bfg-regras"></ul>
+                <ul class="bf-regras" id="bfg-regras"></ul>
           </section>
           <section class="bf-card bfg-cal">
             <div class="bfg-cal-cab">
@@ -3858,7 +3857,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       '<div class="bf-mes-linha"><span>Previsto</span><b>'+bfHorasTxt(tot.totalMin)+' · '+bfMoeda(tot.totalMin/60*vh)+'</b></div>' +
       '<div class="bf-mes-linha"><span>A mais</span><b>'+bfHorasTxt(tot.extraMin)+' · '+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
       '<div class="bf-mes-linha"><span>Realizado até agora</span><b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></div></div>';
-    document.getElementById("bfg-cenario").innerHTML = '<b>Feriados em dia útil:</b> os analistas comerciais folgam; conta como hora extra ' + BF_FER_OPCOES[bfCenarioFer].texto + '.';
     const orc = Number(plano.orcamento) || 0, exc = Math.max(0, Number(plano.limiteDia) || 0);
     const prevValor = (tot.totalMin + tot.extraMin)/60*vh, excValor = exc * tot.dias * vh, comExc = tot.totalMin/60*vh + excValor, usado = Math.max(comExc, prevValor);
     const ap = document.getElementById("bfg-orc-aprov");
