@@ -617,7 +617,11 @@
   .agn-nav:hover{background:rgba(255,255,255,.08);}
   .agn-nav.on{background:var(--agn-amarelo); color:#0E2841; font-weight:700; box-shadow:0 4px 12px rgba(0,0,0,.15);}
   .agn-nav svg{width:19px; height:19px; flex-shrink:0;}
-  .agn-nav-grupo{cursor:default;} .agn-nav-grupo:hover{background:transparent;}
+  /* Cadastro de loja: submenu fechado; abre e fecha ao clicar no grupo */
+  .agn-nav-grupo{gap:10px; padding-right:8px; white-space:nowrap;}
+  .agn-nav-grupo .agn-seta{width:15px; height:15px; margin-left:auto; transition:transform .2s;}
+  .agn-nav-grupo[aria-expanded="true"] .agn-seta{transform:rotate(180deg);}
+  @media (min-width:821px){ .agn-side .agn-sub:not(.aberto){display:none;} }
   .agn-sub{display:flex; flex-direction:column; margin:-4px 0 6px 31px; position:relative; z-index:1;}
   .agn-sub button{background:transparent; border:none; color:#fff; opacity:.85; font-family:inherit; font-size:12.8px; text-align:left; padding:5px 14px; border-radius:8px; cursor:pointer;}
   .agn-sub button:hover{opacity:1; background:rgba(255,255,255,.08);}
@@ -637,6 +641,21 @@
   .agn-sair{display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-size:13px; font-weight:600; color:var(--agn-azul); background:#fff; border:1px solid #CFE0E6; border-radius:18px; padding:6px 12px; cursor:pointer;}
   .agn-sair:hover{background:#E6F1F5;}
   .agn-sair svg{width:15px; height:15px;}
+  /* Painel com login no mesmo padrão do Agendamento (body.agn-painel): menu lateral fixo + topo. O link da gestão (?painel=1) não usa. */
+  body.agn-painel{padding-left:224px;}
+  body.agn-painel .agn-side{position:fixed; left:0; top:0; bottom:0; width:224px; height:auto; z-index:20;}
+  body.agn-painel #view-painel{max-width:1500px !important; padding:16px 22px 24px;}
+  body.agn-painel .agn-topo .tema-cores-btn.active{border-color:var(--navy);}
+  body.agn-painel .agn-topo .tema-cores-amostra{box-shadow:0 0 0 1px rgba(14,40,65,.35);}
+  :root[data-tema="sephora"] body.agn-painel{background:var(--bg);}
+  :root[data-tema="sephora"] body.agn-painel .agn-side{background:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-nav.on{background:#fff; color:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-side-tag{color:#fff;}
+  :root[data-tema="sephora"] body.agn-painel .agn-topo{border-bottom-color:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-topo-txt b{color:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-av{background:#000;}
+  :root[data-tema="sephora"] body.agn-painel .agn-sair{color:#000; border-color:#CFCFCF;}
+  @media (max-width:820px){ body.agn-painel{padding-left:0;} body.agn-painel .agn-side{position:static; width:auto;} body.agn-painel #view-painel{padding:12px 14px;} }
 
   /* duas colunas: lojas à esquerda, agenda + responsabilidade à direita */
   body.agn .lojas-layout{display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:14px; align-items:start; padding:14px 22px 16px;}
@@ -1074,9 +1093,9 @@
       <div class="agn-side-tag">Checklist de<br>Preventivas</div>
       <button type="button" class="agn-nav on" id="agn-nav-lojas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Agendamento</button>
       <button type="button" class="agn-nav" id="agn-nav-painel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Painel</button>
-      <button type="button" class="agn-nav" id="agn-nav-tecnico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>Técnico</button>
-      <div class="agn-nav agn-nav-grupo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg>Cadastro de loja</div>
-      <div class="agn-sub">
+      <button type="button" class="agn-nav" id="agn-nav-tecnico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="3.8"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>Área do Técnico</button>
+      <button type="button" class="agn-nav agn-nav-grupo" id="agn-cad-grupo" aria-expanded="false" aria-controls="agn-cad-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg>Cadastro de loja<svg class="agn-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="agn-sub" id="agn-cad-sub">
         <button type="button" id="agn-cad-criar">Criar novo cadastro</button>
         <button type="button" id="agn-cad-editar">Editar cadastro</button>
         <button type="button" id="agn-cad-excluir">Excluir cadastro</button>
@@ -2656,7 +2675,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function showView(name){
     ["lojas","checklist","painel"].forEach(function(v){ document.getElementById("view-"+v).classList.toggle("active", v===name); });
     // Agendamento novo: menu lateral e topo próprios só no Agendamento com login (fora do técnico e da gestão)
-    document.body.classList.toggle("agn", name==="lojas" && agendamentoNovoAtivo());
+    // Painel com login segue o mesmo padrão (menu lateral + topo); o link da gestão continua com o cabeçalho antigo
+    const agnPainel = name==="painel" && agendamentoNovoAtivo();
+    document.body.classList.toggle("agn", (name==="lojas" || name==="painel") && agendamentoNovoAtivo());
+    document.body.classList.toggle("agn-painel", agnPainel);
+    if(agendamentoNovoAtivo()) posicionarMenuAgn(agnPainel);
     atualizarTituloAba(name);
     document.getElementById("nav-lojas").classList.toggle("active", name==="lojas");
     document.getElementById("nav-painel").classList.toggle("active", name==="painel");
@@ -2851,15 +2874,41 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("agn-nav-lojas").addEventListener("click", function(){ showView("lojas"); });
     document.getElementById("agn-nav-painel").addEventListener("click", function(){ document.getElementById("topo-nav-painel").click(); });
     document.getElementById("agn-nav-tecnico").addEventListener("click", function(){ document.getElementById("topo-nav-tecnico").click(); });
+    document.getElementById("agn-cad-grupo").addEventListener("click", function(){
+      const sub = document.getElementById("agn-cad-sub"), aberto = !sub.classList.contains("aberto");
+      sub.classList.toggle("aberto", aberto); this.setAttribute("aria-expanded", aberto ? "true" : "false");
+    });
     document.getElementById("agn-cad-criar").addEventListener("click", function(){ document.getElementById("btn-duplicar-loja-central").click(); });
     document.getElementById("agn-cad-editar").addEventListener("click", function(){ document.getElementById("btn-editar-loja-central").click(); });
-    document.getElementById("agn-cad-excluir").addEventListener("click", function(e){ e.stopPropagation(); document.getElementById("btn-modo-selecao").click(); atualizarBotaoExcluirAgn(); });
+    document.getElementById("agn-cad-excluir").addEventListener("click", function(e){ e.stopPropagation(); if(document.getElementById("view-painel").classList.contains("active")) showView("lojas"); document.getElementById("btn-modo-selecao").click(); atualizarBotaoExcluirAgn(); });
     document.getElementById("btn-cancelar-selecao").addEventListener("click", atualizarBotaoExcluirAgn);
     document.getElementById("agn-sair").addEventListener("click", function(){
       supabaseClient.auth.signOut().catch(function(){}).then(function(){ window.location.reload(); });
     });
     document.getElementById("agn-limpar").addEventListener("click", limparFiltrosAgendamento);
     document.getElementById("agn-limpar2").addEventListener("click", limparFiltrosAgendamento);
+  }
+  // Menu lateral e topo são as mesmas peças no Agendamento e no Painel: só mudam de lugar (sem duplicar botões nem eventos)
+  let agnTopoTextos = null;
+  function posicionarMenuAgn(painel){
+    const side = document.getElementById("agn-side"), topo = document.getElementById("agn-topo");
+    const vp = document.getElementById("view-painel"), vl = document.getElementById("view-lojas");
+    if(!side || !topo || !vp || !vl) return;
+    const tb = topo.querySelector(".agn-topo-txt b"), ts = topo.querySelector(".agn-topo-txt span"), dir = topo.querySelector(".agn-topo-dir");
+    if(!agnTopoTextos) agnTopoTextos = {b: tb.textContent, s: ts.textContent};
+    const cores = document.getElementById("tema-cores");
+    if(painel){
+      if(topo.nextElementSibling !== vp){ vp.parentNode.insertBefore(side, vp); vp.parentNode.insertBefore(topo, vp); }
+      tb.textContent = "Dashboard | Preventivas 2026"; ts.textContent = "Indicadores da campanha Sephora 2026.";
+      if(cores && cores.parentNode !== dir) dir.insertBefore(cores, dir.firstChild);
+    }else{
+      if(side.parentNode !== vl){ vl.insertBefore(topo, vl.firstChild); vl.insertBefore(side, vl.firstChild); }
+      tb.textContent = agnTopoTextos.b; ts.textContent = agnTopoTextos.s;
+      const hd = document.querySelector("header .header-direita");
+      if(cores && hd && cores.parentNode !== hd) hd.insertBefore(cores, hd.firstChild);
+    }
+    document.getElementById("agn-nav-lojas").classList.toggle("on", !painel);
+    document.getElementById("agn-nav-painel").classList.toggle("on", painel);
   }
   function atualizarBotaoExcluirAgn(){
     const b = document.getElementById("agn-cad-excluir");
