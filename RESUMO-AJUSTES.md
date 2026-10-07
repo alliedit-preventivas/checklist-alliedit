@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 06/10/2026 (feriados na Agenda e Reagendamento dividido PUBLICADOS, seção 8.24; etiqueta P de protocolo e card Reagendamento Lojas no Painel PUBLICADOS, seção 8.23; dados do técnico em tabela própria e proteção contra exibição em outro site PUBLICADOS, seção 8.22; proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
+Última atualização: 06/10/2026 (prazo da campanha 30/10 PUBLICADO, seção 8.25; feriados na Agenda e Reagendamento dividido PUBLICADOS, seção 8.24; etiqueta P de protocolo e card Reagendamento Lojas no Painel PUBLICADOS, seção 8.23; dados do técnico em tabela própria e proteção contra exibição em outro site PUBLICADOS, seção 8.22; proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `9da30c4` (06/10/2026), equivale à `develop` `d8c5536` |
+| Última publicação | `main` = commit `0ebfc95` (06/10/2026), equivale à `develop` `4ef8e38` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -57,6 +57,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-seguranca-item3-2026-10-06` | Produção antes da tabela própria dos dados do técnico e da proteção contra exibição em outro site (commit `5fb5226`) |
 | `producao-antes-agenda-protocolo-reagendamento-2026-10-06` | Produção antes da etiqueta P e do card Reagendamento Lojas no Painel (commit `353ddb2`) |
 | `producao-antes-feriados-reagendamento-2026-10-06` | Produção antes dos feriados na Agenda e da divisão do Reagendamento Lojas (commit `1c20282`) |
+| `producao-antes-prazo-30-10-2026-10-06` | Produção antes da troca do prazo da campanha para 30/10 (commit `9da30c4`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -435,3 +436,6 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Foi para produção na `main` `9da30c4` (equivale à `develop` `d8c5536`), com autorização da usuária, pelo método da seção 3. Ponto de restauração: tag `producao-antes-feriados-reagendamento-2026-10-06` (= `1c20282`). Site no ar idêntico à `main` em ~60 s; `?painel=1` no ar conferido (feriado de 12/10, as duas divisões, sem erros).
 - **Feriados nacionais na Agenda (mês e semana):** dia com fundo lilás e etiqueta com o nome; legenda "Feriado nacional"; ao passar o mouse diz se é feriado ou ponto facultativo (Carnaval e Corpus Christi). Calculados para qualquer ano (`pnFeriadosDoAno`, Páscoa pelo algoritmo de Meeus). Estaduais e municipais **não** entram.
 - **Reagendamento Lojas** com duas divisões: "Em tratativa" (barras azuis) e "Concluídas após reagendamento" (barras verdes; concluída ou reaberta), até 10 lojas em cada, mesma escala de barra.
+
+### 8.25 Prazo da campanha 30/10/2026: PUBLICADO (06/10/2026)
+- `DEADLINE` passou de `2026-10-26` para `2026-10-30` (card Campanha 2026 do Painel: prazo, dias restantes e ritmo necessário; e a "Previsão de término" do Painel antigo). Publicado na `main` `0ebfc95` (= `develop` `4ef8e38`), a pedido e com autorização da usuária. Ponto de restauração: tag `producao-antes-prazo-30-10-2026-10-06` (= `9da30c4`). Conferido no ar: "Prazo: 30/10/2026 · 24 dia(s) restantes".
