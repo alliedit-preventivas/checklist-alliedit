@@ -1885,11 +1885,11 @@
   <div id="view-bf" class="view">
     <section class="bf-hero">
       <div class="bf-hero-txt">
-        <span class="bf-selo">Black Friday Sephora · novembro inteiro</span>
+        <span class="bf-selo" id="bf-selo"></span>
         <h2>Planejamento <b>Black Friday</b></h2>
-        <p class="bf-hero-sub" id="bf-status">Hotline de 01/11/2026 a 31/01/2027</p>
+        <p class="bf-hero-sub" id="bf-status">—</p>
         <div class="bf-progresso" aria-hidden="true"><i id="bf-progresso-barra"></i></div>
-        <div class="bf-progresso-leg"><span>01/11 · início</span><span>30/11 · fim da Black</span><span>31/01 · fim da hotline</span></div>
+        <div class="bf-progresso-leg"><span id="bf-leg-ini"></span><span id="bf-leg-black"></span><span id="bf-leg-fim"></span></div>
       </div>
       <div class="bf-contagem" role="timer" aria-label="Contagem regressiva para a Black Friday">
         <div class="bf-contagem-tit" id="bf-contagem-tit">Faltam para a Black Friday</div>
@@ -1899,7 +1899,7 @@
           <div><b id="bf-cd-m">--</b><span>min</span></div>
           <div><b id="bf-cd-s">--</b><span>seg</span></div>
         </div>
-        <div class="bf-contagem-data">Sexta-feira, 27/11/2026</div>
+        <div class="bf-contagem-data" id="bf-cd-data"></div>
       </div>
       <div class="bf-agora">
         <div class="bf-agora-topo"><span>Agora</span><b id="bf-relogio">--:--</b></div>
@@ -1911,7 +1911,7 @@
     <div class="bf-grade-topo">
       <section class="bf-card bf-hotline">
           <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
-            <div><h3>Hotline</h3><div class="bf-card-sub">01/11/2026 a 31/01/2027</div></div></div>
+            <div><h3>Hotline</h3><div class="bf-card-sub" id="bf-hot-periodo"></div></div></div>
           <div class="bf-bloco-tit">Horário de atendimento</div>
           <ul class="bf-horarios" id="bf-horarios"></ul>
           <div class="bf-bloco-tit">Canais de atendimento</div>
@@ -1925,7 +1925,7 @@
 
       <section class="bf-card bf-meses">
           <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
-            <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bf-valor-hora">R$ 95,00 por pessoa, por hora</div></div></div>
+            <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bf-valor-hora"></div></div></div>
           <div class="bf-meses-grade" id="bf-meses"></div>
           <div class="bf-meses-total" id="bf-meses-total"></div>
           <div class="bf-fer-opcao" role="radiogroup" aria-label="Nos feriados de dia útil, os analistas comerciais">
@@ -1933,12 +1933,7 @@
           <label><input type="radio" name="bf-fer" value="folgam"> <b>Folgam</b> <small id="bf-fer-folgam"></small></label>
           <label><input type="radio" name="bf-fer" value="trabalham"> <b>Trabalham</b> <small id="bf-fer-trabalham"></small></label>
         </div>
-        <ul class="bf-regras">
-          <li><b>Comercial (8 h/dia):</b> o que passar de 8 h no dia é hora extra.</li>
-          <li><b>12x36 (11 h/dia):</b> o que passar de 11 h no dia é hora extra.</li>
-          <li><b>Domingo ou feriado:</b> recurso acionado conta todo o tempo trabalhado no dia.</li>
-          <li>Paga só o tempo trabalhado a mais, sem arredondar. Valores para 1 pessoa cobrindo.</li>
-        </ul>
+        <ul class="bf-regras" id="bf-regras"></ul>
         </section>
 
       <section class="bf-card bf-custos">
@@ -1954,7 +1949,7 @@
             <div class="bf-bloco-tit">Orçamento aprovado</div>
             <label class="bf-excede-campo"><span>Valor (R$)</span>
               <input type="text" id="bf-orcamento" class="bf-moeda" inputmode="numeric" autocomplete="off" placeholder="R$ 0,00" aria-describedby="bf-orc-dica"></label>
-            <div class="bf-orc-dica" id="bf-orc-dica">Digite só os números: 688750 vira R$ 6.887,50.</div>
+            <div class="bf-orc-dica" id="bf-orc-dica">Digite só os números: 123456 vira R$ 1.234,56.</div>
             <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
             <div class="bf-orc-txt" id="bf-orc-txt">—</div>
           </div>
@@ -2930,70 +2925,17 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   // ---------------- Planejamento Black Friday (menu lateral "Planejamento BF", só com login) ----------------
   // Para mudar horários, escala, canais, comunicado, link do Teams ou valor da hora, altere só aqui.
-  const BF_CONFIG = {
-    hotlineTeams: "", // link da sala fixa de Suporte no Teams (vazio = "em breve")
-    valorHora: 95,    // R$ por pessoa, por hora extra (paga só o tempo trabalhado a mais, sem arredondar)
-    cargaDia: {comercial: 8, "12x36": 11}, // horas por dia: o que passar disso é hora extra
-    inicio: "2026-11-01", fimBlack: "2026-11-30", fim: "2027-01-31", blackFriday: "2026-11-27",
-    // horário da hotline por dia da semana (0 = domingo ... 6 = sábado); "24:00" = meia-noite
-    hotline: {0:["11:00","24:00"], 1:["07:30","24:00"], 2:["07:30","24:00"], 3:["07:30","24:00"], 4:["07:30","24:00"], 5:["07:30","24:00"], 6:["08:00","24:00"]},
-    // escala: "util" = seg a sex; "sab" = sábados alternados (rodizio 0 = 1º sábado do período); "12x36" = dias alternados (rodizio 0 = 1º dia do período)
-    analistas: [
-      {nome:"Analista 1", dias:"util", de:"07:30", ate:"16:30"},
-      {nome:"Analista 2", dias:"util", de:"08:00", ate:"17:00"},
-      {nome:"Analista 3", dias:"util", de:"09:00", ate:"18:00"},
-      {nome:"Analista 1", grupo:"Analista 1 ou 2", dias:"sab", rodizio:0, de:"08:00", ate:"17:00"},
-      {nome:"Analista 2", grupo:"Analista 1 ou 2", dias:"sab", rodizio:1, de:"08:00", ate:"17:00"},
-      {nome:"Analista 4", grupo:"Analista 4 ou 5 · 12x36", dias:"12x36", rodizio:0, de:"11:15", ate:"23:15"},
-      {nome:"Analista 5", grupo:"Analista 4 ou 5 · 12x36", dias:"12x36", rodizio:1, de:"11:15", ate:"23:15"}
-    ],
-    canais: [
-      {tipo:"whatsapp", rotulo:"WhatsApp", valor:"11 97274-8979", link:"https://wa.me/5511972748979", obs:"só mensagem de texto ou ligação direta"},
-      {tipo:"telefone", rotulo:"Telefone", valor:"11 4780-5855", link:"tel:+551147805855"},
-      {tipo:"email", rotulo:"E-mail", valor:"alliedit.sephora@alliedit.com.br", link:"mailto:alliedit.sephora@alliedit.com.br"}
-    ],
-    gestao: [
-      {nome:"Vinicius Castro", cargo:"Analista Suporte SR", email:"vinicius.castro@alliedit.com.br", telefone:"+55 11 91603-6512"},
-      {nome:"Evelyne Gambi", cargo:"Coordenadora Service Desk", email:"evelyne.gambi@alliedit.com.br", telefone:"+55 11 91726-2154"}
-    ],
-    comunicado: [
-      "Prezados,",
-      "",
-      "Com o intuito de agilizarmos na resolução dos chamados abertos e facilitar o contato entre lojas e time de suporte Allied IT, criamos a sala fixa de Suporte.",
-      "Ao acessar este canal você será atendido de forma interativa e imediata (a depender do nível de criticidade). Importante ressaltar que os processos atuais de baixa complexidade, como configuração de notebook e desktop, instalações no geral, reset de senhas, permanecem com a abertura de chamado.",
-      "",
-      "REGRAS DA SALA",
-      "1. Entre na sala APENAS PARA RELATAR PROBLEMAS (não serão permitidas conversas paralelas nesta sala).",
-      "2. Lembre-se de coletar TODAS AS EVIDÊNCIAS NECESSÁRIAS (Itens na transação, clientes em questão, tipo de operação, número do PDV etc.)",
-      "",
-      "Período:",
-      "01/11/2026 à 31/01/2027.",
-      "",
-      "Horário de atendimento:",
-      "Seg a Sex das 7h30 às 00h",
-      "Sábado das 08h às 00h",
-      "Domingo das 11h às 00h",
-      "",
-      "Canais de atendimentos",
-      "WhatsApp: 11 97274-8979 (Este número não recebe ligações via WhatsApp, somente mensagem de texto ou ligação direta)",
-      "",
-      "Telefone: 11 4780-5855",
-      "",
-      "E-mail: alliedit.sephora@alliedit.com.br",
-      "",
-      "Caso tenham algum problema crítico que impacte diretamente nos atendimentos, entre em contato com o nosso time de gestão imediatamente.",
-      "",
-      "Nome: Vinicius Castro",
-      "E-mail: vinicius.castro@alliedit.com.br",
-      "Telefone: +55 11 91603-6512",
-      "Analista Suporte SR",
-      "",
-      "Nome: Evelyne Gambi",
-      "E-mail: evelyne.gambi@alliedit.com.br",
-      "Telefone Contato: +55 11 91726-2154",
-      "Coordenadora Service Desk"
-    ]
-  };
+  // Configuração do Planejamento (escala, horários, canais, gestão, comunicado, datas e valores):
+  // fica no banco (tabela bf_config) e só é carregada para quem está em bf_autorizados. Nada disso fica no código.
+  let BF_CONFIG = null;
+  async function bfCarregarConfig(){
+    try{
+      const { data, error } = await supabaseClient.from("bf_config").select("dados").eq("id", "planejamento").maybeSingle();
+      if(error) throw error;
+      BF_CONFIG = data && data.dados ? data.dados : null;
+    }catch(e){ BF_CONFIG = null; console.error("Falha ao carregar o Planejamento BF:", e); }
+    return !!BF_CONFIG;
+  }
   const BF_TIPOS_DIA = [
     {id:"util", nome:"Segunda a sexta", hot:"Seg a Sex", dias:[1,2,3,4,5]},
     {id:"sab", nome:"Sábado", hot:"Sábado", dias:[6]},
@@ -3010,6 +2952,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function bfEscreverMoeda(el, v){ v = Math.max(0, Math.round((Number(v)||0)*100)/100); el.value = v ? bfMoeda(v) : ""; el.dataset.valor = v; }
   function bfLerMoeda(el){ return Math.max(0, Number(el.dataset.valor) || 0); }
   function bfHorasTxt(min){ const h = min/60; return (Number.isInteger(h) ? h : h.toLocaleString("pt-BR", {maximumFractionDigits:2})) + " h"; }
+  function bfDataBR(iso){ return iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4); }
   function bfDiasEntre(a, b){ return Math.round((bfData(b) - bfData(a)) / 86400000); }
   function bfLinkValido(){ const u = String(BF_CONFIG.hotlineTeams||"").trim(); return /^https:\/\//i.test(u) ? u : ""; }
   // Quem trabalha numa data (respeitando sábados alternados e 12x36)
@@ -3117,8 +3060,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(bfAbrirAposVerificar){ bfAbrirAposVerificar = false; if(bfAutorizado) abrirPlanejamentoBF(); }
     else if(!bfAutorizado && document.getElementById("view-bf").classList.contains("active")) showView("lojas");
   }
-  function abrirPlanejamentoBF(){
+  async function abrirPlanejamentoBF(){
     if(!bfAutorizado){ showView("lojas"); return; }
+    if(!BF_CONFIG && !(await bfCarregarConfig())){ alert("Não foi possível carregar o Planejamento BF. Tente novamente em instantes."); return; }
     showView("bf"); renderBF();
   }
   function bfListaFeriadosHtml(){
@@ -3126,7 +3070,18 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     return lista.length ? '<div class="bf-escala-fer"><b>Feriados no período:</b> '+lista.join(" · ")+'<br>Nos feriados de dia útil, os comerciais '+(bfCenarioFer === "trabalham" ? "trabalham (todo o tempo é hora extra)" : "folgam (o recurso acionado cobre o horário e conta todo o tempo)")+'. Escolha em "Hora extra por mês".</div>' : '';
   }
   function renderBF(){
-    if(!bfAutorizado){ showView("lojas"); return; }
+    if(!bfAutorizado || !BF_CONFIG){ showView("lojas"); return; }
+    const cfg = BF_CONFIG, dm = function(iso){ return bfDataBR(iso).slice(0,5); };
+    document.getElementById("bf-selo").textContent = cfg.selo || "Black Friday";
+    document.getElementById("bf-leg-ini").textContent = dm(cfg.inicio)+" · início";
+    document.getElementById("bf-leg-black").textContent = dm(cfg.fimBlack)+" · fim da Black";
+    document.getElementById("bf-leg-fim").textContent = dm(cfg.fim)+" · fim da hotline";
+    document.getElementById("bf-cd-data").textContent = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"][bfData(cfg.blackFriday).getDay()]+", "+bfDataBR(cfg.blackFriday);
+    document.getElementById("bf-hot-periodo").textContent = bfDataBR(cfg.inicio)+" a "+bfDataBR(cfg.fim);
+    document.getElementById("bf-regras").innerHTML = '<li><b>Comercial ('+cfg.cargaDia.comercial+' h/dia):</b> o que passar de '+cfg.cargaDia.comercial+' h no dia é hora extra.</li>' +
+      '<li><b>12x36 ('+cfg.cargaDia["12x36"]+' h/dia):</b> o que passar de '+cfg.cargaDia["12x36"]+' h no dia é hora extra.</li>' +
+      '<li><b>Domingo ou feriado:</b> recurso acionado conta todo o tempo trabalhado no dia.</li>' +
+      '<li>Paga só o tempo trabalhado a mais, sem arredondar. Valores para 1 pessoa cobrindo.</li>';
     bfCenarioFer = bfLerPlano().feriadoComercial === "trabalham" ? "trabalham" : "folgam"; // antes de desenhar a escala e o calendário
     // Hotline: horários, canais, Teams e gestão
     document.getElementById("bf-horarios").innerHTML = BF_TIPOS_DIA.map(function(t){
@@ -3284,9 +3239,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const ini = bfData(BF_CONFIG.inicio), fimP = new Date(bfData(BF_CONFIG.fim).getTime() + 86400000), totalDias = Math.round((fimP - ini) / 86400000);
     const dentro = agora >= ini && agora < fimP;
     let status;
-    if(agora < ini){ const f = Math.ceil((ini - agora) / 86400000); status = "A hotline começa em 01/11/2026 · falta"+(f===1?"":"m")+" "+f+" dia"+(f===1?"":"s"); }
-    else if(!dentro) status = "Hotline encerrada em 31/01/2027";
-    else { const dia = Math.floor((agora - ini) / 86400000) + 1; status = (iso <= BF_CONFIG.fimBlack ? "Black Friday em andamento" : "Hotline estendida até 31/01/2027") + " · dia "+dia+" de "+totalDias; }
+    if(agora < ini){ const f = Math.ceil((ini - agora) / 86400000); status = "A hotline começa em "+bfDataBR(BF_CONFIG.inicio)+" · falta"+(f===1?"":"m")+" "+f+" dia"+(f===1?"":"s"); }
+    else if(!dentro) status = "Hotline encerrada em "+bfDataBR(BF_CONFIG.fim);
+    else { const dia = Math.floor((agora - ini) / 86400000) + 1; status = (iso <= BF_CONFIG.fimBlack ? "Black Friday em andamento" : "Hotline estendida até "+bfDataBR(BF_CONFIG.fim)) + " · dia "+dia+" de "+totalDias; }
     document.getElementById("bf-status").textContent = status;
     // contagem regressiva até a Black Friday (no dia: até o fim do dia)
     const bfIni = bfData(BF_CONFIG.blackFriday), bfFim = new Date(bfIni.getTime() + 86400000);
@@ -3310,7 +3265,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     st.classList.toggle("descoberta", hotAberta && emTurno.length === 0);
     let txt;
     if(hotAberta) txt = emTurno.length ? "Hotline aberta · até "+bfHoraCurta(bfMin(hot[1])) : "Hotline aberta sem analista · hora extra";
-    else if(agora < ini) txt = "Hotline abre 01/11 às "+bfHoraCurta(bfMin(BF_CONFIG.hotline[ini.getDay()][0]));
+    else if(agora < ini) txt = "Hotline abre "+bfDataBR(BF_CONFIG.inicio).slice(0,5)+" às "+bfHoraCurta(bfMin(BF_CONFIG.hotline[ini.getDay()][0]));
     else if(!dentro) txt = "Hotline encerrada";
     else txt = "Hotline fechada · abre às "+bfHoraCurta(bfMin(hot[0]));
     st.querySelector("span").textContent = txt;
