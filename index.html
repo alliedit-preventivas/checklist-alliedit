@@ -1098,6 +1098,14 @@
   /* agenda semanal */
   body.agn .agenda-dia-item{background:transparent; box-shadow:none; justify-content:flex-start; gap:10px; padding:5px 4px; margin:0; border-radius:10px;}
   body.agn .agenda-dia-item:hover{background:var(--agn-bg);}
+  .agenda-dia-item{cursor:pointer;} .agenda-dia-item:focus-visible{outline:2px solid var(--teal); outline-offset:1px;}
+  .agenda-dia-item.sel{box-shadow:inset 0 0 0 2px var(--teal);} body.agn .agenda-dia-item.sel{background:var(--agn-bg); box-shadow:inset 0 0 0 2px var(--agn-azul);}
+  .agn-periodo-filtro{margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:12px;}
+  .agn-pf-tit{display:block; font-weight:700; color:var(--navy); margin-bottom:6px;}
+  .agn-pf-campos{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:6px;}
+  .agn-pf-campos label{display:flex; flex-direction:column; gap:2px; font-size:11px; color:var(--text-muted); font-weight:600;}
+  .agn-pf-campos input{width:100%; box-sizing:border-box; font-family:inherit; font-size:12px; padding:5px 6px; border:1px solid var(--border); border-radius:8px; color:var(--navy); background:#fff;}
+  .agn-pf-limpar{margin-top:6px; font-family:inherit; font-size:12px; font-weight:600; color:var(--teal); background:none; border:none; text-decoration:underline; cursor:pointer; padding:0;}
   body.agn .agenda-dia-data, body.agn .agenda-dia-count{display:none;}
   body.agn .agn-dia-box{display:block; width:40px; flex-shrink:0; text-align:center; border-radius:8px; background:var(--agn-bg); padding:3px 0; line-height:1.1;}
   .agn-dia-box b{display:block; font-size:15.5px; color:var(--navy);} .agn-dia-box small{font-size:10px; color:var(--text-muted); text-transform:uppercase;}
@@ -1545,6 +1553,11 @@
       <aside class="agenda-sidebar-left">
         <h3>Agenda Semanal <small class="agn-periodo" id="agn-agenda-periodo"></small></h3>
         <div id="agenda-datas-list"></div>
+        <div class="agn-periodo-filtro" role="group" aria-label="Filtrar lojas por período de agendamento">
+          <span class="agn-pf-tit">Filtrar por período</span>
+          <div class="agn-pf-campos"><label>De<input type="date" id="filtro-data-de"></label><label>Até<input type="date" id="filtro-data-ate"></label></div>
+          <button type="button" class="agn-pf-limpar" id="filtro-data-limpar" hidden>Limpar período</button>
+        </div>
       </aside>
       <aside class="status-sidebar">
         <h3>Responsabilidade</h3>
@@ -2464,7 +2477,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   let db = null, assetsApi = null, downloadsApi = null;
   let lojasCache = [];
   let currentLojaId = null, currentLoja = null;
-  let saveTimer = null, unsubLojas = null, pendingLojasRender = false;
+  let saveTimer = null, savePendente = false, unsubLojas = null, pendingLojasRender = false;
   let modoTecnico = false, modoTecnicoId = false, lojaParamId = null, autoAbriuLoja = false;
   // Modo gestão (link ?painel=1): abre só o Painel (Dashboard | Preventivas 2026), sem login e só para visualização.
   // Não mostra Agendamento nem Técnico e não abre checklists.
@@ -2581,7 +2594,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(l.status === "concluido") return "concluido";
     if(l.status === "em_prospeccao_tecnico") return "em_prospeccao_tecnico";
     if(l.status === "reagendar") return "reagendar";
-    if(!!l.horarioInicio) return "em_andamento"; // o técnico já iniciou o atendimento no formulário
+    if(!!l.horarioInicio || !!l.checklistIniciado) return "em_andamento"; // o técnico já iniciou o atendimento (horário de início ou qualquer item do checklist)
     return statusAgendamentoDetalhado(l).status;
   }
 
@@ -3999,7 +4012,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(!estadoTelaPronto || modoTecnico) return;
     try{
       const busca = document.getElementById("search-loja"), sub = document.getElementById("agn-cad-sub"), tela = telaAtual();
-      sessionStorage.setItem(chaveEstadoTela(), JSON.stringify({ tela: tela, filtroHome: filtroHome, busca: busca ? busca.value : "",
+      sessionStorage.setItem(chaveEstadoTela(), JSON.stringify({ tela: tela, filtroHome: filtroHome, busca: busca ? busca.value : "", dataDe: filtroDataDe, dataAte: filtroDataAte,
         lojaAberta: tela==="checklist" ? currentLojaId : null, cadAberto: !!(sub && sub.classList.contains("aberto")),
         pnMes: pnMesOffset, pnSemana: pnSemanaOffset, rolagem: window.scrollY }));
     }catch(e){}
@@ -4014,6 +4027,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     pnMesOffset = Number(e.pnMes)||0; pnSemanaOffset = Number(e.pnSemana)||0;
     if(!modoGestao){
       filtroHome = e.filtroHome || null;
+      if(e.dataDe || e.dataAte) aplicarFiltroDatas(e.dataDe, e.dataAte);
       const busca = document.getElementById("search-loja"); if(busca) busca.value = e.busca || "";
       const sub = document.getElementById("agn-cad-sub"), grupo = document.getElementById("agn-cad-grupo");
       if(e.cadAberto && sub && grupo){ sub.classList.add("aberto"); grupo.setAttribute("aria-expanded", "true"); }
@@ -4175,6 +4189,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       mostrarAgradecimentoTecnico(function(){ executarSaidaChecklist(false); });
       return;
     }
+    salvarPendente();
     currentLojaId=null; currentLoja=null;
     if(modoTecnicoId){
       document.getElementById("view-checklist").classList.remove("active");
@@ -4229,6 +4244,20 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(key==="atrasada") return "Atrasado";
     return STATUS_LABEL[key];
   }
+  // Filtro por data de agendamento: clique num dia da Agenda Semanal (aquele dia) ou período De/Até
+  let filtroDataDe = "", filtroDataAte = "";
+  function lojaNoPeriodo(l){
+    if(!filtroDataDe && !filtroDataAte) return true;
+    const a = l.agendamento || ""; if(!a) return false;
+    return (!filtroDataDe || a >= filtroDataDe) && (!filtroDataAte || a <= filtroDataAte);
+  }
+  function aplicarFiltroDatas(de, ate){
+    filtroDataDe = de || ""; filtroDataAte = ate || "";
+    if(filtroDataDe && filtroDataAte && filtroDataDe > filtroDataAte){ const t = filtroDataDe; filtroDataDe = filtroDataAte; filtroDataAte = t; }
+    const iDe = document.getElementById("filtro-data-de"), iAte = document.getElementById("filtro-data-ate"), lp = document.getElementById("filtro-data-limpar");
+    if(iDe) iDe.value = filtroDataDe; if(iAte) iAte.value = filtroDataAte; if(lp) lp.hidden = !(filtroDataDe || filtroDataAte);
+    renderAgendaDatas(); renderLojasList();
+  }
   function aplicarFiltroHome(chave){
     filtroHome = (filtroHome===chave) ? null : chave;
     renderFiltroChipsHome(); renderLojasList();
@@ -4275,7 +4304,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     atalhos.querySelectorAll("button").forEach(function(b){ b.addEventListener("click", function(){ aplicarFiltroHome(b.dataset.chip); }); });
   }
   function limparFiltrosAgendamento(){
-    filtroHome = null;
+    filtroHome = null; filtroDataDe = ""; filtroDataAte = "";
+    ["filtro-data-de", "filtro-data-ate"].forEach(function(id){ const el = document.getElementById(id); if(el) el.value = ""; });
+    const lp = document.getElementById("filtro-data-limpar"); if(lp) lp.hidden = true; renderAgendaDatas();
     document.getElementById("search-loja").value = "";
     renderFiltroChipsHome(); renderLojasList();
   }
@@ -4374,6 +4405,16 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function renderAgendaDatas(){
     const wrap = document.getElementById("agenda-datas-list");
     if(!wrap) return;
+    // Agenda Semanal: clicar no dia filtra as lojas daquele dia (clicar de novo tira o filtro); período De/Até
+    const agendaLista = document.getElementById("agenda-datas-list");
+    if(agendaLista && !agendaLista.dataset.wired){
+      agendaLista.dataset.wired = "1";
+      const escolherDia = function(item){ const iso = item.dataset.dia; if(filtroDataDe === iso && filtroDataAte === iso) aplicarFiltroDatas("", ""); else aplicarFiltroDatas(iso, iso); };
+      agendaLista.addEventListener("click", function(e){ const item = e.target.closest("[data-dia]"); if(item) escolherDia(item); });
+      agendaLista.addEventListener("keydown", function(e){ const item = e.target.closest("[data-dia]"); if(item && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); escolherDia(item); } });
+      ["filtro-data-de", "filtro-data-ate"].forEach(function(id){ document.getElementById(id).addEventListener("change", function(){ aplicarFiltroDatas(document.getElementById("filtro-data-de").value, document.getElementById("filtro-data-ate").value); }); });
+      document.getElementById("filtro-data-limpar").addEventListener("click", function(){ aplicarFiltroDatas("", ""); });
+    }
     const porDia = {};
     lojasCache.forEach(function(l){
       if(!l.agendamento || l.status === "concluido") return;
@@ -4403,7 +4444,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       // Agendamento novo: caixinha com o dia, o texto e o nome das lojas do dia
       const nomesDoDia = lojasDoDia.map(function(l){ return separarCodigoNome(l.nome).nome; }).join(" · ");
       const ehHoje = iso === hojeIso;
-      return '<div class="agenda-dia-item'+(alerta?' alerta':'')+(qtd===0?' livre':'')+(ehHoje?' hoje':'')+'"'+(tituloHover?' title="'+escapeHtml(tituloHover)+'"':'')+'>'+
+      const sel = filtroDataDe === iso && filtroDataAte === iso;
+      return '<div class="agenda-dia-item'+(alerta?' alerta':'')+(qtd===0?' livre':'')+(ehHoje?' hoje':'')+(sel?' sel':'')+'" data-dia="'+iso+'" role="button" tabindex="0" aria-pressed="'+sel+'"'+(tituloHover?' title="'+escapeHtml(tituloHover)+'"':' title="Ver as lojas agendadas neste dia"')+'>'+
         '<span class="agenda-dia-data">'+fmtDateBR(iso)+' · '+DIAS_SEMANA_ABREV[diaSemana]+'</span>'+
         '<span class="agenda-dia-count">'+textoQtd+(alerta?' ⚠️':'')+'</span>'+
         '<span class="agn-dia-box"><b>'+iso.slice(8,10)+'</b><small>'+DIAS_SEMANA_ABREV[diaSemana]+'</small></span>'+
@@ -4543,14 +4585,15 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const hoje = todayStr();
     const filtered = lojasCache.filter(function(l){
       const alvo = !q || [l.nome, l.chamado, l.protocolo, l.tecnico].some(function(campo){ return (campo||"").toLowerCase().includes(q); });
-      return alvo && matchesFiltroHome(l, hoje);
+      return alvo && matchesFiltroHome(l, hoje) && lojaNoPeriodo(l);
     });
+    if(filtroDataDe || filtroDataAte) filtered.sort(function(a, b){ return ((a.agendamento||"")+(a.agendamentoPrevisto||"")).localeCompare((b.agendamento||"")+(b.agendamentoPrevisto||"")); }); // por data e hora
     // Agendamento novo: a tela abre sem lojas; elas aparecem ao clicar num filtro ou digitar na busca
     const agn = agendamentoNovoAtivo();
     if(agn){
-      const semFiltro = !filtroHome && !q && !modoSelecao;
+      const semFiltro = !filtroHome && !q && !modoSelecao && !filtroDataDe && !filtroDataAte;
       document.getElementById("agn-vazio").classList.toggle("hidden", !semFiltro);
-      document.getElementById("agn-limpar").disabled = !(filtroHome || q);
+      document.getElementById("agn-limpar").disabled = !(filtroHome || q || filtroDataDe || filtroDataAte);
       document.getElementById("agn-rodape").classList.toggle("hidden", semFiltro || filtered.length===0);
       document.getElementById("agn-rodape-txt").textContent = "Exibindo " + filtered.length + " de " + lojasCache.length + " lojas";
       if(semFiltro){ list.innerHTML = ""; return; }
@@ -5155,6 +5198,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
 
   // ---------------- checklist view ----------------
   function openLoja(id, data, desbloqueado){
+    salvarPendente(); // mudança da loja anterior que ainda não tinha sido gravada
     if(modoTecnicoId) document.getElementById("view-tecnico-id").classList.add("hidden");
     currentLojaId = id;
     bloqueadoPorConclusao = (data.status === "concluido") && !desbloqueado;
@@ -5162,7 +5206,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       nome: data.nome||"", tecnico:data.tecnico||"", chamado:data.chamado||"", protocolo:data.protocolo||"",
       responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", agendamentoPrevisto:data.agendamentoPrevisto||"",
       dadosTecnico:data.dadosTecnico||"", temDadosTecnico:!!data.temDadosTecnico, status:data.status||"nao_iniciado",
-      horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
+      horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"", checklistIniciado:!!data.checklistIniciado,
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       mercadoPagos: migrarMercadoPagos(data),
@@ -6265,15 +6309,21 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // ---- save ----
   function scheduleSave(){
     if(!currentLojaId) return;
+    currentLoja.checklistIniciado = true; // toda chamada vem de uma mudança feita pelo técnico no checklist
     if(currentLoja.status !== "concluido") currentLoja.status = statusAutomatico(currentLoja);
     updateFinalizeUi();
     document.getElementById("save-status").textContent = "Salvando...";
-    clearTimeout(saveTimer);
+    clearTimeout(saveTimer); savePendente = true;
     saveTimer = setTimeout(persistNow, 900);
   }
+  // Antes de sair do checklist ou trocar de loja: grava na hora o que ainda estava esperando para salvar
+  // (sem isso, uma mudança feita menos de 1 s antes de sair se perdia e o status não mudava)
+  function salvarPendente(){ if(savePendente && currentLojaId && currentLoja) persistNow(); }
+  window.addEventListener("pagehide", salvarPendente);
   async function persistNow(){
     if(!currentLojaId || !currentLoja) return false;
-    clearTimeout(saveTimer);
+    clearTimeout(saveTimer); savePendente = false;
+    const idSalvo = currentLojaId; // a loja deste salvamento (mesmo que a pessoa troque de loja enquanto grava)
     const status = document.getElementById("save-status");
     try{
       const payload = sanitizeParaJson({
@@ -6287,14 +6337,22 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         telefoneStage: currentLoja.telefoneStage, posRedeCielos: currentLoja.posRedeCielos,
         posRedeCielo: currentLoja.posRedeCielos[0] || blankPosRedeCielo(), // compatibilidade com versões anteriores
         pinpadReserva: currentLoja.pinpadReserva,
-        horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
+        horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"", checklistIniciado: !!currentLoja.checklistIniciado,
         atualizadoEm: now()
       });
-      await db.doc("lojas/"+currentLojaId).update(payload);
-      status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-      reavaliarPendencias();
+      // cópia local já atualizada: a lista e a reabertura da loja mostram a mudança sem esperar a próxima leitura (20 s)
+      const naLista = lojasCache.find(function(l){ return l.id === idSalvo; }); if(naLista) Object.assign(naLista, payload);
+      await db.doc("lojas/"+idSalvo).update(payload);
+      if(currentLojaId === idSalvo){ // ainda na mesma loja: atualiza o aviso e as pendências da tela
+        status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+        reavaliarPendencias();
+      }
       return true;
-    }catch(e){ status.textContent = "Erro ao salvar — tentando novamente..."; saveTimer = setTimeout(persistNow, 2000); return false; }
+    }catch(e){
+      if(currentLojaId === idSalvo){ status.textContent = "Erro ao salvar — tentando novamente..."; savePendente = true; saveTimer = setTimeout(persistNow, 2000); }
+      else alert("Não foi possível salvar a última alteração da loja anterior. Abra a loja de novo e confira.");
+      return false;
+    }
   }
 
   // ---------------- calendário (cronograma) ----------------
