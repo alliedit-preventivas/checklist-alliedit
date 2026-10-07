@@ -3428,7 +3428,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function bfRegrasHtml(cfg){
     return '<li><b>Comercial ('+cfg.cargaDia.comercial+' h/dia):</b> o que passar de '+cfg.cargaDia.comercial+' h no dia é hora extra.</li>' +
       '<li><b>12x36 ('+cfg.cargaDia["12x36"]+' h/dia):</b> o que passar de '+cfg.cargaDia["12x36"]+' h no dia é hora extra.</li>' +
-      '<li><b>Domingo ou feriado:</b> quem entrar para ajudar conta só o período trabalhado.</li>';
+      '<li><b>Domingo ou feriado:</b> se for necessário mais um analista, será cobrada a hora trabalhada.</li>';
   }
   function bfListaFeriadosHtml(){
     const lista = []; for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){ const iso = bfIso(d), f = bfFeriado(iso); if(f) lista.push(BF_DIAS_CURTO[d.getDay()]+' '+iso.slice(8,10)+'/'+iso.slice(5,7)+' · '+escapeHtml(f.nome)); }
