@@ -1317,7 +1317,7 @@
       <div class="agn-side-tag">Checklist de<br>Preventivas</div>
       <button type="button" class="agn-nav on" id="agn-nav-lojas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Agendamento</button>
       <button type="button" class="agn-nav" id="agn-nav-painel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Painel</button>
-      <button type="button" class="agn-nav" id="agn-nav-bf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1.2 14H4.8z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>Planejamento BF</button>
+      <button type="button" class="agn-nav" id="agn-nav-bf" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1.2 14H4.8z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>Planejamento BF</button>
       <button type="button" class="agn-nav" id="agn-nav-tecnico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="3.8"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>Área do Técnico</button>
       <button type="button" class="agn-nav agn-nav-grupo" id="agn-cad-grupo" aria-expanded="false" aria-controls="agn-cad-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg>Cadastro de loja<svg class="agn-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="agn-sub" id="agn-cad-sub">
@@ -3103,11 +3103,30 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const a = Math.max(ini, BF_EIXO_INI), b = Math.min(fim, BF_EIXO_FIM); if(b <= a) return "";
     return '<i class="'+(classe||'')+'" style="left:'+((a-BF_EIXO_INI)/(BF_EIXO_FIM-BF_EIXO_INI)*100)+'%; width:'+((b-a)/(BF_EIXO_FIM-BF_EIXO_INI)*100)+'%;"></i>';
   }
+  // ---- Acesso ao Planejamento BF: só e-mails da tabela bf_autorizados (o banco confere; o site só esconde o menu) ----
+  let bfAutorizado = false, bfAcessoVerificado = false, bfAbrirAposVerificar = false;
+  async function verificarAcessoBF(){
+    try{
+      // a regra do banco só devolve a linha do próprio e-mail: se vier uma linha, a pessoa está autorizada
+      const { data, error } = await supabaseClient.from("bf_autorizados").select("email").limit(1);
+      if(error) throw error;
+      bfAutorizado = !!(data && data.length);
+    }catch(e){ bfAutorizado = false; console.error("Falha ao verificar acesso ao Planejamento BF:", e); }
+    bfAcessoVerificado = true;
+    document.getElementById("agn-nav-bf").hidden = !bfAutorizado;
+    if(bfAbrirAposVerificar){ bfAbrirAposVerificar = false; if(bfAutorizado) abrirPlanejamentoBF(); }
+    else if(!bfAutorizado && document.getElementById("view-bf").classList.contains("active")) showView("lojas");
+  }
+  function abrirPlanejamentoBF(){
+    if(!bfAutorizado){ showView("lojas"); return; }
+    showView("bf"); renderBF();
+  }
   function bfListaFeriadosHtml(){
     const lista = []; for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){ const iso = bfIso(d), f = bfFeriado(iso); if(f) lista.push(BF_DIAS_CURTO[d.getDay()]+' '+iso.slice(8,10)+'/'+iso.slice(5,7)+' · '+escapeHtml(f.nome)); }
     return lista.length ? '<div class="bf-escala-fer"><b>Feriados no período:</b> '+lista.join(" · ")+'<br>Nos feriados de dia útil, os comerciais '+(bfCenarioFer === "trabalham" ? "trabalham (todo o tempo é hora extra)" : "folgam (o recurso acionado cobre o horário e conta todo o tempo)")+'. Escolha em "Hora extra por mês".</div>' : '';
   }
   function renderBF(){
+    if(!bfAutorizado){ showView("lojas"); return; }
     bfCenarioFer = bfLerPlano().feriadoComercial === "trabalham" ? "trabalham" : "folgam"; // antes de desenhar a escala e o calendário
     // Hotline: horários, canais, Teams e gestão
     document.getElementById("bf-horarios").innerHTML = BF_TIPOS_DIA.map(function(t){
@@ -3407,7 +3426,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       const sub = document.getElementById("agn-cad-sub"), grupo = document.getElementById("agn-cad-grupo");
       if(e.cadAberto && sub && grupo){ sub.classList.add("aberto"); grupo.setAttribute("aria-expanded", "true"); }
       if(e.tela === "painel") document.getElementById("topo-nav-painel").click();
-      else if(e.tela === "bf"){ showView("bf"); renderBF(); }
+      else if(e.tela === "bf"){ if(bfAcessoVerificado){ if(bfAutorizado) abrirPlanejamentoBF(); } else bfAbrirAposVerificar = true; } // abre quando o acesso for confirmado
     }
     estadoTelaRestaurar = e; // rolagem e checklist aberto: depois que as lojas chegarem
   }
@@ -3699,7 +3718,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }).catch(function(){});
     document.getElementById("agn-nav-lojas").addEventListener("click", function(){ showView("lojas"); });
     document.getElementById("agn-nav-painel").addEventListener("click", function(){ document.getElementById("topo-nav-painel").click(); });
-    document.getElementById("agn-nav-bf").addEventListener("click", function(){ showView("bf"); renderBF(); });
+    document.getElementById("agn-nav-bf").addEventListener("click", function(){ abrirPlanejamentoBF(); });
+    verificarAcessoBF();
     wireBF();
     document.getElementById("agn-nav-tecnico").addEventListener("click", function(){ document.getElementById("topo-nav-tecnico").click(); });
     document.getElementById("agn-cad-grupo").addEventListener("click", function(){
