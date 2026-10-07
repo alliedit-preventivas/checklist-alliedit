@@ -1015,11 +1015,29 @@
   .bfg-cal-cab{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;}
   .bfg-cal-cab .bf-card-cab{margin:0; flex:1; min-width:240px;}
   .bfg-cal-nav{display:flex; gap:6px;}
-  .bfg-cal-corpo{flex:1; display:grid; grid-template-columns:minmax(0,2.5fr) minmax(280px,1fr); gap:12px; min-height:0;}
+  .bfg-cal-corpo{flex:1; display:grid; grid-template-columns:minmax(0,1fr); gap:12px; min-height:0;}
   .bfg-grade{grid-template-rows:auto; grid-auto-rows:minmax(50px,1fr);}
   .bfg-grade .bf-cal-dia{min-height:0; padding:3px 5px 3px 7px; gap:1px;} .bfg-grade .bf-cal-dia .n b{min-width:18px; height:18px; font-size:12.5px;} .bfg-grade .bf-cal-dia .fer{font-size:9px;} .bfg-grade .bf-cal-dia .vl{padding:0 6px; font-size:9.5px;}
   #view-bfg .bf-cal-cab{padding:0 0 3px;} #view-bfg .bf-cal-leg{margin-top:6px;} #view-bfg .bfg-cal-cab{margin-bottom:6px;}
-  .bfg-cal-corpo .bf-cal-det{overflow:auto; align-self:stretch;}
+  /* Balão com os detalhes de cobrança do dia (abre ao clicar no dia) */
+  .bfg-pop{position:fixed; z-index:60; width:350px; max-width:calc(100vw - 24px); max-height:min(78vh, 560px); overflow:auto; background:#fff; color:var(--navy); border:1px solid #DCE5E9; border-radius:14px; box-shadow:0 18px 44px rgba(14,40,65,.24); padding:12px 14px; font-size:12px; line-height:1.4;}
+  .bfg-pop-cab{display:flex; justify-content:space-between; align-items:flex-start; gap:8px; padding-bottom:8px; border-bottom:1px solid #EEF2F4;}
+  .bfg-pop-cab b{display:block; font-size:15px;} .bfg-pop-cab span{font-size:11.5px; color:var(--text-muted);}
+  .bfg-pop-x{border:none; background:#F1F5F7; color:var(--navy); width:26px; height:26px; border-radius:50%; font-size:16px; line-height:1; cursor:pointer; flex:none;} .bfg-pop-x:hover{background:#E3EAEE;}
+  .bfg-pop-sub{font-size:10.5px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:#056E8C; margin:9px 0 5px;}
+  .bfg-pop-lista{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
+  .bfg-pop-lista li{border:1px solid #EEF2F4; border-radius:10px; padding:7px 9px; background:#FBFCFD;}
+  .bfg-pop-lista li.ex{background:#FFFBEA; border-color:#F2DC8C;} .bfg-pop-lista li.ref{background:#F8F5FD; border-color:#E2D8F3;} .bfg-pop-lista li.info{background:transparent; border-style:dashed;}
+  .bfg-pop-lista .t{display:flex; justify-content:space-between; gap:8px; align-items:baseline;} .bfg-pop-lista .t span{font-weight:700; white-space:nowrap; font-variant-numeric:tabular-nums;}
+  .bfg-pop-lista p{margin:3px 0 0; font-size:11.5px; color:var(--text-muted);}
+  .bfg-pop-total{display:flex; justify-content:space-between; gap:8px; align-items:center; background:#0E2841; color:#fff; border-radius:10px; padding:8px 11px; margin-top:8px;}
+  .bfg-pop-total b{font-size:15px; color:#F7D51C; font-variant-numeric:tabular-nums;}
+  .bfg-pop-alerta{margin-top:6px; font-size:11.5px; font-weight:700; color:#B3261E; background:#FCE8E6; border-radius:8px; padding:6px 9px;}
+  .bfg-pop-escala{margin-top:8px; font-size:11.5px;} .bfg-pop-escala summary{cursor:pointer; color:#056E8C; font-weight:700;}
+  .bfg-pop-escala ul{list-style:none; margin:5px 0 0; padding:0; display:flex; flex-direction:column; gap:3px;} .bfg-pop-escala li{display:flex; justify-content:space-between; background:#F1F5F7; border-radius:7px; padding:3px 8px;}
+  .bfg-pop-nota{margin-top:8px; font-size:10.5px; color:var(--text-muted);}
+  .bfg-pop.folha{left:8px !important; right:8px; bottom:8px; top:auto !important; width:auto; max-height:72vh;}
+  :root[data-tema="sephora"] .bfg-pop-total{background:#000;} :root[data-tema="sephora"] .bfg-pop-total b{color:#fff;} :root[data-tema="sephora"] .bfg-pop-sub, :root[data-tema="sephora"] .bfg-pop-escala summary{color:#000;}
   .bfg-cal-dia-prev{font-size:9.5px; color:#B3261E; line-height:1.2;}
   .bfg-extras li{padding-right:7px;}
   /* computador com tela de altura normal: tudo numa tela só (o calendário se ajusta à altura que sobra); em telas baixas, rola a página */
@@ -2242,7 +2260,8 @@
                 <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bfg-cal-prox" aria-label="Próximo mês" title="Próximo mês">&rsaquo;</button>
               </div>
             </div>
-            <div class="bfg-cal-corpo"><div class="bf-cal-grade bfg-grade" id="bfg-grade"></div><div class="bf-cal-det" id="bfg-det"></div></div>
+            <div class="bfg-cal-corpo"><div class="bf-cal-grade bfg-grade" id="bfg-grade"></div></div>
+            <div class="bfg-pop" id="bfg-pop" role="dialog" aria-label="Detalhes de cobrança do dia" hidden></div>
             <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#fff; border:2px solid #0E2841"></i>Black Friday</span><span><i style="background:#F1F5F7; border:1px solid #DDE5E9"></i>Valor = hora extra do dia (previsto + a mais)</span><span>· clique no dia para ver os detalhes</span></div>
           </section>
         </div>
@@ -3808,13 +3827,20 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     renderOnePageGestao();
     document.getElementById("bfg-carregando").hidden = true;
     document.getElementById("bfg-conteudo").hidden = false;
-    document.getElementById("bfg-cal-ant").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfgMesSel); if(i > 0){ bfgMesSel = ms[i-1]; renderBfgCalendario(); } });
-    document.getElementById("bfg-cal-prox").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfgMesSel); if(i < ms.length-1){ bfgMesSel = ms[i+1]; renderBfgCalendario(); } });
+    document.getElementById("bfg-cal-ant").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfgMesSel); if(i > 0){ bfgMesSel = ms[i-1]; bfgDiaSel = null; renderBfgCalendario(); } });
+    document.getElementById("bfg-cal-prox").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfgMesSel); if(i < ms.length-1){ bfgMesSel = ms[i+1]; bfgDiaSel = null; renderBfgCalendario(); } });
     document.getElementById("bfg-cal-hoje").addEventListener("click", function(){ bfgMesSel = bfMesPadrao(); bfgDiaSel = null; renderBfgCalendario(); });
+    // clique no dia: abre o balão com os detalhes de cobrança; clicar de novo, fora, no X ou Esc fecha
     document.getElementById("bfg-grade").addEventListener("click", function(e){
       const dia = e.target.closest("[data-bf-dia]"); if(!dia || dia.disabled) return;
-      bfgDiaSel = dia.dataset.bfDia; renderBfgCalendario();
+      e.stopPropagation(); // o dia é redesenhado: não deixa o clique chegar ao "fechar ao clicar fora"
+      bfgDiaSel = bfgDiaSel === dia.dataset.bfDia ? null : dia.dataset.bfDia; renderBfgCalendario();
     });
+    document.getElementById("bfg-pop").addEventListener("click", function(e){ if(e.target.closest(".bfg-pop-x")){ e.stopPropagation(); bfgDiaSel = null; renderBfgCalendario(); } });
+    document.addEventListener("click", function(e){ if(bfgDiaSel && !e.target.closest("#bfg-pop") && !e.target.closest("#bfg-grade [data-bf-dia]")){ bfgDiaSel = null; renderBfgCalendario(); } });
+    document.addEventListener("keydown", function(e){ if(e.key === "Escape" && bfgDiaSel){ bfgDiaSel = null; renderBfgCalendario(); } });
+    window.addEventListener("resize", bfgPosicionarPop);
+    window.addEventListener("scroll", bfgPosicionarPop, true);
     bfgTick();
     bfgTimer = setInterval(function(){ bfgTick(); if(Date.now() - bfgUltima > 60000) bfgAtualizar(); }, 1000);
   }
@@ -3879,7 +3905,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const nDias = new Date(d1.getFullYear(), d1.getMonth()+1, 0).getDate(), dias = [];
     for(let i=1;i<=nDias;i++) dias.push(bfgMesSel+"-"+String(i).padStart(2,"0"));
     const dentro = dias.filter(function(d){ return d >= BF_CONFIG.inicio && d <= BF_CONFIG.fim; });
-    if(!bfgDiaSel || bfgDiaSel.slice(0,7) !== bfgMesSel) bfgDiaSel = dentro.indexOf(hoje) >= 0 ? hoje : dentro[0];
+    if(bfgDiaSel && bfgDiaSel.slice(0,7) !== bfgMesSel) bfgDiaSel = null; // balão só para dia do mês aberto
     const vh = BF_CONFIG.valorHora, limDia = Math.max(0, Number((BFG.plano||{}).limiteDia) || 0) * 60;
     const prevMin = dentro.reduce(function(a, d){ return a + bfPrevDiaMin(d); }, 0), extraMin = dentro.reduce(function(a, d){ return a + bfExtraDiaMin(d); }, 0);
     const diasExtra = dentro.filter(function(d){ return bfExtraDiaMin(d) > 0; }).length, nomeMes = BF_MESES[d1.getMonth()];
@@ -3904,22 +3930,45 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bfg-grade").innerHTML = html;
     renderBfgDia();
   }
+  // Balão do dia: o que foi (ou será) cobrado e o que significa cada valor
   function renderBfgDia(){
-    const det = document.getElementById("bfg-det"), iso = bfgDiaSel;
-    if(!iso){ det.innerHTML = '<div class="bf-dia-hot">Mês fora do período da hotline.</div>'; return; }
-    const d = bfData(iso), h = BF_CONFIG.hotline[d.getDay()], lac = bfLacunasPrev(iso), extras = bfExtrasDoDia(iso), ex = bfExtraDiaMin(iso), prev = bfPrevDiaMin(iso), vh = BF_CONFIG.valorHora;
-    let html = '<div class="bf-det-tit"><b>'+["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][d.getDay()]+', '+iso.slice(8,10)+'/'+iso.slice(5,7)+'</b><span>Hotline '+bfHoraCurta(bfMin(h[0]))+' às '+bfHoraCurta(bfMin(h[1]))+'</span></div>';
-    const ferDia = bfFeriado(iso), trabDia = bfFeriadoTrabMin(iso);
-    if(ferDia) html += '<div class="bf-det-fer"><b>Feriado: '+escapeHtml(ferDia.nome)+'</b>'+(d.getDay()===0 || d.getDay()===6 ? 'Escala de fim de semana.' : bfFerTextoDia(trabDia, vh))+'</div>';
-    html += '<div class="bf-det-sub" style="color:#056E8C;">Escala do dia</div>';
-    html += '<ul class="bf-det-equipe">'+bfEscalaDoDia(iso).map(function(a){ return '<li><span>'+escapeHtml(a.nome)+'</span><b>'+a.de.replace(":","h")+'–'+a.ate.replace(":","h")+'</b></li>'; }).join("")+'</ul>';
-    if(lac.length) html += '<div class="bf-dia-gap">Sem analista na escala: '+lac.map(function(l){ return bfHoraCurta(l[0])+'–'+bfHoraCurta(l[1]); }).join(", ")+' ('+bfHorasTxt(bfMinutos(lac))+' · '+bfMoeda(bfMinutos(lac)/60*vh)+') · coberto com hora extra</div>';
-    html += '<div class="bf-det-sub">Horas a mais registradas</div>';
-    html += extras.length ? '<ul class="bf-extras bfg-extras">'+extras.map(function(x){
-      return '<li><b>+'+bfHorasTxt(Number(x.minutos)||0)+'</b> · '+bfMoeda((Number(x.minutos)||0)/60*vh)+(x.motivo ? '<small>'+escapeHtml(x.motivo)+'</small>' : '')+'</li>';
-    }).join("")+'</ul>' : '<div class="bf-dia-hot">'+(iso > bfIso(new Date()) ? 'Dia ainda não aconteceu.' : 'Nenhuma hora a mais neste dia.')+'</div>';
-    html += '<div class="bf-dia-total">Total do dia: '+bfHorasTxt(prev + ex)+' · '+bfMoeda((prev + ex)/60*vh)+'<br><small style="font-weight:400; color:var(--text-muted);">previsto '+bfHorasTxt(prev)+' + a mais '+bfHorasTxt(ex)+'</small></div>';
-    det.innerHTML = html;
+    const pop = document.getElementById("bfg-pop"), iso = bfgDiaSel;
+    if(!iso){ pop.hidden = true; pop.innerHTML = ""; return; }
+    const d = bfData(iso), h = BF_CONFIG.hotline[d.getDay()], vh = BF_CONFIG.valorHora, e = escapeHtml;
+    const lac = bfLacunasPrev(iso), lacMin = bfMinutos(lac), fer = bfFeriado(iso), ferUtil = bfFeriadoUtil(iso), refMin = bfFeriadoTrabMin(iso);
+    const extras = bfExtrasDoDia(iso), ex = bfExtraDiaMin(iso), tot = lacMin + refMin + ex, futuro = iso > bfIso(new Date());
+    const limDia = Math.max(0, Number((BFG.plano||{}).limiteDia) || 0) * 60;
+    const item = function(cls, tit, min, expl){ return '<li class="'+cls+'"><div class="t"><b>'+tit+'</b><span>'+bfHorasTxt(min)+' · '+bfMoeda(min/60*vh)+'</span></div><p>'+expl+'</p></li>'; };
+    const nomeDia = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"][d.getDay()];
+    let html = '<div class="bfg-pop-cab"><div><b>'+nomeDia+', '+iso.slice(8,10)+'/'+iso.slice(5,7)+'</b><span>Hotline das '+bfHoraCurta(bfMin(h[0]))+' às '+bfHoraCurta(bfMin(h[1]))+(fer ? ' · Feriado: '+e(fer.nome) : '')+(iso === BF_CONFIG.blackFriday ? ' · Black Friday' : '')+'</span></div>' +
+      '<button type="button" class="bfg-pop-x" aria-label="Fechar">×</button></div>';
+    html += '<div class="bfg-pop-sub">'+(futuro ? 'Cobrança prevista do dia' : 'Cobrança do dia')+'</div><ul class="bfg-pop-lista">';
+    if(lacMin) html += item("", "Cobertura sem analista na escala", lacMin, 'Das '+lac.map(function(l){ return bfHoraCurta(l[0])+' às '+bfHoraCurta(l[1]); }).join(' e das ')+' a hotline está aberta, mas nenhum analista da escala está em turno. Uma pessoa cobre esse horário como hora extra.');
+    if(ferUtil) html += refMin
+      ? item("ref", "Reforço do feriado", refMin, 'No feriado os analistas comerciais folgam. Foi combinado '+(bfCenarioFer === "tecnico" ? 'um técnico das 08h às 11h15' : 'um extra de 8 h de trabalho')+' para reforçar o atendimento.')
+      : '<li class="info"><p>Feriado: os analistas comerciais folgam. Sem reforço combinado; conta só a cobertura até 00h.</p></li>';
+    extras.forEach(function(x){
+      html += item("ex", "Hora a mais registrada", Number(x.minutos)||0, (x.motivo ? '<b>Motivo:</b> '+e(x.motivo)+'. ' : '')+'Tempo além do horário da escala (comercial acima de 8 h, 12x36 acima de 11 h) ou acionamento no domingo/feriado.');
+    });
+    if(!extras.length) html += '<li class="info"><p>'+(futuro ? 'Horas a mais só aparecem quando a equipe registra.' : 'Nenhuma hora a mais registrada neste dia.')+'</p></li>';
+    if(!tot) html += '<li class="info"><p>Dia sem hora extra: a escala cobre todo o horário da hotline.</p></li>';
+    html += '</ul><div class="bfg-pop-total"><span>Total do dia'+(futuro ? ' (previsto)' : '')+'</span><b>'+bfHorasTxt(tot)+' · '+bfMoeda(tot/60*vh)+'</b></div>';
+    if(limDia > 0 && ex > limDia) html += '<div class="bfg-pop-alerta">As horas a mais passaram do limite combinado de '+bfHorasTxt(limDia)+' por dia.</div>';
+    html += '<details class="bfg-pop-escala"><summary>Escala do dia</summary><ul>'+bfEscalaDoDia(iso).map(function(a){ return '<li><span>'+e(a.nome)+'</span><b>'+a.de.replace(":","h")+'–'+a.ate.replace(":","h")+'</b></li>'; }).join("")+'</ul></details>';
+    html += '<div class="bfg-pop-nota">Valor da hora: '+bfMoeda(vh)+' por pessoa. Conta só o tempo trabalhado, sem arredondar.</div>';
+    pop.innerHTML = html; pop.hidden = false;
+    bfgPosicionarPop();
+  }
+  // Balão ao lado do dia clicado (no celular, embaixo da tela)
+  function bfgPosicionarPop(){
+    const pop = document.getElementById("bfg-pop"); if(!pop || pop.hidden) return;
+    const cel = document.querySelector('#bfg-grade [data-bf-dia="'+bfgDiaSel+'"]'); if(!cel) return;
+    if(window.innerWidth <= 760){ pop.classList.add("folha"); return; }
+    pop.classList.remove("folha");
+    const rc = cel.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, m = 10;
+    let left = rc.right + 8; if(left + pw > window.innerWidth - m) left = rc.left - pw - 8; if(left < m) left = Math.max(m, Math.min(window.innerWidth - pw - m, rc.left));
+    let top = rc.top + rc.height/2 - ph/2; top = Math.max(m, Math.min(top, window.innerHeight - ph - m));
+    pop.style.left = left + "px"; pop.style.top = top + "px";
   }
   function bfgTick(){
     const c = BF_CONFIG, agora = new Date(), iso = bfIso(agora), minAgora = agora.getHours()*60 + agora.getMinutes();
