@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `d433c0b` (07/10/2026), equivale à `develop` `5203a5e` |
+| Última publicação | `main` = commit `22bf06e` (07/10/2026), equivale à `develop` `dddbc39` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -62,6 +62,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-historico-completo-2026-10-06` | Produção antes do histórico completo e da tela mantida ao atualizar (commit `504bc31`) |
 | `producao-antes-planejamento-bf-2026-10-07` | Produção antes do Planejamento BF (commit `477637d`) |
 | `producao-antes-onepages-bf-2026-10-07` | Produção antes das One Pages BF (commit `9262bfd`) |
+| `producao-antes-seguranca-item2-2026-10-07` | Produção antes do ajuste de salvamento das lojas (commit `d433c0b`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -470,3 +471,6 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - **Links sem login:** `?hotline=1` (lojas: horário, canais, regras da sala e contatos, sem valores) e `?onepagebf=1` (gestão da Sephora: hora extra por mês, orçamento, calendário do dia a dia com balão de cobrança ao clicar no dia; só consulta; cores AlliedIT/Sephora). Os dois cabem numa tela no computador.
 - **Planejamento BF:** submenu com One Page BF e Hotline (abrem em outra aba); limite e orçamento aprovado ficam no banco para a gestão ver os mesmos números; registro de hora a mais digitado em horas (1:30, 1,5…); calendário repaginado; feriado em dia útil conta só a cobertura até 00h.
 - **Banco:** `bf_publico` (conteúdo da página das lojas; leitura liberada só da linha `onepage`; ninguém grava pelo site), `bf_plano` (limite e orçamento; só autorizados) e a função `bf_onepage_gestao` (só leitura; entrega os números para `?onepagebf=1`, sem quem registrou as horas). SQL fora do repositório, em `_Projetos_AlliedIT/_SQL_Preventivas/` (`onepage-cliente-PRODUCAO.sql` e `onepage-gestao-PRODUCAO.sql`). Rodados na produção pela usuária em 07/10/2026; conferido sem login (leitura liberada só do conteúdo público e dos números; gravação bloqueada). **Validado pela usuária no site no ar em 07/10/2026.**
+
+### 8.30 Salvamento das lojas + regras de acesso da tabela: PUBLICADO (07/10/2026)
+- Publicado na `main` `22bf06e` (= `develop` `dddbc39`), com autorização da usuária, pelo método da seção 3. Ponto de restauração: tag `producao-antes-seguranca-item2-2026-10-07` (= `d433c0b`). Salvar uma loja passa a só alterar o registro existente. Regras de acesso da tabela de lojas ajustadas pela usuária no banco (testes e produção) em 07/10/2026; comandos fora do repositório, em `_SQL_Preventivas/item2-*`. Testado pela usuária no site local (edição, duplicar, excluir, técnico e Painel).
