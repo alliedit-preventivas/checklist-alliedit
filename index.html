@@ -656,13 +656,13 @@
   :root[data-tema="sephora"] body.agn-painel .agn-av{background:#000;}
   :root[data-tema="sephora"] body.agn-painel .agn-sair{color:#000; border-color:#CFCFCF;}
   @media (max-width:820px){ body.agn-painel{padding-left:0;} body.agn-painel .agn-side{position:static; width:auto;} body.agn-painel #view-painel{padding:12px 14px;} }
-  /* ===== Planejamento Black Friday (view-bf, menu lateral com login) — identidade AlliedIT, cabe numa tela ===== */
-  body.agn-painel #view-bf{max-width:1600px; margin:0 auto; padding:12px 20px 14px;}
-  .bf-hero{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:16px; padding:14px 20px; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(5,110,140,.18);}
+  /* ===== Planejamento Black Friday (view-bf, menu lateral com login) — identidade AlliedIT ===== */
+  body.agn-painel #view-bf{max-width:1600px; margin:0 auto; padding:14px 22px 24px;}
+  .bf-hero{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:16px; padding:16px 22px; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(5,110,140,.18);}
   .bf-hero::after{content:""; position:absolute; right:-60px; top:-50px; width:240px; height:240px; background:var(--img-logo-branco) center/contain no-repeat; opacity:.06; pointer-events:none;}
   .bf-hero-txt{position:relative; z-index:1;}
   .bf-selo{display:inline-block; background:#F7D51C; color:#0E2841; font-size:10.5px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; border-radius:20px; padding:3px 11px;}
-  .bf-hero h2{margin:6px 0 2px; font-size:27px; line-height:1.1; font-weight:700;}
+  .bf-hero h2{margin:6px 0 2px; font-size:28px; line-height:1.1; font-weight:700;}
   .bf-hero h2 b{color:#F7D51C;}
   .bf-hero-sub{margin:0 0 8px; font-size:13.5px; opacity:.92;}
   .bf-progresso{height:8px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden;}
@@ -684,88 +684,130 @@
   #bf-em-turno{display:flex; flex-wrap:wrap; gap:5px; font-size:12px;}
   #bf-em-turno span{background:rgba(255,255,255,.14); border-radius:12px; padding:2px 9px;}
   #bf-em-turno span b{color:#F7D51C; font-weight:700;}
-  .bf-grade{display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.35fr) minmax(0,1fr); gap:12px; margin-top:12px; align-items:start;}
-  .bf-card{background:var(--surface); border-radius:14px; padding:12px 15px; box-shadow:0 1px 2px rgba(5,110,140,.06), 0 6px 18px rgba(5,110,140,.07); border:1px solid #E1E8EB; min-width:0;}
-  .bf-card-cab{display:flex; align-items:center; gap:10px; margin-bottom:9px;}
-  .bf-card-cab h3{margin:0; font-size:15px; color:var(--navy);}
-  .bf-card-sub{font-size:11.5px; color:var(--text-muted); margin-top:1px;}
-  .bf-ic{width:32px; height:32px; border-radius:10px; background:#E6F1F5; color:#056E8C; display:grid; place-items:center; flex:none;}
+  .bf-card{background:var(--surface); border-radius:14px; padding:14px 16px; box-shadow:0 1px 2px rgba(5,110,140,.06), 0 6px 18px rgba(5,110,140,.07); border:1px solid #E1E8EB; min-width:0;}
+  .bf-card-cab{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .bf-card-cab h3{margin:0; font-size:15.5px; color:var(--navy);}
+  .bf-card-sub{font-size:12px; color:var(--text-muted); margin-top:1px;}
+  .bf-ic{width:34px; height:34px; border-radius:10px; background:#E6F1F5; color:#056E8C; display:grid; place-items:center; flex:none;}
   .bf-ic svg{width:18px; height:18px;}
-  .bf-horarios, .bf-canais, .bf-custo-lista{list-style:none; margin:0; padding:0;}
-  .bf-horarios{display:flex; flex-direction:column; gap:4px; margin-bottom:9px;}
+  .bf-ic-alerta{background:#FCE8E6; color:#B3261E;}
+  .bf-btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; font-size:12.5px; font-weight:700; border-radius:9px; padding:7px 13px; cursor:pointer; text-decoration:none; border:1px solid transparent;}
+  .bf-btn-pri{background:#F7D51C; color:#0E2841;}
+  .bf-btn-pri:hover{filter:brightness(.97);}
+  .bf-btn-sec{background:#fff; color:#056E8C; border-color:#CFE0E6;}
+  .bf-btn-sec:hover{background:#E6F1F5;}
+  .bf-btn-ic{width:32px; padding:7px 0; font-size:16px; line-height:1;}
+  .bf-btn[aria-disabled="true"], .bf-btn:disabled{opacity:.5; cursor:not-allowed; pointer-events:none;}
+  .bf-nota{font-size:11.5px; color:var(--text-muted); margin:8px 0 0; line-height:1.4;}
+  /* termômetro da semana */
+  .bf-semana{margin-top:14px;}
+  .bf-semana-cab{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
+  .bf-semana-cab .bf-card-cab{margin:0;}
+  .bf-semana-nav{display:flex; gap:6px;}
+  .bf-termo{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:center; margin-bottom:12px;}
+  .bf-termo-barra{position:relative; height:16px; border-radius:10px; background:linear-gradient(90deg, #E7F5EC 0 50%, #FFF3C4 50% 100%); overflow:visible;}
+  .bf-termo-barra i{position:absolute; left:0; top:0; bottom:0; width:0; border-radius:10px; background:#1E7A46; transition:width .5s, background .3s;}
+  .bf-termo-barra i.medio{background:#C99A00;}
+  .bf-termo-barra i.alto{background:#B3261E;}
+  .bf-termo-marca{position:absolute; top:-4px; bottom:-4px; width:2px; background:#0E2841; left:100%; display:none;}
+  .bf-termo-txt{font-size:12.5px; color:var(--navy); text-align:right; line-height:1.35;}
+  .bf-termo-txt b{font-size:15px;}
+  .bf-termo-txt .alto{color:#B3261E;} .bf-termo-txt .medio{color:#8A6D00;} .bf-termo-txt .ok{color:#1E7A46;}
+  .bf-aviso{background:#FFF8D6; border:1px solid #F0DC7A; color:#6B5500; border-radius:10px; padding:8px 12px; font-size:12.5px; margin-bottom:10px;}
+  .bf-dias{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:8px;}
+  .bf-dia-col{border:1px solid #E1E8EB; border-radius:12px; padding:9px 10px; display:flex; flex-direction:column; gap:6px; min-width:0; background:#fff;}
+  .bf-dia-col.hoje{border-color:#056E8C; box-shadow:0 0 0 1px #056E8C;}
+  .bf-dia-col.fora{background:#F7F9FA; opacity:.6;}
+  .bf-dia-col.feriado-like{background:#FAFCFC;}
+  .bf-dia-tit{display:flex; justify-content:space-between; align-items:baseline; gap:4px;}
+  .bf-dia-tit b{font-size:13px; color:var(--navy);}
+  .bf-dia-tit span{font-size:11px; color:var(--text-muted);}
+  .bf-dia-col.hoje .bf-dia-tit b{color:#056E8C;}
+  .bf-dia-hot{font-size:11px; color:var(--text-muted);}
+  .bf-dia-equipe{display:flex; flex-wrap:wrap; gap:3px;}
+  .bf-dia-equipe span{font-size:10.5px; background:#EEF3F5; color:var(--navy); border-radius:8px; padding:1px 6px;}
+  .bf-dia-gap{font-size:11px; color:#B3261E; font-weight:600;}
+  .bf-extras{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px;}
+  .bf-extras li{background:#FFF3C4; border-radius:8px; padding:4px 22px 4px 7px; font-size:11px; color:var(--navy); position:relative; line-height:1.3;}
+  .bf-extras li b{font-weight:700;}
+  .bf-extras li small{display:block; color:#6B5500; overflow-wrap:anywhere;}
+  .bf-extras li button{position:absolute; right:3px; top:3px; border:none; background:transparent; color:#8A6D00; cursor:pointer; font-size:13px; line-height:1; padding:2px 4px; border-radius:6px;}
+  .bf-extras li button:hover{background:rgba(0,0,0,.06);}
+  .bf-dia-total{font-size:11.5px; font-weight:700; color:var(--navy); margin-top:auto;}
+  .bf-dia-add{border:1px dashed #9CC9D6; background:#F3F7F7; color:#056E8C; border-radius:8px; font-family:inherit; font-size:11.5px; font-weight:700; padding:5px; cursor:pointer;}
+  .bf-dia-add:hover{background:#E6F1F5;}
+  .bf-form{display:flex; flex-direction:column; gap:5px; background:#F3F7F7; border-radius:9px; padding:7px;}
+  .bf-form select, .bf-form input{width:100%; box-sizing:border-box; font-family:inherit; font-size:12px; padding:5px 6px; border:1px solid #CFE0E6; border-radius:7px; background:#fff; color:var(--navy);}
+  .bf-form-acoes{display:flex; gap:4px;}
+  .bf-form-acoes button{flex:1; font-family:inherit; font-size:11.5px; font-weight:700; border-radius:7px; padding:5px; cursor:pointer; border:1px solid #CFE0E6; background:#fff; color:#056E8C;}
+  .bf-form-acoes button.ok{background:#F7D51C; border-color:#F7D51C; color:#0E2841;}
+  /* hora extra por mês + simulação */
+  .bf-grade2{display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:14px; margin-top:14px; align-items:start;}
+  .bf-meses-grade{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;}
+  .bf-mes{border:1px solid #E1E8EB; border-radius:12px; padding:10px 12px; display:flex; flex-direction:column; gap:3px;}
+  .bf-mes.atual{border-color:#056E8C; box-shadow:0 0 0 1px #056E8C;}
+  .bf-mes-tit{display:flex; justify-content:space-between; align-items:baseline;}
+  .bf-mes-tit b{font-size:14px; color:var(--navy);}
+  .bf-mes-tit span{font-size:11px; color:var(--text-muted);}
+  .bf-mes-valor{font-size:20px; font-weight:700; color:#0E2841; font-variant-numeric:tabular-nums;}
+  .bf-mes-linha{display:flex; justify-content:space-between; gap:8px; font-size:11.5px; color:var(--text-muted); border-top:1px dashed #E1E8EB; padding-top:3px;}
+  .bf-mes-linha b{color:var(--navy); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .bf-mes-linha.extra b{color:#8A6D00;}
+  .bf-meses-total{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; background:#0E2841; color:#fff; border-radius:12px; padding:10px 14px; margin-top:10px; font-size:12.5px;}
+  .bf-meses-total b{font-size:20px; font-variant-numeric:tabular-nums;}
+  .bf-meses-total span b{font-size:13px; color:#F7D51C;}
+  .bf-excede-campo{display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12px; color:var(--navy); margin-bottom:7px;}
+  .bf-excede-campo input{width:110px; box-sizing:border-box; font-family:inherit; font-size:13px; padding:5px 8px; border:1px solid #E5B9B4; border-radius:7px; color:var(--navy); background:#fff; text-align:right;}
+  .bf-excede-campo input:focus{outline:2px solid #F3C9C5; outline-offset:0;}
+  .bf-excede-res{font-size:12.5px; color:var(--navy); margin:0 0 10px; line-height:1.45; background:#FFF8F7; border:1px solid #F3C9C5; border-radius:10px; padding:8px 10px;}
+  .bf-excede-res b{color:#B3261E;}
+  .bf-orc-barra{height:9px; border-radius:5px; background:#EEF3F5; overflow:hidden; margin-bottom:4px;}
+  .bf-orc-barra i{display:block; height:100%; width:0; background:#1E7A46; transition:width .4s;}
+  .bf-orc-barra i.acima{background:#B3261E;}
+  .bf-orc-txt{font-size:12px; font-weight:700; color:#1E7A46;}
+  .bf-orc-txt.acima{color:#B3261E;}
+  /* escala + hotline */
+  .bf-grade3{display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:14px; margin-top:14px; align-items:start;}
+  .bf-horarios, .bf-canais{list-style:none; margin:0; padding:0;}
+  .bf-horarios{display:flex; flex-direction:column; gap:4px; margin-bottom:10px;}
   .bf-horarios li{display:flex; justify-content:space-between; gap:8px; font-size:12.5px; background:#F3F7F7; border-radius:8px; padding:5px 10px; color:var(--navy);}
   .bf-horarios li b{color:#056E8C; white-space:nowrap;}
-  .bf-canais{display:flex; flex-direction:column; gap:5px; margin-bottom:9px;}
+  .bf-canais{display:flex; flex-direction:column; gap:6px; margin-bottom:10px;}
   .bf-canais li{display:grid; grid-template-columns:22px minmax(0,1fr); gap:6px; align-items:center; font-size:12.5px; color:var(--navy);}
   .bf-canais li svg{width:17px; height:17px; color:#056E8C;}
   .bf-canais a{color:var(--navy); text-decoration:none; overflow-wrap:anywhere;}
   .bf-canais a:hover{color:#056E8C; text-decoration:underline;}
   .bf-canais small{display:block; font-size:10.5px; color:var(--text-muted);}
   .bf-hot-acoes{display:flex; gap:8px; flex-wrap:wrap;}
-  .bf-btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; font-size:12.5px; font-weight:700; border-radius:9px; padding:7px 13px; cursor:pointer; text-decoration:none; border:1px solid transparent;}
-  .bf-btn-pri{background:#F7D51C; color:#0E2841;}
-  .bf-btn-pri:hover{filter:brightness(.97);}
-  .bf-btn-sec{background:#fff; color:#056E8C; border-color:#CFE0E6;}
-  .bf-btn-sec:hover{background:#E6F1F5;}
-  .bf-btn[aria-disabled="true"], .bf-btn:disabled{opacity:.5; cursor:not-allowed; pointer-events:none;}
-  .bf-gestao{font-size:11.5px; color:var(--text-muted); margin:8px 0 0; line-height:1.4;}
+  .bf-gestao{font-size:11.5px; color:var(--text-muted); margin:10px 0 0; line-height:1.5;}
   .bf-gestao b{color:var(--navy);}
-  /* escala: barra do dia (7h às 24h) com turnos e trechos sem analista */
-  .bf-dia{margin-bottom:9px;}
+  .bf-dia{margin-bottom:10px;}
   .bf-dia:last-child{margin-bottom:0;}
   .bf-dia-cab{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:12.5px; color:var(--navy); margin-bottom:3px;}
   .bf-dia-cab b{font-size:13px;}
   .bf-dia-cab span{font-size:11px; color:var(--text-muted);}
-  .bf-turno{display:grid; grid-template-columns:132px minmax(0,1fr) 112px; gap:8px; align-items:center; font-size:11.5px; color:var(--navy); padding:1px 0;}
+  .bf-turno{display:grid; grid-template-columns:150px minmax(0,1fr) 120px; gap:8px; align-items:center; font-size:12px; color:var(--navy); padding:1px 0;}
   .bf-turno > span:first-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .bf-turno > span:last-child{text-align:right; color:var(--text-muted); font-variant-numeric:tabular-nums; white-space:nowrap;}
-  .bf-trilha{position:relative; height:9px; background:#EEF3F5; border-radius:5px; overflow:hidden;}
+  .bf-trilha{position:relative; height:10px; background:#EEF3F5; border-radius:5px; overflow:hidden;}
   .bf-trilha i{position:absolute; top:0; bottom:0; border-radius:5px; background:#056E8C;}
   .bf-trilha i.hot{background:#CFE0E6;}
   .bf-trilha i.gap{background:#B3261E; border-radius:0;}
   .bf-turno.gap{color:#B3261E; font-weight:700;}
   .bf-turno.gap > span:last-child{color:#B3261E; white-space:normal; line-height:1.2;}
   .bf-turno.agora > span:first-child::before{content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:#1E7A46; margin-right:5px; vertical-align:1px;}
-  .bf-horas-eixo{display:grid; grid-template-columns:132px minmax(0,1fr) 112px; gap:8px; font-size:10px; color:var(--text-muted);}
+  .bf-horas-eixo{display:grid; grid-template-columns:150px minmax(0,1fr) 120px; gap:8px; font-size:10px; color:var(--text-muted);}
   .bf-horas-eixo div{display:flex; justify-content:space-between;}
   .bf-leg-gap{color:#B3261E; font-weight:600;}
-  /* custos */
-  .bf-custo-prev{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
-  .bf-custo-prev > div{background:#0E2841; color:#fff; border-radius:11px; padding:8px 11px;}
-  .bf-custo-prev small{display:block; font-size:10px; letter-spacing:.7px; text-transform:uppercase; color:#F7D51C; font-weight:700;}
-  .bf-custo-prev b{display:block; font-size:19px; line-height:1.2; font-variant-numeric:tabular-nums;}
-  .bf-custo-prev span{font-size:11px; opacity:.85;}
-  .bf-custo-prev .bf-custo-acum{background:#E6F1F5; color:var(--navy);}
-  .bf-custo-prev .bf-custo-acum small{color:#056E8C;}
-  .bf-custo-lista{display:flex; flex-direction:column; gap:3px; margin-bottom:8px;}
-  .bf-custo-lista li{display:flex; justify-content:space-between; gap:8px; font-size:11.5px; color:var(--navy); border-bottom:1px dashed #E1E8EB; padding-bottom:3px;}
-  .bf-custo-lista li span{color:var(--text-muted);}
-  .bf-custo-lista li b{white-space:nowrap; font-variant-numeric:tabular-nums;}
-  .bf-excede{border:1px solid #F3C9C5; background:#FFF8F7; border-radius:11px; padding:9px 11px;}
-  .bf-excede-tit{font-size:11px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:#B3261E; margin-bottom:5px;}
-  .bf-excede-campo{display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:11.5px; color:var(--navy); margin-bottom:5px;}
-  .bf-excede-campo input{width:96px; box-sizing:border-box; font-family:inherit; font-size:13px; padding:4px 7px; border:1px solid #E5B9B4; border-radius:7px; color:var(--navy); background:#fff; text-align:right;}
-  .bf-excede-campo input:focus{outline:2px solid #F3C9C5; outline-offset:0;}
-  .bf-excede-res{font-size:12px; color:var(--navy); margin:0 0 7px; line-height:1.4;}
-  .bf-excede-res b{color:#B3261E;}
-  .bf-orc-barra{height:8px; border-radius:5px; background:#EEF3F5; overflow:hidden; margin-bottom:4px;}
-  .bf-orc-barra i{display:block; height:100%; width:0; background:#1E7A46; transition:width .4s;}
-  .bf-orc-barra i.acima{background:#B3261E;}
-  .bf-orc-txt{font-size:11.5px; font-weight:700; color:#1E7A46;}
-  .bf-orc-txt.acima{color:#B3261E;}
   /* comunicado (janela) */
   .bf-comunicado{white-space:pre-wrap; font-size:13px; line-height:1.5; color:var(--navy); background:#F3F7F7; border-radius:10px; padding:12px 14px; max-height:min(62vh, 520px); overflow:auto; margin:0 0 12px; font-family:inherit;}
-  @media (max-height:820px) and (min-width:1101px){
-    body.agn-painel #view-bf{padding-top:8px; padding-bottom:8px;}
-    .bf-hero{padding:10px 18px;} .bf-hero h2{font-size:23px;} .bf-hero-sub{margin-bottom:6px;}
-    .bf-grade{margin-top:9px; gap:10px;} .bf-card{padding:10px 13px;} .bf-card-cab{margin-bottom:7px;}
-    .bf-horarios li{padding:4px 10px;} .bf-dia{margin-bottom:6px;} .bf-gestao{display:none;}
-  }
-  @media (max-width:1250px){ .bf-grade{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);} .bf-custos{grid-column:1 / -1;} }
-  @media (max-width:1100px){ .bf-hero{grid-template-columns:minmax(0,1fr);} }
+  @media (max-width:1280px){ .bf-dias{grid-template-columns:repeat(4, minmax(0,1fr));} }
+  @media (max-width:1100px){ .bf-hero, .bf-grade2, .bf-grade3{grid-template-columns:minmax(0,1fr);} }
   @media (max-width:760px){
     body.agn-painel #view-bf{padding:12px 14px;}
-    .bf-grade{grid-template-columns:minmax(0,1fr);}
+    .bf-dias{grid-template-columns:repeat(2, minmax(0,1fr));}
+    .bf-meses-grade{grid-template-columns:minmax(0,1fr);}
+    .bf-termo{grid-template-columns:minmax(0,1fr);} .bf-termo-txt{text-align:left;}
     .bf-turno, .bf-horas-eixo{grid-template-columns:104px minmax(0,1fr) 96px;}
   }
 
@@ -1769,7 +1811,7 @@
   </div>
 
   <!-- Planejamento Black Friday Sephora (menu lateral "Planejamento BF", só com login).
-       Horários, escala, canais, comunicado e valores ficam em BF_CONFIG (script). -->
+       Horários, escala, canais, comunicado e valores ficam em BF_CONFIG (script); horas a mais registradas ficam na tabela bf_hora_extra. -->
   <div id="view-bf" class="view">
     <section class="bf-hero">
       <div class="bf-hero-txt">
@@ -1786,7 +1828,54 @@
       </div>
     </section>
 
-    <div class="bf-grade">
+    <!-- Termômetro da semana: horas a mais registradas pela equipe (seg a dom) -->
+    <section class="bf-card bf-semana">
+      <div class="bf-semana-cab">
+        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></svg></span>
+          <div><h3>Termômetro da semana</h3><div class="bf-card-sub" id="bf-semana-periodo">—</div></div></div>
+        <div class="bf-semana-nav">
+          <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bf-semana-ant" aria-label="Semana anterior" title="Semana anterior">&lsaquo;</button>
+          <button type="button" class="bf-btn bf-btn-sec" id="bf-semana-hoje">Esta semana</button>
+          <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bf-semana-prox" aria-label="Próxima semana" title="Próxima semana">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="bf-termo">
+        <div class="bf-termo-barra" aria-hidden="true"><i id="bf-termo-fill"></i><span class="bf-termo-marca" id="bf-termo-marca"></span></div>
+        <div class="bf-termo-txt" id="bf-termo-txt">—</div>
+      </div>
+      <div class="bf-aviso" id="bf-semana-aviso" hidden></div>
+      <div class="bf-dias" id="bf-dias"></div>
+    </section>
+
+    <div class="bf-grade2">
+      <section class="bf-card bf-meses">
+        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
+          <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bf-valor-hora">R$ 95,00 por pessoa, por hora</div></div></div>
+        <div class="bf-meses-grade" id="bf-meses"></div>
+        <div class="bf-meses-total" id="bf-meses-total"></div>
+        <p class="bf-nota">Previsto: horários da hotline sem analista (1 pessoa cobrindo). Registrado a mais: horas informadas no termômetro.</p>
+      </section>
+
+      <section class="bf-card bf-custos">
+        <div class="bf-card-cab"><span class="bf-ic bf-ic-alerta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+          <div><h3>Se passar do previsto</h3><div class="bf-card-sub">Simule o impacto e compare com o orçamento</div></div></div>
+        <label class="bf-excede-campo">Limite de horas a mais por dia (equipe)
+          <input type="number" id="bf-excede-horas" min="0" max="24" step="0.25" inputmode="decimal" value="1"></label>
+        <div class="bf-excede-res" id="bf-excede-res">—</div>
+        <label class="bf-excede-campo">Orçamento aprovado (R$)
+          <input type="number" id="bf-orcamento" min="0" step="50" inputmode="decimal"></label>
+        <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
+        <div class="bf-orc-txt" id="bf-orc-txt">—</div>
+      </section>
+    </div>
+
+    <div class="bf-grade3">
+      <section class="bf-card bf-escala">
+        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg></span>
+          <div><h3>Escala dos analistas</h3><div class="bf-card-sub">Cobertura da hotline · <span class="bf-leg-gap">vermelho = sem analista</span></div></div></div>
+        <div id="bf-escala"></div>
+      </section>
+
       <section class="bf-card bf-hotline">
         <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
           <div><h3>Hotline</h3><div class="bf-card-sub">01/11/2026 a 31/01/2027</div></div></div>
@@ -1797,32 +1886,6 @@
           <button type="button" class="bf-btn bf-btn-sec" id="bf-comunicado-abrir">Comunicado</button>
         </div>
         <p class="bf-gestao" id="bf-gestao"></p>
-      </section>
-
-      <section class="bf-card bf-escala">
-        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg></span>
-          <div><h3>Escala dos analistas</h3><div class="bf-card-sub">Cobertura da hotline · <span class="bf-leg-gap">vermelho = sem analista</span></div></div></div>
-        <div id="bf-escala"></div>
-      </section>
-
-      <section class="bf-card bf-custos">
-        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
-          <div><h3>Hora extra</h3><div class="bf-card-sub" id="bf-valor-hora">R$ 95,00 por pessoa, por hora</div></div></div>
-        <div class="bf-custo-prev">
-          <div><small>Previsto no período</small><b id="bf-prev-total">R$ 0,00</b><span id="bf-prev-horas">—</span></div>
-          <div class="bf-custo-acum"><small>Acumulado até agora</small><b id="bf-acum-total">R$ 0,00</b><span id="bf-acum-horas">—</span></div>
-        </div>
-        <ul class="bf-custo-lista" id="bf-custo-lista"></ul>
-        <div class="bf-excede">
-          <div class="bf-excede-tit">Se passar do previsto</div>
-          <label class="bf-excede-campo">Horas extras a mais por dia (equipe)
-            <input type="number" id="bf-excede-horas" min="0" max="24" step="0.25" inputmode="decimal" value="1"></label>
-          <div class="bf-excede-res" id="bf-excede-res">—</div>
-          <label class="bf-excede-campo">Orçamento aprovado (R$)
-            <input type="number" id="bf-orcamento" min="0" step="50" inputmode="decimal"></label>
-          <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
-          <div class="bf-orc-txt" id="bf-orc-txt">—</div>
-        </div>
       </section>
     </div>
   </div>
@@ -2868,18 +2931,46 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function bfMinutos(lista){ return lista.reduce(function(s, l){ return s + (l[1]-l[0]); }, 0); }
   // Totais do período: dias e minutos sem analista por tipo de dia, previsto e já acumulado até agora
+  const BF_MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const BF_DIAS_CURTO = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+  // Horas a mais registradas no termômetro (tabela bf_hora_extra, só com login)
+  let bfExtras = [], bfExtrasErro = "", bfExtrasCarregado = false, bfSemanaIni = null, bfFormDia = null, bfUltimaCarga = 0;
+  function bfExtrasDoDia(iso){ return bfExtras.filter(function(x){ return x.data === iso; }); }
+  function bfSegunda(iso){ const d = bfData(iso); d.setDate(d.getDate() - ((d.getDay()+6) % 7)); return bfIso(d); }
+  function bfSomaDias(iso, n){ const d = bfData(iso); d.setDate(d.getDate()+n); return bfIso(d); }
+  async function bfCarregarExtras(){
+    try{
+      const { data, error } = await supabaseClient.from("bf_hora_extra").select("id,data,analista,minutos,motivo,criado_por,criado_em")
+        .gte("data", BF_CONFIG.inicio).lte("data", BF_CONFIG.fim).order("criado_em", {ascending:true});
+      if(error) throw error;
+      bfExtras = data || []; bfExtrasErro = "";
+    }catch(e){
+      console.error("Falha ao carregar as horas a mais:", e);
+      const msg = String((e && (e.message || e.code)) || "");
+      bfExtrasErro = /does not exist|PGRST205|42P01|schema cache/i.test(msg)
+        ? "O registro de horas a mais ainda não está ativo: falta criar a tabela no banco. Por enquanto o termômetro mostra só o previsto."
+        : "Não foi possível carregar as horas a mais. Recarregue a página.";
+    }
+    bfExtrasCarregado = true; bfUltimaCarga = Date.now();
+    if(document.getElementById("view-bf").classList.contains("active")){ renderSemanaBF(); bfTick(); }
+  }
+  // Totais do período: por tipo de dia e por mês (previsto = horários sem analista; extra = horas a mais registradas)
   function bfTotais(agora){
-    const r = {porTipo:{}, totalMin:0, acumMin:0, dias:0};
+    const r = {porTipo:{}, porMes:{}, meses:[], totalMin:0, acumMin:0, dias:0, extraMin:0};
     BF_TIPOS_DIA.forEach(function(t){ r.porTipo[t.id] = {dias:0, min:0, minDia:0}; });
     const hojeIso = bfIso(agora), minAgora = agora.getHours()*60 + agora.getMinutes() + agora.getSeconds()/60;
     for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){
-      const iso = bfIso(d), w = d.getDay(), tipo = BF_TIPOS_DIA.find(function(t){ return t.dias.indexOf(w) >= 0; });
-      const lac = bfLacunas(iso), min = bfMinutos(lac);
-      r.dias++; r.totalMin += min;
+      const iso = bfIso(d), w = d.getDay(), tipo = BF_TIPOS_DIA.find(function(t){ return t.dias.indexOf(w) >= 0; }), mes = iso.slice(0,7);
+      if(!r.porMes[mes]){ r.porMes[mes] = {dias:0, min:0, acumMin:0, extraMin:0}; r.meses.push(mes); }
+      const lac = bfLacunas(iso), min = bfMinutos(lac), pm = r.porMes[mes];
+      r.dias++; r.totalMin += min; pm.dias++; pm.min += min;
       const pt = r.porTipo[tipo.id]; pt.dias++; pt.min += min; pt.minDia = min;
-      if(iso < hojeIso) r.acumMin += min;
-      else if(iso === hojeIso) lac.forEach(function(l){ r.acumMin += Math.max(0, Math.min(l[1], minAgora) - l[0]); });
+      let acum = 0;
+      if(iso < hojeIso) acum = min;
+      else if(iso === hojeIso) lac.forEach(function(l){ acum += Math.max(0, Math.min(l[1], minAgora) - l[0]); });
+      r.acumMin += acum; pm.acumMin += acum;
     }
+    bfExtras.forEach(function(x){ const pm = r.porMes[String(x.data).slice(0,7)]; if(pm){ pm.extraMin += Number(x.minutos)||0; r.extraMin += Number(x.minutos)||0; } });
     return r;
   }
   function bfLerPlano(){ try{ return JSON.parse(localStorage.getItem("bfPlanejamento")||"{}") || {}; }catch(e){ return {}; } }
@@ -2906,11 +2997,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const link = bfLinkValido(), entrar = document.getElementById("bf-hot-entrar");
     if(link){ entrar.href = link; entrar.removeAttribute("aria-disabled"); entrar.textContent = "Sala no Teams"; entrar.title = ""; }
     else { entrar.removeAttribute("href"); entrar.setAttribute("aria-disabled", "true"); entrar.textContent = "Sala no Teams (em breve)"; entrar.title = "O link da sala fixa de Suporte ainda não foi definido"; }
-    document.getElementById("bf-gestao").innerHTML = "Problema crítico: fale com a gestão · " + BF_CONFIG.gestao.map(function(g){ return '<b>'+escapeHtml(g.nome)+'</b> '+escapeHtml(g.telefone); }).join(" · ");
+    document.getElementById("bf-gestao").innerHTML = "Problema crítico: fale com a gestão<br>" + BF_CONFIG.gestao.map(function(g){ return '<b>'+escapeHtml(g.nome)+'</b> ('+escapeHtml(g.cargo)+') '+escapeHtml(g.telefone); }).join("<br>");
     // Escala: barra 7h–24h por tipo de dia (turnos em azul, trechos sem analista em vermelho)
     const eixo = '<div class="bf-horas-eixo"><span></span><div><span>7h</span><span>12h</span><span>18h</span><span>24h</span></div><span></span></div>';
     document.getElementById("bf-escala").innerHTML = BF_TIPOS_DIA.map(function(t){
-      // um dia de exemplo do período para esse tipo (as alternâncias sempre têm uma pessoa no dia)
       let ex = bfData(BF_CONFIG.inicio); while(t.dias.indexOf(ex.getDay()) < 0) ex.setDate(ex.getDate()+1);
       const iso = bfIso(ex), h = BF_CONFIG.hotline[ex.getDay()], hi = bfMin(h[0]), hf = bfMin(h[1]);
       const vistos = {}, linhas = [];
@@ -2923,23 +3013,108 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(lac.length) linhas.push('<div class="bf-turno gap"><span>Sem analista</span><div class="bf-trilha">'+lac.map(function(l){ return bfBarra(l[0], l[1], "gap"); }).join("")+'</div><span>'+lac.map(function(l){ return bfHoraCurta(l[0])+'–'+bfHoraCurta(l[1]); }).join(" · ")+'</span></div>');
       return '<div class="bf-dia"><div class="bf-dia-cab"><b>'+t.nome+'</b><span>hotline '+bfHoraCurta(hi)+' às '+bfHoraCurta(hf)+'</span></div>'+linhas.join("")+'</div>';
     }).join("") + eixo;
-    // Custos: valores salvos no navegador (orçamento e excedente simulados)
+    // Simulação (guardada só neste navegador)
     const plano = bfLerPlano();
-    document.getElementById("bf-valor-hora").textContent = bfMoeda(BF_CONFIG.valorHora)+" por pessoa, por hora · cobre os horários sem analista";
-    const exc = document.getElementById("bf-excede-horas"), orc = document.getElementById("bf-orcamento");
-    exc.value = plano.excede !== undefined ? plano.excede : 1;
-    orc.value = plano.orcamento !== undefined ? plano.orcamento : Math.round(bfTotais(new Date()).totalMin/60*BF_CONFIG.valorHora*100)/100;
+    document.getElementById("bf-valor-hora").textContent = bfMoeda(BF_CONFIG.valorHora)+" por pessoa, por hora · novembro, dezembro e janeiro";
+    document.getElementById("bf-excede-horas").value = plano.excede !== undefined ? plano.excede : 1;
+    document.getElementById("bf-orcamento").value = plano.orcamento !== undefined ? plano.orcamento : Math.round(bfTotais(new Date()).totalMin/60*BF_CONFIG.valorHora*100)/100;
+    // Semana: a atual (antes do início, a 1ª semana; depois do fim, a última)
+    if(!bfSemanaIni) bfSemanaIni = bfSemanaPadrao();
+    renderSemanaBF();
     bfTick();
     if(bfTimer) clearInterval(bfTimer);
-    bfTimer = setInterval(bfTick, 1000);
+    bfTimer = setInterval(function(){
+      bfTick();
+      if(!bfFormDia && Date.now() - bfUltimaCarga > 60000) bfCarregarExtras(); // atualiza as horas a mais da equipe a cada minuto
+    }, 1000);
+    bfCarregarExtras();
   }
-  function pararBF(){ if(bfTimer){ clearInterval(bfTimer); bfTimer = null; } }
+  function bfSemanaPadrao(){
+    const hoje = bfIso(new Date());
+    return bfSegunda(hoje < BF_CONFIG.inicio ? BF_CONFIG.inicio : (hoje > BF_CONFIG.fim ? BF_CONFIG.fim : hoje));
+  }
+  function pararBF(){ if(bfTimer){ clearInterval(bfTimer); bfTimer = null; } bfFormDia = null; }
+  function bfLimiteDiaMin(){ return Math.max(0, Number(String(document.getElementById("bf-excede-horas").value).replace(",", ".")) || 0) * 60; }
+  // Termômetro: horas a mais registradas na semana x limite combinado (limite por dia × dias da semana dentro do período)
+  function renderSemanaBF(){
+    const hoje = bfIso(new Date()), dias = [];
+    for(let i=0;i<7;i++) dias.push(bfSomaDias(bfSemanaIni, i));
+    const dentro = dias.filter(function(d){ return d >= BF_CONFIG.inicio && d <= BF_CONFIG.fim; });
+    const prevMin = dentro.reduce(function(s, d){ return s + bfMinutos(bfLacunas(d)); }, 0);
+    const extraMin = dentro.reduce(function(s, d){ return s + bfExtrasDoDia(d).reduce(function(a, x){ return a + (Number(x.minutos)||0); }, 0); }, 0);
+    const vh = BF_CONFIG.valorHora;
+    document.getElementById("bf-semana-periodo").textContent = "Semana de "+dias[0].slice(8,10)+"/"+dias[0].slice(5,7)+" a "+dias[6].slice(8,10)+"/"+dias[6].slice(5,7) +
+      " · previsto sem analista: "+bfHorasTxt(prevMin)+" ("+bfMoeda(prevMin/60*vh)+")";
+    document.getElementById("bf-semana-hoje").disabled = bfSemanaIni === bfSemanaPadrao();
+    document.getElementById("bf-semana-ant").disabled = dias[0] <= BF_CONFIG.inicio;
+    document.getElementById("bf-semana-prox").disabled = dias[6] >= BF_CONFIG.fim;
+    // termômetro
+    const limite = bfLimiteDiaMin() * dentro.length, pct = limite > 0 ? extraMin/limite*100 : (extraMin > 0 ? 101 : 0);
+    const nivel = pct > 100 ? "alto" : pct >= 50 ? "medio" : "ok";
+    const fill = document.getElementById("bf-termo-fill");
+    fill.style.width = Math.min(100, pct) + "%"; fill.className = nivel === "ok" ? "" : nivel;
+    const situacao = !dentro.length ? '<span>Semana fora do período da hotline</span>'
+      : pct > 100 ? '<span class="alto">Passou do limite em '+bfHorasTxt(extraMin - limite)+'</span>'
+      : pct >= 50 ? '<span class="medio">Atenção: '+Math.round(pct)+'% do limite</span>'
+      : '<span class="ok">Dentro do limite</span>';
+    document.getElementById("bf-termo-txt").innerHTML = '<b>'+bfHorasTxt(extraMin)+'</b> a mais nesta semana · '+bfMoeda(extraMin/60*vh)+'<br>Limite: '+bfHorasTxt(limite)+' · '+situacao;
+    const aviso = document.getElementById("bf-semana-aviso");
+    aviso.hidden = !bfExtrasErro; aviso.textContent = bfExtrasErro;
+    // dias (seg a dom)
+    document.getElementById("bf-dias").innerHTML = dias.map(function(iso){
+      const d = bfData(iso), noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim;
+      const cab = '<div class="bf-dia-tit"><b>'+BF_DIAS_CURTO[d.getDay()]+'</b><span>'+iso.slice(8,10)+'/'+iso.slice(5,7)+'</span></div>';
+      if(!noPeriodo) return '<div class="bf-dia-col fora">'+cab+'<div class="bf-dia-hot">Fora do período</div></div>';
+      const h = BF_CONFIG.hotline[d.getDay()], lac = bfLacunas(iso), extras = bfExtrasDoDia(iso);
+      const extraDia = extras.reduce(function(a, x){ return a + (Number(x.minutos)||0); }, 0);
+      const equipe = bfEscalaDoDia(iso).map(function(a){ return '<span title="'+a.de.replace(":","h")+'–'+a.ate.replace(":","h")+'">'+escapeHtml(a.nome.replace("Analista ","A"))+'</span>'; }).join("");
+      let corpo = '<div class="bf-dia-hot">Hotline '+bfHoraCurta(bfMin(h[0]))+'–'+bfHoraCurta(bfMin(h[1]))+'</div>' +
+        '<div class="bf-dia-equipe">'+equipe+'</div>' +
+        (lac.length ? '<div class="bf-dia-gap">Sem analista: '+lac.map(function(l){ return bfHoraCurta(l[0])+'–'+bfHoraCurta(l[1]); }).join(", ")+'</div>' : '');
+      if(extras.length) corpo += '<ul class="bf-extras">'+extras.map(function(x){
+        return '<li><b>'+escapeHtml(x.analista)+'</b> +'+bfHorasTxt(Number(x.minutos)||0)+(x.motivo ? '<small>'+escapeHtml(x.motivo)+'</small>' : '') +
+          '<button type="button" data-bf-apagar="'+escapeHtml(x.id)+'" title="Apagar este registro" aria-label="Apagar registro de '+escapeHtml(x.analista)+'">×</button></li>';
+      }).join("")+'</ul>';
+      if(bfFormDia === iso){
+        const nomes = bfEscalaDoDia(iso).map(function(a){ return a.nome; });
+        corpo += '<div class="bf-form" data-bf-form="'+iso+'">' +
+          '<select data-campo="analista" aria-label="Analista">'+nomes.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'<option value="Outro">Outro analista</option></select>' +
+          '<select data-campo="minutos" aria-label="Tempo a mais"><option value="15">+15 min</option><option value="30" selected>+30 min</option><option value="45">+45 min</option><option value="60">+1 h</option><option value="90">+1h30</option><option value="120">+2 h</option><option value="180">+3 h</option><option value="240">+4 h</option></select>' +
+          '<input type="text" data-campo="motivo" maxlength="120" placeholder="Motivo (ex.: chamado crítico)" aria-label="Motivo">' +
+          '<div class="bf-form-acoes"><button type="button" data-bf-cancelar>Cancelar</button><button type="button" class="ok" data-bf-salvar>Salvar</button></div></div>';
+      }else if(!bfExtrasErro || !bfExtrasCarregado){
+        corpo += '<button type="button" class="bf-dia-add" data-bf-add="'+iso+'">+ Hora a mais</button>';
+      }
+      corpo += '<div class="bf-dia-total">'+(extraDia ? '+'+bfHorasTxt(extraDia)+' · '+bfMoeda(extraDia/60*vh) : 'Sem horas a mais')+'</div>';
+      return '<div class="bf-dia-col'+(iso===hoje?' hoje':'')+'">'+cab+corpo+'</div>';
+    }).join("");
+  }
+  async function bfSalvarExtra(form){
+    const iso = form.dataset.bfForm, btn = form.querySelector("[data-bf-salvar]");
+    const reg = { data: iso, analista: form.querySelector('[data-campo="analista"]').value, minutos: Number(form.querySelector('[data-campo="minutos"]').value),
+      motivo: form.querySelector('[data-campo="motivo"]').value.trim(), criado_por: nomeUsuarioAgn || null };
+    btn.disabled = true; btn.textContent = "Salvando...";
+    try{
+      const { error } = await supabaseClient.from("bf_hora_extra").insert(reg);
+      if(error) throw error;
+      bfFormDia = null;
+      await bfCarregarExtras();
+    }catch(e){ console.error("Falha ao registrar hora a mais:", e); btn.disabled = false; btn.textContent = "Salvar"; alert("Não foi possível registrar. Tente novamente."); }
+  }
+  async function bfApagarExtra(id){
+    const x = bfExtras.find(function(e){ return String(e.id) === String(id); }); if(!x) return;
+    if(!confirm("Apagar o registro de "+x.analista+" (+"+bfHorasTxt(Number(x.minutos)||0)+") em "+x.data.slice(8,10)+"/"+x.data.slice(5,7)+"?")) return;
+    try{
+      const { error } = await supabaseClient.from("bf_hora_extra").delete().eq("id", id);
+      if(error) throw error;
+      await bfCarregarExtras();
+    }catch(e){ console.error("Falha ao apagar hora a mais:", e); alert("Não foi possível apagar. Tente novamente."); }
+  }
   function bfTick(){
     const agora = new Date(), iso = bfIso(agora), minAgora = agora.getHours()*60 + agora.getMinutes();
     document.getElementById("bf-relogio").textContent = String(agora.getHours()).padStart(2,"0")+":"+String(agora.getMinutes()).padStart(2,"0");
     const ini = bfData(BF_CONFIG.inicio), fimP = new Date(bfData(BF_CONFIG.fim).getTime() + 86400000), totalDias = Math.round((fimP - ini) / 86400000);
     const dentro = agora >= ini && agora < fimP;
-    // status da campanha
     let status;
     if(agora < ini){ const f = Math.ceil((ini - agora) / 86400000); status = "A hotline começa em 01/11/2026 · falta"+(f===1?"":"m")+" "+f+" dia"+(f===1?"":"s"); }
     else if(!dentro) status = "Hotline encerrada em 31/01/2027";
@@ -2964,27 +3139,28 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       const tipo = BF_TIPOS_DIA.find(function(t){ return t.id === el.dataset.tipo; });
       el.classList.toggle("agora", tipo.dias.indexOf(agora.getDay()) >= 0 && emTurno.some(function(a){ return (a.grupo || a.nome) === el.dataset.grupo; }));
     });
-    // custos
-    const tot = bfTotais(agora), vh = BF_CONFIG.valorHora;
-    const prevValor = tot.totalMin/60*vh;
-    document.getElementById("bf-prev-total").textContent = bfMoeda(prevValor);
-    document.getElementById("bf-prev-horas").textContent = bfHorasTxt(tot.totalMin)+" em "+tot.dias+" dias · 1 pessoa";
-    document.getElementById("bf-acum-total").textContent = bfMoeda(tot.acumMin/60*vh);
-    document.getElementById("bf-acum-horas").textContent = bfHorasTxt(Math.round(tot.acumMin))+" até agora";
-    document.getElementById("bf-custo-lista").innerHTML = BF_TIPOS_DIA.map(function(t){
-      const p = tot.porTipo[t.id];
-      return '<li><span>'+t.nome+' · '+p.dias+' dias × '+(p.minDia>=60 ? bfHorasTxt(p.minDia) : p.minDia+" min")+'</span><b>'+bfMoeda(p.min/60*vh)+'</b></li>';
+    // hora extra por mês
+    const tot = bfTotais(agora), vh = BF_CONFIG.valorHora, mesAtual = iso.slice(0,7);
+    document.getElementById("bf-meses").innerHTML = tot.meses.map(function(m){
+      const p = tot.porMes[m], nome = BF_MESES[Number(m.slice(5,7))-1]+" "+m.slice(0,4);
+      return '<div class="bf-mes'+(m===mesAtual?' atual':'')+'"><div class="bf-mes-tit"><b>'+nome+'</b><span>'+p.dias+' dias</span></div>' +
+        '<div class="bf-mes-valor">'+bfMoeda((p.min + p.extraMin)/60*vh)+'</div>' +
+        '<div class="bf-mes-linha"><span title="Horários da hotline sem analista">Previsto</span><b>'+bfHorasTxt(p.min)+' · '+bfMoeda(p.min/60*vh)+'</b></div>' +
+        '<div class="bf-mes-linha extra"><span title="Horas informadas no termômetro">A mais</span><b>'+bfHorasTxt(p.extraMin)+' · '+bfMoeda(p.extraMin/60*vh)+'</b></div>' +
+        '<div class="bf-mes-linha"><span title="Previsto já passado + horas a mais">Realizado</span><b>'+bfMoeda((p.acumMin + p.extraMin)/60*vh)+'</b></div></div>';
     }).join("");
-    const exc = Math.max(0, Number(String(document.getElementById("bf-excede-horas").value).replace(",", ".")) || 0);
-    const excValor = exc * tot.dias * vh, comExc = prevValor + excValor;
+    document.getElementById("bf-meses-total").innerHTML = '<span>Total do período ('+tot.dias+' dias) · previsto '+bfHorasTxt(tot.totalMin)+' + registrado '+bfHorasTxt(tot.extraMin)+'<br>Já realizado até agora: <b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></span><b>'+bfMoeda((tot.totalMin + tot.extraMin)/60*vh)+'</b>';
+    // se passar do previsto
+    const prevValor = (tot.totalMin + tot.extraMin)/60*vh, exc = bfLimiteDiaMin()/60, excValor = exc * tot.dias * vh, comExc = tot.totalMin/60*vh + excValor;
     document.getElementById("bf-excede-res").innerHTML = exc
-      ? '+'+bfHorasTxt(exc*60)+' por dia = <b>+'+bfMoeda(excValor)+'</b> no período (≈ '+bfMoeda(exc*30*vh)+' por mês). Total com excedente: <b>'+bfMoeda(comExc)+'</b>.'
-      : 'Cada hora a mais por dia no período custa <b>'+bfMoeda(tot.dias*vh)+'</b> (1 hora em um único dia: '+bfMoeda(vh)+').';
+      ? 'Se a equipe usar o limite de <b>'+bfHorasTxt(exc*60)+' a mais por dia</b>, são <b>+'+bfMoeda(excValor)+'</b> no período (≈ '+bfMoeda(exc*30*vh)+' por mês, '+bfMoeda(exc*7*vh)+' por semana).<br>Total possível: <b>'+bfMoeda(comExc)+'</b> · registrado até agora: '+bfMoeda(tot.extraMin/60*vh)+'.'
+      : 'Sem limite de horas a mais. Cada hora a mais por dia no período custa <b>'+bfMoeda(tot.dias*vh)+'</b> (1 hora em um único dia: '+bfMoeda(vh)+').';
     const orc = Math.max(0, Number(String(document.getElementById("bf-orcamento").value).replace(",", ".")) || 0);
-    const barra = document.getElementById("bf-orc-barra"), otxt = document.getElementById("bf-orc-txt"), acima = orc > 0 && comExc > orc;
-    barra.style.width = (orc > 0 ? Math.min(100, comExc/orc*100) : 100) + "%";
+    const usado = Math.max(comExc, prevValor);
+    const barra = document.getElementById("bf-orc-barra"), otxt = document.getElementById("bf-orc-txt"), acima = orc > 0 && usado > orc;
+    barra.style.width = (orc > 0 ? Math.min(100, usado/orc*100) : 100) + "%";
     barra.classList.toggle("acima", acima || !orc); otxt.classList.toggle("acima", acima || !orc);
-    otxt.textContent = !orc ? "Informe o orçamento aprovado" : acima ? "Acima do orçamento em "+bfMoeda(comExc - orc) : "Dentro do orçamento · sobra "+bfMoeda(orc - comExc);
+    otxt.textContent = !orc ? "Informe o orçamento aprovado" : acima ? "Acima do orçamento em "+bfMoeda(usado - orc) : "Dentro do orçamento · sobra "+bfMoeda(orc - usado);
   }
   function bfAbrirComunicado(){
     const c = document.getElementById("modal-container"), texto = BF_CONFIG.comunicado.join("\n");
@@ -3008,7 +3184,18 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         p.excede = Number(String(document.getElementById("bf-excede-horas").value).replace(",", ".")) || 0;
         p.orcamento = Number(String(document.getElementById("bf-orcamento").value).replace(",", ".")) || 0;
         bfGravarPlano(p); bfTick();
+        if(id === "bf-excede-horas" && !bfFormDia) renderSemanaBF(); // o limite do termômetro vem daqui
       });
+    });
+    document.getElementById("bf-semana-ant").addEventListener("click", function(){ bfSemanaIni = bfSomaDias(bfSemanaIni, -7); bfFormDia = null; renderSemanaBF(); });
+    document.getElementById("bf-semana-prox").addEventListener("click", function(){ bfSemanaIni = bfSomaDias(bfSemanaIni, 7); bfFormDia = null; renderSemanaBF(); });
+    document.getElementById("bf-semana-hoje").addEventListener("click", function(){ bfSemanaIni = bfSemanaPadrao(); bfFormDia = null; renderSemanaBF(); });
+    document.getElementById("bf-dias").addEventListener("click", function(e){
+      const add = e.target.closest("[data-bf-add]"), apagar = e.target.closest("[data-bf-apagar]");
+      if(add){ bfFormDia = add.dataset.bfAdd; renderSemanaBF(); const m = document.querySelector('[data-bf-form] [data-campo="motivo"]'); if(m) m.focus(); return; }
+      if(e.target.closest("[data-bf-cancelar]")){ bfFormDia = null; renderSemanaBF(); return; }
+      if(e.target.closest("[data-bf-salvar]")){ bfSalvarExtra(e.target.closest("[data-bf-form]")); return; }
+      if(apagar) bfApagarExtra(apagar.dataset.bfApagar);
     });
   }
 
