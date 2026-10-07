@@ -787,19 +787,17 @@
   .bf-cal-dia:focus-visible{outline:2px solid #056E8C; outline-offset:2px;}
   .bf-cal-dia.fds{background:#FAFCFD;}
   .bf-cal-vazio{border:1px dashed #EEF2F4; border-radius:12px; min-height:30px;}
-  .bf-cal-dia .n{display:flex; align-items:center; justify-content:space-between; gap:4px;}
+  .bf-cal-dia .n{display:flex; align-items:center; gap:3px; min-width:0;} .bf-cal-dia .n b{flex:none;}
   .bf-cal-dia .n b{font-size:13.5px; font-weight:700; min-width:22px; height:22px; display:inline-grid; place-items:center; border-radius:50%; margin:-2px 0 0 -3px;}
-  .bf-cal-dia .n i{font-style:normal; font-size:9px; font-weight:700; letter-spacing:.4px; background:#0E2841; color:#F7D51C; border-radius:6px; padding:1px 6px;}
-  .bf-cal-dia .eq{display:flex; flex-wrap:nowrap; gap:2px; overflow:hidden; max-width:100%;}
-  .bf-cal-dia .eq i{font-style:normal; font-size:9px; font-weight:600; color:#3E5866; background:#EEF3F5; border-radius:5px; padding:0 4px; line-height:15px; flex:none;}
-  .bf-cal-dia .tags{display:flex; align-items:center; gap:3px; min-width:0;}
-  .bf-cal-dia .ex{font-size:10px; font-weight:700; border-radius:20px; padding:1px 7px; background:#FFE9A8; color:#7A5B00; white-space:nowrap;}
+  .bf-cal-dia .n i{font-style:normal; font-size:8px; font-weight:700; letter-spacing:.3px; background:#0E2841; color:#F7D51C; border-radius:5px; padding:1px 4px; flex:none;}
   .bf-cal-dia.medio{border-color:#F2DC8C; background:#FFFDF4;}
-  .bf-cal-dia.alto{border-color:#F0B9B3; background:#FFF6F5;} .bf-cal-dia.alto .ex{background:#B3261E; color:#fff;}
+  .bf-cal-dia.alto{border-color:#F0B9B3; background:#FFF6F5;}
   .bf-cal-dia.feriado{background:#F8F5FD; border-color:#E2D8F3;}
   .bf-cal-dia.feriado::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:#8B6CC7;}
-  .bf-cal-dia .fer{font-size:9.5px; font-weight:700; color:#6B4FA3; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
-  .bf-cal-dia.black{border-color:#0E2841; box-shadow:inset 0 0 0 1px #0E2841;}
+  .bf-cal-dia .fer{font-size:9.5px; font-weight:700; color:#6B4FA3; line-height:1.15; overflow:hidden; white-space:normal; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
+  .bf-cal-dia .vl{margin-left:auto; min-width:0; overflow:hidden; text-overflow:ellipsis; font-size:9.5px; font-weight:700; color:#5B7280; white-space:nowrap; font-variant-numeric:tabular-nums; border-radius:20px; padding:1px 7px; background:#F1F5F7;}
+  .bf-cal-dia .vl.ex{background:#FFE9A8; color:#7A5B00;} .bf-cal-dia.alto .vl.ex{background:#B3261E; color:#fff;}
+  .bf-cal-dia.black{border-color:#0E2841; box-shadow:inset 0 0 0 1px #0E2841;} .bf-cal-dia .fer.bfnome{color:#0E2841;}
   .bf-cal-dia.hoje .n b{background:#056E8C; color:#fff;}
   .bf-cal-dia.sel{border-color:#056E8C; box-shadow:0 0 0 2px #056E8C, 0 6px 16px rgba(5,110,140,.16);}
   .bf-cal-dia.fora{background:transparent; border-style:dashed; border-color:#EEF2F4; color:#C2CCD1; cursor:default; box-shadow:none; transform:none;}
@@ -1019,7 +1017,8 @@
   .bfg-cal-nav{display:flex; gap:6px;}
   .bfg-cal-corpo{flex:1; display:grid; grid-template-columns:minmax(0,2.5fr) minmax(280px,1fr); gap:12px; min-height:0;}
   .bfg-grade{grid-template-rows:auto; grid-auto-rows:minmax(50px,1fr);}
-  .bfg-grade .bf-cal-dia{min-height:0; padding:4px 6px 4px 7px; gap:2px;} .bfg-grade .bf-cal-dia .n b{min-width:19px; height:19px; font-size:12.5px;}
+  .bfg-grade .bf-cal-dia{min-height:0; padding:3px 5px 3px 7px; gap:1px;} .bfg-grade .bf-cal-dia .n b{min-width:18px; height:18px; font-size:12.5px;} .bfg-grade .bf-cal-dia .fer{font-size:9px;} .bfg-grade .bf-cal-dia .vl{padding:0 6px; font-size:9.5px;}
+  #view-bfg .bf-cal-cab{padding:0 0 3px;} #view-bfg .bf-cal-leg{margin-top:6px;} #view-bfg .bfg-cal-cab{margin-bottom:6px;}
   .bfg-cal-corpo .bf-cal-det{overflow:auto; align-self:stretch;}
   .bfg-cal-dia-prev{font-size:9.5px; color:#B3261E; line-height:1.2;}
   .bfg-extras li{padding-right:7px;}
@@ -2130,7 +2129,7 @@
         <div class="bf-cal-grade" id="bf-cal-grade"></div>
         <div class="bf-cal-det" id="bf-cal-det" aria-live="polite"></div>
       </div>
-      <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#0E2841"></i>BF = Black Friday</span><span>A1 a A5 = analistas do dia</span></div>
+      <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#fff; border:2px solid #0E2841"></i>Black Friday</span><span><i style="background:#F1F5F7; border:1px solid #DDE5E9"></i>Valor = hora extra do dia (previsto + a mais)</span></div>
     </section>
 
     <section class="bf-card bf-escala">
@@ -2244,7 +2243,7 @@
               </div>
             </div>
             <div class="bfg-cal-corpo"><div class="bf-cal-grade bfg-grade" id="bfg-grade"></div><div class="bf-cal-det" id="bfg-det"></div></div>
-            <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#0E2841"></i>BF = Black Friday</span><span>A1 a A5 = analistas do dia</span><span>· clique no dia para ver o detalhe</span></div>
+            <div class="bf-cal-leg"><span><i style="background:#FFE9A8"></i>Hora a mais</span><span><i style="background:#B3261E"></i>Acima do limite do dia</span><span><i style="background:#8B6CC7"></i>Feriado nacional</span><span><i style="background:#056E8C; border-radius:50%"></i>Hoje</span><span><i style="background:#fff; border:2px solid #0E2841"></i>Black Friday</span><span><i style="background:#F1F5F7; border:1px solid #DDE5E9"></i>Valor = hora extra do dia (previsto + a mais)</span><span>· clique no dia para ver os detalhes</span></div>
           </section>
         </div>
       </div>
@@ -3488,11 +3487,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       const noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim, ex = noPeriodo ? bfExtraDiaMin(iso) : 0;
       const fer = noPeriodo ? bfFeriado(iso) : null;
       const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '')+(iso===BF_CONFIG.blackFriday?' black':'')+([0,6].indexOf(bfData(iso).getDay()) >= 0 ? ' fds' : '');
-      const equipe = noPeriodo ? bfEscalaDoDia(iso).map(function(a){ return a.nome.replace("Analista ","A"); }).join(" ") : "";
-      html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(ex?' · '+bfHorasTxt(ex)+' a mais':'')+'">' +
-        '<span class="n"><b>'+Number(iso.slice(8,10))+'</b><span class="tags">'+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+(ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '')+'</span></span>' +
+      const valorDia = noPeriodo ? (bfPrevDiaMin(iso) + ex)/60*vh : 0; // hora extra do dia: horário sem analista + horas a mais
+      html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(fer?' · '+escapeHtml(fer.nome):'')+(valorDia?' · hora extra '+bfMoeda(valorDia):'')+'">' +
+        '<span class="n"><b>'+Number(iso.slice(8,10))+'</b>'+(valorDia ? '<span class="vl'+(ex ? ' ex' : '')+'" title="'+(ex ? 'Inclui '+bfHorasTxt(ex)+' a mais' : 'Previsto')+'">'+bfMoeda(valorDia)+'</span>' : '')+'</span>' +
         (fer ? '<span class="fer" title="Feriado nacional">'+escapeHtml(fer.nome)+'</span>' : '') +
-        (equipe ? '<span class="eq">'+equipe.split(" ").map(function(c){ return '<i>'+escapeHtml(c)+'</i>'; }).join("")+'</span>' : '') +
+        (iso===BF_CONFIG.blackFriday ? '<span class="fer bfnome">Black Friday</span>' : '') +
         '</button>';
     });
     document.getElementById("bf-cal-grade").innerHTML = html;
@@ -3885,11 +3884,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     dias.forEach(function(iso){
       const noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim, ex = noPeriodo ? bfExtraDiaMin(iso) : 0, fer = noPeriodo ? bfFeriado(iso) : null;
       const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfgDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '')+(iso===BF_CONFIG.blackFriday?' black':'')+([0,6].indexOf(bfData(iso).getDay()) >= 0 ? ' fds' : '');
-      const equipe = noPeriodo ? bfEscalaDoDia(iso).map(function(a){ return a.nome.replace("Analista ","A"); }).join(" ") : "";
-      html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(ex?' · '+bfHorasTxt(ex)+' a mais':'')+'">' +
-        '<span class="n"><b>'+Number(iso.slice(8,10))+'</b><span class="tags">'+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+(ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '')+'</span></span>' +
+      const valorDia = noPeriodo ? (bfPrevDiaMin(iso) + ex)/60*vh : 0; // hora extra do dia: horário sem analista + horas a mais
+      html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(fer?' · '+escapeHtml(fer.nome):'')+(valorDia?' · hora extra '+bfMoeda(valorDia):'')+'">' +
+        '<span class="n"><b>'+Number(iso.slice(8,10))+'</b>'+(valorDia ? '<span class="vl'+(ex ? ' ex' : '')+'" title="'+(ex ? 'Inclui '+bfHorasTxt(ex)+' a mais' : 'Previsto')+'">'+bfMoeda(valorDia)+'</span>' : '')+'</span>' +
         (fer ? '<span class="fer" title="Feriado nacional">'+escapeHtml(fer.nome)+'</span>' : '') +
-        (equipe ? '<span class="eq">'+equipe.split(" ").map(function(c){ return '<i>'+escapeHtml(c)+'</i>'; }).join("")+'</span>' : '') +
+        (iso===BF_CONFIG.blackFriday ? '<span class="fer bfnome">Black Friday</span>' : '') +
         '</button>';
     });
     document.getElementById("bfg-grade").innerHTML = html;
