@@ -707,7 +707,7 @@
   .bf-btn[aria-disabled="true"], .bf-btn:disabled{opacity:.5; cursor:not-allowed; pointer-events:none;}
   .bf-nota{font-size:11.5px; color:var(--text-muted); margin:8px 0 0; line-height:1.4;}
   /* termômetro da semana */
-  .bf-semana{margin-top:14px;}
+  .bf-cal{margin-top:14px;}
   .bf-semana-cab{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
   .bf-semana-cab .bf-card-cab{margin:0;}
   .bf-semana-nav{display:flex; gap:6px;}
@@ -749,7 +749,31 @@
   .bf-form-acoes button{flex:1; font-family:inherit; font-size:11.5px; font-weight:700; border-radius:7px; padding:5px; cursor:pointer; border:1px solid #CFE0E6; background:#fff; color:#056E8C;}
   .bf-form-acoes button.ok{background:#F7D51C; border-color:#F7D51C; color:#0E2841;}
   /* hora extra por mês + simulação */
-  .bf-grade2{display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:14px; margin-top:14px; align-items:start;}
+  .bf-grade-topo{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.55fr) minmax(0,1fr); gap:14px; margin-top:14px; align-items:start;}
+  .bf-escala{margin-top:14px;}
+  /* calendário do mês */
+  .bf-cal-corpo{display:grid; grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr); gap:14px; align-items:start;}
+  .bf-cal-grade{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:5px;}
+  .bf-cal-cab{font-size:11px; font-weight:700; color:var(--text-muted); text-align:center; text-transform:uppercase; letter-spacing:.6px; padding-bottom:2px;}
+  .bf-cal-dia{display:flex; flex-direction:column; align-items:flex-start; gap:2px; min-height:62px; border:1px solid #E1E8EB; border-radius:9px; background:#fff; padding:5px 6px; font-family:inherit; text-align:left; cursor:pointer; color:var(--navy); min-width:0;}
+  .bf-cal-dia:hover{border-color:#9CC9D6;}
+  .bf-cal-dia .n{font-size:13px; font-weight:700; display:flex; align-items:center; gap:4px;}
+  .bf-cal-dia .n i{font-style:normal; font-size:9px; background:#0E2841; color:#F7D51C; border-radius:6px; padding:0 5px;}
+  .bf-cal-dia .eq{font-size:9.5px; color:var(--text-muted); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
+  .bf-cal-dia .ex{font-size:10.5px; font-weight:700; border-radius:7px; padding:1px 6px; background:#FFF3C4; color:#8A6D00; margin-top:auto;}
+  .bf-cal-dia.alto{background:#FCE8E6; border-color:#F3C9C5;} .bf-cal-dia.alto .ex{background:#B3261E; color:#fff;}
+  .bf-cal-dia.medio{background:#FFFBEA;}
+  .bf-cal-dia.hoje{border-color:#056E8C;} .bf-cal-dia.hoje .n{color:#056E8C;}
+  .bf-cal-dia.sel{box-shadow:0 0 0 2px #056E8C; border-color:#056E8C;}
+  .bf-cal-dia.fora{background:#F7F9FA; color:#B5C0C6; cursor:default;}
+  .bf-cal-det{border:1px solid #E1E8EB; border-radius:12px; padding:11px 12px; display:flex; flex-direction:column; gap:7px; background:#FBFCFC;}
+  .bf-det-tit{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .bf-det-tit b{font-size:14.5px; color:var(--navy);}
+  .bf-det-tit span{font-size:11.5px; color:var(--text-muted);}
+  .bf-det-equipe{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px;}
+  .bf-det-equipe li{display:flex; justify-content:space-between; gap:8px; font-size:12px; background:#EEF3F5; border-radius:7px; padding:3px 8px; color:var(--navy);}
+  .bf-det-equipe li b{font-variant-numeric:tabular-nums;}
+  .bf-det-sub{font-size:10.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#8A6D00; margin-top:2px;}
   .bf-meses-grade{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;}
   .bf-mes{border:1px solid #E1E8EB; border-radius:12px; padding:10px 12px; display:flex; flex-direction:column; gap:3px;}
   .bf-mes.atual{border-color:#056E8C; box-shadow:0 0 0 1px #056E8C;}
@@ -760,6 +784,7 @@
   .bf-mes-linha{display:flex; justify-content:space-between; gap:8px; font-size:11.5px; color:var(--text-muted); border-top:1px dashed #E1E8EB; padding-top:3px;}
   .bf-mes-linha b{color:var(--navy); font-variant-numeric:tabular-nums; white-space:nowrap;}
   .bf-mes-linha.extra b{color:#8A6D00;}
+  .bf-grade-topo .bf-mes-linha{flex-direction:column; gap:0;} .bf-grade-topo .bf-mes-valor{font-size:18px;} .bf-grade-topo .bf-mes-tit{flex-wrap:wrap; gap:0 6px;}
   .bf-meses-total{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; background:#0E2841; color:#fff; border-radius:12px; padding:10px 14px; margin-top:10px; font-size:12.5px;}
   .bf-meses-total b{font-size:20px; font-variant-numeric:tabular-nums;}
   .bf-meses-total span b{font-size:13px; color:#F7D51C;}
@@ -808,13 +833,13 @@
   .bf-leg-gap{color:#B3261E; font-weight:600;}
   /* comunicado (janela) */
   .bf-comunicado{white-space:pre-wrap; font-size:13px; line-height:1.5; color:var(--navy); background:#F3F7F7; border-radius:10px; padding:12px 14px; max-height:min(62vh, 520px); overflow:auto; margin:0 0 12px; font-family:inherit;}
-  @media (max-width:1280px){ .bf-dias{grid-template-columns:repeat(4, minmax(0,1fr));} }
+  @media (max-width:1280px){ .bf-grade-topo{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} .bf-grade-topo .bf-meses{grid-column:1 / -1; order:-1;} }
   @media (max-width:1280px){ .bf-hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} .bf-hero-txt{grid-column:1 / -1;} }
-  @media (max-width:1100px){ .bf-grade2, .bf-grade3{grid-template-columns:minmax(0,1fr);} }
+  @media (max-width:1100px){ .bf-cal-corpo{grid-template-columns:minmax(0,1fr);} }
   @media (max-width:640px){ .bf-hero{grid-template-columns:minmax(0,1fr);} .bf-contagem-num b{font-size:24px;} }
   @media (max-width:760px){
     body.agn-painel #view-bf{padding:12px 14px;}
-    .bf-dias{grid-template-columns:repeat(2, minmax(0,1fr));}
+    .bf-grade-topo{grid-template-columns:minmax(0,1fr);} .bf-cal-dia{min-height:48px; padding:4px;} .bf-cal-dia .eq{display:none;}
     .bf-meses-grade{grid-template-columns:minmax(0,1fr);}
     .bf-termo{grid-template-columns:minmax(0,1fr);} .bf-termo-txt{text-align:left;}
     .bf-turno, .bf-horas-eixo{grid-template-columns:104px minmax(0,1fr) 96px;}
@@ -1847,66 +1872,67 @@
       </div>
     </section>
 
-    <!-- Termômetro da semana: horas a mais registradas pela equipe (seg a dom) -->
-    <section class="bf-card bf-semana">
+    <div class="bf-grade-topo">
+      <section class="bf-card bf-hotline">
+          <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
+            <div><h3>Hotline</h3><div class="bf-card-sub">01/11/2026 a 31/01/2027</div></div></div>
+          <ul class="bf-horarios" id="bf-horarios"></ul>
+          <ul class="bf-canais" id="bf-canais"></ul>
+          <div class="bf-hot-acoes">
+            <a class="bf-btn bf-btn-pri" id="bf-hot-entrar" target="_blank" rel="noopener noreferrer">Sala no Teams</a>
+            <button type="button" class="bf-btn bf-btn-sec" id="bf-comunicado-abrir">Comunicado</button>
+          </div>
+          <p class="bf-gestao" id="bf-gestao"></p>
+        </section>
+
+      <section class="bf-card bf-meses">
+          <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
+            <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bf-valor-hora">R$ 95,00 por pessoa, por hora</div></div></div>
+          <div class="bf-meses-grade" id="bf-meses"></div>
+          <div class="bf-meses-total" id="bf-meses-total"></div>
+          <p class="bf-nota">Previsto: horários da hotline sem analista (1 pessoa cobrindo). Registrado a mais: horas informadas no termômetro.</p>
+        </section>
+
+      <section class="bf-card bf-custos">
+          <div class="bf-card-cab"><span class="bf-ic bf-ic-alerta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+            <div><h3>Se passar do previsto</h3><div class="bf-card-sub">Simule o impacto e compare com o orçamento</div></div></div>
+          <label class="bf-excede-campo">Limite de horas a mais por dia (equipe)
+            <input type="number" id="bf-excede-horas" min="0" max="24" step="0.25" inputmode="decimal" value="1"></label>
+          <div class="bf-excede-res" id="bf-excede-res">—</div>
+          <label class="bf-excede-campo">Orçamento aprovado (R$)
+            <input type="number" id="bf-orcamento" min="0" step="50" inputmode="decimal"></label>
+          <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
+          <div class="bf-orc-txt" id="bf-orc-txt">—</div>
+        </section>
+    </div>
+
+    <!-- Calendário do mês = termômetro das horas a mais registradas pela equipe -->
+    <section class="bf-card bf-cal">
       <div class="bf-semana-cab">
         <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/></svg></span>
-          <div><h3>Termômetro da semana</h3><div class="bf-card-sub" id="bf-semana-periodo">—</div></div></div>
+          <div><h3 id="bf-cal-titulo">Calendário</h3><div class="bf-card-sub" id="bf-cal-periodo">—</div></div></div>
         <div class="bf-semana-nav">
-          <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bf-semana-ant" aria-label="Semana anterior" title="Semana anterior">&lsaquo;</button>
-          <button type="button" class="bf-btn bf-btn-sec" id="bf-semana-hoje">Esta semana</button>
-          <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bf-semana-prox" aria-label="Próxima semana" title="Próxima semana">&rsaquo;</button>
+          <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bf-cal-ant" aria-label="Mês anterior" title="Mês anterior">&lsaquo;</button>
+          <button type="button" class="bf-btn bf-btn-sec" id="bf-cal-hoje">Este mês</button>
+          <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bf-cal-prox" aria-label="Próximo mês" title="Próximo mês">&rsaquo;</button>
         </div>
       </div>
       <div class="bf-termo">
-        <div class="bf-termo-barra" aria-hidden="true"><i id="bf-termo-fill"></i><span class="bf-termo-marca" id="bf-termo-marca"></span></div>
+        <div class="bf-termo-barra" aria-hidden="true"><i id="bf-termo-fill"></i></div>
         <div class="bf-termo-txt" id="bf-termo-txt">—</div>
       </div>
-      <div class="bf-aviso" id="bf-semana-aviso" hidden></div>
-      <div class="bf-dias" id="bf-dias"></div>
+      <div class="bf-aviso" id="bf-cal-aviso" hidden></div>
+      <div class="bf-cal-corpo">
+        <div class="bf-cal-grade" id="bf-cal-grade"></div>
+        <div class="bf-cal-det" id="bf-cal-det" aria-live="polite"></div>
+      </div>
     </section>
 
-    <div class="bf-grade2">
-      <section class="bf-card bf-meses">
-        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
-          <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bf-valor-hora">R$ 95,00 por pessoa, por hora</div></div></div>
-        <div class="bf-meses-grade" id="bf-meses"></div>
-        <div class="bf-meses-total" id="bf-meses-total"></div>
-        <p class="bf-nota">Previsto: horários da hotline sem analista (1 pessoa cobrindo). Registrado a mais: horas informadas no termômetro.</p>
-      </section>
-
-      <section class="bf-card bf-custos">
-        <div class="bf-card-cab"><span class="bf-ic bf-ic-alerta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
-          <div><h3>Se passar do previsto</h3><div class="bf-card-sub">Simule o impacto e compare com o orçamento</div></div></div>
-        <label class="bf-excede-campo">Limite de horas a mais por dia (equipe)
-          <input type="number" id="bf-excede-horas" min="0" max="24" step="0.25" inputmode="decimal" value="1"></label>
-        <div class="bf-excede-res" id="bf-excede-res">—</div>
-        <label class="bf-excede-campo">Orçamento aprovado (R$)
-          <input type="number" id="bf-orcamento" min="0" step="50" inputmode="decimal"></label>
-        <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
-        <div class="bf-orc-txt" id="bf-orc-txt">—</div>
-      </section>
-    </div>
-
-    <div class="bf-grade3">
-      <section class="bf-card bf-escala">
+    <section class="bf-card bf-escala">
         <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg></span>
           <div><h3>Escala dos analistas</h3><div class="bf-card-sub">Cobertura da hotline · <span class="bf-leg-gap">vermelho = sem analista</span></div></div></div>
         <div id="bf-escala"></div>
       </section>
-
-      <section class="bf-card bf-hotline">
-        <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
-          <div><h3>Hotline</h3><div class="bf-card-sub">01/11/2026 a 31/01/2027</div></div></div>
-        <ul class="bf-horarios" id="bf-horarios"></ul>
-        <ul class="bf-canais" id="bf-canais"></ul>
-        <div class="bf-hot-acoes">
-          <a class="bf-btn bf-btn-pri" id="bf-hot-entrar" target="_blank" rel="noopener noreferrer">Sala no Teams</a>
-          <button type="button" class="bf-btn bf-btn-sec" id="bf-comunicado-abrir">Comunicado</button>
-        </div>
-        <p class="bf-gestao" id="bf-gestao"></p>
-      </section>
-    </div>
   </div>
 
 </main>
@@ -2953,7 +2979,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   const BF_MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   const BF_DIAS_CURTO = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
   // Horas a mais registradas no termômetro (tabela bf_hora_extra, só com login)
-  let bfExtras = [], bfExtrasErro = "", bfExtrasCarregado = false, bfSemanaIni = null, bfFormDia = null, bfUltimaCarga = 0;
+  let bfExtras = [], bfExtrasErro = "", bfExtrasCarregado = false, bfMesSel = null, bfDiaSel = null, bfFormDia = null, bfUltimaCarga = 0;
   function bfExtrasDoDia(iso){ return bfExtras.filter(function(x){ return x.data === iso; }); }
   function bfSegunda(iso){ const d = bfData(iso); d.setDate(d.getDate() - ((d.getDay()+6) % 7)); return bfIso(d); }
   function bfSomaDias(iso, n){ const d = bfData(iso); d.setDate(d.getDate()+n); return bfIso(d); }
@@ -2971,7 +2997,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         : "Não foi possível carregar as horas a mais. Recarregue a página.";
     }
     bfExtrasCarregado = true; bfUltimaCarga = Date.now();
-    if(document.getElementById("view-bf").classList.contains("active")){ renderSemanaBF(); bfTick(); }
+    if(document.getElementById("view-bf").classList.contains("active")){ renderCalendarioBF(); bfTick(); }
   }
   // Totais do período: por tipo de dia e por mês (previsto = horários sem analista; extra = horas a mais registradas)
   function bfTotais(agora){
@@ -3038,8 +3064,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bf-excede-horas").value = plano.excede !== undefined ? plano.excede : 1;
     document.getElementById("bf-orcamento").value = plano.orcamento !== undefined ? plano.orcamento : Math.round(bfTotais(new Date()).totalMin/60*BF_CONFIG.valorHora*100)/100;
     // Semana: a atual (antes do início, a 1ª semana; depois do fim, a última)
-    if(!bfSemanaIni) bfSemanaIni = bfSemanaPadrao();
-    renderSemanaBF();
+    renderCalendarioBF();
     bfTick();
     if(bfTimer) clearInterval(bfTimer);
     bfTimer = setInterval(function(){
@@ -3048,65 +3073,82 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }, 1000);
     bfCarregarExtras();
   }
-  function bfSemanaPadrao(){
-    const hoje = bfIso(new Date());
-    return bfSegunda(hoje < BF_CONFIG.inicio ? BF_CONFIG.inicio : (hoje > BF_CONFIG.fim ? BF_CONFIG.fim : hoje));
-  }
+  // Meses do período (ex.: 2026-11, 2026-12, 2027-01) e o mês aberto no calendário
+  function bfMesesPeriodo(){ const r = []; for(let d = bfData(BF_CONFIG.inicio.slice(0,8)+"01"); bfIso(d) <= BF_CONFIG.fim; d.setMonth(d.getMonth()+1)) r.push(bfIso(d).slice(0,7)); return r; }
+  function bfMesPadrao(){ const m = bfIso(new Date()).slice(0,7), ms = bfMesesPeriodo(); return m < ms[0] ? ms[0] : (m > ms[ms.length-1] ? ms[ms.length-1] : m); }
   function pararBF(){ if(bfTimer){ clearInterval(bfTimer); bfTimer = null; } bfFormDia = null; }
   function bfLimiteDiaMin(){ return Math.max(0, Number(String(document.getElementById("bf-excede-horas").value).replace(",", ".")) || 0) * 60; }
-  // Termômetro: horas a mais registradas na semana x limite combinado (limite por dia × dias da semana dentro do período)
-  function renderSemanaBF(){
-    const hoje = bfIso(new Date()), dias = [];
-    for(let i=0;i<7;i++) dias.push(bfSomaDias(bfSemanaIni, i));
+  function bfExtraDiaMin(iso){ return bfExtrasDoDia(iso).reduce(function(a, x){ return a + (Number(x.minutos)||0); }, 0); }
+  // Calendário do mês = termômetro: horas a mais registradas no mês x limite combinado (limite por dia × dias do mês no período)
+  function renderCalendarioBF(){
+    const ms = bfMesesPeriodo(); if(!bfMesSel || ms.indexOf(bfMesSel) < 0) bfMesSel = bfMesPadrao();
+    const hoje = bfIso(new Date()), primeiro = bfMesSel+"-01", d1 = bfData(primeiro);
+    const nDias = new Date(d1.getFullYear(), d1.getMonth()+1, 0).getDate(), dias = [];
+    for(let i=1;i<=nDias;i++) dias.push(bfMesSel+"-"+String(i).padStart(2,"0"));
     const dentro = dias.filter(function(d){ return d >= BF_CONFIG.inicio && d <= BF_CONFIG.fim; });
+    if(!bfDiaSel || bfDiaSel.slice(0,7) !== bfMesSel) bfDiaSel = dentro.indexOf(hoje) >= 0 ? hoje : dentro[0];
+    const vh = BF_CONFIG.valorHora, limDia = bfLimiteDiaMin();
     const prevMin = dentro.reduce(function(s, d){ return s + bfMinutos(bfLacunas(d)); }, 0);
-    const extraMin = dentro.reduce(function(s, d){ return s + bfExtrasDoDia(d).reduce(function(a, x){ return a + (Number(x.minutos)||0); }, 0); }, 0);
-    const vh = BF_CONFIG.valorHora;
-    document.getElementById("bf-semana-periodo").textContent = "Semana de "+dias[0].slice(8,10)+"/"+dias[0].slice(5,7)+" a "+dias[6].slice(8,10)+"/"+dias[6].slice(5,7) +
-      " · previsto sem analista: "+bfHorasTxt(prevMin)+" ("+bfMoeda(prevMin/60*vh)+")";
-    document.getElementById("bf-semana-hoje").disabled = bfSemanaIni === bfSemanaPadrao();
-    document.getElementById("bf-semana-ant").disabled = dias[0] <= BF_CONFIG.inicio;
-    document.getElementById("bf-semana-prox").disabled = dias[6] >= BF_CONFIG.fim;
-    // termômetro
-    const limite = bfLimiteDiaMin() * dentro.length, pct = limite > 0 ? extraMin/limite*100 : (extraMin > 0 ? 101 : 0);
+    const extraMin = dentro.reduce(function(s, d){ return s + bfExtraDiaMin(d); }, 0);
+    const nomeMes = BF_MESES[d1.getMonth()]+" "+d1.getFullYear();
+    document.getElementById("bf-cal-titulo").textContent = "Calendário · "+nomeMes;
+    document.getElementById("bf-cal-periodo").textContent = "Previsto sem analista: "+bfHorasTxt(prevMin)+" ("+bfMoeda(prevMin/60*vh)+") · clique no dia para ver ou registrar horas a mais";
+    const i = ms.indexOf(bfMesSel);
+    document.getElementById("bf-cal-ant").disabled = i <= 0;
+    document.getElementById("bf-cal-prox").disabled = i >= ms.length-1;
+    document.getElementById("bf-cal-hoje").disabled = bfMesSel === bfMesPadrao();
+    // termômetro do mês
+    const limite = limDia * dentro.length, pct = limite > 0 ? extraMin/limite*100 : (extraMin > 0 ? 101 : 0);
     const nivel = pct > 100 ? "alto" : pct >= 50 ? "medio" : "ok";
     const fill = document.getElementById("bf-termo-fill");
     fill.style.width = Math.min(100, pct) + "%"; fill.className = nivel === "ok" ? "" : nivel;
-    const situacao = !dentro.length ? '<span>Semana fora do período da hotline</span>'
-      : pct > 100 ? '<span class="alto">Passou do limite em '+bfHorasTxt(extraMin - limite)+'</span>'
-      : pct >= 50 ? '<span class="medio">Atenção: '+Math.round(pct)+'% do limite</span>'
-      : '<span class="ok">Dentro do limite</span>';
-    document.getElementById("bf-termo-txt").innerHTML = '<b>'+bfHorasTxt(extraMin)+'</b> a mais nesta semana · '+bfMoeda(extraMin/60*vh)+'<br>Limite: '+bfHorasTxt(limite)+' · '+situacao;
-    const aviso = document.getElementById("bf-semana-aviso");
+    const situacao = pct > 100 ? '<span class="alto">Passou do limite em '+bfHorasTxt(extraMin - limite)+'</span>'
+      : pct >= 50 ? '<span class="medio">Atenção: '+Math.round(pct)+'% do limite</span>' : '<span class="ok">Dentro do limite</span>';
+    document.getElementById("bf-termo-txt").innerHTML = '<b>'+bfHorasTxt(extraMin)+'</b> a mais em '+BF_MESES[d1.getMonth()].toLowerCase()+' · '+bfMoeda(extraMin/60*vh)+'<br>Limite do mês: '+bfHorasTxt(limite)+' · '+situacao;
+    const aviso = document.getElementById("bf-cal-aviso");
     aviso.hidden = !bfExtrasErro; aviso.textContent = bfExtrasErro;
-    // dias (seg a dom)
-    document.getElementById("bf-dias").innerHTML = dias.map(function(iso){
-      const d = bfData(iso), noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim;
-      const cab = '<div class="bf-dia-tit"><b>'+BF_DIAS_CURTO[d.getDay()]+'</b><span>'+iso.slice(8,10)+'/'+iso.slice(5,7)+'</span></div>';
-      if(!noPeriodo) return '<div class="bf-dia-col fora">'+cab+'<div class="bf-dia-hot">Fora do período</div></div>';
-      const h = BF_CONFIG.hotline[d.getDay()], lac = bfLacunas(iso), extras = bfExtrasDoDia(iso);
-      const extraDia = extras.reduce(function(a, x){ return a + (Number(x.minutos)||0); }, 0);
-      const equipe = bfEscalaDoDia(iso).map(function(a){ return '<span title="'+a.de.replace(":","h")+'–'+a.ate.replace(":","h")+'">'+escapeHtml(a.nome.replace("Analista ","A"))+'</span>'; }).join("");
-      let corpo = '<div class="bf-dia-hot">Hotline '+bfHoraCurta(bfMin(h[0]))+'–'+bfHoraCurta(bfMin(h[1]))+'</div>' +
-        '<div class="bf-dia-equipe">'+equipe+'</div>' +
-        (lac.length ? '<div class="bf-dia-gap">Sem analista: '+lac.map(function(l){ return bfHoraCurta(l[0])+'–'+bfHoraCurta(l[1]); }).join(", ")+'</div>' : '');
-      if(extras.length) corpo += '<ul class="bf-extras">'+extras.map(function(x){
-        return '<li><b>'+escapeHtml(x.analista)+'</b> +'+bfHorasTxt(Number(x.minutos)||0)+(x.motivo ? '<small>'+escapeHtml(x.motivo)+'</small>' : '') +
-          '<button type="button" data-bf-apagar="'+escapeHtml(x.id)+'" title="Apagar este registro" aria-label="Apagar registro de '+escapeHtml(x.analista)+'">×</button></li>';
-      }).join("")+'</ul>';
-      if(bfFormDia === iso){
-        const nomes = bfEscalaDoDia(iso).map(function(a){ return a.nome; });
-        corpo += '<div class="bf-form" data-bf-form="'+iso+'">' +
-          '<select data-campo="analista" aria-label="Analista">'+nomes.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'<option value="Outro">Outro analista</option></select>' +
-          '<select data-campo="minutos" aria-label="Tempo a mais"><option value="15">+15 min</option><option value="30" selected>+30 min</option><option value="45">+45 min</option><option value="60">+1 h</option><option value="90">+1h30</option><option value="120">+2 h</option><option value="180">+3 h</option><option value="240">+4 h</option></select>' +
-          '<input type="text" data-campo="motivo" maxlength="120" placeholder="Motivo (ex.: chamado crítico)" aria-label="Motivo">' +
-          '<div class="bf-form-acoes"><button type="button" data-bf-cancelar>Cancelar</button><button type="button" class="ok" data-bf-salvar>Salvar</button></div></div>';
-      }else if(!bfExtrasErro || !bfExtrasCarregado){
-        corpo += '<button type="button" class="bf-dia-add" data-bf-add="'+iso+'">+ Hora a mais</button>';
-      }
-      corpo += '<div class="bf-dia-total">'+(extraDia ? '+'+bfHorasTxt(extraDia)+' · '+bfMoeda(extraDia/60*vh) : 'Sem horas a mais')+'</div>';
-      return '<div class="bf-dia-col'+(iso===hoje?' hoje':'')+'">'+cab+corpo+'</div>';
-    }).join("");
+    // grade do mês (segunda a domingo)
+    const vazio = (d1.getDay()+6) % 7;
+    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(function(n){ return '<div class="bf-cal-cab">'+n+'</div>'; }).join("");
+    for(let k=0;k<vazio;k++) html += '<div class="bf-cal-vazio"></div>';
+    dias.forEach(function(iso){
+      const noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim, ex = noPeriodo ? bfExtraDiaMin(iso) : 0;
+      const cls = 'bf-cal-dia'+(iso===hoje?' hoje':'')+(iso===bfDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '')+(iso===BF_CONFIG.blackFriday?' black':'');
+      const equipe = noPeriodo ? bfEscalaDoDia(iso).map(function(a){ return a.nome.replace("Analista ","A"); }).join(" ") : "";
+      html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(ex?' · '+bfHorasTxt(ex)+' a mais':'')+'">' +
+        '<span class="n">'+Number(iso.slice(8,10))+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+'</span>' +
+        (equipe ? '<span class="eq">'+equipe+'</span>' : '') +
+        (ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '') + '</button>';
+    });
+    document.getElementById("bf-cal-grade").innerHTML = html;
+    renderDiaBF();
+  }
+  // Detalhe do dia escolhido: equipe, horários sem analista e horas a mais (registrar / apagar)
+  function renderDiaBF(){
+    const det = document.getElementById("bf-cal-det"), iso = bfDiaSel;
+    if(!iso){ det.innerHTML = '<div class="bf-dia-hot">Mês fora do período da hotline.</div>'; return; }
+    const d = bfData(iso), h = BF_CONFIG.hotline[d.getDay()], lac = bfLacunas(iso), extras = bfExtrasDoDia(iso), ex = bfExtraDiaMin(iso), vh = BF_CONFIG.valorHora;
+    const nomeDia = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][d.getDay()];
+    let html = '<div class="bf-det-tit"><b>'+nomeDia+', '+iso.slice(8,10)+'/'+iso.slice(5,7)+'</b><span>Hotline '+bfHoraCurta(bfMin(h[0]))+' às '+bfHoraCurta(bfMin(h[1]))+'</span></div>';
+    html += '<ul class="bf-det-equipe">'+bfEscalaDoDia(iso).map(function(a){ return '<li><span>'+escapeHtml(a.nome)+'</span><b>'+a.de.replace(":","h")+'–'+a.ate.replace(":","h")+'</b></li>'; }).join("")+'</ul>';
+    if(lac.length) html += '<div class="bf-dia-gap">Sem analista: '+lac.map(function(l){ return bfHoraCurta(l[0])+'–'+bfHoraCurta(l[1]); }).join(", ")+' ('+bfHorasTxt(bfMinutos(lac))+' · '+bfMoeda(bfMinutos(lac)/60*vh)+')</div>';
+    html += '<div class="bf-det-sub">Horas a mais neste dia</div>';
+    html += extras.length ? '<ul class="bf-extras">'+extras.map(function(x){
+      return '<li><b>'+escapeHtml(x.analista)+'</b> +'+bfHorasTxt(Number(x.minutos)||0)+' · '+bfMoeda((Number(x.minutos)||0)/60*vh)+(x.motivo ? '<small>'+escapeHtml(x.motivo)+'</small>' : '')+(x.criado_por ? '<small>registrado por '+escapeHtml(x.criado_por)+'</small>' : '') +
+        '<button type="button" data-bf-apagar="'+escapeHtml(x.id)+'" title="Apagar este registro" aria-label="Apagar registro de '+escapeHtml(x.analista)+'">×</button></li>';
+    }).join("")+'</ul>' : '<div class="bf-dia-hot">Nenhuma hora a mais registrada.</div>';
+    if(bfFormDia === iso){
+      const nomes = bfEscalaDoDia(iso).map(function(a){ return a.nome; });
+      html += '<div class="bf-form" data-bf-form="'+iso+'">' +
+        '<select data-campo="analista" aria-label="Analista">'+nomes.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'<option value="Outro">Outro analista</option></select>' +
+        '<select data-campo="minutos" aria-label="Tempo a mais"><option value="15">+15 min</option><option value="30" selected>+30 min</option><option value="45">+45 min</option><option value="60">+1 h</option><option value="90">+1h30</option><option value="120">+2 h</option><option value="180">+3 h</option><option value="240">+4 h</option></select>' +
+        '<input type="text" data-campo="motivo" maxlength="120" placeholder="Motivo (ex.: chamado crítico)" aria-label="Motivo">' +
+        '<div class="bf-form-acoes"><button type="button" data-bf-cancelar>Cancelar</button><button type="button" class="ok" data-bf-salvar>Salvar</button></div></div>';
+    }else if(!bfExtrasErro){
+      html += '<button type="button" class="bf-dia-add" data-bf-add="'+iso+'">+ Registrar hora a mais</button>';
+    }
+    html += '<div class="bf-dia-total">'+(ex ? 'Total do dia: +'+bfHorasTxt(ex)+' · '+bfMoeda(ex/60*vh) : '')+'</div>';
+    det.innerHTML = html;
   }
   async function bfSalvarExtra(form){
     const iso = form.dataset.bfForm, btn = form.querySelector("[data-bf-salvar]");
@@ -3215,16 +3257,20 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         p.excede = Number(String(document.getElementById("bf-excede-horas").value).replace(",", ".")) || 0;
         p.orcamento = Number(String(document.getElementById("bf-orcamento").value).replace(",", ".")) || 0;
         bfGravarPlano(p); bfTick();
-        if(id === "bf-excede-horas" && !bfFormDia) renderSemanaBF(); // o limite do termômetro vem daqui
+        if(id === "bf-excede-horas" && !bfFormDia) renderCalendarioBF(); // o limite do termômetro vem daqui
       });
     });
-    document.getElementById("bf-semana-ant").addEventListener("click", function(){ bfSemanaIni = bfSomaDias(bfSemanaIni, -7); bfFormDia = null; renderSemanaBF(); });
-    document.getElementById("bf-semana-prox").addEventListener("click", function(){ bfSemanaIni = bfSomaDias(bfSemanaIni, 7); bfFormDia = null; renderSemanaBF(); });
-    document.getElementById("bf-semana-hoje").addEventListener("click", function(){ bfSemanaIni = bfSemanaPadrao(); bfFormDia = null; renderSemanaBF(); });
-    document.getElementById("bf-dias").addEventListener("click", function(e){
+    document.getElementById("bf-cal-ant").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfMesSel); if(i > 0){ bfMesSel = ms[i-1]; bfFormDia = null; renderCalendarioBF(); } });
+    document.getElementById("bf-cal-prox").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfMesSel); if(i < ms.length-1){ bfMesSel = ms[i+1]; bfFormDia = null; renderCalendarioBF(); } });
+    document.getElementById("bf-cal-hoje").addEventListener("click", function(){ bfMesSel = bfMesPadrao(); bfDiaSel = null; bfFormDia = null; renderCalendarioBF(); });
+    document.getElementById("bf-cal-grade").addEventListener("click", function(e){
+      const dia = e.target.closest("[data-bf-dia]"); if(!dia || dia.disabled) return;
+      bfDiaSel = dia.dataset.bfDia; bfFormDia = null; renderCalendarioBF();
+    });
+    document.getElementById("bf-cal-det").addEventListener("click", function(e){
       const add = e.target.closest("[data-bf-add]"), apagar = e.target.closest("[data-bf-apagar]");
-      if(add){ bfFormDia = add.dataset.bfAdd; renderSemanaBF(); const m = document.querySelector('[data-bf-form] [data-campo="motivo"]'); if(m) m.focus(); return; }
-      if(e.target.closest("[data-bf-cancelar]")){ bfFormDia = null; renderSemanaBF(); return; }
+      if(add){ bfFormDia = add.dataset.bfAdd; renderDiaBF(); const m = document.querySelector('[data-bf-form] [data-campo="motivo"]'); if(m) m.focus(); return; }
+      if(e.target.closest("[data-bf-cancelar]")){ bfFormDia = null; renderDiaBF(); return; }
       if(e.target.closest("[data-bf-salvar]")){ bfSalvarExtra(e.target.closest("[data-bf-form]")); return; }
       if(apagar) bfApagarExtra(apagar.dataset.bfApagar);
     });
