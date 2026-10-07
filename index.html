@@ -617,7 +617,11 @@
   .agn-nav:hover{background:rgba(255,255,255,.08);}
   .agn-nav.on{background:var(--agn-amarelo); color:#0E2841; font-weight:700; box-shadow:0 4px 12px rgba(0,0,0,.15);}
   .agn-nav svg{width:19px; height:19px; flex-shrink:0;}
-  .agn-nav-grupo{cursor:default;} .agn-nav-grupo:hover{background:transparent;}
+  /* Cadastro de loja: submenu fechado; abre e fecha ao clicar no grupo */
+  .agn-nav-grupo{gap:10px; padding-right:8px; white-space:nowrap;}
+  .agn-nav-grupo .agn-seta{width:15px; height:15px; margin-left:auto; transition:transform .2s;}
+  .agn-nav-grupo[aria-expanded="true"] .agn-seta{transform:rotate(180deg);}
+  @media (min-width:821px){ .agn-side .agn-sub:not(.aberto){display:none;} }
   .agn-sub{display:flex; flex-direction:column; margin:-4px 0 6px 31px; position:relative; z-index:1;}
   .agn-sub button{background:transparent; border:none; color:#fff; opacity:.85; font-family:inherit; font-size:12.8px; text-align:left; padding:5px 14px; border-radius:8px; cursor:pointer;}
   .agn-sub button:hover{opacity:1; background:rgba(255,255,255,.08);}
@@ -1090,8 +1094,8 @@
       <button type="button" class="agn-nav on" id="agn-nav-lojas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Agendamento</button>
       <button type="button" class="agn-nav" id="agn-nav-painel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Painel</button>
       <button type="button" class="agn-nav" id="agn-nav-tecnico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>Técnico</button>
-      <div class="agn-nav agn-nav-grupo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg>Cadastro de loja</div>
-      <div class="agn-sub">
+      <button type="button" class="agn-nav agn-nav-grupo" id="agn-cad-grupo" aria-expanded="false" aria-controls="agn-cad-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg>Cadastro de loja<svg class="agn-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="agn-sub" id="agn-cad-sub">
         <button type="button" id="agn-cad-criar">Criar novo cadastro</button>
         <button type="button" id="agn-cad-editar">Editar cadastro</button>
         <button type="button" id="agn-cad-excluir">Excluir cadastro</button>
@@ -2870,6 +2874,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("agn-nav-lojas").addEventListener("click", function(){ showView("lojas"); });
     document.getElementById("agn-nav-painel").addEventListener("click", function(){ document.getElementById("topo-nav-painel").click(); });
     document.getElementById("agn-nav-tecnico").addEventListener("click", function(){ document.getElementById("topo-nav-tecnico").click(); });
+    document.getElementById("agn-cad-grupo").addEventListener("click", function(){
+      const sub = document.getElementById("agn-cad-sub"), aberto = !sub.classList.contains("aberto");
+      sub.classList.toggle("aberto", aberto); this.setAttribute("aria-expanded", aberto ? "true" : "false");
+    });
     document.getElementById("agn-cad-criar").addEventListener("click", function(){ document.getElementById("btn-duplicar-loja-central").click(); });
     document.getElementById("agn-cad-editar").addEventListener("click", function(){ document.getElementById("btn-editar-loja-central").click(); });
     document.getElementById("agn-cad-excluir").addEventListener("click", function(e){ e.stopPropagation(); if(document.getElementById("view-painel").classList.contains("active")) showView("lojas"); document.getElementById("btn-modo-selecao").click(); atualizarBotaoExcluirAgn(); });
