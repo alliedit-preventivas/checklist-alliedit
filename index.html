@@ -2378,8 +2378,15 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           const { data, error } = await sb.from(table).select("data").eq("id", id).maybeSingle();
           if(error) throw error;
           const merged = Object.assign({}, data ? data.data : {}, partial);
-          const { error: err2 } = await sb.from(table).upsert({ id: id, data: merged });
-          if(err2) throw err2;
+          // registro que já existe: só altera (sem login não dá para criar lojas, então não usa "upsert" aqui)
+          if(data){
+            const { data: alt, error: err2 } = await sb.from(table).update({ data: merged }).eq("id", id).select("id");
+            if(err2) throw err2;
+            if(!alt || !alt.length) throw new Error("Registro não alterado (sem permissão ou não encontrado)");
+            return;
+          }
+          const { error: err3 } = await sb.from(table).upsert({ id: id, data: merged });
+          if(err3) throw err3;
         },
         delete: async function(){
           const { error } = await sb.from(table).delete().eq("id", id);
