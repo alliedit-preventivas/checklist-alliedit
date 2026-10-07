@@ -2099,11 +2099,11 @@
             <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bf-valor-hora"></div></div></div>
           <div class="bf-meses-grade" id="bf-meses"></div>
           <div class="bf-meses-total" id="bf-meses-total"></div>
-          <div class="bf-fer-opcao" role="radiogroup" aria-label="Feriado em dia útil: o que conta como hora extra">
-          <span>Feriado em dia útil (comerciais folgam) · conta como hora extra:</span>
-          <label><input type="radio" name="bf-fer" value="cobertura"> <b>Só cobertura até 00h</b> <small id="bf-fer-cobertura"></small></label>
-          <label><input type="radio" name="bf-fer" value="tecnico"> <b>+ Técnico 08h–11h15</b> <small id="bf-fer-tecnico"></small></label>
-          <label><input type="radio" name="bf-fer" value="extra8"> <b>+ Extra de 8 h</b> <small id="bf-fer-extra8"></small></label>
+          <div class="bf-fer-opcao" role="group" aria-label="Feriado em dia útil: o que conta como hora extra">
+          <span>Feriado em dia útil (comerciais folgam) · pode marcar mais de uma opção:</span>
+          <label><input type="checkbox" name="bf-fer" value="cobertura"> <b>Só cobertura até 00h</b> <small id="bf-fer-cobertura"></small></label>
+          <label><input type="checkbox" name="bf-fer" value="tecnico"> <b>Feriados das 8h às 11h15 não é cobrada hora extra; passou deste período, é incluída a hora extra</b> <small id="bf-fer-tecnico"></small></label>
+          <label><input type="checkbox" name="bf-fer" value="extra8"> <b>+ Extra de 8 h</b> <small id="bf-fer-extra8"></small></label>
         </div>
         <ul class="bf-regras" id="bf-regras"></ul>
         </section>
@@ -3254,15 +3254,24 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // Quem trabalha numa data (respeitando sábados alternados e 12x36)
   // Feriados nacionais do período (mesma lista da Agenda do Painel, sem pontos facultativos)
   function bfFeriado(iso){ const f = pnFeriado(iso); return f && !f.facultativo ? f : null; }
-  // Feriado em dia útil: os comerciais folgam. Entra como hora extra a cobertura até 00h (trecho depois do 1º turno do dia)
-  // e, conforme a opção escolhida no Planejamento, um técnico das 08h às 11h15 ou um extra de 8 h. Conta só o tempo trabalhado.
+  // Feriado em dia útil: os comerciais folgam. Opções (pode marcar mais de uma, guardadas como "cobertura,tecnico"):
+  //   cobertura = cobertura até 00h (trecho depois do 1º turno do dia) é hora extra
+  //   tecnico   = técnico das 8h às 11h15 sem cobrança de hora extra (o que passar desse período entra como hora a mais registrada)
+  //   extra8    = + 8 h de hora extra. Conta só o tempo trabalhado.
   const BF_FER_OPCOES = {
-    cobertura: { nome: "Só cobertura até 00h", texto: "só a cobertura até 00h", min: 0 },
-    tecnico:   { nome: "+ Técnico 08h–11h15", texto: "a cobertura até 00h + técnico das 08h às 11h15", min: 195 },
-    extra8:    { nome: "+ Extra de 8 h", texto: "a cobertura até 00h + extra de 8 h", min: 480 }
+    cobertura: { nome: "Cobertura até 00h", texto: "a cobertura até 00h", min: 0 },
+    tecnico:   { nome: "Técnico 8h–11h15 sem cobrança", texto: "técnico das 8h às 11h15 sem cobrança (o que passar entra como hora extra)", min: 0 },
+    extra8:    { nome: "Extra de 8 h", texto: "extra de 8 h", min: 480 }
   };
   let bfCenarioFer = "cobertura";
-  function bfNormCenario(v){ return BF_FER_OPCOES[v] ? v : "cobertura"; }
+  // texto guardado -> lista válida (vazio = nenhuma opção; valor antigo ou desconhecido = cobertura)
+  function bfNormCenario(v){
+    if(v === "") return "";
+    const ok = String(v == null ? "" : v).split(",").filter(function(x){ return BF_FER_OPCOES[x]; });
+    return ok.length ? Object.keys(BF_FER_OPCOES).filter(function(k){ return ok.indexOf(k) >= 0; }).join(",") : "cobertura";
+  }
+  function bfFerTem(op){ return ("," + bfCenarioFer + ",").indexOf("," + op + ",") >= 0; }
+  function bfFerResumo(){ const l = Object.keys(BF_FER_OPCOES).filter(bfFerTem).map(function(k){ return BF_FER_OPCOES[k].texto; }); return l.length ? l.join(" + ") : "nenhuma hora extra"; }
   function bfFeriadoUtil(iso){ const w = bfData(iso).getDay(); return w >= 1 && w <= 5 && !!bfFeriado(iso); }
   function bfTipoAnalista(a){ return a.dias === "12x36" ? "12x36" : "comercial"; }
   function bfEscalaDoDia(iso){
@@ -3290,15 +3299,16 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // Trechos sem analista que entram como hora extra: no feriado de dia útil, só a partir do 1º turno do dia (cobertura até 00h)
   function bfLacunasPrev(iso){
     const lac = bfLacunas(iso); if(!bfFeriadoUtil(iso)) return lac;
+    if(!bfFerTem("cobertura")) return [];
     const turnos = bfEscalaDoDia(iso); if(!turnos.length) return lac;
     const ini = Math.min.apply(null, turnos.map(function(a){ return bfMin(a.de); }));
     return lac.filter(function(l){ return l[0] >= ini; });
   }
-  // Feriado em dia útil: tempo do reforço escolhido (técnico 08h–11h15 ou extra de 8 h)
-  function bfFeriadoTrabMin(iso){ return bfFeriadoUtil(iso) ? BF_FER_OPCOES[bfCenarioFer].min : 0; }
+  // Feriado em dia útil: tempo do reforço cobrado (extra de 8 h; o técnico das 8h às 11h15 não é cobrado)
+  function bfFeriadoTrabMin(iso){ return bfFeriadoUtil(iso) ? Object.keys(BF_FER_OPCOES).filter(bfFerTem).reduce(function(a, k){ return a + BF_FER_OPCOES[k].min; }, 0) : 0; }
   // Hora extra prevista no dia = horários sem analista que precisam de cobertura + reforço do feriado
   function bfPrevDiaMin(iso){ return bfMinutos(bfLacunasPrev(iso)) + bfFeriadoTrabMin(iso); }
-  function bfFerTextoDia(min, vh){ return 'Comerciais folgam. Conta a cobertura até 00h' + (min ? ' + ' + BF_FER_OPCOES[bfCenarioFer].texto.replace("a cobertura até 00h + ", "") + ': ' + bfHorasTxt(min) + ' (' + bfMoeda(min/60*vh) + ')' : '') + '. Só o tempo trabalhado, sem arredondar.'; }
+  function bfFerTextoDia(min, vh){ return 'Comerciais folgam. Conta como hora extra: ' + bfFerResumo() + (min ? ' (' + bfHorasTxt(min) + ' · ' + bfMoeda(min/60*vh) + ')' : '') + '. Só o tempo trabalhado.'; }
   // Totais do período: dias e minutos sem analista por tipo de dia, previsto e já acumulado até agora
   const BF_MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   const BF_DIAS_CURTO = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
@@ -3342,6 +3352,11 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }
     bfExtras.forEach(function(x){ const pm = r.porMes[String(x.data).slice(0,7)]; if(pm){ pm.extraMin += Number(x.minutos)||0; r.extraMin += Number(x.minutos)||0; } });
     return r;
+  }
+  function bfFerCustoOpcao(op){
+    const ant = bfCenarioFer; bfCenarioFer = op; let min = 0;
+    for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){ const iso = bfIso(d); if(bfFeriadoUtil(iso)) min += bfMinutos(bfLacunasPrev(iso)) + bfFeriadoTrabMin(iso); }
+    bfCenarioFer = ant; return min;
   }
   function bfTotaisCenario(cen){ const ant = bfCenarioFer; bfCenarioFer = cen; const t = bfTotais(new Date()); bfCenarioFer = ant; return t; }
   // Plano combinado (cenário dos feriados, limite de horas a mais e orçamento aprovado): fica no banco (bf_plano)
@@ -3417,7 +3432,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function bfListaFeriadosHtml(){
     const lista = []; for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){ const iso = bfIso(d), f = bfFeriado(iso); if(f) lista.push(BF_DIAS_CURTO[d.getDay()]+' '+iso.slice(8,10)+'/'+iso.slice(5,7)+' · '+escapeHtml(f.nome)); }
-    return lista.length ? '<div class="bf-escala-fer"><b>Feriados no período:</b> '+lista.join(" · ")+'<br>Nos feriados de dia útil, os comerciais folgam; conta como hora extra '+BF_FER_OPCOES[bfCenarioFer].texto+'. Escolha em "Hora extra por mês".</div>' : '';
+    return lista.length ? '<div class="bf-escala-fer"><b>Feriados no período:</b> '+lista.join(" · ")+'<br>Nos feriados de dia útil, os comerciais folgam; conta como hora extra: '+bfFerResumo()+'. Escolha em "Hora extra por mês".</div>' : '';
   }
   function renderBF(){
     if(!bfAutorizado || !BF_CONFIG){ showView("lojas"); return; }
@@ -3464,7 +3479,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     // Simulação (guardada só neste navegador)
     const plano = bfLerPlano();
     bfCenarioFer = bfNormCenario(plano.feriadoComercial);
-    document.querySelectorAll('input[name="bf-fer"]').forEach(function(rb){ rb.checked = rb.value === bfCenarioFer; });
+    document.querySelectorAll('input[name="bf-fer"]').forEach(function(rb){ rb.checked = bfFerTem(rb.value); });
     document.getElementById("bf-valor-hora").textContent = bfMoeda(BF_CONFIG.valorHora)+" por pessoa, por hora · novembro, dezembro e janeiro";
     document.getElementById("bf-excede-horas").value = plano.excede !== undefined ? plano.excede : 1;
     bfEscreverMoeda(document.getElementById("bf-orcamento"), plano.orcamento !== undefined ? plano.orcamento : Math.round(bfTotais(new Date()).totalMin/60*BF_CONFIG.valorHora*100)/100);
@@ -3598,7 +3613,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       return '<div class="bf-mes'+(m===mesAtual?' atual':'')+'"><div class="bf-mes-tit"><b>'+nome+'</b><span>'+p.dias+' dias</span></div>' +
         '<div class="bf-mes-valor">'+bfMoeda((p.min + p.extraMin)/60*vh)+'</div>' +
         '<div class="bf-mes-linha"><span title="Horários da hotline sem analista (dias normais)">Sem analista</span><b>'+bfHorasTxt(p.normalMin)+' · '+bfMoeda(p.normalMin/60*vh)+'</b></div>' +
-        (p.feriados ? '<div class="bf-mes-linha fer"><span title="Comerciais folgam · '+BF_FER_OPCOES[bfCenarioFer].nome+'">Feriados ('+p.feriados+')</span><b>'+bfHorasTxt(p.ferMin)+' · '+bfMoeda(p.ferMin/60*vh)+'</b></div>' : '') +
+        (p.feriados ? '<div class="bf-mes-linha fer"><span title="Comerciais folgam · conta: '+bfFerResumo()+'">Feriados ('+p.feriados+')</span><b>'+bfHorasTxt(p.ferMin)+' · '+bfMoeda(p.ferMin/60*vh)+'</b></div>' : '') +
         '<div class="bf-mes-linha extra"><span title="Horas informadas no termômetro">A mais</span><b>'+bfHorasTxt(p.extraMin)+' · '+bfMoeda(p.extraMin/60*vh)+'</b></div>' +
         '<div class="bf-mes-linha"><span title="Previsto já passado + horas a mais">Realizado</span><b>'+bfMoeda((p.acumMin + p.extraMin)/60*vh)+'</b></div></div>';
     }).join("");
@@ -3650,7 +3665,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bf-meses").innerHTML = bfMesesHtml(tot, mesAtual);
     document.getElementById("bf-meses-total").innerHTML = bfMesesTotalHtml(tot);
     // custo de cada cenário de feriado (mostrado na escolha)
-    Object.keys(BF_FER_OPCOES).forEach(function(cen){ const el = document.getElementById("bf-fer-"+cen); if(el){ const t = cen === bfCenarioFer ? tot : bfTotaisCenario(cen); el.textContent = "total "+bfMoeda(t.totalMin/60*vh)+" · feriados "+bfHorasTxt(t.ferMin||0); } });
+    Object.keys(BF_FER_OPCOES).forEach(function(op){ const el = document.getElementById("bf-fer-"+op); if(el){ const m = bfFerCustoOpcao(op); el.textContent = m ? "+"+bfMoeda(m/60*vh)+" · "+bfHorasTxt(m)+" nos feriados" : "sem custo"; } });
     // se passar do previsto
     const prevValor = (tot.totalMin + tot.extraMin)/60*vh, exc = bfLimiteDiaMin()/60, excValor = exc * tot.dias * vh, comExc = tot.totalMin/60*vh + excValor;
     document.getElementById("bf-sim-stats").innerHTML = [["No período", excValor, tot.dias+" dias"], ["Por mês", exc*30*vh, "≈ 30 dias"], ["Por semana", exc*7*vh, "7 dias"]].map(function(x){
@@ -3700,8 +3715,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
     document.querySelectorAll('input[name="bf-fer"]').forEach(function(rb){
       rb.addEventListener("change", function(){
-        if(!rb.checked) return;
-        bfCenarioFer = rb.value; const p = bfLerPlano(); p.feriadoComercial = rb.value; bfGravarPlano(p);
+        const marcadas = [].slice.call(document.querySelectorAll('input[name="bf-fer"]:checked')).map(function(c){ return c.value; }).join(",");
+        bfCenarioFer = bfNormCenario(marcadas); const p = bfLerPlano(); p.feriadoComercial = bfCenarioFer; bfGravarPlano(p);
         bfFormDia = null; renderBF();
       });
     });
@@ -3956,7 +3971,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     html += '<div class="bfg-pop-sub">'+(futuro ? 'Cobrança prevista do dia' : 'Cobrança do dia')+'</div><ul class="bfg-pop-lista">';
     if(lacMin) html += item("", "Cobertura sem analista na escala", lacMin, 'Das '+lac.map(function(l){ return bfHoraCurta(l[0])+' às '+bfHoraCurta(l[1]); }).join(' e das ')+' a hotline está aberta, mas nenhum analista da escala está em turno. Uma pessoa cobre esse horário como hora extra.');
     if(fer) html += '<li class="fer"><div class="t"><b>Feriado: '+e(fer.nome)+'</b></div><ul class="bfg-pop-regras">'+bfRegrasHtml(BF_CONFIG)+'</ul></li>';
-    if(ferUtil && refMin) html += item("ref", "Reforço do feriado", refMin, 'Foi combinado '+(bfCenarioFer === "tecnico" ? 'um técnico das 08h às 11h15' : 'um extra de 8 h de trabalho')+' para reforçar o atendimento.');
+    if(ferUtil && refMin) html += item("ref", "Reforço do feriado", refMin, 'Foi combinado um extra de 8 h de trabalho para reforçar o atendimento.');
+    if(ferUtil && bfFerTem("tecnico")) html += '<li class="info"><p><b>Técnico das 8h às 11h15:</b> sem cobrança de hora extra. O que passar deste período entra como hora extra.</p></li>';
     extras.forEach(function(x){
       html += item("ex", "Hora a mais registrada", Number(x.minutos)||0, (x.motivo ? '<b>Motivo:</b> '+e(x.motivo)+'. ' : '')+'Tempo além do horário da escala (comercial acima de 8 h, 12x36 acima de 11 h) ou acionamento no domingo/feriado.');
     });
