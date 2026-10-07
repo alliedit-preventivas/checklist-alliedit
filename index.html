@@ -805,6 +805,8 @@
   .bf-excede-campo input:focus{outline:2px solid #F3C9C5; outline-offset:0;}
   .bf-excede-res{font-size:12.5px; color:var(--navy); margin:0 0 10px; line-height:1.45; background:#FFF8F7; border:1px solid #F3C9C5; border-radius:10px; padding:8px 10px;}
   .bf-excede-res b{color:#B3261E;}
+  .bf-excede-campo input.bf-moeda{width:150px; font-weight:700; font-variant-numeric:tabular-nums;}
+  .bf-orc-dica{font-size:10.5px; color:var(--text-muted); margin:-4px 0 7px; text-align:right;}
   .bf-orc-barra{height:9px; border-radius:5px; background:#EEF3F5; overflow:hidden; margin-bottom:4px;}
   .bf-orc-barra i{display:block; height:100%; width:0; background:#1E7A46; transition:width .4s;}
   .bf-orc-barra i.acima{background:#B3261E;}
@@ -1922,7 +1924,8 @@
             <input type="number" id="bf-excede-horas" min="0" max="24" step="0.25" inputmode="decimal" value="1"></label>
           <div class="bf-excede-res" id="bf-excede-res">—</div>
           <label class="bf-excede-campo">Orçamento aprovado (R$)
-            <input type="number" id="bf-orcamento" min="0" step="50" inputmode="decimal"></label>
+            <input type="text" id="bf-orcamento" class="bf-moeda" inputmode="numeric" autocomplete="off" placeholder="R$ 0,00" aria-describedby="bf-orc-dica"></label>
+          <div class="bf-orc-dica" id="bf-orc-dica">Digite só os números: 688750 vira R$ 6.887,50.</div>
           <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
           <div class="bf-orc-txt" id="bf-orc-txt">—</div>
         </section>
@@ -2973,6 +2976,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function bfMin(hhmm){ const p = hhmm.split(":"); return Number(p[0])*60 + Number(p[1]); }
   function bfHoraCurta(min){ const h = Math.floor(min/60) % 24, m = min % 60; return (min>=1440 ? "00" : String(h))+"h"+(m ? String(m).padStart(2,"0") : ""); }
   function bfMoeda(v){ return v.toLocaleString("pt-BR", {style:"currency", currency:"BRL"}); }
+  // Campo em reais: mostra "R$ 6.887,50" e guarda o número (6887.5)
+  function bfEscreverMoeda(el, v){ v = Math.max(0, Math.round((Number(v)||0)*100)/100); el.value = v ? bfMoeda(v) : ""; el.dataset.valor = v; }
+  function bfLerMoeda(el){ return Math.max(0, Number(el.dataset.valor) || 0); }
   function bfHorasTxt(min){ const h = min/60; return (Number.isInteger(h) ? h : h.toLocaleString("pt-BR", {maximumFractionDigits:2})) + " h"; }
   function bfDiasEntre(a, b){ return Math.round((bfData(b) - bfData(a)) / 86400000); }
   function bfLinkValido(){ const u = String(BF_CONFIG.hotlineTeams||"").trim(); return /^https:\/\//i.test(u) ? u : ""; }
@@ -3107,7 +3113,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.querySelectorAll('input[name="bf-fer"]').forEach(function(rb){ rb.checked = rb.value === bfCenarioFer; });
     document.getElementById("bf-valor-hora").textContent = bfMoeda(BF_CONFIG.valorHora)+" por pessoa, por hora · novembro, dezembro e janeiro";
     document.getElementById("bf-excede-horas").value = plano.excede !== undefined ? plano.excede : 1;
-    document.getElementById("bf-orcamento").value = plano.orcamento !== undefined ? plano.orcamento : Math.round(bfTotais(new Date()).totalMin/60*BF_CONFIG.valorHora*100)/100;
+    bfEscreverMoeda(document.getElementById("bf-orcamento"), plano.orcamento !== undefined ? plano.orcamento : Math.round(bfTotais(new Date()).totalMin/60*BF_CONFIG.valorHora*100)/100);
     // Semana: a atual (antes do início, a 1ª semana; depois do fim, a última)
     renderCalendarioBF();
     bfTick();
@@ -3280,7 +3286,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bf-excede-res").innerHTML = exc
       ? 'Se a equipe usar o limite de <b>'+bfHorasTxt(exc*60)+' a mais por dia</b>, são <b>+'+bfMoeda(excValor)+'</b> no período (≈ '+bfMoeda(exc*30*vh)+' por mês, '+bfMoeda(exc*7*vh)+' por semana).<br>Total possível: <b>'+bfMoeda(comExc)+'</b> · registrado até agora: '+bfMoeda(tot.extraMin/60*vh)+'.'
       : 'Sem limite de horas a mais. Cada hora a mais por dia no período custa <b>'+bfMoeda(tot.dias*vh)+'</b> (1 hora em um único dia: '+bfMoeda(vh)+').';
-    const orc = Math.max(0, Number(String(document.getElementById("bf-orcamento").value).replace(",", ".")) || 0);
+    const orc = bfLerMoeda(document.getElementById("bf-orcamento"));
     const usado = Math.max(comExc, prevValor);
     const barra = document.getElementById("bf-orc-barra"), otxt = document.getElementById("bf-orc-txt"), acima = orc > 0 && usado > orc;
     barra.style.width = (orc > 0 ? Math.min(100, usado/orc*100) : 100) + "%";
@@ -3303,11 +3309,14 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function wireBF(){
     document.getElementById("bf-comunicado-abrir").addEventListener("click", bfAbrirComunicado);
+    const orcEl = document.getElementById("bf-orcamento");
+    orcEl.addEventListener("input", function(){ bfEscreverMoeda(orcEl, Number(String(orcEl.value).replace(/\D/g, "") || 0) / 100); });
+    orcEl.addEventListener("focus", function(){ setTimeout(function(){ orcEl.setSelectionRange(orcEl.value.length, orcEl.value.length); }, 0); });
     ["bf-excede-horas", "bf-orcamento"].forEach(function(id){
       document.getElementById(id).addEventListener("input", function(){
         const p = bfLerPlano();
         p.excede = Number(String(document.getElementById("bf-excede-horas").value).replace(",", ".")) || 0;
-        p.orcamento = Number(String(document.getElementById("bf-orcamento").value).replace(",", ".")) || 0;
+        p.orcamento = bfLerMoeda(document.getElementById("bf-orcamento"));
         bfGravarPlano(p); bfTick();
         if(id === "bf-excede-horas" && !bfFormDia) renderCalendarioBF(); // o limite do termômetro vem daqui
       });
