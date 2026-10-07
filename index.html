@@ -885,17 +885,19 @@
   body.bfcli > header, body.bfcli .tela-login-wrap{display:none !important;}
   body.bfcli main{max-width:none; padding:0;}
   body.bfcli{background:#F3F7F7 var(--img-bg-claro) center/cover fixed;}
-  #view-bfcli{max-width:1100px; margin:0 auto; padding:0 16px 28px;}
-  .bfc-topo{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0;}
+  #view-bfcli{padding:6px 20px 12px; box-sizing:border-box;}
+  #view-bfcli.active{display:flex; flex-direction:column; min-height:100vh;}
+  .bfc-conteudo:not([hidden]){flex:1; display:flex; flex-direction:column; gap:12px;}
+  .bfc-topo{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0 8px;}
   .bfc-logo{height:30px; filter:brightness(0) saturate(100%) invert(26%) sepia(73%) saturate(1300%) hue-rotate(166deg) brightness(92%);}
   .bfc-topo-txt{font-size:12.5px; font-weight:700; color:#056E8C; letter-spacing:.6px; text-transform:uppercase;}
   .bfc-carregando{text-align:center; color:var(--text-muted); padding:60px 0;}
-  .bfc-hero{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:18px; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:18px; padding:24px 26px; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(5,110,140,.18);}
+  .bfc-hero{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:18px; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:18px; padding:18px 24px; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(5,110,140,.18);}
   .bfc-hero::after{content:""; position:absolute; right:-60px; top:-50px; width:260px; height:260px; background:var(--img-logo-branco) center/contain no-repeat; opacity:.07; pointer-events:none;}
   .bfc-hero-txt{position:relative; z-index:1;}
   .bfc-selo{display:inline-block; background:#F7D51C; color:#0E2841; font-size:11px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; border-radius:20px; padding:4px 12px;}
-  .bfc-hero h1{margin:12px 0 6px; font-size:38px; line-height:1.05; font-weight:700;}
-  .bfc-hero p{margin:0 0 14px; font-size:15px; opacity:.92;}
+  .bfc-hero h1{margin:10px 0 4px; font-size:34px; line-height:1.05; font-weight:700;}
+  .bfc-hero p{margin:0 0 10px; font-size:15px; opacity:.92;}
   .bfc-status{display:inline-flex; align-items:center; gap:9px; font-size:14px; font-weight:700; border-radius:22px; padding:7px 14px; background:rgba(255,255,255,.16);}
   .bfc-status i{width:10px; height:10px; border-radius:50%; background:#C9D3D9;}
   .bfc-status.aberta{background:#E7F5EC; color:#1E7A46;} .bfc-status.aberta i{background:#1E7A46; animation:bf-pulso 1.6s infinite;}
@@ -906,7 +908,7 @@
   .bfc-contagem-num b{display:block; font-size:32px; line-height:1; font-variant-numeric:tabular-nums;}
   .bfc-contagem-num span{display:block; font-size:10.5px; opacity:.8; margin-top:4px; text-transform:uppercase; letter-spacing:.7px;}
   .bfc-contagem-data{font-size:13px; opacity:.9;}
-  .bfc-canais{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.85fr) minmax(0,1.35fr); gap:12px; margin:16px 0;}
+  .bfc-canais{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.85fr) minmax(0,1.35fr); gap:12px; margin:0;}
   .bfc-canal{display:flex; flex-direction:column; gap:4px; background:#fff; border:1px solid #E1E8EB; border-radius:14px; padding:14px 16px; text-decoration:none; color:var(--navy); box-shadow:0 1px 2px rgba(5,110,140,.06), 0 6px 18px rgba(5,110,140,.07); min-width:0;}
   a.bfc-canal:hover{border-color:#9CC9D6; transform:translateY(-1px);}
   .bfc-canal svg{width:24px; height:24px; color:#056E8C;}
@@ -915,7 +917,7 @@
   .bfc-canal span{font-size:11.5px; color:var(--text-muted); line-height:1.35;}
   .bfc-canal.teams{background:#F7D51C; border-color:#F7D51C;} .bfc-canal.teams svg, .bfc-canal.teams small{color:#0E2841;}
   .bfc-canal.desativado{opacity:.6; pointer-events:none;}
-  .bfc-grade{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.4fr); gap:14px; align-items:start;}
+  .bfc-grade{flex:1; display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.45fr) minmax(0,1fr); gap:12px; align-items:stretch;}
   .bfc-card{background:#fff; border:1px solid #E1E8EB; border-radius:16px; padding:18px 20px; box-shadow:0 1px 2px rgba(5,110,140,.06), 0 6px 18px rgba(5,110,140,.07); color:var(--navy); font-size:14px; line-height:1.5;}
   .bfc-card h2{margin:0 0 8px; font-size:17px; color:#056E8C;}
   .bfc-card h3{margin:14px 0 6px; font-size:12px; letter-spacing:.7px; text-transform:uppercase; color:#B3261E;}
@@ -927,14 +929,72 @@
   .bfc-horarios li.hoje{background:#E6F1F5; box-shadow:inset 3px 0 0 #056E8C;}
   .bfc-regras{margin:0; padding-left:20px;} .bfc-regras li{margin-bottom:6px;}
   .bfc-nota{font-size:12.5px; color:var(--text-muted); background:#F3F7F7; border-radius:10px; padding:8px 11px; margin-top:10px !important;}
-  .bfc-gestao{margin-top:14px; border-left:5px solid #B3261E;}
+  .bfc-gestao{border-left:5px solid #B3261E;}
   .bfc-gestao h2{color:#B3261E;}
-  .bfc-gestao-lista{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px;}
+  .bfc-gestao-lista{display:grid; grid-template-columns:minmax(0,1fr); gap:10px;}
   .bfc-pessoa{background:#F3F7F7; border-radius:12px; padding:11px 13px; display:flex; flex-direction:column; gap:2px;}
   .bfc-pessoa b{font-size:15px;} .bfc-pessoa span{font-size:12px; color:var(--text-muted);}
   .bfc-pessoa a{color:#056E8C; font-weight:700; text-decoration:none; overflow-wrap:anywhere;} .bfc-pessoa a:hover{text-decoration:underline;}
-  .bfc-rodape{text-align:center; font-size:12px; color:var(--text-muted); margin-top:18px;}
+  .bfc-rodape{text-align:center; font-size:12px; color:var(--text-muted);}
+  @media (min-width:901px) and (max-height:820px){ .bfc-hero{padding:12px 20px;} .bfc-hero h1{font-size:28px; margin:8px 0 2px;} .bfc-hero p{margin:0 0 8px;} .bfc-contagem{padding:10px 14px;} .bfc-contagem-num{margin:6px 0 4px;} .bfc-contagem-num div{padding:6px 2px;} .bfc-contagem-num b{font-size:24px;} .bfc-canal{padding:10px 14px;} .bfc-card{padding:12px 16px; line-height:1.4; font-size:13.5px;} .bfc-horarios li{padding:7px 12px;} }
+  @media (max-width:1100px){ .bfc-grade{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);} .bfc-gestao{grid-column:1 / -1;} .bfc-gestao-lista{grid-template-columns:repeat(2, minmax(0,1fr));} }
   @media (max-width:900px){ .bfc-canais{grid-template-columns:repeat(2, minmax(0,1fr));} .bfc-grade{grid-template-columns:minmax(0,1fr);} }
+  /* ===== OnePage da gestão da Sephora (?blackfriday=gestao&chave=..., sem login, só consulta) ===== */
+  #view-bfg{padding:10px 16px; box-sizing:border-box;}
+  #view-bfg.active{display:flex; flex-direction:column; min-height:100vh;}
+  .bfg-conteudo:not([hidden]){flex:1; display:flex; flex-direction:column; gap:10px;}
+  .bfg-topo{display:flex; align-items:center; gap:16px; flex-wrap:wrap; background:#056E8C var(--img-bg-azul) center/cover; color:#fff; border-radius:16px; padding:8px 18px; box-shadow:0 10px 30px rgba(5,110,140,.18);}
+  .bfg-logo{height:24px; filter:brightness(0) invert(1);}
+  .bfg-tit{flex:1; min-width:220px; display:flex; flex-wrap:wrap; align-items:center; gap:2px 10px;}
+  .bfg-tit h1{margin:0; font-size:20px; line-height:1.15;}
+  .bfg-tit p{margin:0; flex-basis:100%; font-size:12px; opacity:.88;}
+  .bfg-agora{display:flex; flex-direction:column; gap:4px; align-items:flex-start;}
+  .bfg-agora .bfc-status{font-size:13px; padding:5px 12px;}
+  .bfg-turno{font-size:11.5px; opacity:.92;}
+  .bfg-caixa{background:rgba(14,40,65,.45); border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:4px 14px; text-align:center; min-width:118px;}
+  .bfg-caixa small{display:block; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#F7D51C;}
+  .bfg-caixa b{display:block; font-size:17px; font-variant-numeric:tabular-nums; line-height:1.25;}
+  .bfg-caixa span{display:block; font-size:11px; opacity:.85;}
+  .bfg-corpo{flex:1; display:grid; grid-template-columns:minmax(300px,1fr) minmax(0,3fr); gap:10px; min-height:0;}
+  .bfg-esq{display:flex; flex-direction:column; gap:10px; min-width:0; min-height:0;}
+  .bfg-esq > .bf-card{display:flex; flex-direction:column; padding:12px 14px;}
+  #view-bfg .bf-card-cab{margin-bottom:7px;}
+  .bfg-direita{display:flex; flex-direction:column; gap:10px; min-width:0; min-height:0;}
+  .bfg-meses-card .bf-mes-linha span{white-space:nowrap;}
+  .bfg-meses-card .bf-meses-grade{grid-template-columns:repeat(4, minmax(0,1fr));}
+  .bfg-mes-total{background:#0E2841; border-color:#0E2841;}
+  .bfg-mes-total .bf-mes-tit b, .bfg-mes-total .bf-mes-linha b{color:#fff;} .bfg-mes-total .bf-mes-tit span{color:rgba(255,255,255,.7);}
+  .bfg-mes-total .bf-mes-valor{color:#F7D51C;}
+  .bfg-mes-total .bf-mes-linha{color:rgba(255,255,255,.72); border-top-color:rgba(255,255,255,.18);}
+  .bfg-meses-card .bf-regras{list-style:none; padding:0; margin:6px 0 0; display:flex; flex-wrap:wrap; gap:1px 16px; font-size:11px;}
+  .bfg-hot .bf-gestao{margin-top:auto;}
+  .bfg-hot .bf-horarios{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:5px;}
+  .bfg-hot .bf-horarios li{flex-direction:column; align-items:center; gap:0; padding:4px 6px; font-size:11.5px;}
+  .bfg-cenario{margin-top:8px; font-size:11.5px; color:#4A3577; background:#F1ECFA; border-radius:10px; padding:6px 10px; line-height:1.4;}
+  .bfg-cenario b{color:#6B4FA3;}
+  .bfg-orc-aprov{background:#0E2841; color:#fff; border-radius:12px; padding:9px 13px; margin-bottom:10px;}
+  .bfg-orc-aprov small{display:block; font-size:10.5px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:#F7D51C;}
+  .bfg-orc-aprov b{display:block; font-size:23px; font-variant-numeric:tabular-nums; line-height:1.25;}
+  .bfg-orc-aprov span{display:block; font-size:11.5px; opacity:.85; line-height:1.35;}
+  .bfg-orc-aprov.pendente b{font-size:17px;}
+  .bfg-orc-rodape{margin-top:auto;}
+  .bfg-cal{flex:1; display:flex; flex-direction:column; min-height:0;}
+  .bfg-cal-cab{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;}
+  .bfg-cal-cab .bf-card-cab{margin:0; flex:1; min-width:240px;}
+  .bfg-cal-nav{display:flex; gap:6px;}
+  .bfg-cal-corpo{flex:1; display:grid; grid-template-columns:minmax(0,2.5fr) minmax(280px,1fr); gap:12px; min-height:0;}
+  .bfg-grade{grid-template-rows:auto; grid-auto-rows:minmax(50px,1fr);}
+  .bfg-grade .bf-cal-dia{min-height:0;}
+  .bfg-cal-corpo .bf-cal-det{overflow:auto; align-self:stretch;}
+  .bfg-cal-dia-prev{font-size:9.5px; color:#B3261E; line-height:1.2;}
+  .bfg-extras li{padding-right:7px;}
+  .bfg-leg{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:11px; color:var(--text-muted); margin-top:8px;}
+  .bfg-leg i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; border:1px solid rgba(0,0,0,.08);}
+  /* computador com tela de altura normal: tudo numa tela só (o calendário se ajusta à altura que sobra); em telas baixas, rola a página */
+  @media (min-width:1251px) and (min-height:860px){ #view-bfg.active{height:100vh; min-height:640px;} .bfg-conteudo:not([hidden]){min-height:0;} .bfg-corpo{grid-template-rows:minmax(0,1fr);} .bfg-esq{overflow:auto;} .bfg-hot{flex:1;} .bfg-cal{min-height:0;} .bfg-cal-corpo{grid-template-rows:minmax(0,1fr);} .bfg-grade{grid-auto-rows:minmax(0,1fr); min-height:0;} .bfg-grade .bf-cal-dia{overflow:hidden;} }
+  @media (max-width:1250px){ .bfg-corpo{grid-template-columns:minmax(0,1fr);} .bfg-esq{order:2; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
+  @media (max-width:1000px){ .bfg-esq{grid-template-columns:minmax(0,1fr);} .bfg-meses-card .bf-meses-grade{grid-template-columns:repeat(2, minmax(0,1fr));} }
+  @media (max-width:760px){ #view-bfg{padding:10px;} .bfg-meses-card .bf-meses-grade{grid-template-columns:minmax(0,1fr);} .bfg-cal-corpo{grid-template-columns:minmax(0,1fr);} .bfg-grade{grid-auto-rows:minmax(48px,auto);} .bfg-caixa{flex:1;} }
   @media (max-width:640px){ .bfc-hero{grid-template-columns:minmax(0,1fr); padding:20px 18px;} .bfc-hero h1{font-size:30px;} .bfc-contagem-num b{font-size:26px;} .bfc-gestao-lista{grid-template-columns:minmax(0,1fr);} .bfc-canais{gap:8px;} }
   /* duas colunas: lojas à esquerda, agenda + responsabilidade à direita */
   body.agn .lojas-layout{display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:14px; align-items:start; padding:14px 22px 16px;}
@@ -2007,6 +2067,8 @@
             <div class="bf-orc-dica" id="bf-orc-dica">Digite só os números: 123456 vira R$ 1.234,56.</div>
             <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
             <div class="bf-orc-txt" id="bf-orc-txt">—</div>
+            <div class="bf-orc-dica" id="bf-plano-salvo" style="text-align:left; margin:6px 0 0;"></div>
+            <button type="button" class="bf-btn bf-btn-sec" id="bf-link-gestao" style="margin-top:6px; width:100%;" hidden>Copiar link da gestão Sephora</button>
           </div>
         </section>
     </div>
@@ -2078,13 +2140,72 @@
           <ol class="bfc-regras" id="bfc-regras"></ol>
           <p class="bfc-nota" id="bfc-baixa"></p>
         </section>
+        <section class="bfc-card bfc-gestao">
+          <h2>Problema crítico?</h2>
+          <p id="bfc-esc"></p>
+          <div class="bfc-gestao-lista" id="bfc-gestao"></div>
+        </section>
       </div>
-      <section class="bfc-card bfc-gestao">
-        <h2>Problema crítico?</h2>
-        <p id="bfc-esc"></p>
-        <div class="bfc-gestao-lista" id="bfc-gestao"></div>
-      </section>
       <footer class="bfc-rodape">Allied IT · alliedit.com.br</footer>
+    </div>
+  </div>
+
+  <!-- OnePage da gestão da Sephora (link ?blackfriday=gestao&chave=..., sem login, só consulta).
+       Os números vêm da função bf_onepage_gestao, que só responde com a chave certa do link. -->
+  <div id="view-bfg" class="view" aria-live="polite">
+    <div class="bfc-carregando" id="bfg-carregando">Carregando…</div>
+    <div class="bfg-conteudo" id="bfg-conteudo" hidden>
+      <section class="bfg-topo">
+        <img class="bfg-logo" id="bfg-logo" alt="Allied IT">
+        <div class="bfg-tit"><span class="bfc-selo" id="bfg-selo"></span><h1>Acompanhamento da hotline</h1><p id="bfg-sub"></p></div>
+        <div class="bfg-agora"><div class="bfc-status" id="bfg-status"><i></i><span>—</span></div><div class="bfg-turno" id="bfg-turno"></div></div>
+        <div class="bfg-caixa"><small>Período</small><b id="bfg-dia">—</b><span id="bfg-dia-sub"></span></div>
+        <div class="bfg-caixa" id="bfg-cd" role="timer"><small id="bfg-cd-tit">Faltam para a Black Friday</small><b id="bfg-cd-txt">—</b><span id="bfg-cd-data"></span></div>
+      </section>
+      <div class="bfg-corpo">
+        <div class="bfg-esq">
+          <section class="bf-card bfg-hot">
+            <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
+              <div><h3>Hotline</h3><div class="bf-card-sub" id="bfg-hot-periodo"></div></div></div>
+            <div class="bf-bloco-tit">Horário de atendimento</div>
+            <ul class="bf-horarios" id="bfg-horarios"></ul>
+            <div class="bf-bloco-tit">Canais de atendimento</div>
+            <ul class="bf-canais" id="bfg-canais"></ul>
+            <div class="bf-gestao" id="bfg-gestao"></div>
+          </section>
+          <section class="bf-card bfg-orc">
+            <div class="bf-card-cab"><span class="bf-ic bf-ic-alerta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+              <div><h3>Orçamento</h3></div></div>
+            <div class="bfg-orc-aprov" id="bfg-orc-aprov"></div>
+            <div class="bf-bloco-tit" id="bfg-lim-tit">Se a equipe usar o limite combinado</div>
+            <div class="bf-sim-total" id="bfg-sim-total"></div>
+            <div class="bfg-orc-rodape"><div class="bf-orc-barra" aria-hidden="true"><i id="bfg-orc-barra"></i></div><div class="bf-orc-txt" id="bfg-orc-txt">—</div></div>
+          </section>
+        </div>
+        <div class="bfg-direita">
+          <section class="bf-card bfg-meses-card">
+            <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2"/></svg></span>
+              <div><h3>Hora extra por mês</h3><div class="bf-card-sub" id="bfg-valor-hora"></div></div></div>
+            <div class="bf-meses-grade" id="bfg-meses"></div>
+              <div class="bfg-cenario" id="bfg-cenario"></div>
+            <ul class="bf-regras" id="bfg-regras"></ul>
+          </section>
+          <section class="bf-card bfg-cal">
+            <div class="bfg-cal-cab">
+              <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+                <div><h3 id="bfg-cal-titulo">Dia a dia da operação</h3><div class="bf-card-sub" id="bfg-cal-sub"></div></div></div>
+              <div class="bfg-cal-nav">
+                <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bfg-cal-ant" aria-label="Mês anterior" title="Mês anterior">&lsaquo;</button>
+                <button type="button" class="bf-btn bf-btn-sec" id="bfg-cal-hoje">Hoje</button>
+                <button type="button" class="bf-btn bf-btn-sec bf-btn-ic" id="bfg-cal-prox" aria-label="Próximo mês" title="Próximo mês">&rsaquo;</button>
+              </div>
+            </div>
+            <div class="bfg-cal-corpo"><div class="bf-cal-grade bfg-grade" id="bfg-grade"></div><div class="bf-cal-det" id="bfg-det"></div></div>
+            <div class="bfg-leg"><span><i style="background:#FFF3C4"></i>Dia com hora a mais</span><span><i style="background:#FCE8E6"></i>Acima do limite combinado do dia</span><span><i style="background:#F1ECFA"></i>Feriado nacional</span><span><i style="background:#0E2841"></i>BF = Black Friday</span><span>A1 a A5 = analistas na escala do dia · clique no dia para ver o detalhe</span></div>
+          </section>
+        </div>
+      </div>
+      <footer class="bfc-rodape">Somente consulta · atualiza sozinho a cada minuto · Allied IT</footer>
     </div>
   </div>
 </main>
@@ -2837,9 +2958,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   let supabaseClient = null;
   async function init(){
     // OnePage do cliente: link próprio, sem login; não carrega lojas nem a área interna
-    if(new URLSearchParams(window.location.search).get("blackfriday") === "1"){
+    const bfParam = new URLSearchParams(window.location.search).get("blackfriday");
+    if(bfParam === "1" || bfParam === "gestao"){
       try{ supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }catch(e){ supabaseClient = null; }
-      if(supabaseClient) iniciarOnePageCliente();
+      if(supabaseClient){ if(bfParam === "gestao") iniciarOnePageGestao(); else iniciarOnePageCliente(); }
       else{ document.body.classList.add("bfcli"); document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); }); document.getElementById("view-bfcli").classList.add("active"); document.getElementById("bfc-carregando").textContent = "Informações indisponíveis no momento."; }
       return;
     }
@@ -3144,8 +3266,42 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     return r;
   }
   function bfTotaisCenario(cen){ const ant = bfCenarioFer; bfCenarioFer = cen; const t = bfTotais(new Date()); bfCenarioFer = ant; return t; }
-  function bfLerPlano(){ try{ return JSON.parse(localStorage.getItem("bfPlanejamento")||"{}") || {}; }catch(e){ return {}; } }
-  function bfGravarPlano(p){ try{ localStorage.setItem("bfPlanejamento", JSON.stringify(p)); }catch(e){} }
+  // Plano combinado (cenário dos feriados, limite de horas a mais e orçamento aprovado): fica no banco (bf_plano)
+  // para a página da gestão da Sephora ver os mesmos números. Se a tabela não existir, fica só neste navegador.
+  let bfPlanoDB = null, bfPlanoTimer = null;
+  async function bfCarregarPlanoDB(){
+    try{
+      const { data, error } = await supabaseClient.from("bf_plano").select("feriado_comercial,orcamento,limite_dia,chave_cliente").eq("id", "planejamento").maybeSingle();
+      if(error) throw error;
+      bfPlanoDB = data || null;
+    }catch(e){ bfPlanoDB = null; console.warn("Plano do Planejamento BF guardado só neste navegador:", e && (e.message || e.code)); }
+    document.getElementById("bf-link-gestao").hidden = !(bfPlanoDB && bfPlanoDB.chave_cliente);
+    document.getElementById("bf-plano-salvo").textContent = bfPlanoDB ? "Estes valores aparecem para a gestão da Sephora." : "";
+  }
+  function bfLerPlano(){
+    if(bfPlanoDB) return { feriadoComercial: bfPlanoDB.feriado_comercial, excede: Number(bfPlanoDB.limite_dia) || 0, orcamento: bfPlanoDB.orcamento == null ? 0 : Number(bfPlanoDB.orcamento) };
+    try{ return JSON.parse(localStorage.getItem("bfPlanejamento")||"{}") || {}; }catch(e){ return {}; }
+  }
+  function bfGravarPlano(p){
+    if(bfPlanoDB){
+      bfPlanoDB.feriado_comercial = p.feriadoComercial === "trabalham" ? "trabalham" : "folgam";
+      bfPlanoDB.limite_dia = Math.min(24, Math.max(0, Number(p.excede) || 0));
+      bfPlanoDB.orcamento = p.orcamento > 0 ? Math.round(p.orcamento*100)/100 : null;
+      document.getElementById("bf-plano-salvo").textContent = "Salvando...";
+      clearTimeout(bfPlanoTimer); bfPlanoTimer = setTimeout(bfSalvarPlanoDB, 700);
+      return;
+    }
+    try{ localStorage.setItem("bfPlanejamento", JSON.stringify(p)); }catch(e){}
+  }
+  async function bfSalvarPlanoDB(){
+    const p = bfPlanoDB, st = document.getElementById("bf-plano-salvo"); if(!p) return;
+    try{
+      const { error } = await supabaseClient.from("bf_plano").update({ feriado_comercial: p.feriado_comercial, orcamento: p.orcamento, limite_dia: p.limite_dia,
+        atualizado_em: new Date().toISOString(), atualizado_por: nomeUsuarioAgn || null }).eq("id", "planejamento");
+      if(error) throw error;
+      st.textContent = "Salvo · a gestão da Sephora já vê estes valores.";
+    }catch(e){ console.error("Falha ao salvar o plano do Planejamento BF:", e); st.textContent = "Não foi possível salvar. Altere o valor de novo."; }
+  }
   const BF_ICONES = {
     whatsapp:'<path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.4z"/><path d="M9 9.5c.3 2 2.5 4.6 5 5l1.2-1.3 2 1-.6 1.6c-3.6.4-8-4-7.6-7.6l1.6-.6 1 2z"/>',
     telefone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
@@ -3172,7 +3328,14 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   async function abrirPlanejamentoBF(){
     if(!bfAutorizado){ showView("lojas"); return; }
     if(!BF_CONFIG && !(await bfCarregarConfig())){ alert("Não foi possível carregar o Planejamento BF. Tente novamente em instantes."); return; }
+    await bfCarregarPlanoDB();
     showView("bf"); renderBF();
+  }
+  function bfRegrasHtml(cfg){
+    return '<li><b>Comercial ('+cfg.cargaDia.comercial+' h/dia):</b> o que passar de '+cfg.cargaDia.comercial+' h no dia é hora extra.</li>' +
+      '<li><b>12x36 ('+cfg.cargaDia["12x36"]+' h/dia):</b> o que passar de '+cfg.cargaDia["12x36"]+' h no dia é hora extra.</li>' +
+      '<li><b>Domingo ou feriado:</b> recurso acionado conta todo o tempo trabalhado no dia.</li>' +
+      '<li>Paga só o tempo trabalhado a mais, sem arredondar. Valores para 1 pessoa cobrindo.</li>';
   }
   function bfListaFeriadosHtml(){
     const lista = []; for(let d = bfData(BF_CONFIG.inicio); bfIso(d) <= BF_CONFIG.fim; d.setDate(d.getDate()+1)){ const iso = bfIso(d), f = bfFeriado(iso); if(f) lista.push(BF_DIAS_CURTO[d.getDay()]+' '+iso.slice(8,10)+'/'+iso.slice(5,7)+' · '+escapeHtml(f.nome)); }
@@ -3187,10 +3350,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bf-leg-fim").textContent = dm(cfg.fim)+" · fim da hotline";
     document.getElementById("bf-cd-data").textContent = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"][bfData(cfg.blackFriday).getDay()]+", "+bfDataBR(cfg.blackFriday);
     document.getElementById("bf-hot-periodo").textContent = bfDataBR(cfg.inicio)+" a "+bfDataBR(cfg.fim);
-    document.getElementById("bf-regras").innerHTML = '<li><b>Comercial ('+cfg.cargaDia.comercial+' h/dia):</b> o que passar de '+cfg.cargaDia.comercial+' h no dia é hora extra.</li>' +
-      '<li><b>12x36 ('+cfg.cargaDia["12x36"]+' h/dia):</b> o que passar de '+cfg.cargaDia["12x36"]+' h no dia é hora extra.</li>' +
-      '<li><b>Domingo ou feriado:</b> recurso acionado conta todo o tempo trabalhado no dia.</li>' +
-      '<li>Paga só o tempo trabalhado a mais, sem arredondar. Valores para 1 pessoa cobrindo.</li>';
+    document.getElementById("bf-regras").innerHTML = bfRegrasHtml(cfg);
     bfCenarioFer = bfLerPlano().feriadoComercial === "trabalham" ? "trabalham" : "folgam"; // antes de desenhar a escala e o calendário
     // Hotline: horários, canais, Teams e gestão
     document.getElementById("bf-horarios").innerHTML = BF_TIPOS_DIA.map(function(t){
@@ -3342,6 +3502,20 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       await bfCarregarExtras();
     }catch(e){ console.error("Falha ao apagar hora a mais:", e); alert("Não foi possível apagar. Tente novamente."); }
   }
+  // Cards de hora extra por mês e total do período (usados no Planejamento e na página da gestão)
+  function bfMesesHtml(tot, mesAtual){
+    const vh = BF_CONFIG.valorHora;
+    return tot.meses.map(function(m){
+      const p = tot.porMes[m], nome = BF_MESES[Number(m.slice(5,7))-1]+" "+m.slice(0,4);
+      return '<div class="bf-mes'+(m===mesAtual?' atual':'')+'"><div class="bf-mes-tit"><b>'+nome+'</b><span>'+p.dias+' dias</span></div>' +
+        '<div class="bf-mes-valor">'+bfMoeda((p.min + p.extraMin)/60*vh)+'</div>' +
+        '<div class="bf-mes-linha"><span title="Horários da hotline sem analista (dias normais)">Sem analista</span><b>'+bfHorasTxt(p.normalMin)+' · '+bfMoeda(p.normalMin/60*vh)+'</b></div>' +
+        (p.feriados ? '<div class="bf-mes-linha fer"><span title="'+(bfCenarioFer==="trabalham" ? "Comerciais trabalham: todo o tempo deles é hora extra" : "Comerciais folgam: recurso cobre o horário sem analista")+'">Feriados ('+p.feriados+')</span><b>'+bfHorasTxt(p.ferMin)+' · '+bfMoeda(p.ferMin/60*vh)+'</b></div>' : '') +
+        '<div class="bf-mes-linha extra"><span title="Horas informadas no termômetro">A mais</span><b>'+bfHorasTxt(p.extraMin)+' · '+bfMoeda(p.extraMin/60*vh)+'</b></div>' +
+        '<div class="bf-mes-linha"><span title="Previsto já passado + horas a mais">Realizado</span><b>'+bfMoeda((p.acumMin + p.extraMin)/60*vh)+'</b></div></div>';
+    }).join("");
+  }
+  function bfMesesTotalHtml(tot){ const vh = BF_CONFIG.valorHora; return '<span>Total do período ('+tot.dias+' dias) · previsto '+bfHorasTxt(tot.totalMin)+' + registrado '+bfHorasTxt(tot.extraMin)+'<br>Já realizado até agora: <b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></span><b>'+bfMoeda((tot.totalMin + tot.extraMin)/60*vh)+'</b>'; }
   function bfTick(){
     const agora = new Date(), iso = bfIso(agora), minAgora = agora.getHours()*60 + agora.getMinutes();
     document.getElementById("bf-relogio").textContent = String(agora.getHours()).padStart(2,"0")+":"+String(agora.getMinutes()).padStart(2,"0");
@@ -3385,16 +3559,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
     // hora extra por mês
     const tot = bfTotais(agora), vh = BF_CONFIG.valorHora, mesAtual = iso.slice(0,7);
-    document.getElementById("bf-meses").innerHTML = tot.meses.map(function(m){
-      const p = tot.porMes[m], nome = BF_MESES[Number(m.slice(5,7))-1]+" "+m.slice(0,4);
-      return '<div class="bf-mes'+(m===mesAtual?' atual':'')+'"><div class="bf-mes-tit"><b>'+nome+'</b><span>'+p.dias+' dias</span></div>' +
-        '<div class="bf-mes-valor">'+bfMoeda((p.min + p.extraMin)/60*vh)+'</div>' +
-        '<div class="bf-mes-linha"><span title="Horários da hotline sem analista (dias normais)">Sem analista</span><b>'+bfHorasTxt(p.normalMin)+' · '+bfMoeda(p.normalMin/60*vh)+'</b></div>' +
-        (p.feriados ? '<div class="bf-mes-linha fer"><span title="'+(bfCenarioFer==="trabalham" ? "Comerciais trabalham: todo o tempo deles é hora extra" : "Comerciais folgam: recurso cobre o horário sem analista")+'">Feriados ('+p.feriados+')</span><b>'+bfHorasTxt(p.ferMin)+' · '+bfMoeda(p.ferMin/60*vh)+'</b></div>' : '') +
-        '<div class="bf-mes-linha extra"><span title="Horas informadas no termômetro">A mais</span><b>'+bfHorasTxt(p.extraMin)+' · '+bfMoeda(p.extraMin/60*vh)+'</b></div>' +
-        '<div class="bf-mes-linha"><span title="Previsto já passado + horas a mais">Realizado</span><b>'+bfMoeda((p.acumMin + p.extraMin)/60*vh)+'</b></div></div>';
-    }).join("");
-    document.getElementById("bf-meses-total").innerHTML = '<span>Total do período ('+tot.dias+' dias) · previsto '+bfHorasTxt(tot.totalMin)+' + registrado '+bfHorasTxt(tot.extraMin)+'<br>Já realizado até agora: <b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></span><b>'+bfMoeda((tot.totalMin + tot.extraMin)/60*vh)+'</b>';
+    document.getElementById("bf-meses").innerHTML = bfMesesHtml(tot, mesAtual);
+    document.getElementById("bf-meses-total").innerHTML = bfMesesTotalHtml(tot);
     // custo de cada cenário de feriado (mostrado na escolha)
     ["folgam", "trabalham"].forEach(function(cen){ const el = document.getElementById("bf-fer-"+cen); if(el){ const t = cen === bfCenarioFer ? tot : bfTotaisCenario(cen); el.textContent = "total "+bfMoeda(t.totalMin/60*vh)+" · feriados "+bfHorasTxt(t.ferMin||0); } });
     // se passar do previsto
@@ -3426,6 +3592,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   function wireBF(){
     document.getElementById("bf-comunicado-abrir").addEventListener("click", bfAbrirComunicado);
+    document.getElementById("bf-link-gestao").addEventListener("click", function(){
+      if(!bfPlanoDB || !bfPlanoDB.chave_cliente) return;
+      const b = this, url = window.location.origin + window.location.pathname + "?blackfriday=gestao&chave=" + encodeURIComponent(bfPlanoDB.chave_cliente);
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){ b.textContent = "Link copiado!"; setTimeout(function(){ b.textContent = "Copiar link da gestão Sephora"; }, 1800); })
+        .catch(function(){ window.prompt("Copie o link da gestão Sephora:", url); });
+    });
     const orcEl = document.getElementById("bf-orcamento");
     orcEl.addEventListener("input", function(){ bfEscreverMoeda(orcEl, Number(String(orcEl.value).replace(/\D/g, "") || 0) / 100); });
     orcEl.addEventListener("focus", function(){ setTimeout(function(){ orcEl.setSelectionRange(orcEl.value.length, orcEl.value.length); }, 0); });
@@ -3539,6 +3711,181 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     document.getElementById("bfc-cd-h").textContent = String(h).padStart(2,"0");
     document.getElementById("bfc-cd-m").textContent = String(m).padStart(2,"0");
     document.getElementById("bfc-cd-s").textContent = String(seg).padStart(2,"0");
+  }
+  // ---------------- OnePage da gestão da Sephora (?blackfriday=gestao&chave=..., sem login, só consulta) ----------------
+  // Números (escala, valor da hora, plano combinado e horas a mais) vêm da função bf_onepage_gestao, que só responde
+  // com a chave certa do link; hotline e contatos vêm de bf_publico. Usa os mesmos cálculos do Planejamento BF.
+  let BFG = null, bfgTimer = null, bfgUltima = 0, bfgMesSel = null, bfgDiaSel = null;
+  async function bfgBuscar(){
+    const { data, error } = await supabaseClient.rpc("bf_onepage_gestao", { p_chave: new URLSearchParams(window.location.search).get("chave") || "" });
+    if(error) throw error;
+    return data && data.config ? data : null;
+  }
+  function bfgAplicar(d){
+    BFG = d; BF_CONFIG = d.config; bfgUltima = Date.now();
+    bfExtras = (d.extras || []).map(function(x){ return { data: String(x.data).slice(0,10), minutos: Number(x.minutos) || 0, motivo: x.motivo || "" }; });
+    bfCenarioFer = d.plano && d.plano.feriadoComercial === "trabalham" ? "trabalham" : "folgam";
+  }
+  async function iniciarOnePageGestao(){
+    document.body.classList.add("bfcli");
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+    document.getElementById("view-bfg").classList.add("active");
+    document.title = "Black Friday · Acompanhamento da hotline · Allied IT";
+    const logo = document.querySelector("header .brand-logo-alliedit"); if(logo) document.getElementById("bfg-logo").src = logo.src;
+    let pub = null, d = null;
+    try{
+      const res = await Promise.all([supabaseClient.from("bf_publico").select("dados").eq("id", "onepage").maybeSingle(), bfgBuscar()]);
+      if(res[0].error) throw res[0].error;
+      pub = res[0].data && res[0].data.dados; d = res[1];
+    }catch(e){ console.error("Falha ao carregar a página da gestão:", e); }
+    if(!pub || !d){ document.getElementById("bfg-carregando").textContent = "Link inválido ou informações indisponíveis no momento. Confira o link recebido ou tente novamente em instantes."; return; }
+    BFC = pub; bfgAplicar(d);
+    renderOnePageGestao();
+    document.getElementById("bfg-carregando").hidden = true;
+    document.getElementById("bfg-conteudo").hidden = false;
+    document.getElementById("bfg-cal-ant").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfgMesSel); if(i > 0){ bfgMesSel = ms[i-1]; renderBfgCalendario(); } });
+    document.getElementById("bfg-cal-prox").addEventListener("click", function(){ const ms = bfMesesPeriodo(), i = ms.indexOf(bfgMesSel); if(i < ms.length-1){ bfgMesSel = ms[i+1]; renderBfgCalendario(); } });
+    document.getElementById("bfg-cal-hoje").addEventListener("click", function(){ bfgMesSel = bfMesPadrao(); bfgDiaSel = null; renderBfgCalendario(); });
+    document.getElementById("bfg-grade").addEventListener("click", function(e){
+      const dia = e.target.closest("[data-bf-dia]"); if(!dia || dia.disabled) return;
+      bfgDiaSel = dia.dataset.bfDia; renderBfgCalendario();
+    });
+    bfgTick();
+    bfgTimer = setInterval(function(){ bfgTick(); if(Date.now() - bfgUltima > 60000) bfgAtualizar(); }, 1000);
+  }
+  async function bfgAtualizar(){
+    bfgUltima = Date.now(); // não repete enquanto carrega
+    try{ const d = await bfgBuscar(); if(d){ bfgAplicar(d); renderBfgNumeros(); renderBfgCalendario(); } }
+    catch(e){ console.error("Falha ao atualizar a página da gestão:", e); }
+  }
+  function renderOnePageGestao(){
+    const c = BFC, cfg = BF_CONFIG, e = escapeHtml;
+    document.getElementById("bfg-selo").textContent = c.selo || "Black Friday";
+    document.getElementById("bfg-sub").textContent = "Hotline de " + bfDataBR(cfg.inicio) + " a " + bfDataBR(cfg.fim) + " · somente consulta";
+    document.getElementById("bfg-cd-data").textContent = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][bfData(cfg.blackFriday).getDay()] + ", " + bfDataBR(cfg.blackFriday);
+    document.getElementById("bfg-hot-periodo").textContent = bfDataBR(cfg.inicio) + " a " + bfDataBR(cfg.fim);
+    document.getElementById("bfg-horarios").innerHTML = BF_TIPOS_DIA.map(function(t){
+      const h = cfg.hotline[t.dias[0]];
+      return '<li><span>'+t.hot+'</span><b>'+bfHoraCurta(bfMin(h[0]))+' às '+bfHoraCurta(bfMin(h[1]))+'</b></li>';
+    }).join("");
+    const teams = /^https:\/\//i.test(String(c.hotlineTeams||"")) ? c.hotlineTeams : "";
+    const svg = function(tipo){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(BFC_ICONES[tipo]||'')+'</svg>'; };
+    document.getElementById("bfg-canais").innerHTML = '<li>'+svg("teams")+'<span>'+(teams ? '<a href="'+e(teams)+'" target="_blank" rel="noopener noreferrer"><b>Sala no Teams:</b> entrar na sala</a>' : '<b>Sala no Teams:</b> link em breve')+'</span></li>' +
+      (c.canais||[]).map(function(x){
+        return '<li>'+svg(x.tipo)+'<span><a href="'+e(x.link)+'"'+(/^https:/.test(x.link)?' target="_blank" rel="noopener noreferrer"':'')+'><b>'+e(x.rotulo)+':</b> '+e(x.valor)+'</a>'+(x.obs?'<small>'+e(x.obs)+'</small>':'')+'</span></li>';
+      }).join("");
+    document.getElementById("bfg-gestao").innerHTML = '<div class="bf-gestao-tit">Gestão Allied IT</div>' + (c.gestao||[]).map(function(g){
+      return '<div class="bf-gestao-pessoa"><b>'+e(g.nome)+'</b><span>'+e(g.cargo)+'</span>' +
+        '<a href="tel:'+e(String(g.telefone).replace(/[^+0-9]/g, ""))+'">'+e(g.telefone)+'</a><a href="mailto:'+e(g.email)+'">'+e(g.email)+'</a></div>';
+    }).join("");
+    document.getElementById("bfg-valor-hora").textContent = bfMoeda(cfg.valorHora)+" por pessoa, por hora · " + bfMesesPeriodo().map(function(m){ return BF_MESES[Number(m.slice(5,7))-1].toLowerCase(); }).join(", ");
+    document.getElementById("bfg-regras").innerHTML = bfRegrasHtml(cfg);
+    renderBfgNumeros();
+    renderBfgCalendario();
+  }
+  // Hora extra por mês e orçamento (o cliente só consulta: limite e orçamento são registrados pela Allied IT no Planejamento)
+  function renderBfgNumeros(){
+    const agora = new Date(), tot = bfTotais(agora), vh = BF_CONFIG.valorHora, plano = BFG.plano || {};
+    document.getElementById("bfg-meses").innerHTML = bfMesesHtml(tot, bfIso(agora).slice(0,7)) +
+      '<div class="bf-mes bfg-mes-total"><div class="bf-mes-tit"><b>Total do período</b><span>'+tot.dias+' dias</span></div>' +
+      '<div class="bf-mes-valor">'+bfMoeda((tot.totalMin + tot.extraMin)/60*vh)+'</div>' +
+      '<div class="bf-mes-linha"><span>Previsto</span><b>'+bfHorasTxt(tot.totalMin)+' · '+bfMoeda(tot.totalMin/60*vh)+'</b></div>' +
+      '<div class="bf-mes-linha"><span>A mais</span><b>'+bfHorasTxt(tot.extraMin)+' · '+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
+      '<div class="bf-mes-linha"><span>Realizado até agora</span><b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></div></div>';
+    document.getElementById("bfg-cenario").innerHTML = '<b>Feriados em dia útil:</b> ' + (bfCenarioFer === "trabalham"
+      ? 'os analistas comerciais trabalham, e todo o tempo deles conta como hora extra.'
+      : 'os analistas comerciais folgam; o recurso acionado cobre o horário e conta todo o tempo trabalhado.');
+    const orc = Number(plano.orcamento) || 0, exc = Math.max(0, Number(plano.limiteDia) || 0);
+    const prevValor = (tot.totalMin + tot.extraMin)/60*vh, excValor = exc * tot.dias * vh, comExc = tot.totalMin/60*vh + excValor, usado = Math.max(comExc, prevValor);
+    const ap = document.getElementById("bfg-orc-aprov");
+    ap.classList.toggle("pendente", !orc);
+    ap.innerHTML = orc ? '<small>Orçamento aprovado</small><b>'+bfMoeda(orc)+'</b><span>Valor informado pela Sephora</span>'
+      : '<small>Orçamento aprovado</small><b>Aguardando aprovação</b><span>Quando o orçamento for aprovado, informe o valor à gestão Allied IT.</span>';
+    document.getElementById("bfg-lim-tit").textContent = "Se a equipe usar o limite combinado";
+    document.getElementById("bfg-sim-total").innerHTML = '<div><span>Previsto</span><b>'+bfMoeda(tot.totalMin/60*vh)+'</b></div><div><span>+ limite combinado ('+bfHorasTxt(exc*60)+'/dia)</span><b>'+bfMoeda(excValor)+'</b></div>' +
+      '<div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div><div><span>Horas a mais registradas</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>' +
+      '<div><span>Já realizado até agora</span><b>'+bfMoeda((tot.acumMin + tot.extraMin)/60*vh)+'</b></div>';
+    const barra = document.getElementById("bfg-orc-barra"), otxt = document.getElementById("bfg-orc-txt"), acima = orc > 0 && usado > orc;
+    barra.style.width = (orc > 0 ? Math.min(100, usado/orc*100) : 0) + "%";
+    barra.classList.toggle("acima", acima); otxt.classList.toggle("acima", acima);
+    otxt.textContent = !orc ? "Sem orçamento aprovado para comparar" : acima ? "Acima do orçamento em "+bfMoeda(usado - orc) : "Dentro do orçamento · sobra "+bfMoeda(orc - usado);
+  }
+  // Calendário: dia a dia da operação (escala, horário sem analista e horas a mais registradas)
+  function renderBfgCalendario(){
+    const ms = bfMesesPeriodo(); if(!bfgMesSel || ms.indexOf(bfgMesSel) < 0) bfgMesSel = bfMesPadrao();
+    const hoje = bfIso(new Date()), d1 = bfData(bfgMesSel+"-01");
+    const nDias = new Date(d1.getFullYear(), d1.getMonth()+1, 0).getDate(), dias = [];
+    for(let i=1;i<=nDias;i++) dias.push(bfgMesSel+"-"+String(i).padStart(2,"0"));
+    const dentro = dias.filter(function(d){ return d >= BF_CONFIG.inicio && d <= BF_CONFIG.fim; });
+    if(!bfgDiaSel || bfgDiaSel.slice(0,7) !== bfgMesSel) bfgDiaSel = dentro.indexOf(hoje) >= 0 ? hoje : dentro[0];
+    const vh = BF_CONFIG.valorHora, limDia = Math.max(0, Number((BFG.plano||{}).limiteDia) || 0) * 60;
+    const prevMin = dentro.reduce(function(a, d){ return a + bfPrevDiaMin(d); }, 0), extraMin = dentro.reduce(function(a, d){ return a + bfExtraDiaMin(d); }, 0);
+    const diasExtra = dentro.filter(function(d){ return bfExtraDiaMin(d) > 0; }).length, nomeMes = BF_MESES[d1.getMonth()];
+    document.getElementById("bfg-cal-titulo").textContent = "Dia a dia da operação · " + nomeMes + " " + d1.getFullYear();
+    document.getElementById("bfg-cal-sub").textContent = "Previsto no mês: " + bfHorasTxt(prevMin) + " (" + bfMoeda(prevMin/60*vh) + ") · horas a mais registradas: " + bfHorasTxt(extraMin) + " (" + bfMoeda(extraMin/60*vh) + ") em " + diasExtra + " dia" + (diasExtra === 1 ? "" : "s");
+    const i = ms.indexOf(bfgMesSel);
+    document.getElementById("bfg-cal-ant").disabled = i <= 0;
+    document.getElementById("bfg-cal-prox").disabled = i >= ms.length-1;
+    document.getElementById("bfg-cal-hoje").disabled = bfgMesSel === bfMesPadrao();
+    let html = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(function(n){ return '<div class="bf-cal-cab">'+n+'</div>'; }).join("");
+    for(let k=0;k<(d1.getDay()+6)%7;k++) html += '<div class="bf-cal-vazio"></div>';
+    dias.forEach(function(iso){
+      const noPeriodo = iso >= BF_CONFIG.inicio && iso <= BF_CONFIG.fim, ex = noPeriodo ? bfExtraDiaMin(iso) : 0, fer = noPeriodo ? bfFeriado(iso) : null;
+      const cls = 'bf-cal-dia'+(fer?' feriado':'')+(iso===hoje?' hoje':'')+(iso===bfgDiaSel?' sel':'')+(!noPeriodo?' fora':'')+(ex ? (limDia > 0 && ex > limDia ? ' alto' : ' medio') : '');
+      const equipe = noPeriodo ? bfEscalaDoDia(iso).map(function(a){ return a.nome.replace("Analista ","A"); }).join(" ") : "";
+      html += '<button type="button" class="'+cls+'" data-bf-dia="'+iso+'"'+(noPeriodo?'':' disabled')+' aria-label="'+iso.slice(8,10)+'/'+iso.slice(5,7)+(ex?' · '+bfHorasTxt(ex)+' a mais':'')+'">' +
+        '<span class="n">'+Number(iso.slice(8,10))+(iso===BF_CONFIG.blackFriday?'<i>BF</i>':'')+'</span>' +
+        (fer ? '<span class="fer" title="Feriado nacional">'+escapeHtml(fer.nome)+'</span>' : '') +
+        (equipe ? '<span class="eq">'+escapeHtml(equipe)+'</span>' : '') +
+        (ex ? '<span class="ex">+'+bfHorasTxt(ex)+'</span>' : '') + '</button>';
+    });
+    document.getElementById("bfg-grade").innerHTML = html;
+    renderBfgDia();
+  }
+  function renderBfgDia(){
+    const det = document.getElementById("bfg-det"), iso = bfgDiaSel;
+    if(!iso){ det.innerHTML = '<div class="bf-dia-hot">Mês fora do período da hotline.</div>'; return; }
+    const d = bfData(iso), h = BF_CONFIG.hotline[d.getDay()], lac = bfLacunas(iso), extras = bfExtrasDoDia(iso), ex = bfExtraDiaMin(iso), prev = bfPrevDiaMin(iso), vh = BF_CONFIG.valorHora;
+    let html = '<div class="bf-det-tit"><b>'+["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][d.getDay()]+', '+iso.slice(8,10)+'/'+iso.slice(5,7)+'</b><span>Hotline '+bfHoraCurta(bfMin(h[0]))+' às '+bfHoraCurta(bfMin(h[1]))+'</span></div>';
+    const ferDia = bfFeriado(iso), trabDia = bfFeriadoTrabMin(iso);
+    if(ferDia) html += '<div class="bf-det-fer"><b>Feriado: '+escapeHtml(ferDia.nome)+'</b>'+(d.getDay()===0 || d.getDay()===6 ? 'Escala de fim de semana.' : (bfCenarioFer === "trabalham" ? 'Comerciais trabalham: '+bfHorasTxt(trabDia)+' de hora extra ('+bfMoeda(trabDia/60*vh)+').' : 'Comerciais folgam: o recurso acionado cobre o horário e conta todo o tempo.'))+'</div>';
+    html += '<div class="bf-det-sub" style="color:#056E8C;">Escala do dia</div>';
+    html += '<ul class="bf-det-equipe">'+bfEscalaDoDia(iso).map(function(a){ return '<li><span>'+escapeHtml(a.nome)+'</span><b>'+a.de.replace(":","h")+'–'+a.ate.replace(":","h")+'</b></li>'; }).join("")+'</ul>';
+    if(lac.length) html += '<div class="bf-dia-gap">Sem analista na escala: '+lac.map(function(l){ return bfHoraCurta(l[0])+'–'+bfHoraCurta(l[1]); }).join(", ")+' ('+bfHorasTxt(bfMinutos(lac))+' · '+bfMoeda(bfMinutos(lac)/60*vh)+') · coberto com hora extra</div>';
+    html += '<div class="bf-det-sub">Horas a mais registradas</div>';
+    html += extras.length ? '<ul class="bf-extras bfg-extras">'+extras.map(function(x){
+      return '<li><b>+'+bfHorasTxt(Number(x.minutos)||0)+'</b> · '+bfMoeda((Number(x.minutos)||0)/60*vh)+(x.motivo ? '<small>'+escapeHtml(x.motivo)+'</small>' : '')+'</li>';
+    }).join("")+'</ul>' : '<div class="bf-dia-hot">'+(iso > bfIso(new Date()) ? 'Dia ainda não aconteceu.' : 'Nenhuma hora a mais neste dia.')+'</div>';
+    html += '<div class="bf-dia-total">Total do dia: '+bfHorasTxt(prev + ex)+' · '+bfMoeda((prev + ex)/60*vh)+'<br><small style="font-weight:400; color:var(--text-muted);">previsto '+bfHorasTxt(prev)+' + a mais '+bfHorasTxt(ex)+'</small></div>';
+    det.innerHTML = html;
+  }
+  function bfgTick(){
+    const c = BF_CONFIG, agora = new Date(), iso = bfIso(agora), minAgora = agora.getHours()*60 + agora.getMinutes();
+    const ini = bfData(c.inicio), fimP = new Date(bfData(c.fim).getTime() + 86400000), dentro = agora >= ini && agora < fimP, totalDias = Math.round((fimP - ini) / 86400000);
+    // hotline aberta ou fechada e quem está na escala agora
+    const hot = c.hotline[agora.getDay()], aberta = dentro && hot && minAgora >= bfMin(hot[0]) && minAgora < bfMin(hot[1]);
+    let txt;
+    if(aberta) txt = "Hotline aberta agora · até " + bfHoraCurta(bfMin(hot[1]));
+    else if(agora < ini) txt = "Começa em " + bfDataBR(c.inicio) + " às " + bfHoraCurta(bfMin(c.hotline[ini.getDay()][0]));
+    else if(!dentro) txt = "Hotline encerrada em " + bfDataBR(c.fim);
+    else if(hot && minAgora < bfMin(hot[0])) txt = "Fechada agora · abre hoje às " + bfHoraCurta(bfMin(hot[0]));
+    else { const am = new Date(agora.getTime() + 86400000); txt = "Fechada agora · abre amanhã às " + bfHoraCurta(bfMin(c.hotline[am.getDay()][0])); }
+    const st = document.getElementById("bfg-status"); st.classList.toggle("aberta", !!aberta); st.querySelector("span").textContent = txt;
+    const emTurno = aberta ? bfEscalaDoDia(iso).filter(function(a){ return minAgora >= bfMin(a.de) && minAgora < bfMin(a.ate); }) : [];
+    document.getElementById("bfg-turno").textContent = !aberta ? "" : emTurno.length ? "Em turno: " + emTurno.map(function(a){ return a.nome; }).join(", ") : "Horário coberto com hora extra";
+    // período: dia atual de quantos
+    if(agora < ini){ const f = Math.ceil((ini - agora) / 86400000); document.getElementById("bfg-dia").textContent = f + " dia" + (f===1?"":"s"); document.getElementById("bfg-dia-sub").textContent = "para começar · " + totalDias + " dias"; }
+    else if(!dentro){ document.getElementById("bfg-dia").textContent = "Encerrado"; document.getElementById("bfg-dia-sub").textContent = totalDias + " dias de hotline"; }
+    else { document.getElementById("bfg-dia").textContent = "Dia " + (Math.floor((agora - ini) / 86400000) + 1) + " de " + totalDias; document.getElementById("bfg-dia-sub").textContent = iso <= c.fimBlack ? "Black Friday em andamento" : "Hotline estendida"; }
+    // contagem até a Black Friday (depois dela, a caixa some)
+    const bfIni = bfData(c.blackFriday), bfFim = new Date(bfIni.getTime() + 86400000), box = document.getElementById("bfg-cd");
+    if(agora >= bfFim){ box.hidden = true; return; }
+    let alvo = bfIni, tit = "Faltam para a Black Friday";
+    if(agora >= bfIni){ alvo = bfFim; tit = "É hoje! Termina em"; }
+    let seg = Math.max(0, Math.floor((alvo - agora) / 1000));
+    const dd = Math.floor(seg/86400); seg -= dd*86400; const hh = Math.floor(seg/3600); seg -= hh*3600; const mm = Math.floor(seg/60); seg -= mm*60;
+    document.getElementById("bfg-cd-tit").textContent = tit;
+    document.getElementById("bfg-cd-txt").textContent = (dd ? dd + "d " : "") + String(hh).padStart(2,"0") + ":" + String(mm).padStart(2,"0") + ":" + String(seg).padStart(2,"0");
   }
   // ---------------- manter a tela ao atualizar a página (F5) ----------------
   // Guarda filtros, busca, tela aberta, agenda do Painel e rolagem só nesta aba do navegador (sessionStorage):
