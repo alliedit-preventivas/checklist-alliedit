@@ -749,7 +749,29 @@
   .bf-form-acoes button{flex:1; font-family:inherit; font-size:11.5px; font-weight:700; border-radius:7px; padding:5px; cursor:pointer; border:1px solid #CFE0E6; background:#fff; color:#056E8C;}
   .bf-form-acoes button.ok{background:#F7D51C; border-color:#F7D51C; color:#0E2841;}
   /* hora extra por mês + simulação */
-  .bf-grade-topo{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.55fr) minmax(0,1fr); gap:14px; margin-top:14px; align-items:start;}
+  .bf-grade-topo{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.55fr) minmax(0,1fr); gap:14px; margin-top:14px; align-items:stretch;}
+  .bf-grade-topo > .bf-card{display:flex; flex-direction:column;}
+  .bf-bloco-tit{font-size:10.5px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:#056E8C; margin:2px 0 6px;}
+  .bf-hotline .bf-hot-acoes{margin-bottom:12px;}
+  .bf-hotline .bf-gestao{margin-top:auto;}
+  .bf-gestao{background:#F3F7F7; border-radius:11px; padding:9px 11px; font-size:11.5px; line-height:1.4;}
+  .bf-gestao-tit{font-size:10.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#B3261E; margin-bottom:5px;}
+  .bf-gestao-pessoa{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:0 8px; padding:4px 0; border-top:1px dashed #DDE6EA;}
+  .bf-gestao-pessoa:first-of-type{border-top:none;}
+  .bf-gestao-pessoa b{color:var(--navy);} .bf-gestao-pessoa span{color:var(--text-muted); text-align:right;}
+  .bf-gestao-pessoa a{color:#056E8C; text-decoration:none; overflow-wrap:anywhere;} .bf-gestao-pessoa a:hover{text-decoration:underline;}
+  .bf-gestao-pessoa a:last-child{text-align:right;}
+  .bf-sim-stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(104px,1fr)); gap:6px; margin-bottom:8px;}
+  .bf-sim-stats > div{background:#FFF8F7; border:1px solid #F3C9C5; border-radius:10px; padding:7px 8px; display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .bf-sim-stats small{font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:#B3261E;}
+  .bf-sim-stats b{font-size:clamp(11.5px, .85vw, 14.5px); color:#B3261E; font-variant-numeric:tabular-nums; white-space:nowrap; letter-spacing:-.2px;}
+  .bf-sim-stats span{font-size:10.5px; color:var(--text-muted);}
+  .bf-sim-total{display:flex; flex-direction:column; gap:2px; font-size:12px; margin-bottom:12px;}
+  .bf-sim-total > div{display:flex; justify-content:space-between; gap:8px; color:var(--text-muted); padding:2px 0;}
+  .bf-sim-total b{color:var(--navy); font-variant-numeric:tabular-nums;}
+  .bf-sim-total .tot{border-top:1px solid #E1E8EB; padding-top:5px; margin-top:2px;} .bf-sim-total .tot span{color:var(--navy); font-weight:700;} .bf-sim-total .tot b{color:#B3261E; font-size:14px;}
+  .bf-orc-bloco{margin-top:auto; background:#F3F7F7; border-radius:11px; padding:9px 11px;}
+  .bf-orc-bloco .bf-excede-campo{margin-bottom:4px;}
   .bf-escala{margin-top:14px;}
   /* calendário do mês */
   .bf-cal-corpo{display:grid; grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr); gap:14px; align-items:start;}
@@ -1890,13 +1912,15 @@
       <section class="bf-card bf-hotline">
           <div class="bf-card-cab"><span class="bf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
             <div><h3>Hotline</h3><div class="bf-card-sub">01/11/2026 a 31/01/2027</div></div></div>
+          <div class="bf-bloco-tit">Horário de atendimento</div>
           <ul class="bf-horarios" id="bf-horarios"></ul>
+          <div class="bf-bloco-tit">Canais de atendimento</div>
           <ul class="bf-canais" id="bf-canais"></ul>
           <div class="bf-hot-acoes">
             <a class="bf-btn bf-btn-pri" id="bf-hot-entrar" target="_blank" rel="noopener noreferrer">Sala no Teams</a>
             <button type="button" class="bf-btn bf-btn-sec" id="bf-comunicado-abrir">Comunicado</button>
           </div>
-          <p class="bf-gestao" id="bf-gestao"></p>
+          <div class="bf-gestao" id="bf-gestao"></div>
         </section>
 
       <section class="bf-card bf-meses">
@@ -1920,14 +1944,20 @@
       <section class="bf-card bf-custos">
           <div class="bf-card-cab"><span class="bf-ic bf-ic-alerta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
             <div><h3>Se passar do previsto</h3><div class="bf-card-sub">Simule o impacto e compare com o orçamento</div></div></div>
-          <label class="bf-excede-campo">Limite de horas a mais por dia (equipe)
+          <div class="bf-bloco-tit">Limite combinado</div>
+          <label class="bf-excede-campo">Horas a mais por dia (equipe)
             <input type="number" id="bf-excede-horas" min="0" max="24" step="0.25" inputmode="decimal" value="1"></label>
-          <div class="bf-excede-res" id="bf-excede-res">—</div>
-          <label class="bf-excede-campo">Orçamento aprovado (R$)
-            <input type="text" id="bf-orcamento" class="bf-moeda" inputmode="numeric" autocomplete="off" placeholder="R$ 0,00" aria-describedby="bf-orc-dica"></label>
-          <div class="bf-orc-dica" id="bf-orc-dica">Digite só os números: 688750 vira R$ 6.887,50.</div>
-          <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
-          <div class="bf-orc-txt" id="bf-orc-txt">—</div>
+          <div class="bf-bloco-tit">Impacto se a equipe usar o limite</div>
+          <div class="bf-sim-stats" id="bf-sim-stats"></div>
+          <div class="bf-sim-total" id="bf-sim-total"></div>
+          <div class="bf-orc-bloco">
+            <div class="bf-bloco-tit">Orçamento aprovado</div>
+            <label class="bf-excede-campo"><span>Valor (R$)</span>
+              <input type="text" id="bf-orcamento" class="bf-moeda" inputmode="numeric" autocomplete="off" placeholder="R$ 0,00" aria-describedby="bf-orc-dica"></label>
+            <div class="bf-orc-dica" id="bf-orc-dica">Digite só os números: 688750 vira R$ 6.887,50.</div>
+            <div class="bf-orc-barra" aria-hidden="true"><i id="bf-orc-barra"></i></div>
+            <div class="bf-orc-txt" id="bf-orc-txt">—</div>
+          </div>
         </section>
     </div>
 
@@ -3091,7 +3121,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const link = bfLinkValido(), entrar = document.getElementById("bf-hot-entrar");
     if(link){ entrar.href = link; entrar.removeAttribute("aria-disabled"); entrar.textContent = "Sala no Teams"; entrar.title = ""; }
     else { entrar.removeAttribute("href"); entrar.setAttribute("aria-disabled", "true"); entrar.textContent = "Sala no Teams (em breve)"; entrar.title = "O link da sala fixa de Suporte ainda não foi definido"; }
-    document.getElementById("bf-gestao").innerHTML = "Problema crítico: fale com a gestão<br>" + BF_CONFIG.gestao.map(function(g){ return '<b>'+escapeHtml(g.nome)+'</b> ('+escapeHtml(g.cargo)+') '+escapeHtml(g.telefone); }).join("<br>");
+    document.getElementById("bf-gestao").innerHTML = '<div class="bf-gestao-tit">Problema crítico? Fale com a gestão</div>' + BF_CONFIG.gestao.map(function(g){
+      return '<div class="bf-gestao-pessoa"><b>'+escapeHtml(g.nome)+'</b><span>'+escapeHtml(g.cargo)+'</span>' +
+        '<a href="tel:'+escapeHtml(g.telefone.replace(/[^+0-9]/g, ""))+'">'+escapeHtml(g.telefone)+'</a><a href="mailto:'+escapeHtml(g.email)+'">'+escapeHtml(g.email)+'</a></div>';
+    }).join("");
     // Escala: barra 7h–24h por tipo de dia (turnos em azul, trechos sem analista em vermelho)
     const eixo = '<div class="bf-horas-eixo"><span></span><div><span>7h</span><span>12h</span><span>18h</span><span>24h</span></div><span></span></div>';
     document.getElementById("bf-escala").innerHTML = BF_TIPOS_DIA.map(function(t){
@@ -3283,9 +3316,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     ["folgam", "trabalham"].forEach(function(cen){ const el = document.getElementById("bf-fer-"+cen); if(el){ const t = cen === bfCenarioFer ? tot : bfTotaisCenario(cen); el.textContent = "total "+bfMoeda(t.totalMin/60*vh)+" · feriados "+bfHorasTxt(t.ferMin||0); } });
     // se passar do previsto
     const prevValor = (tot.totalMin + tot.extraMin)/60*vh, exc = bfLimiteDiaMin()/60, excValor = exc * tot.dias * vh, comExc = tot.totalMin/60*vh + excValor;
-    document.getElementById("bf-excede-res").innerHTML = exc
-      ? 'Se a equipe usar o limite de <b>'+bfHorasTxt(exc*60)+' a mais por dia</b>, são <b>+'+bfMoeda(excValor)+'</b> no período (≈ '+bfMoeda(exc*30*vh)+' por mês, '+bfMoeda(exc*7*vh)+' por semana).<br>Total possível: <b>'+bfMoeda(comExc)+'</b> · registrado até agora: '+bfMoeda(tot.extraMin/60*vh)+'.'
-      : 'Sem limite de horas a mais. Cada hora a mais por dia no período custa <b>'+bfMoeda(tot.dias*vh)+'</b> (1 hora em um único dia: '+bfMoeda(vh)+').';
+    document.getElementById("bf-sim-stats").innerHTML = [["No período", excValor, tot.dias+" dias"], ["Por mês", exc*30*vh, "≈ 30 dias"], ["Por semana", exc*7*vh, "7 dias"]].map(function(x){
+      return '<div><small>'+x[0]+'</small><b>+'+bfMoeda(x[1])+'</b><span>'+x[2]+'</span></div>';
+    }).join("");
+    document.getElementById("bf-sim-total").innerHTML = '<div><span>Previsto</span><b>'+bfMoeda(tot.totalMin/60*vh)+'</b></div><div><span>+ limite</span><b>'+bfMoeda(excValor)+'</b></div><div class="tot"><span>Total possível</span><b>'+bfMoeda(comExc)+'</b></div><div><span>Registrado até agora</span><b>'+bfMoeda(tot.extraMin/60*vh)+'</b></div>';
     const orc = bfLerMoeda(document.getElementById("bf-orcamento"));
     const usado = Math.max(comExc, prevValor);
     const barra = document.getElementById("bf-orc-barra"), otxt = document.getElementById("bf-orc-txt"), acima = orc > 0 && usado > orc;
