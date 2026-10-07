@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `22bf06e` (07/10/2026), equivale à `develop` `dddbc39` |
+| Última publicação | `main` = commit `8c4da68` (08/10/2026), equivale à `develop` `ede2eef` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -63,6 +63,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-planejamento-bf-2026-10-07` | Produção antes do Planejamento BF (commit `477637d`) |
 | `producao-antes-onepages-bf-2026-10-07` | Produção antes das One Pages BF (commit `9262bfd`) |
 | `producao-antes-seguranca-item2-2026-10-07` | Produção antes do ajuste de salvamento das lojas (commit `d433c0b`) |
+| `producao-antes-checklist-datas-2026-10-08` | Produção antes da gravação ao sair do checklist e do filtro de datas (commit `22bf06e`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -474,3 +475,9 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 
 ### 8.30 Salvamento das lojas + regras de acesso da tabela: PUBLICADO (07/10/2026)
 - Publicado na `main` `22bf06e` (= `develop` `dddbc39`), com autorização da usuária, pelo método da seção 3. Ponto de restauração: tag `producao-antes-seguranca-item2-2026-10-07` (= `d433c0b`). Salvar uma loja passa a só alterar o registro existente. Regras de acesso da tabela de lojas ajustadas pela usuária no banco (testes e produção) em 07/10/2026; comandos fora do repositório, em `_SQL_Preventivas/item2-*`. Testado pela usuária no site local (edição, duplicar, excluir, técnico e Painel).
+
+### 8.31 Checklist grava ao sair + Em andamento com qualquer mudança + filtro de datas na Agenda: PUBLICADO (08/10/2026)
+- Publicado na `main` `8c4da68` (= `develop` `ede2eef`), com autorização da usuária, pelo método da seção 3. Ponto de restauração: tag `producao-antes-checklist-datas-2026-10-08` (= `22bf06e`). Testado pela usuária no site local.
+- **Checklist:** a mudança que ainda esperava para ser gravada (1 s) é gravada na hora ao sair, trocar de loja ou fechar a página (`salvarPendente`); cada gravação vai sempre para a loja certa e a lista local é atualizada na hora.
+- **Status:** qualquer mudança feita pelo técnico no checklist marca `checklistIniciado` e a loja passa a "Em andamento" (antes só o horário de início contava).
+- **Agenda Semanal (Agendamento):** clicar no dia filtra as lojas agendadas naquele dia (clicar de novo tira); campos De/Até filtram por período (inclui concluídas); lista em ordem de data e hora; soma com status e busca; mantido ao atualizar (F5).
