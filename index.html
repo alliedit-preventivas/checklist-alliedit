@@ -2581,7 +2581,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(l.status === "concluido") return "concluido";
     if(l.status === "em_prospeccao_tecnico") return "em_prospeccao_tecnico";
     if(l.status === "reagendar") return "reagendar";
-    if(!!l.horarioInicio) return "em_andamento"; // o técnico já iniciou o atendimento no formulário
+    if(!!l.horarioInicio || !!l.checklistIniciado) return "em_andamento"; // o técnico já iniciou o atendimento (horário de início ou qualquer item do checklist)
     return statusAgendamentoDetalhado(l).status;
   }
 
@@ -5164,7 +5164,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       nome: data.nome||"", tecnico:data.tecnico||"", chamado:data.chamado||"", protocolo:data.protocolo||"",
       responsavelLoja:data.responsavelLoja||"", agendamento:data.agendamento||"", agendamentoPrevisto:data.agendamentoPrevisto||"",
       dadosTecnico:data.dadosTecnico||"", temDadosTecnico:!!data.temDadosTecnico, status:data.status||"nao_iniciado",
-      horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"",
+      horarioInicio:data.horarioInicio||"", horarioFim:data.horarioFim||"", checklistIniciado:!!data.checklistIniciado,
       wifiStage: Object.assign({barras:"", obs:""}, data.wifiStage||{}),
       ocorrencia: Object.assign({tem:null, descricao:""}, data.ocorrencia||{}),
       mercadoPagos: migrarMercadoPagos(data),
@@ -6267,6 +6267,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // ---- save ----
   function scheduleSave(){
     if(!currentLojaId) return;
+    currentLoja.checklistIniciado = true; // toda chamada vem de uma mudança feita pelo técnico no checklist
     if(currentLoja.status !== "concluido") currentLoja.status = statusAutomatico(currentLoja);
     updateFinalizeUi();
     document.getElementById("save-status").textContent = "Salvando...";
@@ -6294,7 +6295,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         telefoneStage: currentLoja.telefoneStage, posRedeCielos: currentLoja.posRedeCielos,
         posRedeCielo: currentLoja.posRedeCielos[0] || blankPosRedeCielo(), // compatibilidade com versões anteriores
         pinpadReserva: currentLoja.pinpadReserva,
-        horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"",
+        horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"", checklistIniciado: !!currentLoja.checklistIniciado,
         atualizadoEm: now()
       });
       // cópia local já atualizada: a lista e a reabertura da loja mostram a mudança sem esperar a próxima leitura (20 s)
