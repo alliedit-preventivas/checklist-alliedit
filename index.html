@@ -6310,12 +6310,36 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // ---- save ----
   function scheduleSave(){
     if(!currentLojaId) return;
-    currentLoja.checklistIniciado = true; // toda chamada vem de uma mudança feita pelo técnico no checklist
+    currentLoja.checklistIniciado = checklistTemConteudo(currentLoja); // algo preenchido = Em andamento; tudo apagado de novo = volta a Não iniciado
     if(currentLoja.status !== "concluido") currentLoja.status = statusAutomatico(currentLoja);
     updateFinalizeUi();
     document.getElementById("save-status").textContent = "Salvando...";
     clearTimeout(saveTimer); savePendente = true;
     saveTimer = setTimeout(persistNow, 900);
+  }
+  // O checklist tem algo preenchido? Compara com o formulário em branco (o mesmo que o "Limpar Formulário" deixa),
+  // ignorando os códigos internos e os nomes automáticos (PDV 01, Mobile 01, DVR 01...).
+  function checklistEmBranco(){
+    return { rack: blankRack(), gerencia: blankSetorEquip(), estoque: blankSetorEquip(), notebooks: blankNotebooks(), wifiStage: {barras:"", obs:""},
+      pdvs: [blankPdv(1)], mobiles: [blankMobile(1)], dvrs: [blankDvr(1)], ratFoto: null, ocorrencia: {tem:null, descricao:""},
+      mercadoPagos: [blankMercadoPago()], telefoneStage: migrarTelefone(null, false), posRedeCielos: [blankPosRedeCielo()], pinpadReserva: blankPinpadReserva() };
+  }
+  function temAlgoPreenchido(a){ // valor solto (sem modelo em branco para comparar)
+    if(a == null || a === "" || a === false) return false;
+    if(Array.isArray(a)) return a.some(temAlgoPreenchido);
+    if(typeof a === "object") return Object.keys(a).some(function(k){ return k !== "id" && k !== "nome" && temAlgoPreenchido(a[k]); });
+    return typeof a === "string" ? a.trim() !== "" : true;
+  }
+  function difereDoVazio(a, v){
+    if(v === undefined) return temAlgoPreenchido(a);
+    if(Array.isArray(v)){ if(!Array.isArray(a)) return temAlgoPreenchido(a); return a.some(function(x){ return v.length ? difereDoVazio(x, v[0]) : temAlgoPreenchido(x); }); }
+    if(v && typeof v === "object"){ if(!a || typeof a !== "object") return temAlgoPreenchido(a); return Object.keys(a).some(function(k){ return k !== "id" && k !== "nome" && difereDoVazio(a[k], v[k]); }); }
+    const vazioA = a == null || (typeof a === "string" && a.trim() === ""), vazioV = v == null || v === "";
+    return vazioA && vazioV ? false : a !== v;
+  }
+  function checklistTemConteudo(l){
+    const branco = checklistEmBranco();
+    return Object.keys(branco).some(function(k){ return difereDoVazio(l[k], branco[k]); });
   }
   // Antes de sair do checklist ou trocar de loja: grava na hora o que ainda estava esperando para salvar
   // (sem isso, uma mudança feita menos de 1 s antes de sair se perdia e o status não mudava)
