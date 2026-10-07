@@ -1,7 +1,7 @@
 # Resumo dos ajustes — Checklist de Preventivas (Sephora 2026 · AlliedIT)
 
 Documento para continuar o trabalho em outro perfil ou outra conta do Claude Code.
-Última atualização: 06/10/2026 (histórico completo e tela mantida ao atualizar PUBLICADOS, seção 8.27; Painel com menu lateral, Cadastro recolhível e Área do Técnico PUBLICADOS, seção 8.26; prazo da campanha 30/10 PUBLICADO, seção 8.25; feriados na Agenda e Reagendamento dividido PUBLICADOS, seção 8.24; etiqueta P de protocolo e card Reagendamento Lojas no Painel PUBLICADOS, seção 8.23; dados do técnico em tabela própria e proteção contra exibição em outro site PUBLICADOS, seção 8.22; proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
+Última atualização: 07/10/2026 (Planejamento BF PUBLICADO, seção 8.28; histórico completo e tela mantida ao atualizar PUBLICADOS, seção 8.27; Painel com menu lateral, Cadastro recolhível e Área do Técnico PUBLICADOS, seção 8.26; prazo da campanha 30/10 PUBLICADO, seção 8.25; feriados na Agenda e Reagendamento dividido PUBLICADOS, seção 8.24; etiqueta P de protocolo e card Reagendamento Lojas no Painel PUBLICADOS, seção 8.23; dados do técnico em tabela própria e proteção contra exibição em outro site PUBLICADOS, seção 8.22; proteções do navegador e biblioteca com versão fixa PUBLICADAS, seção 8.21; novo visual do Agendamento e login publicados, seção 8.20).
 
 ---
 
@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `477637d` (06/10/2026), equivale à `develop` `b2d77cb` |
+| Última publicação | `main` = commit `9262bfd` (07/10/2026), equivale à `develop` `729224d` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -60,6 +60,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-prazo-30-10-2026-10-06` | Produção antes da troca do prazo da campanha para 30/10 (commit `9da30c4`) |
 | `producao-antes-painel-menu-lateral-2026-10-06` | Produção antes do Painel com menu lateral (commit `0ebfc95`) |
 | `producao-antes-historico-completo-2026-10-06` | Produção antes do histórico completo e da tela mantida ao atualizar (commit `504bc31`) |
+| `producao-antes-planejamento-bf-2026-10-07` | Produção antes do Planejamento BF (commit `477637d`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -454,3 +455,10 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Correção junto: depois de cada gravação no Agendamento a cópia local da loja é atualizada na hora (`Object.assign(l, payload)`), porque a lista só recarrega a cada 20 s; antes, duas edições seguidas faziam a 2ª apagar o registro da 1ª no histórico.
 - **F5 mantém a tela:** filtros (cards e Responsabilidade), busca, tela aberta (Agendamento, Painel ou checklist), mês/semana da Agenda do Painel, submenu Cadastro e rolagem (`guardarEstadoTela`/`restaurarEstadoTela`, `sessionStorage` da aba). Aba nova começa do zero. Vale também para o `?painel=1` (agenda); não vale para a tela do técnico.
 - No teste, a loja de teste 9999 (banco de testes) ficou com 7 registros de histórico das verificações.
+
+### 8.28 Planejamento BF (menu lateral, só autorizados): PUBLICADO (07/10/2026)
+- Publicado na `main` `9262bfd` (= `develop` `729224d`), com autorização da usuária, pelo método da seção 3. Ponto de restauração: tag `producao-antes-planejamento-bf-2026-10-07` (= `477637d`). Site no ar idêntico à `main` em ~90 s; login e `?painel=1` no ar conferidos, sem erros; menu do Planejamento escondido para quem não está autorizado.
+- **Página "Planejamento BF"** (menu lateral, só com login e só para e-mails autorizados): contagem até a Black Friday, "Agora" (hotline aberta/sem analista e quem está em turno), Hotline (horários, canais, comunicado, gestão), Hora extra por mês (dias normais x feriados, horas a mais, realizado), simulação "Se passar do previsto" com orçamento em reais, calendário mensal (termômetro de horas a mais, feriados nacionais, detalhe do dia com registro) e escala dos analistas.
+- **Banco (testes e produção), 3 tabelas novas, todas fechadas para quem não está na lista:** `bf_autorizados` (lista de e-mails; cada pessoa logada só vê a própria linha; inclusão/remoção só pelo painel do Supabase), `bf_hora_extra` (horas a mais registradas; só autorizados leem e gravam) e `bf_config` (todo o conteúdo da página; só autorizados leem; ninguém grava pelo site).
+- **Nenhum conteúdo do planejamento fica no código** (repositório público): escala, horários, canais, contatos, comunicado, datas e valores estão em `bf_config`. Os comandos SQL com esse conteúdo ficam fora do repositório, em `_Projetos_AlliedIT/_SQL_Preventivas/`. Para mudar algo (ex.: link do Teams): Supabase → Table Editor → `bf_config` → linha `planejamento` → coluna `dados`.
+- Regras de hora extra usadas no cálculo: comercial 8 h/dia, 12x36 11 h/dia, domingo/feriado conta todo o tempo do recurso acionado, paga só o tempo a mais (sem arredondar). Nos feriados de dia útil a página permite escolher se os comerciais folgam ou trabalham.
