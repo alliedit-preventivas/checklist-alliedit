@@ -13,7 +13,7 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `develop` | Desenvolvimento/testes. Usa o **Supabase de TESTES** e mostra a etiqueta "Teste Local" no topo |
 | `main` | **PRODUÇÃO**. Usa o **Supabase de PRODUÇÃO**. Tem só o `index.html` |
 | Site no ar | https://alliedit-preventivas.github.io/checklist-alliedit/ — publicado automaticamente pelo GitHub Pages a partir da `main` (atualiza em 1 a 3 minutos após o envio) |
-| Última publicação | `main` = commit `abdbecd` (08/10/2026), equivale à `develop` `03d512a` |
+| Última publicação | `main` = commit `983c917` (09/10/2026), equivale à `develop` `0177182` |
 | Pasta principal do projeto (desde 03/10/2026) | Computador `DESKTOP-9DUKAL6`, em `F:\_Projetos_AlliedIT\Portal_Preventivas_v1` (disco local, **não** está no Google Drive). Ao lado do `checklist-alliedit` ficam as planilhas, os arquivos de apoio (`Rio Sul.pdf`, `Parque Sephora.txt`, pasta `_imagens`) e as pastas de backup `bkp_prod` e `bkp_teste` |
 | Cópia antiga | A pasta desatualizada do outro computador foi trazida para este, em `F:\_Projetos_AlliedIT\#Nao-Mexer-Mais` (projeto antigo em `Portal_Preventivas_NAO-MEXER-MAIS\checklist-alliedit-v1`), como backup por alguns dias (03/10/2026). **Não trabalhar nela.** Conferido: todo o código dela já está no GitHub (sem ajustes pendentes). Só nela existem as tags locais `antes-tema-cores`, `antes-painel-gestao-novo` e `antes-escala-fontes` (as versões que elas marcam estão no histórico do GitHub) e 7 arquivos fora do código, **já copiados para a pasta principal** (ver abaixo). Com isso, a cópia antiga pode ser excluída sem perda |
 
@@ -67,6 +67,8 @@ Documento para continuar o trabalho em outro perfil ou outra conta do Claude Cod
 | `producao-antes-status-checklist-2026-10-08` | Produção antes da correção do status recalculado (commit `8c4da68`) |
 | `producao-antes-limpar-formulario-2026-10-08` | Produção antes do Limpar Formulário voltar o status (commit `510b43e`) |
 | `producao-antes-checklist-vazio-2026-10-08` | Produção antes do checklist apagado item a item voltar o status (commit `c985a5a`) |
+| `producao-antes-copia-repositorio-2026-10-08` | Produção antes do botão Área do Técnico sem endereço fixo (commit `abdbecd`) |
+| `producao-antes-offline-busca-2026-10-09` | Produção antes do modo sem internet e da busca do técnico (commit `c469545`) |
 
 Para voltar a produção a um desses pontos, peça ao Claude: "volte a produção para a tag X" (ele deve explicar e pedir confirmação antes).
 
@@ -492,3 +494,8 @@ Quando o técnico corrige o último campo obrigatório que faltava, aparece a ja
 - Cópia completa (histórico, `main`, `develop` e pontos de restauração) enviada para `github.com/evelynealliedit-dev/preventivas-alliedit` (na pasta local, remoto `novo`). GitHub Pages ligado pela `main`: site novo em `https://evelynealliedit-dev.github.io/preventivas-alliedit/`, idêntico ao antigo e usando o mesmo banco de produção; testado pela usuária em 08/10/2026.
 - O site e o repositório antigos (`alliedit-preventivas/checklist-alliedit`) continuam no ar e continuam recebendo as publicações até a usuária decidir a troca (avisar os links novos e, se quiser, passar o repositório para a organização `preventivas-alliedit`, o que muda o endereço para `preventivas-alliedit.github.io/...`).
 - O botão Área do Técnico passou a abrir o link do próprio site (sem endereço fixo), publicado na `main` `c469545` (= `develop` `0287d74`), tag `producao-antes-copia-repositorio-2026-10-08`.
+
+### 8.33 Técnico sem internet + busca por número ou nome: PUBLICADO (09/10/2026)
+- Publicado na `main` `983c917` (= `develop` `0177182`), com autorização da usuária. **Atenção ao publicar:** além do `index.html`, agora existe o arquivo `sw.js` na raiz, que também precisa ir para a `main` (ele é igual em testes e produção). Ponto de restauração: tag `producao-antes-offline-busca-2026-10-09` (= `c469545`).
+- **Sem internet:** no link do técnico, as lojas ficam guardadas no celular (`lojasOffline:v1`); se a internet não responder em 5 s, a lista vem dessa cópia. O que for preenchido sem sinal entra numa fila no celular (`filaOffline:v1`) e é enviado sozinho a cada 15 s e ao reconectar (`sincronizarFilaOffline`); aviso fixo embaixo da tela. A página abre sem internet graças ao `sw.js` (página: internet primeiro, cópia se sem sinal; biblioteca do banco e fontes: cópia guardada). Foto do RAT e conclusão precisam de internet (aviso claro). O técnico precisa abrir o link uma vez com internet antes.
+- **Busca da Área do Técnico:** aceita número ou nome (sem acento/maiúscula), teclado normal no celular; a lista mostra todas as lojas, as que combinam primeiro e em destaque, as outras abaixo em "Outras lojas"; tocar no campo não seleciona o texto.
