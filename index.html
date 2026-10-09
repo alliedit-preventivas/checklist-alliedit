@@ -1150,7 +1150,8 @@
   .agn-card-b label{font-size:10.5px; font-weight:700; letter-spacing:.6px; margin:10px 0 3px;}
   .agn-card-b input, .agn-card-b textarea{font-size:13.5px; background:#FBFCFD;}
   .agn-card-b input:disabled, .agn-card-b textarea:disabled{color:var(--navy); opacity:1;}
-  .agn-l1{display:grid; grid-template-columns:1.1fr 1fr 1fr 1.5fr 1fr .8fr; gap:10px;}
+  .agn-l1{display:grid; grid-template-columns:1.1fr 1fr 1.6fr 1fr .8fr; gap:10px;}
+  .agn-es-cab{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:5px;} .agn-es-cab label{margin:0;} .agn-es-cab input[type=date]{width:auto; min-width:150px;} .agn-es-cab .agn-limpar-campo{margin:0;}
   .agn-l2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   .agn-card-b .field{margin-bottom:0;}
   .agn-card-b textarea{min-height:58px; line-height:1.45;}
@@ -4537,8 +4538,6 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         '<div class="agn-l1">' +
           campoTexto("Chamado", "chamado", "Ex: R123456") +
           campoTexto("Protocolo", "protocolo", "Ex: 000123") +
-          '<div class="field"><label title="Data em que o e-mail pedindo o protocolo foi enviado">Solicitação do e-mail</label><input type="date" class="email-solic-input" data-id="'+id+'" value="'+escapeHtml(l.emailSolicitacao||"")+'"'+dis+' aria-label="Data do envio do e-mail de solicitação">' +
-            (l.emailSolicitacao && !bloq ? '<button type="button" class="agn-limpar-campo email-solic-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
           campoTexto("Técnico", "tecnico", "Nome") +
           '<div class="field"><label>Data</label><input type="date" class="agendamento-input" data-id="'+id+'" value="'+(l.agendamento||"")+'"'+dis+'>' +
             (l.agendamento && !bloq ? '<button type="button" class="agn-limpar-campo agendamento-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
@@ -4550,6 +4549,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           areaTexto('Observação <span class="agn-auto">só equipe de agendamento</span>', "observacaoAgendamento", "Anotações internas do agendamento", '', false) +
         '</div>' +
         areaTexto("Atendimento (descrição / escopo)", "descricaoAtendimento", "Descreva o escopo do atendimento", '', bloq) +
+        '<div class="field agn-email-solic"><div class="agn-es-cab"><label title="E-mail enviado pedindo o protocolo">Solicitação do e-mail</label>' +
+          '<input type="date" class="email-solic-input" data-id="'+id+'" value="'+escapeHtml(l.emailSolicitacao||"")+'"'+dis+' aria-label="Data do envio do e-mail de solicitação" title="Data do envio do e-mail">' +
+          (l.emailSolicitacao && !bloq ? '<button type="button" class="agn-limpar-campo email-solic-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
+          '<textarea class="quick-input auto-grow" data-id="'+id+'" data-field="emailSolicitacaoTexto" placeholder="Texto ou resumo do e-mail enviado" rows="2" style="resize:none; overflow-y:hidden;"'+dis+'>'+escapeHtml(l.emailSolicitacaoTexto||"")+'</textarea></div>' +
         '<div class="field"><label>Histórico de alterações <span class="agn-auto">automático</span></label><div class="agn-hist">'+historicoAgnHtml(l)+'</div></div>' +
         '<div class="agn-acoes">' +
           (!bloq ?
@@ -4563,7 +4566,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   // Histórico de alterações: qualquer campo do card (mais recente primeiro).
   // "Dados do técnico" registra só que mudou, sem o conteúdo (dados pessoais ficam no cofre, só com login).
-  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
+  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", emailSolicitacaoTexto:"Solicitação do e-mail (texto)", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
   function historicoAgnHtml(l){
     const itens = (Array.isArray(l.historicoAlteracoes) ? l.historicoAlteracoes : []).slice().reverse();
     if(!itens.length) return '<div class="agn-hist-vazio">Nenhuma alteração registrada.</div>';
@@ -5135,7 +5138,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         copia.status = "nao_iniciado"; copia.reagendamentos = 0;
         copia.observacaoAgendamento = ""; copia.historicoAlteracoes = [];
         copia.dadosTecnico = ""; copia.temDadosTecnico = false; // dados pessoais do técnico não são copiados
-        copia.emailSolicitacao = ""; copia.checklistIniciado = false;
+        copia.emailSolicitacao = ""; copia.emailSolicitacaoTexto = ""; copia.checklistIniciado = false;
         await db.doc("lojas/"+codigo).set(sanitizeParaJson(copia));
         c.innerHTML = "";
       }catch(e){ console.error("Falha ao criar cadastro:", e); erro.textContent = "Não foi possível criar o cadastro. Tente novamente."; }
