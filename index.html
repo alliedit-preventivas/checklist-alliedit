@@ -1150,7 +1150,7 @@
   .agn-card-b label{font-size:10.5px; font-weight:700; letter-spacing:.6px; margin:10px 0 3px;}
   .agn-card-b input, .agn-card-b textarea{font-size:13.5px; background:#FBFCFD;}
   .agn-card-b input:disabled, .agn-card-b textarea:disabled{color:var(--navy); opacity:1;}
-  .agn-l1{display:grid; grid-template-columns:1.1fr 1fr 1.6fr 1fr .8fr; gap:10px;}
+  .agn-l1{display:grid; grid-template-columns:1.1fr 1fr 1fr 1.5fr 1fr .8fr; gap:10px;}
   .agn-l2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   .agn-card-b .field{margin-bottom:0;}
   .agn-card-b textarea{min-height:58px; line-height:1.45;}
@@ -4250,17 +4250,18 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
   }
 
-  const GRUPO_SERVICE_DESK = ["falta_chamado","falta_protocolo","em_andamento","reaberto","concluido"];
+  const GRUPO_SERVICE_DESK = ["falta_chamado","falta_protocolo","protocolo_solicitado","em_andamento","reaberto","concluido"];
   const GRUPO_AGENDAMENTO = ["liberado","nao_iniciado","falta_tecnico","reagendar","atrasada","em_prospeccao_tecnico"];
   // Contagem e nome de cada filtro do Agendamento (usados nos filtros de Responsabilidade e nos cards de cima)
   function contagemFiltroHome(key, hoje){
     if(key==="atrasada") return lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
-    if(key.indexOf("falta_")===0) return lojasCache.filter(function(l){ return matchesFiltroHomeChave(l, key, hoje); }).length;
+    if(key.indexOf("falta_")===0 || key==="protocolo_solicitado") return lojasCache.filter(function(l){ return matchesFiltroHomeChave(l, key, hoje); }).length;
     return lojasCache.filter(function(l){ return l.status===key; }).length;
   }
   function labelFiltroHome(key){
     if(key==="falta_chamado") return "Chamado";
     if(key==="falta_protocolo") return "Protocolo";
+    if(key==="protocolo_solicitado") return "Protocolo Solicitado";
     if(key==="falta_tecnico") return "Técnico";
     if(key==="atrasada") return "Atrasado";
     return STATUS_LABEL[key];
@@ -4483,6 +4484,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(chave==="atrasada") return lojaAtrasada(l, hoje);
     if(chave==="falta_chamado") return l.status==="aguardando" && !(l.chamado&&l.chamado.trim());
     if(chave==="falta_protocolo") return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim());
+    if(chave==="protocolo_solicitado") return l.status!=="concluido" && !!l.emailSolicitacao && !(l.protocolo&&l.protocolo.trim()); // e-mail enviado, protocolo ainda não chegou
     if(chave==="falta_tecnico") return l.status==="aguardando" && (!(l.tecnico&&l.tecnico.trim()) || !temDadosTecnico(l));
     return l.status === chave;
   }
@@ -4535,6 +4537,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         '<div class="agn-l1">' +
           campoTexto("Chamado", "chamado", "Ex: R123456") +
           campoTexto("Protocolo", "protocolo", "Ex: 000123") +
+          '<div class="field"><label title="Data em que o e-mail pedindo o protocolo foi enviado">Solicitação do e-mail</label><input type="date" class="email-solic-input" data-id="'+id+'" value="'+escapeHtml(l.emailSolicitacao||"")+'"'+dis+' aria-label="Data do envio do e-mail de solicitação">' +
+            (l.emailSolicitacao && !bloq ? '<button type="button" class="agn-limpar-campo email-solic-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
           campoTexto("Técnico", "tecnico", "Nome") +
           '<div class="field"><label>Data</label><input type="date" class="agendamento-input" data-id="'+id+'" value="'+(l.agendamento||"")+'"'+dis+'>' +
             (l.agendamento && !bloq ? '<button type="button" class="agn-limpar-campo agendamento-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
@@ -4569,6 +4573,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(h.tipo === "dadosTecnico") texto = 'Dados do técnico: <b>' + (h.para === "removidos" ? "removidos" : "atualizados") + '</b>';
       else if(h.tipo === "data") texto = 'Data: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "hora") texto = 'Hora: ' + v(h.de) + ' → ' + v(h.para);
+      else if(h.tipo === "emailSolicitacao") texto = 'Solicitação do e-mail: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "reagendamento") texto = '<b>Reagendado</b> (' + escapeHtml(h.para) + 'ª vez)' + (h.de ? ' · data anterior ' + escapeHtml(fmtDateBR(h.de)) : '');
       else if(HIST_ROTULOS[h.tipo]) texto = HIST_ROTULOS[h.tipo] + ': ' + v(h.de) + ' → ' + v(h.para);
       else texto = escapeHtml(h.tipo || "");
@@ -4587,6 +4592,16 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(String(de||"") === String(para||"")) return;
     payload.historicoAlteracoes = historicoComAlteracao({historicoAlteracoes: payload.historicoAlteracoes || l.historicoAlteracoes}, tipo, de, para);
   }
+  // Atualiza na hora o histórico e o "Atualizado em" do card (mesmo com o campo ainda selecionado)
+  function atualizarHistoricoCard(id){
+    const l = lojasCache.find(function(x){ return x.id === id; }); if(!l) return;
+    document.querySelectorAll('.agn-card[data-id="'+id+'"]').forEach(function(card){
+      const h = card.querySelector(".agn-hist"); if(h) h.innerHTML = historicoAgnHtml(l);
+      const m = card.querySelector(".agn-card-tit .meta"); if(m) m.textContent = "Atualizado em " + fmtDate(l.atualizadoEm);
+    });
+  }
+  // Data digitada pela metade (ano com menos de 4 dígitos, ex.: 0002) não conta como alteração
+  function dataCompleta(v){ return !v || /^(19|20)\d{2}-\d{2}-\d{2}$/.test(v); }
   function adicionarHistoricoStatus(payload, l){
     if(payload.status && payload.status !== (l.status||"")) adicionarHistorico(payload, l, "status", STATUS_LABEL[l.status] || l.status || "", STATUS_LABEL[payload.status] || payload.status);
   }
@@ -4597,7 +4612,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     // Quando o campo perde o foco, a renderização pendente é aplicada (ver wireLojasView).
     const activeEl = document.activeElement;
     if(list && activeEl && list.contains(activeEl) && activeEl.classList &&
-       (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input"))){
+       (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input") || activeEl.classList.contains("email-solic-input"))){
       pendingLojasRender = true;
       return;
     }
@@ -4729,6 +4744,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       input.addEventListener("change", function(e){
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        if(!dataCompleta(input.value) || input.value === (l.agendamento||"")) return; // digitação incompleta ou sem mudança
         const payload = { agendamento: input.value, atualizadoEm: now() };
         adicionarHistorico(payload, l, "data", l.agendamento, input.value);
         if(l.status !== "concluido"){
@@ -4738,6 +4754,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         }
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(input.dataset.id);
       });
     });
     list.querySelectorAll(".agendamento-clear").forEach(function(btn){
@@ -4749,6 +4766,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: ""})));
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(btn.dataset.id);
       });
     });
     list.querySelectorAll(".previsto-input").forEach(function(input){
@@ -4756,6 +4774,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       input.addEventListener("change", function(e){
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        if(input.value === (l.agendamentoPrevisto||"")) return; // sem mudança
         const payload = { agendamentoPrevisto: input.value, atualizadoEm: now() };
         adicionarHistorico(payload, l, "hora", l.agendamentoPrevisto, input.value);
         if(l.status !== "concluido"){
@@ -4764,6 +4783,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         }
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(input.dataset.id);
       });
     });
     list.querySelectorAll(".previsto-clear").forEach(function(btn){
@@ -4775,6 +4795,31 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamentoPrevisto: ""})));
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(btn.dataset.id);
+      });
+    });
+    // Solicitação do e-mail (pedido de protocolo): data do envio
+    list.querySelectorAll(".email-solic-input").forEach(function(input){
+      input.addEventListener("click", function(e){ e.stopPropagation(); });
+      input.addEventListener("change", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        if(!dataCompleta(input.value) || input.value === (l.emailSolicitacao||"")) return;
+        const payload = { emailSolicitacao: input.value, atualizadoEm: now() };
+        adicionarHistorico(payload, l, "emailSolicitacao", l.emailSolicitacao, input.value);
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
+        atualizarHistoricoCard(input.dataset.id); renderFiltroChipsHome();
+      });
+    });
+    list.querySelectorAll(".email-solic-clear").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
+        const payload = { emailSolicitacao: "", atualizadoEm: now() };
+        adicionarHistorico(payload, l, "emailSolicitacao", l.emailSolicitacao, "");
+        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
+        const inp = btn.parentNode.querySelector(".email-solic-input"); if(inp) inp.value = "";
+        atualizarHistoricoCard(btn.dataset.id); renderFiltroChipsHome();
       });
     });
     list.querySelectorAll(".quick-input").forEach(function(input){
@@ -5090,6 +5135,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         copia.status = "nao_iniciado"; copia.reagendamentos = 0;
         copia.observacaoAgendamento = ""; copia.historicoAlteracoes = [];
         copia.dadosTecnico = ""; copia.temDadosTecnico = false; // dados pessoais do técnico não são copiados
+        copia.emailSolicitacao = ""; copia.checklistIniciado = false;
         await db.doc("lojas/"+codigo).set(sanitizeParaJson(copia));
         c.innerHTML = "";
       }catch(e){ console.error("Falha ao criar cadastro:", e); erro.textContent = "Não foi possível criar o cadastro. Tente novamente."; }
@@ -5142,7 +5188,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         const activeEl = document.activeElement;
         const list = document.getElementById("lojas-list");
         const aindaEditando = activeEl && list.contains(activeEl) && activeEl.classList &&
-          (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input"));
+          (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input") || activeEl.classList.contains("email-solic-input"));
         if(!aindaEditando) renderLojasList();
       }, 0);
     });
