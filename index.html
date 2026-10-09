@@ -73,7 +73,8 @@
   nav button.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px var(--sombra-marca);}
   main{max-width:1520px; margin:0 auto; padding:16px 14px 80px;}
   #view-checklist{max-width:620px; margin:0 auto;}
-  .aviso-offline{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:9999; max-width:calc(100% - 24px); box-sizing:border-box; background:#8A6D00; color:#fff; font-size:13px; font-weight:600; line-height:1.35; padding:9px 14px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25); text-align:center;}
+  .aviso-offline{position:fixed; top:0; left:0; right:0; z-index:9999; box-sizing:border-box; background:#8A6D00; color:#fff; font-size:12px; font-weight:600; line-height:1.3; padding:4px 10px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:0 2px 6px rgba(0,0,0,.18);}
+  body.com-aviso-offline{padding-top:24px;}
   .aviso-offline.enviando{background:#056E8C;}
   .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
   .toolbar{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;}
@@ -1151,6 +1152,7 @@
   .agn-card-b input, .agn-card-b textarea{font-size:13.5px; background:#FBFCFD;}
   .agn-card-b input:disabled, .agn-card-b textarea:disabled{color:var(--navy); opacity:1;}
   .agn-l1{display:grid; grid-template-columns:1.1fr 1fr 1.6fr 1fr .8fr; gap:10px;}
+  .agn-es-cab{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:5px;} .agn-es-cab label{margin:0;} .agn-es-cab input[type=date]{width:auto; min-width:150px;} .agn-es-cab .agn-limpar-campo{margin:0;}
   .agn-l2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   .agn-card-b .field{margin-bottom:0;}
   .agn-card-b textarea{min-height:58px; line-height:1.45;}
@@ -4250,17 +4252,18 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     });
   }
 
-  const GRUPO_SERVICE_DESK = ["falta_chamado","falta_protocolo","em_andamento","reaberto","concluido"];
+  const GRUPO_SERVICE_DESK = ["falta_chamado","falta_protocolo","protocolo_solicitado","em_andamento","reaberto","concluido"];
   const GRUPO_AGENDAMENTO = ["liberado","nao_iniciado","falta_tecnico","reagendar","atrasada","em_prospeccao_tecnico"];
   // Contagem e nome de cada filtro do Agendamento (usados nos filtros de Responsabilidade e nos cards de cima)
   function contagemFiltroHome(key, hoje){
     if(key==="atrasada") return lojasCache.filter(function(l){ return lojaAtrasada(l, hoje); }).length;
-    if(key.indexOf("falta_")===0) return lojasCache.filter(function(l){ return matchesFiltroHomeChave(l, key, hoje); }).length;
+    if(key.indexOf("falta_")===0 || key==="protocolo_solicitado") return lojasCache.filter(function(l){ return matchesFiltroHomeChave(l, key, hoje); }).length;
     return lojasCache.filter(function(l){ return l.status===key; }).length;
   }
   function labelFiltroHome(key){
     if(key==="falta_chamado") return "Chamado";
     if(key==="falta_protocolo") return "Protocolo";
+    if(key==="protocolo_solicitado") return "Protocolo Solicitado";
     if(key==="falta_tecnico") return "Técnico";
     if(key==="atrasada") return "Atrasado";
     return STATUS_LABEL[key];
@@ -4483,6 +4486,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(chave==="atrasada") return lojaAtrasada(l, hoje);
     if(chave==="falta_chamado") return l.status==="aguardando" && !(l.chamado&&l.chamado.trim());
     if(chave==="falta_protocolo") return l.status==="aguardando" && !(l.protocolo&&l.protocolo.trim());
+    if(chave==="protocolo_solicitado") return l.status!=="concluido" && !!l.emailSolicitacao && !(l.protocolo&&l.protocolo.trim()); // e-mail enviado, protocolo ainda não chegou
     if(chave==="falta_tecnico") return l.status==="aguardando" && (!(l.tecnico&&l.tecnico.trim()) || !temDadosTecnico(l));
     return l.status === chave;
   }
@@ -4546,6 +4550,10 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           areaTexto('Observação <span class="agn-auto">só equipe de agendamento</span>', "observacaoAgendamento", "Anotações internas do agendamento", '', false) +
         '</div>' +
         areaTexto("Atendimento (descrição / escopo)", "descricaoAtendimento", "Descreva o escopo do atendimento", '', bloq) +
+        '<div class="field agn-email-solic"><div class="agn-es-cab"><label title="E-mail enviado pedindo o protocolo">Solicitação do Protocolo por E-mail</label>' +
+          '<input type="date" class="email-solic-input" data-id="'+id+'" value="'+escapeHtml(l.emailSolicitacao||"")+'"'+dis+' aria-label="Data do envio do e-mail de solicitação do protocolo" title="Data do envio do e-mail">' +
+          (l.emailSolicitacao && !bloq ? '<button type="button" class="agn-limpar-campo email-solic-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
+          '<textarea class="quick-input auto-grow" data-id="'+id+'" data-field="emailSolicitacaoTexto" placeholder="Texto ou resumo do e-mail enviado" rows="2" style="resize:none; overflow-y:hidden;"'+dis+'>'+escapeHtml(l.emailSolicitacaoTexto||"")+'</textarea></div>' +
         '<div class="field"><label>Histórico de alterações <span class="agn-auto">automático</span></label><div class="agn-hist">'+historicoAgnHtml(l)+'</div></div>' +
         '<div class="agn-acoes">' +
           (!bloq ?
@@ -4559,7 +4567,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   // Histórico de alterações: qualquer campo do card (mais recente primeiro).
   // "Dados do técnico" registra só que mudou, sem o conteúdo (dados pessoais ficam no cofre, só com login).
-  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
+  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", emailSolicitacaoTexto:"Solicitação do Protocolo por E-mail (texto)", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
   function historicoAgnHtml(l){
     const itens = (Array.isArray(l.historicoAlteracoes) ? l.historicoAlteracoes : []).slice().reverse();
     if(!itens.length) return '<div class="agn-hist-vazio">Nenhuma alteração registrada.</div>';
@@ -4569,6 +4577,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(h.tipo === "dadosTecnico") texto = 'Dados do técnico: <b>' + (h.para === "removidos" ? "removidos" : "atualizados") + '</b>';
       else if(h.tipo === "data") texto = 'Data: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "hora") texto = 'Hora: ' + v(h.de) + ' → ' + v(h.para);
+      else if(h.tipo === "emailSolicitacao") texto = 'Solicitação do Protocolo por E-mail: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "reagendamento") texto = '<b>Reagendado</b> (' + escapeHtml(h.para) + 'ª vez)' + (h.de ? ' · data anterior ' + escapeHtml(fmtDateBR(h.de)) : '');
       else if(HIST_ROTULOS[h.tipo]) texto = HIST_ROTULOS[h.tipo] + ': ' + v(h.de) + ' → ' + v(h.para);
       else texto = escapeHtml(h.tipo || "");
@@ -4587,6 +4596,16 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     if(String(de||"") === String(para||"")) return;
     payload.historicoAlteracoes = historicoComAlteracao({historicoAlteracoes: payload.historicoAlteracoes || l.historicoAlteracoes}, tipo, de, para);
   }
+  // Atualiza na hora o histórico e o "Atualizado em" do card (mesmo com o campo ainda selecionado)
+  function atualizarHistoricoCard(id){
+    const l = lojasCache.find(function(x){ return x.id === id; }); if(!l) return;
+    document.querySelectorAll('.agn-card[data-id="'+id+'"]').forEach(function(card){
+      const h = card.querySelector(".agn-hist"); if(h) h.innerHTML = historicoAgnHtml(l);
+      const m = card.querySelector(".agn-card-tit .meta"); if(m) m.textContent = "Atualizado em " + fmtDate(l.atualizadoEm);
+    });
+  }
+  // Data digitada pela metade (ano com menos de 4 dígitos, ex.: 0002) não conta como alteração
+  function dataCompleta(v){ return !v || /^(19|20)\d{2}-\d{2}-\d{2}$/.test(v); }
   function adicionarHistoricoStatus(payload, l){
     if(payload.status && payload.status !== (l.status||"")) adicionarHistorico(payload, l, "status", STATUS_LABEL[l.status] || l.status || "", STATUS_LABEL[payload.status] || payload.status);
   }
@@ -4597,7 +4616,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     // Quando o campo perde o foco, a renderização pendente é aplicada (ver wireLojasView).
     const activeEl = document.activeElement;
     if(list && activeEl && list.contains(activeEl) && activeEl.classList &&
-       (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input"))){
+       (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input") || activeEl.classList.contains("email-solic-input"))){
       pendingLojasRender = true;
       return;
     }
@@ -4729,6 +4748,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       input.addEventListener("change", function(e){
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        if(!dataCompleta(input.value) || input.value === (l.agendamento||"")) return; // digitação incompleta ou sem mudança
         const payload = { agendamento: input.value, atualizadoEm: now() };
         adicionarHistorico(payload, l, "data", l.agendamento, input.value);
         if(l.status !== "concluido"){
@@ -4738,6 +4758,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         }
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(input.dataset.id);
       });
     });
     list.querySelectorAll(".agendamento-clear").forEach(function(btn){
@@ -4749,6 +4770,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamento: ""})));
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(btn.dataset.id);
       });
     });
     list.querySelectorAll(".previsto-input").forEach(function(input){
@@ -4756,6 +4778,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       input.addEventListener("change", function(e){
         e.stopPropagation();
         const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        if(input.value === (l.agendamentoPrevisto||"")) return; // sem mudança
         const payload = { agendamentoPrevisto: input.value, atualizadoEm: now() };
         adicionarHistorico(payload, l, "hora", l.agendamentoPrevisto, input.value);
         if(l.status !== "concluido"){
@@ -4764,6 +4787,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         }
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(input.dataset.id);
       });
     });
     list.querySelectorAll(".previsto-clear").forEach(function(btn){
@@ -4775,6 +4799,31 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         if(l.status !== "concluido") payload.status = statusAutomatico(normalizarParaStatus(Object.assign({}, l, {agendamentoPrevisto: ""})));
         adicionarHistoricoStatus(payload, l);
         db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload); // cópia local já atualizada (a lista só recarrega a cada 20 s)
+        atualizarHistoricoCard(btn.dataset.id);
+      });
+    });
+    // Solicitação do Protocolo por E-mail: data do envio
+    list.querySelectorAll(".email-solic-input").forEach(function(input){
+      input.addEventListener("click", function(e){ e.stopPropagation(); });
+      input.addEventListener("change", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === input.dataset.id; }) || {};
+        if(!dataCompleta(input.value) || input.value === (l.emailSolicitacao||"")) return;
+        const payload = { emailSolicitacao: input.value, atualizadoEm: now() };
+        adicionarHistorico(payload, l, "emailSolicitacao", l.emailSolicitacao, input.value);
+        db.doc("lojas/"+input.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
+        atualizarHistoricoCard(input.dataset.id); renderFiltroChipsHome();
+      });
+    });
+    list.querySelectorAll(".email-solic-clear").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        const l = lojasCache.find(function(x){ return x.id === btn.dataset.id; }) || {};
+        const payload = { emailSolicitacao: "", atualizadoEm: now() };
+        adicionarHistorico(payload, l, "emailSolicitacao", l.emailSolicitacao, "");
+        db.doc("lojas/"+btn.dataset.id).update(payload).catch(function(){}); Object.assign(l, payload);
+        const inp = btn.parentNode.querySelector(".email-solic-input"); if(inp) inp.value = "";
+        atualizarHistoricoCard(btn.dataset.id); renderFiltroChipsHome();
       });
     });
     list.querySelectorAll(".quick-input").forEach(function(input){
@@ -5090,6 +5139,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         copia.status = "nao_iniciado"; copia.reagendamentos = 0;
         copia.observacaoAgendamento = ""; copia.historicoAlteracoes = [];
         copia.dadosTecnico = ""; copia.temDadosTecnico = false; // dados pessoais do técnico não são copiados
+        copia.emailSolicitacao = ""; copia.emailSolicitacaoTexto = ""; copia.checklistIniciado = false;
         await db.doc("lojas/"+codigo).set(sanitizeParaJson(copia));
         c.innerHTML = "";
       }catch(e){ console.error("Falha ao criar cadastro:", e); erro.textContent = "Não foi possível criar o cadastro. Tente novamente."; }
@@ -5142,7 +5192,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         const activeEl = document.activeElement;
         const list = document.getElementById("lojas-list");
         const aindaEditando = activeEl && list.contains(activeEl) && activeEl.classList &&
-          (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input"));
+          (activeEl.classList.contains("quick-input") || activeEl.classList.contains("agendamento-input") || activeEl.classList.contains("previsto-input") || activeEl.classList.contains("email-solic-input"));
         if(!aindaEditando) renderLojasList();
       }, 0);
     });
@@ -6427,10 +6477,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const el = document.getElementById("aviso-offline"); if(!el) return;
     const n = Object.keys(lerFilaOffline()).length, semRede = !navigator.onLine;
     el.hidden = !semRede && !n;
+    document.body.classList.toggle("com-aviso-offline", !el.hidden); // a barra fica no topo sem cobrir o conteúdo
     el.classList.toggle("enviando", !semRede && n > 0);
     el.textContent = semRede
-      ? "Sem internet · pode continuar preenchendo: fica guardado neste celular" + (n ? " (" + n + " loja" + (n === 1 ? "" : "s") + " aguardando envio)" : "") + ". Fotos e conclusão só com sinal."
-      : (sincronizandoFila ? "Enviando o que foi preenchido sem internet..." : n + " loja" + (n === 1 ? "" : "s") + " aguardando envio · tentando de novo...");
+      ? "📶 Sem internet · salvo no celular" + (n ? " (" + n + " pendente" + (n === 1 ? "" : "s") + ")" : "")
+      : (sincronizandoFila ? "Enviando o que foi salvo sem internet..." : "⏳ " + n + " loja" + (n === 1 ? "" : "s") + " aguardando envio");
+    el.title = semRede ? "Pode continuar preenchendo: fica guardado neste celular e é enviado quando o sinal voltar. Foto do RAT e conclusão só com internet." : "";
   }
   window.addEventListener("online", function(){ atualizarAvisoOffline(); sincronizarFilaOffline(); });
   window.addEventListener("offline", atualizarAvisoOffline);
