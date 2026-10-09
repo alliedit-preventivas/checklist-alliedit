@@ -73,6 +73,8 @@
   nav button.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px var(--sombra-marca);}
   main{max-width:1520px; margin:0 auto; padding:16px 14px 80px;}
   #view-checklist{max-width:620px; margin:0 auto;}
+  .aviso-offline{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:9999; max-width:calc(100% - 24px); box-sizing:border-box; background:#8A6D00; color:#fff; font-size:13px; font-weight:600; line-height:1.35; padding:9px 14px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25); text-align:center;}
+  .aviso-offline.enviando{background:#056E8C;}
   .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
   .toolbar{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;}
   .toolbar input[type=text]{flex:1; min-width:200px; width:auto;}
@@ -2456,6 +2458,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   function makeSupabaseAssets(sb, bucket){
     return {
       upload: async function(file){
+        if(!navigator.onLine){ alert("Sem internet: anexe a foto quando o sinal voltar. O resto do checklist pode continuar sendo preenchido."); throw new Error("sem internet"); }
         const ext = (file.name && file.name.indexOf(".") !== -1) ? file.name.split(".").pop() : "bin";
         const path = (Date.now()+"_"+Math.random().toString(36).slice(2)+"."+ext);
         const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: false, contentType: file.type || "application/octet-stream" });
@@ -4098,8 +4101,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
 
   function subscribeLojas(){
     if(unsubLojas) unsubLojas();
-    unsubLojas = db.collection("lojas").orderBy("nome","asc").onSnapshot(function(snap){
+    let chegouDaRede = false;
+    const aoReceberLojas = function(snap, daRede){
+      if(daRede === false && chegouDaRede) return; // a cópia do celular nunca passa por cima da lista que veio da internet
+      if(daRede !== false) chegouDaRede = true;
       lojasCache = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      aplicarFilaOffline(lojasCache); // alterações feitas sem internet que ainda não foram enviadas
+      if(modoTecnico && daRede !== false) guardarLojasOffline();
       if(cofreTecnicoAtivo()){ aplicarCofreTecnico(); carregarCofreTecnico(); }
       renderFiltroChipsHome(); renderLojasList(); renderAgendaDatas();
       if(modoTecnicoId){ renderTecIdDatalist(); validarCodigoTecnico(); }
@@ -4119,7 +4127,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         if(alvo) tentarAbrirLoja(alvo.id, alvo);
         else if(e.rolagem) setTimeout(function(){ window.scrollTo(0, e.rolagem); }, 80);
       }
-    }, function(err){ console.error("Erro ao carregar lojas:", err); document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível carregar as lojas. Recarregue a página.</div>'; });
+    };
+    unsubLojas = db.collection("lojas").orderBy("nome","asc").onSnapshot(aoReceberLojas, function(err){ console.error("Erro ao carregar lojas:", err); document.getElementById("lojas-list").innerHTML = '<div class="empty">Não foi possível carregar as lojas. Recarregue a página.</div>'; });
+    // Técnico sem internet: mostra as lojas guardadas no celular (se a internet não responder em 5 s, ou se já estiver sem sinal)
+    if(modoTecnico){
+      const usarCopia = function(){ const docs = lerLojasOffline(); if(docs && !chegouDaRede) aoReceberLojas({ docs: docs }, false); };
+      if(!navigator.onLine) usarCopia(); else setTimeout(usarCopia, 5000);
+    }
   }
 
   function showView(name){
@@ -5446,7 +5460,9 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         currentLoja.status = statusAutomatico(currentLoja); updateFinalizeUi();
         banner.classList.remove("hidden");
         banner.style.background = ""; banner.style.color = "";
-        banner.innerHTML = "<b>❌ Não foi possível salvar a conclusão do checklist.</b><br>Verifique sua conexão e tente novamente. Os dados preenchidos continuam neste formulário.";
+        banner.innerHTML = !navigator.onLine
+          ? "<b>📶 Sem internet para concluir.</b><br>O que você preencheu está guardado neste celular e será enviado quando o sinal voltar. Conclua o checklist quando estiver com internet."
+          : "<b>❌ Não foi possível salvar a conclusão do checklist.</b><br>Verifique sua conexão e tente novamente. Os dados preenchidos continuam neste formulário.";
         banner.scrollIntoView({behavior:"smooth", block:"start"});
         return;
       }
@@ -6345,13 +6361,64 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   // (sem isso, uma mudança feita menos de 1 s antes de sair se perdia e o status não mudava)
   function salvarPendente(){ if(savePendente && currentLojaId && currentLoja) persistNow(); }
   window.addEventListener("pagehide", salvarPendente);
+
+  // ---------------- Modo sem internet (técnico) ----------------
+  // As lojas ficam guardadas no celular; o que o técnico preenche sem sinal entra numa fila no celular
+  // e é enviado sozinho quando a internet volta (a cada 15 s e ao reconectar). Fotos e conclusão precisam de internet.
+  const CHAVE_FILA_OFFLINE = "filaOffline:v1", CHAVE_LOJAS_OFFLINE = "lojasOffline:v1";
+  let sincronizandoFila = false;
+  function lerFilaOffline(){ try{ return JSON.parse(localStorage.getItem(CHAVE_FILA_OFFLINE) || "{}") || {}; }catch(e){ return {}; } }
+  function gravarFilaOffline(f){ try{ if(Object.keys(f).length) localStorage.setItem(CHAVE_FILA_OFFLINE, JSON.stringify(f)); else localStorage.removeItem(CHAVE_FILA_OFFLINE); }catch(e){} atualizarAvisoOffline(); }
+  function guardarNaFilaOffline(id, payload){
+    const f = lerFilaOffline();
+    f[id] = { payload: Object.assign({}, f[id] ? f[id].payload : {}, payload), em: Date.now() };
+    gravarFilaOffline(f);
+    const naLista = lojasCache.find(function(l){ return l.id === id; }); if(naLista) Object.assign(naLista, payload);
+  }
+  function removerDaFilaOffline(id){ const f = lerFilaOffline(); if(f[id]){ delete f[id]; gravarFilaOffline(f); } }
+  function aplicarFilaOffline(lista){ const f = lerFilaOffline(); lista.forEach(function(l){ if(f[l.id]) Object.assign(l, f[l.id].payload); }); }
+  function guardarLojasOffline(){ try{ localStorage.setItem(CHAVE_LOJAS_OFFLINE, JSON.stringify({ em: Date.now(), lojas: lojasCache })); }catch(e){} }
+  function lerLojasOffline(){
+    try{
+      const g = JSON.parse(localStorage.getItem(CHAVE_LOJAS_OFFLINE) || "null");
+      if(!g || !Array.isArray(g.lojas)) return null;
+      return g.lojas.map(function(l){ const d = Object.assign({}, l); delete d.id; return { id: l.id, data: function(){ return d; } }; });
+    }catch(e){ return null; }
+  }
+  async function sincronizarFilaOffline(){
+    if(sincronizandoFila || !db || !navigator.onLine) return;
+    const f = lerFilaOffline(), ids = Object.keys(f); if(!ids.length) return;
+    sincronizandoFila = true; atualizarAvisoOffline();
+    for(const id of ids){
+      try{
+        await db.doc("lojas/"+id).update(f[id].payload);
+        const atual = lerFilaOffline(); if(atual[id] && atual[id].em === f[id].em){ delete atual[id]; gravarFilaOffline(atual); } // não apaga se mudou durante o envio
+      }catch(e){ break; } // ainda sem conexão: tenta de novo depois
+    }
+    sincronizandoFila = false; atualizarAvisoOffline();
+    if(currentLojaId && !lerFilaOffline()[currentLojaId]){ const st = document.getElementById("save-status"); if(st && /Sem internet/.test(st.textContent)) st.textContent = "Enviado ao reconectar às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+  }
+  function atualizarAvisoOffline(){
+    const el = document.getElementById("aviso-offline"); if(!el) return;
+    const n = Object.keys(lerFilaOffline()).length, semRede = !navigator.onLine;
+    el.hidden = !semRede && !n;
+    el.classList.toggle("enviando", !semRede && n > 0);
+    el.textContent = semRede
+      ? "Sem internet · pode continuar preenchendo: fica guardado neste celular" + (n ? " (" + n + " loja" + (n === 1 ? "" : "s") + " aguardando envio)" : "") + ". Fotos e conclusão só com sinal."
+      : (sincronizandoFila ? "Enviando o que foi preenchido sem internet..." : n + " loja" + (n === 1 ? "" : "s") + " aguardando envio · tentando de novo...");
+  }
+  window.addEventListener("online", function(){ atualizarAvisoOffline(); sincronizarFilaOffline(); });
+  window.addEventListener("offline", atualizarAvisoOffline);
+  setInterval(sincronizarFilaOffline, 15000);
+  document.addEventListener("DOMContentLoaded", function(){ atualizarAvisoOffline(); setTimeout(sincronizarFilaOffline, 3000); });
   async function persistNow(){
     if(!currentLojaId || !currentLoja) return false;
     clearTimeout(saveTimer); savePendente = false;
     const idSalvo = currentLojaId; // a loja deste salvamento (mesmo que a pessoa troque de loja enquanto grava)
     const status = document.getElementById("save-status");
+    let payload = null;
     try{
-      const payload = sanitizeParaJson({
+      payload = sanitizeParaJson({
         tecnico: currentLoja.tecnico, chamado: currentLoja.chamado, protocolo: currentLoja.protocolo,
         responsavelLoja: currentLoja.responsavelLoja, status: currentLoja.status,
         rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
@@ -6368,12 +6435,15 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       // cópia local já atualizada: a lista e a reabertura da loja mostram a mudança sem esperar a próxima leitura (20 s)
       const naLista = lojasCache.find(function(l){ return l.id === idSalvo; }); if(naLista) Object.assign(naLista, payload);
       await db.doc("lojas/"+idSalvo).update(payload);
+      removerDaFilaOffline(idSalvo); // o que estava guardado no celular já foi junto nesta gravação
       if(currentLojaId === idSalvo){ // ainda na mesma loja: atualiza o aviso e as pendências da tela
         status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
         reavaliarPendencias();
       }
       return true;
     }catch(e){
+      // Sem internet (ou falha de rede): guarda no celular e envia sozinho quando o sinal voltar
+      if(payload){ guardarNaFilaOffline(idSalvo, payload); if(currentLojaId === idSalvo) status.textContent = "Sem internet: guardado neste celular · será enviado quando o sinal voltar"; return false; }
       if(currentLojaId === idSalvo){ status.textContent = "Erro ao salvar — tentando novamente..."; savePendente = true; saveTimer = setTimeout(persistNow, 2000); }
       else alert("Não foi possível salvar a última alteração da loja anterior. Abra a loja de novo e confira.");
       return false;
@@ -7998,6 +8068,11 @@ function codigoDaLoja(l){ return String(l.nome||"").split(" - ")[0].trim(); }
 
   init();
 })();
+</script>
+<div id="aviso-offline" class="aviso-offline" role="status" aria-live="polite" hidden></div>
+<script>
+  // Guarda a página no celular para abrir mesmo sem internet (arquivo sw.js ao lado do index.html)
+  if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){ window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
 </script>
 </body>
 </html>
