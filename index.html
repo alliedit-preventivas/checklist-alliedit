@@ -73,7 +73,8 @@
   nav button.active{background:var(--grad); color:#fff; box-shadow:0 2px 8px var(--sombra-marca);}
   main{max-width:1520px; margin:0 auto; padding:16px 14px 80px;}
   #view-checklist{max-width:620px; margin:0 auto;}
-  .aviso-offline{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:9999; max-width:calc(100% - 24px); box-sizing:border-box; background:#8A6D00; color:#fff; font-size:13px; font-weight:600; line-height:1.35; padding:9px 14px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25); text-align:center;}
+  .aviso-offline{position:fixed; top:0; left:0; right:0; z-index:9999; box-sizing:border-box; background:#8A6D00; color:#fff; font-size:12px; font-weight:600; line-height:1.3; padding:4px 10px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:0 2px 6px rgba(0,0,0,.18);}
+  body.com-aviso-offline{padding-top:24px;}
   .aviso-offline.enviando{background:#056E8C;}
   .view{display:none;} .view.active{display:block;} .hidden{display:none !important;}
   .toolbar{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;}
@@ -6476,10 +6477,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const el = document.getElementById("aviso-offline"); if(!el) return;
     const n = Object.keys(lerFilaOffline()).length, semRede = !navigator.onLine;
     el.hidden = !semRede && !n;
+    document.body.classList.toggle("com-aviso-offline", !el.hidden); // a barra fica no topo sem cobrir o conteúdo
     el.classList.toggle("enviando", !semRede && n > 0);
     el.textContent = semRede
-      ? "Sem internet · pode continuar preenchendo: fica guardado neste celular" + (n ? " (" + n + " loja" + (n === 1 ? "" : "s") + " aguardando envio)" : "") + ". Fotos e conclusão só com sinal."
-      : (sincronizandoFila ? "Enviando o que foi preenchido sem internet..." : n + " loja" + (n === 1 ? "" : "s") + " aguardando envio · tentando de novo...");
+      ? "📶 Sem internet · salvo no celular" + (n ? " (" + n + " pendente" + (n === 1 ? "" : "s") + ")" : "")
+      : (sincronizandoFila ? "Enviando o que foi salvo sem internet..." : "⏳ " + n + " loja" + (n === 1 ? "" : "s") + " aguardando envio");
+    el.title = semRede ? "Pode continuar preenchendo: fica guardado neste celular e é enviado quando o sinal voltar. Foto do RAT e conclusão só com internet." : "";
   }
   window.addEventListener("online", function(){ atualizarAvisoOffline(); sincronizarFilaOffline(); });
   window.addEventListener("offline", atualizarAvisoOffline);
