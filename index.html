@@ -4549,8 +4549,8 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
           areaTexto('Observação <span class="agn-auto">só equipe de agendamento</span>', "observacaoAgendamento", "Anotações internas do agendamento", '', false) +
         '</div>' +
         areaTexto("Atendimento (descrição / escopo)", "descricaoAtendimento", "Descreva o escopo do atendimento", '', bloq) +
-        '<div class="field agn-email-solic"><div class="agn-es-cab"><label title="E-mail enviado pedindo o protocolo">Solicitação do e-mail</label>' +
-          '<input type="date" class="email-solic-input" data-id="'+id+'" value="'+escapeHtml(l.emailSolicitacao||"")+'"'+dis+' aria-label="Data do envio do e-mail de solicitação" title="Data do envio do e-mail">' +
+        '<div class="field agn-email-solic"><div class="agn-es-cab"><label title="E-mail enviado pedindo o protocolo">Solicitação do Protocolo por E-mail</label>' +
+          '<input type="date" class="email-solic-input" data-id="'+id+'" value="'+escapeHtml(l.emailSolicitacao||"")+'"'+dis+' aria-label="Data do envio do e-mail de solicitação do protocolo" title="Data do envio do e-mail">' +
           (l.emailSolicitacao && !bloq ? '<button type="button" class="agn-limpar-campo email-solic-clear" data-id="'+id+'">Limpar</button>' : '') + '</div>' +
           '<textarea class="quick-input auto-grow" data-id="'+id+'" data-field="emailSolicitacaoTexto" placeholder="Texto ou resumo do e-mail enviado" rows="2" style="resize:none; overflow-y:hidden;"'+dis+'>'+escapeHtml(l.emailSolicitacaoTexto||"")+'</textarea></div>' +
         '<div class="field"><label>Histórico de alterações <span class="agn-auto">automático</span></label><div class="agn-hist">'+historicoAgnHtml(l)+'</div></div>' +
@@ -4566,7 +4566,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   // Histórico de alterações: qualquer campo do card (mais recente primeiro).
   // "Dados do técnico" registra só que mudou, sem o conteúdo (dados pessoais ficam no cofre, só com login).
-  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", emailSolicitacaoTexto:"Solicitação do e-mail (texto)", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
+  const HIST_ROTULOS = {tecnico:"Técnico", chamado:"Chamado", protocolo:"Protocolo", descricaoAtendimento:"Atendimento", observacaoAgendamento:"Observação", emailSolicitacaoTexto:"Solicitação do Protocolo por E-mail (texto)", nome:"Nome da loja", status:"Status", hora:"Hora", data:"Data"};
   function historicoAgnHtml(l){
     const itens = (Array.isArray(l.historicoAlteracoes) ? l.historicoAlteracoes : []).slice().reverse();
     if(!itens.length) return '<div class="agn-hist-vazio">Nenhuma alteração registrada.</div>';
@@ -4576,7 +4576,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(h.tipo === "dadosTecnico") texto = 'Dados do técnico: <b>' + (h.para === "removidos" ? "removidos" : "atualizados") + '</b>';
       else if(h.tipo === "data") texto = 'Data: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "hora") texto = 'Hora: ' + v(h.de) + ' → ' + v(h.para);
-      else if(h.tipo === "emailSolicitacao") texto = 'Solicitação do e-mail: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
+      else if(h.tipo === "emailSolicitacao") texto = 'Solicitação do Protocolo por E-mail: ' + v(fmtDateBR(h.de)) + ' → ' + v(fmtDateBR(h.para));
       else if(h.tipo === "reagendamento") texto = '<b>Reagendado</b> (' + escapeHtml(h.para) + 'ª vez)' + (h.de ? ' · data anterior ' + escapeHtml(fmtDateBR(h.de)) : '');
       else if(HIST_ROTULOS[h.tipo]) texto = HIST_ROTULOS[h.tipo] + ': ' + v(h.de) + ' → ' + v(h.para);
       else texto = escapeHtml(h.tipo || "");
@@ -4801,7 +4801,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
         atualizarHistoricoCard(btn.dataset.id);
       });
     });
-    // Solicitação do e-mail (pedido de protocolo): data do envio
+    // Solicitação do Protocolo por E-mail: data do envio
     list.querySelectorAll(".email-solic-input").forEach(function(input){
       input.addEventListener("click", function(e){ e.stopPropagation(); });
       input.addEventListener("change", function(e){
