@@ -4007,12 +4007,13 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   }
   // ---------------- manter a tela ao atualizar a página (F5) ----------------
   // Guarda filtros, busca, tela aberta, agenda do Painel e rolagem só nesta aba do navegador (sessionStorage):
-  // F5 volta igual; uma aba nova começa do zero. Não vale para a tela do técnico.
+  // F5 volta igual; uma aba nova começa do zero. No link do técnico, guarda só a loja aberta e a altura da página.
   let estadoTelaPronto = false, estadoTelaRestaurar = null;
-  function chaveEstadoTela(){ return "estadoTela:" + (modoGestao ? "gestao" : "login"); }
+  function chaveEstadoTela(){ return "estadoTela:" + (modoTecnico ? "tecnico" : (modoGestao ? "gestao" : "login")); }
   function telaAtual(){ const v = document.querySelector("#view-lojas.active, #view-painel.active, #view-checklist.active, #view-bf.active"); return v ? v.id.replace("view-","") : "lojas"; }
   function guardarEstadoTela(){
-    if(!estadoTelaPronto || modoTecnico) return;
+    if(!estadoTelaPronto) return;
+    if(modoTecnico){ try{ sessionStorage.setItem(chaveEstadoTela(), JSON.stringify({ tela: telaAtual(), lojaAberta: telaAtual()==="checklist" ? currentLojaId : null, rolagem: window.scrollY })); }catch(e){} return; }
     try{
       const busca = document.getElementById("search-loja"), sub = document.getElementById("agn-cad-sub"), tela = telaAtual();
       sessionStorage.setItem(chaveEstadoTela(), JSON.stringify({ tela: tela, filtroHome: filtroHome, busca: busca ? busca.value : "", dataDe: filtroDataDe, dataAte: filtroDataAte,
@@ -4049,6 +4050,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     }
     if(agendamentoNovoAtivo()) wireAgendamentoNovo();
     if(!modoTecnico){ showView("lojas"); restaurarEstadoTela(); }
+    else{ // técnico: F5 dentro do checklist reabre a mesma loja (os dados vêm do banco + o que ficou guardado no celular)
+      rascunhosParaFila();
+      let e = null; try{ e = JSON.parse(sessionStorage.getItem(chaveEstadoTela()) || "null"); }catch(err){ e = null; }
+      estadoTelaPronto = true;
+      if(e && e.tela === "checklist" && e.lojaAberta) estadoTelaRestaurar = e;
+    }
     subscribeLojas();
     if(!modoTecnico) seedLojasSeNecessario();
     if(!modoTecnico){
@@ -4124,7 +4131,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       if(estadoTelaRestaurar){
         const e = estadoTelaRestaurar; estadoTelaRestaurar = null;
         const alvo = (e.tela === "checklist" && e.lojaAberta) ? lojasCache.find(function(l){ return l.id === e.lojaAberta; }) : null;
-        if(alvo) tentarAbrirLoja(alvo.id, alvo);
+        if(alvo){ tentarAbrirLoja(alvo.id, alvo); if(e.rolagem) setTimeout(function(){ window.scrollTo(0, e.rolagem); }, 200); }
         else if(e.rolagem) setTimeout(function(){ window.scrollTo(0, e.rolagem); }, 80);
       }
     };
@@ -6342,6 +6349,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     updateFinalizeUi();
     document.getElementById("save-status").textContent = "Salvando...";
     clearTimeout(saveTimer); savePendente = true;
+    guardarRascunhoChecklist(currentLojaId, montarPayloadChecklist()); // F5 ou fechar a página antes de gravar: nada se perde
     saveTimer = setTimeout(persistNow, 900);
   }
   // O checklist tem algo preenchido? Compara com o formulário em branco (o mesmo que o "Limpar Formulário" deixa),
@@ -6387,6 +6395,12 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const naLista = lojasCache.find(function(l){ return l.id === id; }); if(naLista) Object.assign(naLista, payload);
   }
   function removerDaFilaOffline(id){ const f = lerFilaOffline(); if(f[id]){ delete f[id]; gravarFilaOffline(f); } }
+  // Rascunho: cópia do checklist gravada no celular a cada mudança; ao abrir a página, o que não foi enviado vai para a fila
+  const CHAVE_RASCUNHO = "rascunhoChecklist:v1";
+  function lerRascunhos(){ try{ return JSON.parse(localStorage.getItem(CHAVE_RASCUNHO) || "{}") || {}; }catch(e){ return {}; } }
+  function guardarRascunhoChecklist(id, payload){ try{ const r = lerRascunhos(); r[id] = { payload: payload, em: Date.now() }; localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(r)); }catch(e){} }
+  function removerRascunhoChecklist(id, ate){ try{ const r = lerRascunhos(); if(r[id] && r[id].em <= ate){ delete r[id]; if(Object.keys(r).length) localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(r)); else localStorage.removeItem(CHAVE_RASCUNHO); } }catch(e){} }
+  function rascunhosParaFila(){ const r = lerRascunhos(), ids = Object.keys(r); if(!ids.length) return; ids.forEach(function(id){ guardarNaFilaOffline(id, r[id].payload); }); try{ localStorage.removeItem(CHAVE_RASCUNHO); }catch(e){} }
   function aplicarFilaOffline(lista){ const f = lerFilaOffline(); lista.forEach(function(l){ if(f[l.id]) Object.assign(l, f[l.id].payload); }); }
   function guardarLojasOffline(){ try{ localStorage.setItem(CHAVE_LOJAS_OFFLINE, JSON.stringify({ em: Date.now(), lojas: lojasCache })); }catch(e){} }
   function lerLojasOffline(){
@@ -6422,31 +6436,37 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
   window.addEventListener("offline", atualizarAvisoOffline);
   setInterval(sincronizarFilaOffline, 15000);
   document.addEventListener("DOMContentLoaded", function(){ atualizarAvisoOffline(); setTimeout(sincronizarFilaOffline, 3000); });
+  // Dados do checklist que são gravados na loja (ao salvar e no rascunho guardado no celular)
+  function montarPayloadChecklist(){
+    return sanitizeParaJson({
+      tecnico: currentLoja.tecnico, chamado: currentLoja.chamado, protocolo: currentLoja.protocolo,
+      responsavelLoja: currentLoja.responsavelLoja, status: currentLoja.status,
+      rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
+      pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
+      wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
+      ocorrencia: currentLoja.ocorrencia, mercadoPagos: currentLoja.mercadoPagos,
+      mercadoPago: { modelo: (currentLoja.mercadoPagos[0]||{}).modelo||"", serie: (currentLoja.mercadoPagos[0]||{}).serie||"" }, // compatibilidade com versões anteriores
+      telefoneStage: currentLoja.telefoneStage, posRedeCielos: currentLoja.posRedeCielos,
+      posRedeCielo: currentLoja.posRedeCielos[0] || blankPosRedeCielo(), // compatibilidade com versões anteriores
+      pinpadReserva: currentLoja.pinpadReserva,
+      horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"", checklistIniciado: !!currentLoja.checklistIniciado,
+      atualizadoEm: now()
+    });
+  }
   async function persistNow(){
     if(!currentLojaId || !currentLoja) return false;
     clearTimeout(saveTimer); savePendente = false;
+    const inicioSalvamento = Date.now();
     const idSalvo = currentLojaId; // a loja deste salvamento (mesmo que a pessoa troque de loja enquanto grava)
     const status = document.getElementById("save-status");
     let payload = null;
     try{
-      payload = sanitizeParaJson({
-        tecnico: currentLoja.tecnico, chamado: currentLoja.chamado, protocolo: currentLoja.protocolo,
-        responsavelLoja: currentLoja.responsavelLoja, status: currentLoja.status,
-        rack: currentLoja.rack, gerencia: currentLoja.gerencia, estoque: currentLoja.estoque, notebooks: currentLoja.notebooks,
-        pdvs: currentLoja.pdvs, mobiles: currentLoja.mobiles, dvrs: currentLoja.dvrs,
-        wifiStage: currentLoja.wifiStage, ratFoto: currentLoja.ratFoto || null,
-        ocorrencia: currentLoja.ocorrencia, mercadoPagos: currentLoja.mercadoPagos,
-        mercadoPago: { modelo: (currentLoja.mercadoPagos[0]||{}).modelo||"", serie: (currentLoja.mercadoPagos[0]||{}).serie||"" }, // compatibilidade com versões anteriores
-        telefoneStage: currentLoja.telefoneStage, posRedeCielos: currentLoja.posRedeCielos,
-        posRedeCielo: currentLoja.posRedeCielos[0] || blankPosRedeCielo(), // compatibilidade com versões anteriores
-        pinpadReserva: currentLoja.pinpadReserva,
-        horarioInicio: currentLoja.horarioInicio||"", horarioFim: currentLoja.horarioFim||"", checklistIniciado: !!currentLoja.checklistIniciado,
-        atualizadoEm: now()
-      });
+      payload = montarPayloadChecklist();
       // cópia local já atualizada: a lista e a reabertura da loja mostram a mudança sem esperar a próxima leitura (20 s)
       const naLista = lojasCache.find(function(l){ return l.id === idSalvo; }); if(naLista) Object.assign(naLista, payload);
       await db.doc("lojas/"+idSalvo).update(payload);
       removerDaFilaOffline(idSalvo); // o que estava guardado no celular já foi junto nesta gravação
+      removerRascunhoChecklist(idSalvo, inicioSalvamento);
       if(currentLojaId === idSalvo){ // ainda na mesma loja: atualiza o aviso e as pendências da tela
         status.textContent = "Salvo às " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
         reavaliarPendencias();
