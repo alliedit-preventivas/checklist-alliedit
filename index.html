@@ -1448,11 +1448,11 @@
   <div id="view-tecnico-id" class="hidden" style="display:flex; align-items:center; justify-content:center; min-height:70vh;">
     <div class="card" style="max-width:420px; width:100%; margin:0; padding:30px 26px; border-radius:16px; box-shadow:0 10px 30px rgba(2,110,140,.08); border:none;">
       <h3 style="margin:0 0 4px; text-align:center; font-size:19px; color:#000000;">Área do Técnico</h3>
-      <div class="hint" style="text-align:center; margin-bottom:18px;">Digite o código da loja para abrir o checklist.</div>
+      <div class="hint" style="text-align:center; margin-bottom:18px;">Digite o número ou o nome da loja para abrir o checklist.</div>
       <div class="field" style="position:relative;">
-        <label>Código da loja</label>
-        <input type="text" id="tec-id-codigo" placeholder="Ex: 2305" inputmode="numeric" autocomplete="off">
-        <div id="tec-id-dropdown" class="hidden" style="position:absolute; top:100%; left:0; right:0; background:var(--surface); border:1px solid var(--border); border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,.1); max-height:220px; overflow-y:auto; z-index:5; margin-top:2px;"></div>
+        <label>Loja (número ou nome)</label>
+        <input type="text" id="tec-id-codigo" placeholder="Ex: 2305 ou Iguatemi" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div id="tec-id-dropdown" class="hidden" style="position:absolute; top:100%; left:0; right:0; background:var(--surface); border:1px solid var(--border); border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,.1); max-height:280px; overflow-y:auto; z-index:5; margin-top:2px;"></div>
       </div>
       <div class="field">
         <label>Nome da loja</label>
@@ -1478,7 +1478,7 @@
         <label>Descrição / Escopo</label>
         <input type="text" id="tec-id-descricao" placeholder="Preenchido automaticamente" readonly style="background:var(--bg); color:var(--text-muted);">
       </div>
-      <div class="hint" id="tec-id-erro" style="display:none; color:var(--bad);">Código não encontrado.</div>
+      <div class="hint" id="tec-id-erro" style="display:none; color:var(--bad);">Escolha a loja na lista para continuar.</div>
       <button class="btn btn-primary" id="tec-btn-abrir" disabled style="width:100%; margin-top:10px; padding:12px;">Abrir Checklist</button>
       <div class="hint" style="text-align:center; margin-top:12px;">Em caso de dúvidas, entre em contato com o suporte pelo botão de WhatsApp ao lado.</div>
     </div>
@@ -4815,32 +4815,39 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const dropdown = document.getElementById("tec-id-dropdown");
     if(dropdown && !dropdown.classList.contains("hidden")) abrirDropdownTecnico();
   }
-  function abrirDropdownTecnico(mostrarTudo){
+  // Busca do técnico: aceita número ou nome (sem diferença de acento ou maiúscula).
+  // A lista mostra sempre todas as lojas: as que combinam com o que foi digitado vêm primeiro, em destaque; as outras continuam abaixo.
+  function normalizarBusca(t){ return String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim(); }
+  function lojaPelaBusca(texto){
+    const t = normalizarBusca(texto); if(!t) return null;
+    return lojasCache.find(function(x){ return normalizarBusca(x.id) === t || normalizarBusca(x.nome) === t || normalizarBusca(separarCodigoNome(x.nome).nome) === t; }) || null;
+  }
+  function abrirDropdownTecnico(){
     const dropdown = document.getElementById("tec-id-dropdown");
     const codigoInput = document.getElementById("tec-id-codigo");
     if(!dropdown || !codigoInput) return;
-    const termo = mostrarTudo ? "" : codigoInput.value.trim().toLowerCase();
-    const lista = lojasCache.filter(function(l){
-      if(!termo) return true;
-      return l.id.toLowerCase().indexOf(termo) !== -1 || (l.nome||"").toLowerCase().indexOf(termo) !== -1;
-    }).slice(0, 50);
-    if(lista.length === 0){
-      dropdown.innerHTML = '<div style="padding:10px 12px; font-size:12.5px; color:var(--text-muted);">Nenhuma loja encontrada.</div>';
-    }else{
-      dropdown.innerHTML = lista.map(function(l){
-        return '<div class="tec-dropdown-item" data-id="'+l.id+'" style="padding:9px 12px; font-size:13.5px; cursor:pointer; border-bottom:1px solid var(--border);">'+escapeHtml(l.nome)+'</div>';
-      }).join("");
-      Array.prototype.forEach.call(dropdown.querySelectorAll(".tec-dropdown-item"), function(item){
-        item.addEventListener("mousedown", function(e){
-          e.preventDefault();
-          codigoInput.value = item.getAttribute("data-id");
-          fecharDropdownTecnico();
-          validarCodigoTecnico();
-        });
-        item.addEventListener("mouseover", function(){ item.style.background = "var(--bg)"; });
-        item.addEventListener("mouseout", function(){ item.style.background = "transparent"; });
+    const termo = normalizarBusca(codigoInput.value);
+    const combina = function(l){ return !termo || normalizarBusca(l.id).indexOf(termo) !== -1 || normalizarBusca(l.nome).indexOf(termo) !== -1; };
+    const ordem = lojasCache.slice().sort(function(x, y){ return (x.nome || "").localeCompare(y.nome || ""); });
+    const achadas = ordem.filter(combina), outras = termo ? ordem.filter(function(l){ return !combina(l); }) : [];
+    const item = function(l, apagado){
+      return '<div class="tec-dropdown-item" data-id="'+escapeHtml(l.id)+'" style="padding:9px 12px; font-size:13.5px; cursor:pointer; border-bottom:1px solid var(--border);'+(apagado ? ' opacity:.55;' : (termo ? ' font-weight:700;' : ''))+'">'+escapeHtml(l.nome)+'</div>';
+    };
+    let html = achadas.length ? achadas.map(function(l){ return item(l, false); }).join("") : (termo ? '<div style="padding:9px 12px; font-size:12.5px; color:var(--text-muted);">Nenhuma loja com "'+escapeHtml(codigoInput.value.trim())+'".</div>' : '');
+    if(outras.length) html += '<div style="padding:6px 12px; font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--text-muted); background:var(--bg);">Outras lojas</div>' + outras.map(function(l){ return item(l, true); }).join("");
+    dropdown.innerHTML = html || '<div style="padding:10px 12px; font-size:12.5px; color:var(--text-muted);">Nenhuma loja carregada.</div>';
+    Array.prototype.forEach.call(dropdown.querySelectorAll(".tec-dropdown-item"), function(el){
+      el.addEventListener("mousedown", function(e){
+        e.preventDefault();
+        const l = lojasCache.find(function(x){ return x.id === el.getAttribute("data-id"); });
+        codigoInput.value = l ? l.nome : el.getAttribute("data-id");
+        fecharDropdownTecnico();
+        validarCodigoTecnico();
       });
-    }
+      el.addEventListener("mouseover", function(){ el.style.background = "var(--bg)"; });
+      el.addEventListener("mouseout", function(){ el.style.background = "transparent"; });
+    });
+    dropdown.scrollTop = 0;
     dropdown.classList.remove("hidden");
   }
   function fecharDropdownTecnico(){
@@ -4852,16 +4859,20 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const nomeInput = document.getElementById("tec-id-nome");
     const erroEl = document.getElementById("tec-id-erro");
     const btn = document.getElementById("tec-btn-abrir");
-    codigoInput.addEventListener("input", function(){ validarCodigoTecnico(); abrirDropdownTecnico(false); });
-    codigoInput.addEventListener("focus", function(){ codigoInput.select(); abrirDropdownTecnico(true); });
-    codigoInput.addEventListener("click", function(){ abrirDropdownTecnico(true); });
+    codigoInput.addEventListener("input", function(){ validarCodigoTecnico(); abrirDropdownTecnico(); });
+    codigoInput.addEventListener("focus", function(){ abrirDropdownTecnico(); });
+    codigoInput.addEventListener("click", function(){ abrirDropdownTecnico(); });
+    codigoInput.addEventListener("keydown", function(e){
+      if(e.key !== "Enter") return;
+      const t = normalizarBusca(codigoInput.value), achadas = lojasCache.filter(function(l){ return t && (normalizarBusca(l.id).indexOf(t) !== -1 || normalizarBusca(l.nome).indexOf(t) !== -1); });
+      if(achadas.length === 1){ e.preventDefault(); codigoInput.value = achadas[0].nome; fecharDropdownTecnico(); validarCodigoTecnico(); }
+    });
     codigoInput.addEventListener("blur", function(){ setTimeout(fecharDropdownTecnico, 150); });
     document.addEventListener("click", function(e){
       if(e.target !== codigoInput && !document.getElementById("tec-id-dropdown").contains(e.target)) fecharDropdownTecnico();
     });
     btn.addEventListener("click", function(){
-      const codigo = codigoInput.value.trim();
-      const l = lojasCache.find(function(x){ return x.id === codigo; });
+      const l = lojaPelaBusca(codigoInput.value);
       if(!l) return;
       tentarAbrirLoja(l.id, l);
     });
@@ -4891,7 +4902,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
     const btn = document.getElementById("tec-btn-abrir");
     if(!codigoInput) return;
     const codigo = codigoInput.value.trim();
-    const l = lojasCache.find(function(x){ return x.id === codigo; });
+    const l = lojaPelaBusca(codigo); // número, nome ou "número - nome"
     if(l){
       nomeInput.value = l.nome; erroEl.style.display = "none"; btn.disabled = false;
       document.getElementById("tec-id-data-hora").value = l.agendamento ? (fmtDateBR(l.agendamento) + (l.agendamentoPrevisto ? " às " + l.agendamentoPrevisto : "")) : "—";
@@ -4900,7 +4911,7 @@ const UF_REGIONAL_MAP = {"9999":["SP",1],"1932":["RJ",2],"1960":["SP",1],"2303":
       statusInput.value = labelResponsabilidade(l) === "Confirmado" ? "Atendimento Confirmado" : "Aguardando Agendamento";
       descricaoInput.value = l.descricaoAtendimento || "—";
     }else{
-      nomeInput.value = ""; btn.disabled = true; erroEl.style.display = codigo ? "block" : "none";
+      nomeInput.value = ""; btn.disabled = true; erroEl.style.display = "none"; // enquanto digita, a lista mostra as opções
       document.getElementById("tec-id-data-hora").value = "";
       chamadoInput.value = "";
       protocoloInput.value = ""; statusInput.value = "";
